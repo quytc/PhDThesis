@@ -1,0 +1,147 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{abdulla:well}
+Abdulla, P.A.: Well (and better) quasi-ordered transition systems. Bulletin of
+  Symbolic Logic  16(4),  457--515 (2010)
+
+\bibitem{Parosh:Bengt:Karlis:Tsay:general}
+Abdulla, P.A., {\v C}er{\=a}ns, K., Jonsson, B., Tsay, Y.K.: General
+  decidability theorems for infinite-state systems. In: LICS'96. pp. 313--321
+  (1996)
+
+\bibitem{rmc:wo:transducers}
+Abdulla, P.A., Henda, N.B., Delzanno, G., Rezine, A.: Regular model checking
+  without transducers (on efficient verification of parameterized systems). In:
+  TACAS'07. LNCS, vol. 4424, pp. 721--736. Springer (2007)
+
+\bibitem{parosh:non-atomic}
+Abdulla, P.A., Henda, N.B., Delzanno, G., Rezine, A.: Handling parameterized
+  systems with non-atomic global conditions. In: VMCAI'08. LNCS, vol. 4905, pp.
+  22--36. Springer (2008)
+
+\bibitem{AJNO:simple}
+Abdulla, P.A., Jonsson, B., Nilsson, M., d'Orso, J.: Regular model checking
+  made simple and efficient. In: CONCUR'02. LNCS, vol. 2421, pp. 116--130.
+  Springer (2002)
+
+\bibitem{APRXZ01}
+Arons, T., Pnueli, A., Ruah, S., Xu, J., Zuck, L.: Parameterized verification
+  with automatically computed inductive assertions. In: CAV'01. LNCS, vol.
+  2102, pp. 221--234. Springer (2001)
+
+\bibitem{BLS02}
+Baukus, K., Lakhnech, Y., Stahl, K.: Parameterized verification of a cache
+  coherence protocol: Safety and liveness. In: VMCAI'02. LNCS, vol. 2294, pp.
+  317--330. Springer (2002)
+
+\bibitem{Bingham:empirically}
+Bingham, J.D., Hu, A.J.: Empirically efficient verification for a class of
+  infinite-state systems. In: TACAS'05. LNCS, vol. 3440, pp. 77--92. Springer
+  (2005)
+
+\bibitem{BLW03}
+Boigelot, B., Legay, A., Wolper, P.: Iterating transducers in the large. In:
+  CAV'03. LNCS, vol. 2725, pp. 223--235. Springer (2003)
+
+\bibitem{BHV04}
+Bouajjani, A., Habermehl, P., Vojnar, T.: Abstract regular model checking. In:
+  CAV'04. LNCS, vol. 3114, pp. 372--386. Springer (2004)
+
+\bibitem{CTV06}
+Clarke, E., Talupur, M., Veith, H.: Environment abstraction for parameterized
+  verification. In: VMCAI'06. LNCS, vol. 3855, pp. 126--141. Springer (2006)
+
+\bibitem{DLS01}
+Dams, D., Lakhnech, Y., Steffen, M.: Iterating transducers. In: CAV'01. LNCS,
+  vol. 2102. Springer (2001)
+
+\bibitem{Delzanno:cache}
+Delzanno, G.: Automatic verification of cache coherence protocols. In: Emerson,
+  Sistla (eds.) CAV'00. LNCS, vol. 1855, pp. 53--68. Springer (2000)
+
+\bibitem{Delzanno:futurebus}
+Delzanno, G.: Verification of consistency protocols via infinite-state symbolic
+  model checking. In: FORTE'00. IFIP Conference Proceedings, vol. 183, pp.
+  171--186. Kluwer (2000)
+
+\bibitem{EmKa:manyfew}
+Emerson, E.A., Kahlon, V.: Reducing model checking of the many to the few. In:
+  CADE'00. LNCS, vol. 1831, pp. 236--254. Springer (2000)
+
+\bibitem{Emerson:Namjoshi:POPL95}
+Emerson, E., Namjoshi, K.: Reasoning about rings. In: POPL'95. pp. 85--94
+  (1995)
+
+\bibitem{Esparza:Finkel:Mayr:LICS}
+Esparza, J., Finkel, A., Mayr, R.: On the verification of broadcast protocols.
+  In: LICS'99. IEEE Computer Society (1999)
+
+\bibitem{ThreadModular}
+Flanagan, C., Qadeer, S.: Thread-modular model checking. In: SPIN'03. LNCS,
+  vol. 2648, pp. 213--224. Springer (2003)
+
+\bibitem{Ganty:Complete}
+Ganty, P., Raskin, J.F., Begin, L.V.: {A Complete Abstract Interpretation
+  Framework for Coverability Properties of WSTS}. In: VMCAI'06. LNCS, vol.
+  3855, pp. 49--64. Springer (2006)
+
+\bibitem{Raskin:experiments:German}
+Geeraerts, G., Raskin, J.F., Begin, L.V.: Expand, enlarge and check... made
+  efficient. In: CAV'05. LNCS, vol. 3576, pp. 394--407. Springer (2005)
+
+\bibitem{Raskin:Viagra}
+Geeraerts, G., Raskin, J.F., Begin, L.V.: {Expand, Enlarge and Check: New
+  algorithms for the coverability problem of WSTS}. J. Comput. Syst. Sci.
+  72(1),  180--203 (2006)
+
+\bibitem{GerSis:many}
+German, S.M., Sistla, A.P.: Reasoning about systems with many processes. J.~ACM
+   39(3),  675--735 (1992)
+
+\bibitem{SPINModelChecker}
+Holzmann, G.J.: The model checker spin. IEEE Trans. Software Eng.  23(5),
+  279--295 (1997)
+
+\bibitem{cutoff}
+Kaiser, A., Kroening, D., Wahl, T.: Dynamic cutoff detection in parameterized
+  concurrent programs. In: CAV'10. LNCS, vol. 6174, pp. 645--659. Springer
+  (2010)
+
+\bibitem{KMMPS2001}
+Kesten, Y., Maler, O., Marcus, M., Pnueli, A., Shahar, E.: Symbolic model
+  checking with rich assertional languages. Theor. Comput. Sci.  256,  93--112
+  (2001)
+
+\bibitem{burnsinside}
+Lynch, N.A., Shamir, B.P.: Distributed algorithms, lecture notes for 6.852,
+  fall 1992. Tech. Rep. MIT/LCS/RSS-20, MIT (1993)
+
+\bibitem{TMisCA}
+Malkis, A., Podelski, A., Rybalchenko, A.: Thread-modular verification is
+  cartesian abstract interpretation. In: ICTAC'06. LNCS, vol. 4281, pp.
+  183--197. Springer (2006)
+
+\bibitem{MalkisPR07}
+Malkis, A., Podelski, A., Rybalchenko, A.: Precise thread-modular verification.
+  In: SAS'07. LNCS, vol. 4634, pp. 218--232. Springer (2007)
+
+\bibitem{Namjoshi:VMCAI07}
+Namjoshi, K.S.: Symmetry and completeness in the analysis of parameterized
+  systems. In: VMCAI'07. LNCS, vol. 4349, pp. 299--313. Springer (2007)
+
+\bibitem{PXZ02}
+Pnueli, A., Xu, J., Zuck, L.: Liveness with (0,1,infinity)-counter abstraction.
+  In: CAV'02. LNCS, vol. 2404. Springer (2002)
+
+\bibitem{PRZ-tacas01}
+Pnueli, A., Ruah, S., Zuck, L.D.: Automatic deductive verification with
+  invisible invariants. In: TACAS'01. LNCS, vol. 2031, pp. 82--97. Springer
+  (2001)
+
+\bibitem{Tou01}
+Touili, T.: {Regular Model Checking using Widening Techniques}. Electronic
+  Notes in Theoretical Computer Science  50(4) (2001), proc. of VEPAS'01
+
+\end{thebibliography}

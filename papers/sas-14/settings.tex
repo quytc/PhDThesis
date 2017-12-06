@@ -1,0 +1,97 @@
+%% -----------------------------------------------------------
+%% For the comments
+%% -----------------------------------------------------------
+\newcommand{\TODOcomment}[2]{%
+  \stepcounter{TODOcounter#1}%
+  {\scriptsize\bf$^{(\arabic{TODOcounter#1})}$}%
+  \marginpar[\fbox{
+    \parbox{2cm}{\raggedleft
+      \scriptsize$^{({\bf{\arabic{TODOcounter#1}{#1}}})}$%
+      \scriptsize #2}}]%
+  {\fbox{\parbox{2cm}{\raggedright
+      \scriptsize$^{({\bf{\arabic{TODOcounter#1}{#1}}})}$%
+      \scriptsize #2}}}
+}%
+
+\newcounter{TODOcounter}
+\newcommand{\TODO}[1]{\TODOcomment{}{#1}}
+%% \renewcommand{\TODO}[1]{}
+
+\newcommand{\NOTE}[1]{\par\noindent\fbox{\parbox{\textwidth}{\scriptsize {#1}}}}
+
+\newcommand{\todo}[1]{{\textcolor{red}{[#1]}}}
+
+%% -----------------------------------------------------------
+
+%\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}%\usepackage[latin1]{inputenc}
+
+%\usepackage{times}
+\usepackage[T1]{fontenc}
+
+%% -----------------------------------------------------------
+%% Other packages
+%% -----------------------------------------------------------
+\usepackage{paralist}
+\usepackage{graphics}
+\usepackage{amscd,amssymb,amsmath}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{latexsym}
+\usepackage{xspace}
+\usepackage{hhline}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{mathtools}
+
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{etoolbox}
+\usepackage{ textcomp }
+%\usepackage{ifmtarg}
+\usepackage{units}
+
+%% Algorithms
+\usepackage[nofillcomment,noend,linesnumbered,noline,ruled]{algorithm2e}
+%\usepackage[noend]{algorithmic}
+\usepackage{listings}
+
+%% TikZ
+\usepackage[version=latest]{pgf}
+\usepackage{tikz}
+\usetikzlibrary{%
+  arrows,%
+  calc,%
+  decorations.pathmorphing,%
+  %calendar,%
+  fit,%
+  %shapes,%
+  shapes.geometric,%
+  %shapes.misc,%
+  %shapes.symbols,%
+  %shapes.arrows,%
+  %shapes.callouts,%
+  %shapes.multipart,%
+  %backgrounds,%
+  matrix,%
+  %fadings,%
+  %through,%
+  positioning,%
+  %scopes,%
+  %decorations.shapes,%
+  %decorations.pathmorphing,%
+  %decorations.text,%
+  shadows,%
+  %trees,%
+  snakes,%
+  petri,%
+  automata,%
+  backgrounds%
+}
+
+% \usetikzlibrary{external}
+% \tikzexternalize[optimize=false,prefix=pics/] 
+
+\pgfrealjobname{main}
+
+%\long\def\beginpgfgraphicnamed#1#2\endpgfgraphicnamed{\includegraphics{#1}}

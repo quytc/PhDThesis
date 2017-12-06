@@ -1,0 +1,107 @@
+%% ================================
+%% TikZ styles
+%% ================================
+
+
+\pgfdeclarelayer{my background} 
+\pgfsetlayers{background,my background,main}
+
+%\tikzset{background rectangle/.style={rounded corners,inner sep=1pt,bottom color=red!20,top color=white}}
+\tikzstyle{background rectangle}=[rounded corners=1ex,draw=gray!5,thick,fill=gray!10,double]
+%\tikzstyle{background rectangle}=[rounded corners,fill =red!10]
+%\tikzstyle{every state}=[inner sep=0pt, minimum size=4mm,draw=blue,fill=blue!20,thick]
+\tikzstyle{every node}=[inner sep=0pt, minimum size=4mm]
+
+%% Observer states
+\tikzset{obsstate/.style={circle,thick, minimum size = 5mm, draw=#1!50,fill=#1!20}}
+\tikzset{obsstate/.default=blue}
+\tikzset{property/.style={rounded corners=1pt,inner xsep=1mm,draw=black!50,fill=white,double}}
+
+%------------------------------------------
+% \tikzset{state/.style={circle,minimum size=3.2ex,inner sep=0pt,draw=blue!50,very thick,fill=blue!20,scale=0.7}}
+% \tikzset{rstate/.style={draw=black,thin,fill=white,minimum width=1.4ex}}
+
+\tikzset{state/.style={circle,minimum size=3.2ex,inner sep=0pt,scale=0.7}}
+\tikzset{state-w/.style={draw=black,thin,fill=white,minimum width=1.4ex}}
+\tikzset{state-n/.style={draw=blue!50,thin,fill=blue!20,minimum width=1.4ex}}
+\tikzset{state-i/.style={draw=blue!50,thin,fill=green!20,minimum width=1.4ex}}
+\tikzset{state-b/.style={draw=blue!50,thin,fill=red!50,minimum width=1.4ex}}
+\tikzset{state--/.style={draw=none,thin,fill=none,minimum width=1.4ex}}
+
+\tikzset{context/.style={rectangle,minimum width=3.2ex,minimum height=3.2ex,inner sep=0pt,fill=none,draw=black,thin,scale=0.7,anchor=center,yshift=3pt}}
+\tikzset{mylabel/.style={scale=0.5,midway,below}}
+\tikzset{message/.style={scale=0.5,midway,draw,rounded corners,rectangle split, rectangle split parts=2, rectangle split part fill={yellow!10!white, pink!10!white}}}
+\tikzset{myedge/.style={draw,shorten >=1pt,>=stealth',semithick}}
+\tikzset{background rectangle/.style={rounded corners=1ex,draw=gray!5,thick,fill=gray!10}}
+\tikzset{caption/.style={fill=red!10,rounded corners=1ex,inner xsep=2ex,scale=0.5,anchor=north}}%shading=axis,top color=red!10,bottom color=gray!10}}
+\tikzset{zone/.style={shade,bottom color=#1,top color=blue!10}}
+%
+% Place and transition for the petri nets
+\tikzset{place/.style={circle,inner sep=2pt,draw=blue!50,very thick,fill=blue!20,minimum width=2ex,minimum height=2ex}}
+\tikzset{resource/.style={draw=green,fill=green!30!gray,thick}}
+\tikzset{every transition/.style={draw=red,fill=red!20,thick,minimum width=10mm,minimum height=1mm}}
+\tikzset{vertical/.style={minimum width=1mm,minimum height=10mm}}
+\tikzset{snake/.style={decorate,decoration={snake,amplitude=0.2mm,segment length=1mm,pre length=1mm,post length=1mm}}}
+
+% For the Ticks
+\tikzset{looplabel/.style={scale=0.7,inner xsep=2pt,draw=gray!10,fill=white,rounded corners=2pt,anchor=center}}
+
+\tikzset{na-state/.style={circle,minimum size=3.2ex,inner sep=0pt,draw=blue!50,semithick,fill=blue!20,scale=0.6,anchor=center}}
+\tikzset{na-context/.style={rectangle,minimum width=3.2ex,minimum height=3.2ex,inner sep=0pt,fill=none,draw=black,thin,scale=0.6,anchor=center,fill=yellow!20!white}}
+\tikzset{na-edge/.style={draw,shorten >=1pt,>=stealth',very thin,blue!70!red}}
+\tikzset{na-matrix/.style={matrix of nodes,column sep=1.5pt,column 1/.style={anchor=base}}}
+\tikzset{na-looplabel/.style={inner sep=2pt,draw=gray,fill=white,rounded corners=2pt,anchor=base,yshift=-2pt}}
+
+% For the Ticks -- Projection
+\tikzset{na-cell/.style={draw,very thin,anchor=center,minimum width=3ex,minimum height=3ex}}
+\tikzset{check/.style={fill=red!20}}      
+\tikzset{keep/.style={fill=blue}}
+\tikzset{select/.style={fill=green!50}}
+\tikzset{fu/.style={draw=none,path fading=f}}
+\tikzset{fd/.style={draw=none,path fading=f,fading angle=180}}
+\tikzset{fr/.style={draw=none,path fading=f,fading angle=-90}}
+\tikzset{fl/.style={draw=none,path fading=f,fading angle=90}}
+\tikzset{ful/.style={draw=none,path fading=f,fading angle=45}}
+\tikzset{fur/.style={draw=none,path fading=f,fading angle=-45}}
+\tikzset{fdl/.style={draw=none,path fading=f,fading angle=135}}
+\tikzset{fdr/.style={draw=none,path fading=f,fading angle=-135}}
+
+
+%------------------------------------------
+
+\lstdefinestyle{custom}{
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  %belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=BT,                       % Lines above and below
+  %frame=B,                        % Lines below only
+  %xleftmargin=\parindent,
+  language=C,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries,%\color{green!40!black},
+  commentstyle=\itshape\color{purple},
+  %identifierstyle=\color{blue},
+  %stringstyle=\color{orange},
+  escapechar=@,
+  %escapeinside={\%*}{*)}          % if you want to add a comment within your code 
+  mathescape=true,
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+}
+
+% \lstdefinestyle{numbers}{numbers=left, stepnumber=1, numberstyle=\tiny, numbersep=2pt}
+% \lstdefinestyle{nonumbers}{numbers=none}
+
+% \RecustomVerbatimEnvironment{Verbatim}{Verbatim}{
+%   fontfamily=helvetica,
+%   numbers=left,
+%   numbersep=2pt,
+%   stepnumber=1,
+%   firstnumber=0,
+%   numberblanklines=false,
+%   commandchars=\\\[\],
+%   codes={\catcode`$=3}
+% }

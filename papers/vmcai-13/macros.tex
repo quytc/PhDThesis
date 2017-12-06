@@ -1,0 +1,173 @@
+%% Having a note in the margin. Notes are numbered.po
+%% ---------------------------------------------
+\newcommand{\NoteComment}[2]{%
+  \stepcounter{NoteCounter#1}%
+  {\scriptsize\bf$^{(\arabic{NoteCounter#1})}$}%
+  \marginpar
+  %[\fbox{
+  %   \parbox{2cm}{\raggedleft
+  %       \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+  %       \footnotesize #2}}]%
+  {\fbox{\parbox{25mm}{\raggedright 
+      \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \footnotesize #2}}}
+}
+\newcounter{NoteCounter}
+\newcommand{\Note}[1]{\NoteComment{}{#1}}
+% \renewcommand{\Note}[1]{} %% Uncomment to remove the comment
+\newcommand{\parosh}[1]{\Note{Parosh: #1}}
+\newcommand{\daz}[1]{\Note{Fred: #1}}
+\newcommand{\lukas}[1]{\Note{Lukas: #1}}
+
+%% Local note as footnotes.
+%% ---------------------------------------------
+\newcommand{\localnote}[1]{\footnote{#1}}
+%\renewcommand{\localnote}[1]{}
+%% Uncomment to remove the comment footnote
+
+\renewcommand{\parosh}[1]{\localnote{Parosh: #1}}
+\renewcommand{\lukas}[1]{\localnote{Lukas: #1}}
+\renewcommand{\daz}[1]{\localnote{Fred: #1}}
+
+%% ---------------------------------------------
+
+\newcommand{\subword}{\sqsubseteq}
+%\newcommand{\loc}{\ell}
+\newcommand{\loc}{s}
+\newcommand{\word}[2]{#1_1  \ldots  #1_{#2}}
+
+%---------------------------------------------
+
+\newcommand{\system}{\transys}
+\newcommand{\systemof}[1]{\mathit{system_#1}}
+\newcommand{\inits}{\mathit{I}}
+\newcommand{\initsof}[1]{\mathit{I}_#1}
+\newcommand{\trans}{\rightarrow}
+\newcommand{\snake}{\leadsto}
+\newcommand{\snakeof}[1]{\leadsto_#1}
+\newcommand{\transof}[1]{\rightarrow_{#1}}
+\newcommand{\confs}{C}
+\newcommand{\confsof}[1]{C_{#1}}
+\newcommand{\conf}{c}
+\newcommand{\confd}{d}
+\newcommand{\reach}{\mathcal{R}}
+\newcommand{\reachof}[1]{\mathcal{R}_{#1}}
+\newcommand{\project}{\alpha}
+\newcommand{\abstraction}[1]{\alpha_{#1}}
+\newcommand{\projof}[2]{\alpha_#2(#1)}
+\newcommand{\abstr}[2]{\alpha_#1(#2)}
+\newcommand{\vect}[2]{#1_1 , \ldots , #1_#2}
+\newcommand{\safe}{\mathit{Safe}}
+\newcommand{\minbad}{B}
+\newcommand{\bad}{\mathit{Bad}}
+\newcommand{\X}{V}
+\newcommand{\C}{X}
+\newcommand{\sizeof}[1]{|#1|}
+\newcommand{\stwait}{\mathit{w}}
+\newcommand{\stinitial}{\mathit{i}}
+\newcommand{\stcritical}{\mathit{s}}
+\newcommand{\locked}{1}
+\newcommand{\unlocked}{0}
+\newcommand {\mset}[1]{\langle#1\rangle}
+\newcommand {\locs}{Q}
+%\newcommand {\views}{\mathcal{V}}
+\newcommand {\proclocs}{\mathit{S}}
+\newcommand {\view}{v}
+%<<<<<<< macros.tex
+%%\newcommand {\viewsof}[1]{\mathcal{V}_#1}
+%\newcommand {\viewsof}[1]{C_{\leq #1}}
+%=======
+%\newcommand {\viewsof}[1]{\mathcal{V}_#1}
+\newcommand {\viewsof}[1]{\confsof{#1}}
+%>>>>>>> 1.46
+\newcommand {\badviewsof}[1]{\mathcal{V}_#1^\bad}
+\newcommand {\badviews}{\mathcal{V}^\bad}
+\newcommand {\nat}{\mathbb N}
+\newcommand {\post}{\mathit{post}}
+\newcommand {\postof}[1]{\mathit{post}(#1)}
+\newcommand {\apost}[1]{{\mathit{Apost}}_#1}
+\newcommand {\apostof}[2]{{\mathit{Apost}}_#2(#1)}
+\newcommand {\candidate}{\mathit{Candy}}
+%\newcommand {\mink}{\mathit{T}}
+\newcommand {\mink}{\theta}
+\newcommand {\maxk}{\mathit{max}}
+\newcommand {\pos}{p}
+\newcommand {\viewof}[2]{\mathit{view}(#1,#2)}
+\newcommand {\Viewof}[2]{\mathit{View}(#1,#2)}
+\newcommand {\node}{v}
+\newcommand {\nodes}{N}
+\newcommand {\tree}{t}
+\newcommand {\embed}{e}
+\newcommand {\img}{\iota}
+\renewcommand {\L}{S}
+\newcommand{\quantify}{\mathbb{Q}}
+\newcommand {\qtrans}[3]{\mathbf{if}\ #2 \mathbf{\ then\ }#1\rightarrow #3}
+\newcommand{\pstates}{\L}
+\newcommand{\lleft}{{\!L}}
+\newcommand{\rright}{{\!R}}
+\newcommand{\llrr}{{\!L\!R}}
+\newcommand{\lforall}{\forall_\lleft}
+\newcommand{\rforall}{\forall_\rright}
+\newcommand{\lrforall}{\forall_\llrr}
+\newcommand{\lexists}{\exists_\lleft}
+\newcommand{\rexists}{\exists_\rright}
+\newcommand{\lrexists}{\exists_\llrr}
+\newcommand{\rules}{\Delta}
+\newcommand{\substree}[2]{#1^{#2}}
+\newcommand{\parsys}{{\mathcal P}}
+\newcommand{\transys}{{\mathcal T}}
+\newcommand{\subtree}{\preceq}
+\newcommand{\locr}{r}
+\newcommand{\csubword}{\trianglelefteq}
+\newcommand{\ucl}{{\uparrow}}
+\newcommand{\dcl}{{\downarrow}}
+\newcommand{\gen}{\emph{Gen}}
+\newcommand{\rel}{R}
+
+
+%------------------------------------------
+%\newcommand{\flag}[1]{}
+\newcommand{\flag}{\mathit{flag}}
+\newcommand{\state}[1]{\loc_{#1}}
+
+\newcommand{\strue}{\emph{true}}
+\newcommand{\sfalse}{\emph{false}}
+
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setcomp}[2]{\set{#1|\;#2}}
+
+
+
+\newcommand{\existsstmt}[3]{ \KwSty{if}\ $\exists j #1 i : \ #2$\  \KwSty{then}\ \KwSty{goto}\ #3}
+
+\newcommand{\forloop}[3]{ \forall j #1 i : \lIf{\ #2 }{\ \KwSty{goto}\ #3}}
+
+\newcommand{\tick}{\checkmark}
+
+%\newcommand{\forrule}[5]{ {#1}\  {-}\!\!\langle{\forloop{#3}{#4}{#5}} \rangle\!\!{\trans}\ {#2} }
+
+%\newcommand{\forrule}[5]{ \KwSty{if forall}\, j\mathrel{#3}i: \conf[j]\in{#4} \ \KwSty{then}\ {#1}\trans {#2}\ \KwSty{else}\ {#1}\trans {#5} }
+%\newcommand{\forrule}[5]{ \KwSty{if}\ \forall j\mathrel{#3}i: {#4} \ \KwSty{then}\ {#1}\trans {#2}\ \KwSty{else}\ {#1}\trans {#5} }
+\newcommand{\forrule}[5]{ \KwSty{if~foreach}\ j\mathrel{#3}i: {#4} \ \KwSty{then}\ {#1}\trans {#2}\ \KwSty{else}\ {#1}\trans {#5} }
+
+%\newcommand{\quantrule}[5]{ \KwSty{if}\, #3 j\mathrel{#3}i: \conf[j]\in{#4} \ \KwSty{then}\ {#1}\trans {#2}}
+\newcommand{\quantrule}[5]{ \KwSty{if}\, #3 j\mathrel{#4}i: {#5} \ \KwSty{then}\ {#1}\trans {#2}}
+
+\newcommand{\cutofftest}{Cut-off}
+\newcommand{\ibasis}{I}
+
+\newenvironment{itemize*}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{0pt}}%
+  {\end{itemize}}
+
+
+\newcommand{\comment}[1]{{\bf(#1)}}
+
+%\newcommand\thing{[\dcl\reach]_{\leq k}}
+\newcommand\thing{\alpha_k(\dcl\reach)}
+\newcommand\limgammaof[2]{\gamma_{#1}^{#2}}
+\newcommand\gammaof[1]{\gamma_{#1}}
+\newcommand\Vk{V}
+

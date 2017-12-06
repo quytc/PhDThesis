@@ -1,0 +1,165 @@
+%% ====================================================================
+\section{A Challenging Example}
+\label{section:paramsys:example}
+%% ====================================================================
+%
+We illustrate the notion of a parameterized system with the example of
+Szymanski's mutual exclusion protocol~\cite{Szymanski88,Szymanski90}.
+\index{Szymanski}%
+\index{Szymanski!Mutual exclusion protocol}%
+%
+% We introduce the mutual exclusion protocol designed by Dr.\ Boleslaw
+% Szymanski~\cite{Szymanski88,Szymanski90}.
+Among other properties, this protocol ensures exclusive access to a
+shared resource in a system consisting of an unbounded number of
+processes organized in an array.
+%
+\index{Critical section}%
+The \emph{critical section} is the portion of code in the program
+which threads are allowed to execute one at a time.
+%
+The source code for each process is presented in
+Figure~\ref{figure:szymanski:implementation}. For Szymanski's
+protocol, the critical section is composed of the statements on line 9
+and 10.
+
+Each process participating in a session of the protocol is represented
+at a fixed position in the array with a local variable \texttt{flag}
+and how far it has proceeded in its execution.
+%
+We encode the state of the $i^{th}$ process with a number, which
+reflects the values of the program location and the local variable
+$\mathit{flag}[i]$.
+
+% The topology and communication primitives, together with the
+% transition diagram, \emph{induce} a model of the system.
+%
+A~configuration of the induced transition system is a word over the
+alphabet $\set{\w[i]{0}, \w[n]{1}, {\ldots}, \w[b]{11}}$ of local
+process states.
+%
+The size of a configuration is the parameter of the system.
+%
+The initial configurations characterize the program before any
+execution, e.g.\ using the initial values of the program variables.
+% and structures. 
+Here, all processes are initially in state\,\w[i]{0}, i.e.\
+$\Inits~=~{\w[i]{0}}^+$.
+%
+The bad configurations are derived from the targeted property.
+%
+For a mutual exclusion protocol, a~configuration is considered to be
+bad if it contains two occurrences of state\,\w[b]{9} or \w[b]{10},
+i.e.\ at least two processes are in their critical section
+simultaneously.
+% --- here the states~\w[b]{9}~or~\w[b]{10}.
+In other words, the bad configurations belong to an
+infinite set characterized by the following patterns: %
+{\badpattern{9}{9}}, %\mid
+{\badpattern{9}{10}}, %\mid
+{\badpattern{10}{9}} and %\mid
+{\badpattern{10}{10}}.
+
+\begin{wrapfigure}{r}[0pt]{0.61\linewidth}
+  \vspace{-3pt}
+  %\centering
+  \hfill
+  \tikzinput{experiments/szymanski-diagram}
+  \caption{Szymanski's protocol transition system}
+  \label{figure:szymanski:transitions}
+  \label{figure:szymanski:diagram}
+\end{wrapfigure}
+%
+A transition moves a process from a state to another, provided that
+the other processes respect the global condition. %condition guard. %
+Here, for example, processes move from state~\w{1} to \w{2}, if the
+other processes are all in state $\w{0}, \w{1}, \w{2}, \w{5}$
+or~$\w{6}$. % Using the math env, in order to not break the , and . afterwards.
+If not, the process stays in state~$\w{1}$.
+
+The intuition that Szymanski gives is the presence of a ``waiting
+room'', with an entering and exiting door, before processes move into
+their critical section.
+%
+The transition rules are depicted in
+Figure~\ref{figure:szymanski:transitions} using a simple graphical
+representation, often called a~transition diagram: The label on an
+edge represent the global conditions that other processes must respect
+in order to perform the transition. There is no label when the
+transition is local.
+%
+For example, consider the edges between the nodes %
+$\w{3}, \w{4}\text{ and }\w{7}$. %
+They depict the transition as in Figure~\ref{figure:non:atomic}\\%
+\parbox{\textwidth}{\centering $\forrule{\neq}{\neg\set{1,2}}{3}{7}{4}$.}
+
+% Once the first process is in state\,\w{2}, it “closes the door”
+% on the processes which are still in\,\w{0}. They can no longer
+% leave state\,\w{0} until the door is opened again (when no
+% process is in state\,\w{2} or \w{3}). %
+% %
+% Moreover, a process is allowed to cross from state\,\w{3} to
+% \w{4} only if there is at least one process still in
+% state\,\w{2} (i.e., the door is still closed on the processes
+% in state\,\w{0}). %
+% %
+% This prevents a process to first reach state\,\w{4} along with
+% a process to its left starting to move from\,\w{0} all the way
+% to state\,\w{4} (thus violating mutual exclusion). %
+% From the set of processes which have left state\,\w{0} (and
+% which are now in state\,\w{1} or\,\w{2}), the leftmost
+% process has the highest priority and it is encoded in the global
+% condition: a process may move from \w{2} to\,\w{3}
+% only if all processes on its left are in state\,\w{0}.
+
+% \begin{figure}[!hb]
+%   \centering
+%   \tikzinput{experiments/szymanski-diagram}
+%   \caption{Szymanski's protocol transition system}
+%   \label{figure:szymanski:transitions}
+% \end{figure}
+
+\bigskip%
+% ---------------------------------
+\index{Parameterized Verification}%
+The task is to check that the protocol guarantees exclusive access to
+the shared resource regardless of the number of processes, i.e.\ to
+show that the bad configurations are not reachable from the initial
+ones.
+%
+% ---------------------------------
+Many techniques~%
+\cite{AbHaHo:view:abstraction,AbDeRe:context:sensitive,Parosh:non-atomic,CTV06,Namjoshi:VMCAI07,AJNO:simple,BHV04}
+have been used to verify automatically the safety property of
+Szymanski’s mutual exclusion protocol but only in restricted
+settings. They either assume atomicity of the global conditions and/or
+only consider a~more compact variant of the protocol.
+% (i.e.\ where the invariant can be expressed solely by
+% a~downward-closed set).
+%
+\index{Challenge}%
+The full and fine-grained version has been considered
+a~challenge in the verification community.
+%
+\index{Automation}%
+To the best of our knowledge, this thesis presents the first technique
+to address the challenge of verifying the protocol fully automatically
+without atomicity assumption.
+
+% \begin{figure}[!hb]
+%   \centering
+%   \tikzinput{experiments/szymanski-diagram}
+%   \caption{Szymanski's protocol transition system}
+%   \label{figure:szymanski:transitions}
+% \end{figure}
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[!b]%[!b]
+  \centering
+  \listinginput{experiments/code/szymanski.txt}
+  \caption{Implementation of Szymanski's protocol (for process $i$)}
+  \label{figure:szymanski:implementation}
+\end{figure}
+\endgroup
+

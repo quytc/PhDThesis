@@ -1,0 +1,52 @@
+%% ====================================================================
+\section{The Reachability Problem}
+\label{section:reachability:problem}
+%% ====================================================================
+%
+\index{Reachability}%
+An instance of the \emph{reachability problem} is defined by
+\begin{itemize}
+\item a~parameterized system $\parsys = (\locs,\rules)$,
+\item \index{Initial configurations}%
+  a~set %regular set
+  $\Inits\subseteq\locs^+$ of \emph{initial configurations}, and
+\item \index{Bad configurations}%
+  a~set $\Bad\subseteq \locs^+$ of \emph{bad configurations}.
+\end{itemize}
+% We assume that $\Bad$ is the upward-closure of a given \emph{finite}
+% set $\minbad\subseteq\locs^+$ of \emph{minimal bad configurations}, as
+% presented above.
+%
+We say that $c\in\confs$ is \emph{reachable} if %and only if
+there are $c_0,\ldots, c_m\in\confs$ such that $c_0\in \Inits$, $c_m =
+c$, and for all $0\leq n < m$, there are $\delta_n\in\Delta$ and
+$j\leq \sizeof{c_n}$ such that $c_{n+1} = \delta_n(c_{n},j)$.
+%
+In other words, %
+$$c_0\in\Inits\trans c_1\trans\cdots\trans c_{m-1}\trans c_m=c \hspace{5mm}\text{or}\hspace{5mm} c_0\in\Inits\transof{*} c$$
+%
+We use $\Reach$ to denote the set of all reachable configurations
+(from~$\Inits$).
+%
+\index{Safety}%
+We say that the system \parsys\ is \emph{safe} with respect to~\Inits\
+and~\Bad\ if no bad configuration is reachable, i.e.\ the sets \Reach\
+and \Bad\ do not intersect ($\Reach\cap\Bad = \emptyset$).
+%
+The set~\Inits\ of initial configurations is usually a~regular set.
+The set~\Bad\ of bad configurations will be defined in
+Chapter~\ref{chapter:monotonic:abstraction}.
+% %
+% In order to define the set~\Bad\ of bad configurations, we use the
+% usual \emph{subword relation} $\subword$, i.e.\
+% $u\subword s_1\ldots s_n$ iff $u=s_{i_1}\ldots s_{i_k},1\leq
+% i_1<{\ldots}<i_k\leq n$. % and $i_j<i_{j+1}$ for all $j:1\leq j < k$.
+% %
+% We assume that $\Bad$ is the upward-closure %
+% $\setcomp{c\in\confs}{\exists b \in\minbad:b\subword c}$ %
+% of a given \emph{finite} set $\minbad\subseteq\locs^+$ of
+% \emph{minimal bad configurations}.
+% %
+% %This is a common way \cite{citation} of specifying the set of bad
+% This is a common way of specifying the set of bad
+% configurations which often appears in practice.

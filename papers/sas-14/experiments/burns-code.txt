@@ -1,0 +1,7 @@
+   /* For Process $i$ */
+@\w[i]{1}@ flag[i] := 0
+@\w[n]{2}@ if $\exists j<i$ : flag[j] = 1 then goto 1
+@\w[n]{3}@ flag[i] := 1
+@\w[n]{4}@ if $\exists j<i$ : flag[j] = 1 then goto 1
+@\w[n]{5}@ await $\forall j>i$ : flag[j] $\neq$ 1
+@\w[b]{6}@ flag[i] := 0; goto 1

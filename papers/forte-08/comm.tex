@@ -1,0 +1,156 @@
+% put this in the beginning of a paragraph and Latex will
+% automatically try to make it one line shorter, if possible
+
+%tikzstyle
+
+\colorlet{treebg}{gray!30!white}
+\tikzstyle{background rectangle}=%
+[draw=none,fill=treebg,rounded corners=8pt]
+
+\newcommand{\X}{\looseness -1}
+
+% - ignore command
+
+\newcommand{\ignore}[1]{}
+
+% - Useful
+
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setcomp}[2]{\set{#1|\;#2}}
+\newcommand{\tuple}[1]{\left(#1\right)}
+\newcommand{\imply}{\Rightarrow}
+\newcommand{\revimply}{\Leftarrow}
+\newcommand{\starset}[1]{{#1}^*}
+\newcommand{\sizeof}[1]{|{#1}|}
+\newcommand{\union}{\cup}
+\newcommand{\Union}{\bigcup}
+\newcommand{\intersect}{\cap}
+\newcommand{\Intersect}{\bigcap}
+\newcommand{\band}{\wedge}
+\newcommand{\partialto}{\rightharpoonup}
+
+% - Symbols
+
+\newcommand{\nat}{{\mathbb N}}
+\newcommand{\spA}{{\EuScript A}}
+\newcommand{\spT}{{\EuScript T}}
+\newcommand{\spP}{{\EuScript P}}
+\newcommand{\spD}{{\EuScript D}}
+\newcommand{\spE}{{\EuScript E}}
+
+% - Trees
+
+\newcommand{\xset}{X}
+\newcommand{\emptyword}{\varepsilon}
+\newcommand{\tree}{T}
+\newcommand{\trees}[1]{{\it Trees}({#1})}
+\newcommand{\treeset}{S}
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\nodes}{N}
+\newcommand{\node}{n}
+\newcommand{\labeling}{\lambda}
+\newcommand{\treetuple}{\tuple{\nodes,\labeling}}
+\newcommand{\image}[1]{\text{Img}({#1})}
+\newcommand{\domain}[1]{\text{Dom}({#1})}
+\newcommand{\pref}{\le}
+\newcommand{\spref}{<}
+\newcommand{\concat}{\bullet}
+\newcommand{\desc}[1]{\text{Desc}({#1})}
+\newcommand{\sminus}{\ominus}
+\newcommand{\splus}{\oplus}
+\newcommand{\splusbelow}[1]{\stackrel{below}{\splus_{#1}}}
+\newcommand{\splusover}[1]{\stackrel{over}{\splus_{#1}}}
+\newcommand{\splusbetween}[1]{\stackrel{between}{\splus_{#1}}}
+\newcommand{\rename}{\odot}
+\newcommand{\nroot}[1]{{\it root}({#1})}
+\newcommand{\nleaves}[1]{{\it leaves}({#1})}
+\newcommand{\subtree}[1]{{\it Sub}({#1})}
+\newcommand{\minusinc}[1]{\widehat{#1}}
+\newcommand{\minusemb}[1]{\widetilde{#1}}
+\newcommand{\plusinc}[1]{\overline{#1}}
+\newcommand{\append}{\otimes}
+
+% - Parameterized systems
+
+\newcommand{\parsys}{\spP}
+\newcommand{\rwrules}{R}
+\newcommand{\rwrule}{r}
+\newcommand{\states}{Q}
+\newcommand{\state}{q}
+\newcommand{\parsystuple}{\tuple{\states,\rwrules}}
+\newcommand{\initstate}{\state_{\it init}}
+\newcommand{\init}{{\it Init}}
+\newcommand{\tleft}[1]{{\it lhs}({#1})}
+\newcommand{\tright}[1]{{\it rhs}({#1})}
+
+% - Transition systems
+
+\newcommand{\confs}{C}
+\newcommand{\fconfs}{F}
+\newcommand{\conf}{c}
+\newcommand{\gtransrel}[1]{\stackrel{#1}\Longrightarrow}
+\newcommand{\gtstuple}{\tuple{\confs,\gtransrel{}}}
+\newcommand{\tssystem}{\spT}
+\newcommand{\tsof}[1]{\tssystem({#1})}
+\newcommand{\transrel}[1]{\stackrel{#1}\longrightarrow}
+\newcommand{\tstuple}{\tuple{\confs,\transrel{}}}
+\newcommand{\atstuple}{\tuple{\confs,\atransrel{}}}
+\newcommand{\final}{F}
+\newcommand{\atsof}[1]{\spA({#1})}
+\newcommand{\atransrel}[1]{\stackrel{#1}\leadsto}
+\newcommand{\order}{\unlhd}
+
+% - Constraints
+
+\newcommand{\constr}{\phi}
+\newcommand{\constrsys}{\Psi}
+\newcommand{\constrs}{\Phi}
+\newcommand{\denotationof}[1]{[\![{#1}]\!]}
+\newcommand{\prer}[2]{\text{Pre}_{#1}({#2})}
+\newcommand{\pre}[1]{\text{Pre}({#1})}
+\newcommand{\minipre}[2]{\text{Pre}_{#1}({#2})}
+\newcommand{\entailed}{\sqsubseteq}
+\newcommand{\sequence}[2]{\set{{#1}_{#2}}_{{#2}\in\nat}}
+\newcommand{\auxiliary}[2]{\text{Aux}({#1},{#2})}
+\newcommand{\expand}[1]{\text{Exp}({#1})}
+\newcommand{\prestar}[1]{\text{Pre}^{*}({#1})}
+\newcommand{\presp}[1]{\text{Pre}^{!}({#1})}
+
+% - Problem definitions
+
+\newcommand{\probbox}[3]{%
+  \vspace{3mm}
+  \noindent
+  \framebox{
+    \begin{minipage}{0.95\hsize}
+      \noindent\underline{#1}
+
+      \noindent{\bf Instance}
+      \vspace{-2mm}
+      \begin{itemize}
+        #2
+      \end{itemize}
+      \vspace{-2mm}
+      \noindent{\bf Question}
+      #3
+    \end{minipage}
+  }
+  \vspace{2mm}
+}
+
+\newcommand{\acovproblem}{{\sc APRX-PAR-TREE-COV}}
+\newcommand{\covproblem}{{\sc PAR-TREE-COV}}
+
+% - Appendix 
+
+\newcommand{\appthm}[2]{\smallskip\noindent{\bf #1.}{\it #2}}
+
+\newcounter{appthmlcounter}
+\setcounter{appthmlcounter}{0}
+\newcommand{\appthml}[1]{%
+  \refstepcounter{appthmlcounter}%
+  \smallskip\noindent{\bf Lemma~A\theappthmlcounter.}{\it #1}%
+}
+\newcommand{\applem}[1]{Lemma~A\ref{#1}}
+
+\newcommand{\includedin}{\subseteq}

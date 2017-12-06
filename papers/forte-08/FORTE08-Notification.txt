@@ -1,0 +1,182 @@
+From: FORTE08 - CyberChair <forte2008-chairs@is.naist.jp>
+Date: March 4, 2008 1:23:02 PM GMT+01:00
+To: frederic.haziza@it.uu.se
+Cc: forte2008-chairs@is.naist.jp
+Subject: FORTE08 Notification
+Reply-To: forte2008-chairs@is.naist.jp
+
+Dear Frédéric Haziza,
+
+We are pleased to inform you that your paper, entitled
+
+"Parametrized Tree Systems"
+
+has been accepted for publication as a LONG PAPER in the proceedings of
+FORTE2008.
+
+This year we have received 44 paper submissions. All submitted papers
+went through a rigorous reviewing process. Each paper was reviewed by at
+least three program committee members. Based on the reviews 20 papers
+are selected as accepted papers.
+
+The reviews of your paper are given below. Please, consider the comments 
+given in these reviews when preparing the camera-ready version of your 
+paper.
+
+The camera-ready version as well as the copyright form are due by
+***March 18, 2008***. Details about preparing and uploading the camera
+ready are given below. Also, below we provide information about
+obtaining and submitting the copyright form and about registration and
+visa information.
+
+For each accepted paper, one FULL registration is required. Authors 
+registration deadline is ** March 25 **. Please see
+"Registration and Visa information" below for more details.
+
+Again, congratulations on having your paper accepted.
+We are looking forward to seeing you at FORTE2008.
+
+Sincerely,
+
+Keiichi Yasumoto and Khaled El-Fakih
+Program Co-Chairs of FORTE2008
+forte2008-chairs@is.naist.jp
+
+=======================================================================
+Paper Title: Parametrized Tree Systems
+Authors: Parosh Aziz Abdulla, Noomene Ben Henda, Giorgio Delzanno, Frédéric Haziza, Ahmed Rezine
+
+*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=
+
+First reviewer's review:
+
+ >>> Summary of the paper <<<
+
+Based on the results of [1], the paper shows how tree embedding can be used as an abstraction in order to perform model-checking of properties of parameterised tree systems.
+
+
+ >>> Comments <<<
+
+GENERAL
+
+The paper is interesting to read and is well-illustrated. 
+How Higman's lemma is applied needs to be explained better.
+
+A minor issue is that there no mentioning of refinement of abstractions: in software model-checking one may start with a coarse abstraction and subsequently a counter-example is used to refine this abstraction; after a number (hopefully finite) of steps, one either identifies a genuine counter-example (the one present in the original model) or a model-checker finds no counter-example (in which case a property being checked is satisfied). Such a refinement permits one to build an abstraction at the right level; see papers about model-checker Blast for an illustration. It would be interesting to see how one could define "stronger" or "weaker" tree embeddings. Without a finer-grained approach to abstraction it is not clear whether it is realistic to check properties of systems a few orders of magnitude bigger than the case studies provided.
+
+TYPOS
+
+Section 3, second paragraph: Trees(Q) should be Trees(Q\cross Q). 
+Section 4, it does not seem that |N| has been defined.
+Figure 3: the example will seem better if there is a passive node between q_u and q_0.
+The caption of Fig 4 and elsewhere: "discontinuous line" should be "dashed line".
+The paragraph starting with "The approximate transition relation" after Fig 4: "such that (i) rhs(r)" should be "such that (i) lhs(r)". The definition permits the transition relation to be non-deterministic - this perhaps is worth mentioning. 
+
+
+ >>> Points in favour or against <<<
+
+Pro: good work and well-explained.
+Cons: not possible to choose the best level of abstraction.
+
+=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=
+
+Second reviewer's review:
+
+ >>> Summary of the paper <<<
+
+This paper presents an algorithm for aproximated model checking
+of systems that are given in a tree architecture. Such algorithms
+may have infinite state space, yet the verification is decidable
+due to higman's Lemma. 
+
+The paper devotes most of the space to a description of the
+system's architecture, which is quite complicated (I find
+some of the definitions quite difficult to understand,
+in particular those on the bottom of page 4, and top of page 8).
+In general, the transition rules consist of tree "patters" that
+are matched against several nodes in the tree, thus a change
+in a state is guarded by the state of several relative nodes
+(parents, descendants, siblings) in the tree.
+
+The algorithm in the paper seems to be a very small variant of
+algorithms by the same authors and their collaborators over
+the years. The description is clear for most of the paper
+(except the definitions mentioned above). There is a small
+case studey. The contribution of the paper is quite a small
+increment on other works, in particular of the authors, over
+the years. Mostly, it sounds like a solusion that looks
+for an application rather than an application that is solved.
+Thus, I count this work as reasonable, publishable, but not
+of a huge advance over preious works.
+
+=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=
+
+Third reviewer's review:
+
+ >>> Summary of the paper <<<
+
+This paper proposes an algorithm for verifying the safety property of 
+"parameterized tree systems." In parameterized tree systems, 
+processes are arranged in a tree, and each process is a finite state 
+transition system.
+The proposed method uses a kind of over-approximation. The idea of the
+over-approximation is based on "embedding" relation on trees, which
+is simple and useful. Some protocols are verified by the prototype
+based on the proposed method.
+
+
+ >>> Comments <<<
+
+(Major comments)
+The proposed method is simple but effective. 
+Some protocols have been verified, but the limitation of the proposed
+method is not clear. Can the authors show any example that the proposed
+method cannot be applied to ?
+
+In Section 7, please explain why and how the computation of Pre(\phi)
+is difficult (or impossible in general) for an exact transition 
+system induced by a parameterized tree system.
+
+(Minor comments)
+page 10, line 11. Make it clear what "our class of systems" denotes.
+(Is it the class of approximate transition systems ?)
+
+page 11, Lemma 2. Please add phrase like "for an approximate 
+transition system" at the end of the claim of the lemma.
+
+(Typos)
+page 6, line 19. "c_1 --> c_1" should be "c_1 --> c_2".
+page 8, line 12. "rhs(r) <_f c_1" should be "lhs(r) <_f c_1".
+page 7, line -5, line -4, line -1 and page 8, line 3.  N should be N'.
+page 11, line -15. "is has" should be "it has".
+
+ >>> Points in favour or against <<<
+
+The paper is well written and the technical presentation is clear.
+The idea of the proposed approximation method is a general one, and 
+probably be able to be extended for the verification of other classes 
+of systems such as unordered trees and DAGs, as the authors discuss 
+in the last section.
+
+=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=--=*=
+
+=======================================================================
+
+
+-------------------------------------------------------------------------
+
+Preparation and Uploading Camera Ready Version
+
+-------------------------------------------------------------------------
+
+[Preparing the Camera Ready Version]
+------------------------------------
+
+The camera-ready version of your paper should be formatted according
+to Springer-Verlag LNCS guidelines given at
+
+http://www.springer.com/computer/lncs?SGWID=0-164-7-72376-0
+
+Long papers are limited to 16 pages, but you can add maximum 4 more extra
+pages (that is 20 pages at maximum) by additional charge of 12,000Yen per
+extra page. Extra page charges are requested when you make registration.

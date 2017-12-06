@@ -1,0 +1,36 @@
+%--------------------------------------------------------
+\section{Conclusions and Future Work}
+\label{sec:conclusion}
+%--------------------------------------------------------
+
+We have presented  a technique for automated verification of temporal
+properties of concurrent programs, which can handle the challenges
+of infinite-state specifications, an unbounded number of threads, and
+an unbounded heap managed by explicit memory allocation.
+We showed how such a technique
+can be based naturally on the automata-theoretic approach to verification,
+by nontrivial combinations and extensions that handle unbounded
+data domains, unbounded number of threads, and heaps of arbitrary size. 
+The result is a simple and direct method for verifying
+correctness of concurrent programs.
+%% For instance,
+%% our approach to value abstraction is significantly simpler than that
+%% employed by Vafeiadis~\cite{Vafeiadis:vmcai09}.
+The power of our specification
+formalism is enhanced by showing how
+the data-independence argument by Wolper~\cite{Wolper:dataindependence} can
+be introduced into standard program analysis. 
+%
+Our method can be parameterized by different shape analyses.
+Although we concentrate on heaps with single selectors in the current
+paper, we expect that our method can be adapted to deal with multiple
+selectors, by integrating recent approaches such as~\cite{habermehl:forest}. %
+Morever, our experminatation deals with the specification of stacks and queues.
+Other data structures, such as deques, can be handled in an analogous way.
+%% The presented analysis uses a straightforward DNF representation of constraints.
+%% There is room for optimization, e.g., by defining a condensed form where
+%% constraints are joined to decrease the size of formulas.
+%% Finally, we expect that our approach could be employed analogously
+%% to other classes
+%% of programs, by a suitable adaption of the analysis method.
+

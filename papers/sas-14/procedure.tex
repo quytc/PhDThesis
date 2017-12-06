@@ -1,0 +1,230 @@
+%% -------------------------------------------------
+\subsection{Procedure}\label{section:procedure}
+%% -------------------------------------------------
+
+We describe now our verification procedure, inspired
+from~\cite{AbHaHo:view:abstraction}. %
+In this section, we fix a size $k$ for the views. For all the examples
+from Section~\ref{section:experiments}, $k$ is in fact 2.
+
+The basic idea is to compute a set $V$ of views (of size up to $k$)
+that over-approximates the system configurations of any size, i.e.,
+$\reach\subseteq\concretizeof k V$, such that $\concretizeof k V
+\intersection \bad = \emptyset$.\footnote{%
+%
+  In the case where $\concretizeof k V \intersection \bad \neq
+  \emptyset$, one must examine whether it is the result of a real
+  error or if it is a spurious counterexample, i.e., an artifact of
+  the abstraction. %
+  In the latter case, as in~\cite{AbHaHo:view:abstraction}, it is
+  possible to increase the precision of the abstraction (i.e.,
+  increase $k$) and re-run the procedure.
+%
+} %
+%
+
+\noindent%
+\begin{wrapfigure}{r}[0pt]{0.55\textwidth}
+\vspace{-24pt}
+\begin{minipage}{0.55\textwidth}
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Accelerated procedure}
+\label{algo:accelerated}
+$\worklist := \vinits$\;
+$\visited := \emptyset$\;
+\While{$\worklist \neq \emptyset$}{%
+  remove some $\view$ from $\worklist$\;
+  \lIf{$\view$ is bad\nllabel{line:isbad}}{\Return Unsafe}
+  \eIf{$\exists v'\in\visited,\;v'\entails \view$\nllabel{line:discard}}{%
+    discard $\view$ %
+  }{%
+    $X := \concretizeoflim k {k+1} {\set{\view} \union \visited}$\nllabel{line:extension}\;
+    $\worklist := \worklist \;\union\; \abstr_k\circ\spostof X$\nllabel{line:post}\;
+    $\visited := \set{\view} \union \setcomp{v'\in\visited}{\view\not\entails v'}$\nllabel{line:minset}\;
+  }
+}
+\Return Safe
+\end{algorithm}
+\end{minipage}%
+\vspace{-20pt}
+\end{wrapfigure}
+%
+The procedure is implemented as a worklist algorithm and is described
+in Algorithm~\ref{algo:accelerated}. %
+It takes as input a set of initial views $\vinits$ and a function that
+checks if a view corresponds to a bad configuration. %
+It maintains two sets of views: %
+(i) a set of views $\worklist$ that have not yet been analyzed. %
+$\worklist$ is initialized to $\vinits$; and %
+(ii) a set $\visited$, initially empty, that contains information
+about the views that have already been analyzed.
+%
+
+Algorithm~\ref{algo:accelerated} uses the entailement relation and is
+instantiated with the following parameters: %
+\begin{enumerate}
+\item[(i)]%
+  $\vinits = \project k {\inits}$. %
+  Computing the abstraction $\project k \inits$ of the initial
+  configurations is usually an easy step. %
+  For instance, in the case of Szymanski's protocol, all processes are
+  initially in state\,\w{0}, hence $\project k \inits$ contains
+  only views where the basis is the word $\word[1]{\w{0}} \ell$
+  for $\ell\in\range 1 k$ and where the contexts are either \wc[]{}
+  or \wc[0]{}. %
+  Generally, $\inits$ is a~(very simple) regular set, and $\project k
+  \inits$ is computed using a~straightforward automata construction.
+\item[(ii)]%
+  the function that returns if a given view represents a configuration from the set $\bad$.
+  %
+  Evaluating the test ``$\view$ is bad'' is carried out by checking if the view $\view$ is entailed by one of
+  the view from the set $\project k {\bad}$.
+  %
+  Since $\bad$ is the upward closure of a~finite set $\minbad$, the
+  test can be replaced with $\exists b\in\project k \minbad$ such that
+  $b\entails\view$.
+  %
+  For instance, in the case of Szymanski's protocol, a view
+  corresponds to a bad configuration if it is entailed by, e.g., 
+  $\wc{9/,9/}$.
+\end{enumerate}
+
+%% ------------------------------------------------------------------
+\myparagraph{Over-approximation.}
+%% ------------------------------------------------------------------
+The procedure reaches, by construction, a fixpoint $\visited$ which,
+by lemma~\ref{lemma:apost}, over-approximates the fixpoint of the
+abstract post starting from the set of views $\vinits$, if it does not
+prematurely return with a negative answer (Unsafe). %
+% Formally, we define $V_a := \mu X~.~\project k \inits \union \apostof
+% k X$ and we have that $\visited \entails V_a$, i.e., $\visited$ is
+% stronger than $V_a$ or that the set of configurations that $\visited$
+% represents is larger than the one represented by $V_a$.
+% %
+% $\visited$ is an invariant for the instances of the system, that is,
+% $\reach \subseteq \concretizeof k \visited$.%
+%
+%\TODO{Should I prove that, or it is clear? (like we did in VMCAI'13)}
+Formally, we define $V_a := \mu X~.~\project k \inits \union \apostof
+k X$ and we have that %
+$\concretizeof k {V_a} \subseteq \concretizeof k \visited$.
+%	
+Since $\reach \subseteq \concretizeof k {V_a}$, it follows that %
+$\reach \subseteq \concretizeof k \visited$ and $\visited$ is an
+invariant for the instances of the system.%
+\TODO{Use $\concretizeof k {gen(X)} = \concretizeof k X$ ?}%
+
+Moreover, the algorithm also maintains, by construction, the following invariant:
+$\concretizeof k \visited \intersection \bad = \emptyset$.
+%
+Therefore, we can use the (finite) set $\visited$ to approximate all
+reachable configurations of system (of any size) and verify/falsify
+safety properties for configurations of arbitrary size. 
+%
+The procedure is sound.
+%
+\TODO{Use: $\reach \subseteq \concretizeof k {\project k \reach}$, so
+  we are clearly dealing with an over-approximation? %
+}%
+%
+
+%% ------------------------------------------------------------------
+\myparagraph{Acceleration.}
+%% ------------------------------------------------------------------
+We discuss a major acceleration for this procedure which leverages the
+power of the entailment relation. %
+It is based on the observation that $\reachof k$ contains
+configurations of size k, which can be used as initial input for the
+procedure. 
+%
+A careful reader will observe that $\project k {\reachof k}$ contains
+views of size (up to) $k$ where all views of size $k$ have empty
+contexts. These will be useful to cut down on the computations of the
+symbolic post, %$\spost$
+since its results will often be views that are already in $\project k
+{\reachof k}$ but with larger contexts, and therefore immediately
+discardable.
+%
+Indeed the successor of a view that is entailed by a view from
+$\project{k} {\reachof {k}}$ would not bring any new information to
+the analysis. Notice that we are not leveraging the monotonicity of
+the transition system (because it is not!), but a rather simpler fact:
+If a transition was to be enabled on \emph{both} views $\view_1$ and
+$\view_2$ such that $\view_1\entails\view_2$, we can simply observe
+that $\spostof{\view_1}\entails\spostof{\view_2}$. %
+Since $\reachof {k}$ is stable by $\post$, $\project{k} {\reachof
+  {k}}$ is also stable by $\spost$, we can safely discard the views
+that are entailed by a view from $\project{k} {\reachof {k}}$. %
+We could therefore use $\vinits = \project k {\reachof k}$.
+
+Furthermore, it is possible to use %$\project {k+1} {\reachof {k+1}}$ %
+$\mk{\reachof {k+1}}$ %
+to cut down on the computation of the extensions
+(line~\ref{line:extension}). For a given view $\view$,
+$\concretizeoflim k {k+1} {\set{\view} \union \visited}$ will indeed
+compute views of size $k+1$, with potentially non-empty contexts. If
+this result is already entailed by a view in %
+%$\project {k+1} {\reachof {k+1}}$, %
+$\mk{\reachof {k+1}}$ %
+it can safely be ignored, using the same idea as above.
+
+Finally, since $\reachof k$ and $\reachof {k+1}$ are finite, their
+computation can be done using any procedure for exact state-space
+exploration and we use $\vinits = \project k {\reachof k} \union
+\project k {\reachof {k+1}}$. %
+We also use dynamic programming to compare the extensions with
+%$\project {k+1} {\reachof {k+1}}$. %
+$\mk{\reachof {k+1}}$. %
+The net result of these accelerations is that most experiments happen
+to be already at fixpoint, after the computation of $\vinits$, which
+demonstrates the efficiency of the method
+(cf. Section~\ref{section:experiments}) and that most behaviours are
+captured small instances of the system.
+%
+% %% ------------------------------------------------------------------
+% \myparagraph{Running example.}
+% %% ------------------------------------------------------------------
+\TODO{%
+ Include the Running Example with Szymanski?%
+}%
+% When run on Szymanski's protocol, the accelerated version of
+% Algorithm~\ref{algorithm:computable} starts by computing $\reachof 2
+% = \{0,\ldots,6\}$.  Because $\reachof 1$ does not contain any bad
+% configurations, the algorithm moves onto computing the fixpoint
+% $V_1$ of line~\ref{line:fixpoint}. The iteration starts with $X =
+% \alpha_1(\inits) = \{1\}$ and continues until $X = V_1 =
+% \{1,\ldots,6\}$.  The test on line~\ref{line:test} subsequently
+% fails since $\gammaof 1(V_1)$ contains $66$.  Since both tests fail,
+% the first iteration does not allow us to conclude whether the
+% protocol is safe or not, so the algorithm increases the precision of
+% the abstraction by increasing $k$.
+%
+% In the second iteration with $k=2$, $\reachof 2$ is still safe.  The
+% fixpoint computation starts with $X = \alpha_2(\inits) = \{1,11\}$.
+% When $\apost 2$ is applied on $\{1,11\}$, we first construct the set 
+% $\limgammaof 2 {2+1}(\{1,11\})$ which contains the extension $111$ of $11$, $11$ and $1$.
+% Their successors are $2,12,21$, and $112,121,211$, which are abstracted into
+% $\{1,2,11,12,21\}$.
+% %
+% The fixpoint computation continues with $X = \{1,2,11,12,21\}$ and
+% constructs the concretization $\limgammaof 2 3 (X) = X\cup \{112,121,211\}$. Their successors are $2,3,12,21,22,31,13$, and $122$,
+% $212$, $221$, $113$, $131$, $311$
+% %
+% which are abstracted into the views $1,2,3,11,12,21,22,31,13$.  
+% %
+% The next iteration will start with $X = \{1,2,3,11,12, 21,22, 13,31\}$.
+% %
+% The computation reaches, after 8 further iterations, the fixpoint
+% $X=V_2$ which contains all words from $\{1,\ldots,6\}\cup\{1,\ldots,6\}^2$ except $65$
+% and $66$.
+% %
+% This set satisfies the assumptions of Lemma~\ref{lemma:invariant}, and
+% hence it is guaranteed to contain all views (of size at most 2) of all
+% reachable configurations of the system.
+% %
+% Since the view $66$ is not present (recall $\alpha_2(\bad)=\{6,66\}$),
+% no reachable configuration of the system is bad. The algorithm reached
+% the cut-off point $k=2$ of Burns' protocol, and the system is proved
+% safe.
+%

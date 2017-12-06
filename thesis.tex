@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[%
+%underprogress,%
+%showcomments,%
+%noexperiments,% 
+%externaltikz,%
+%noindex,%
+%margnum,%
+%titles,%
+openright%
+]{settings/UUThesisTemplate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{settings/info}
+\input{settings/main}
+\usetikzlibrary{shapes.callouts} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% -------------------------------------
+\frontmatter
+%\input{misc/frontmatter}
+%% -------------------------------------
+
+%% -------------------------------------
+\mainmatter
+%% -------------------------------------
+\input{chapters/verification/main}
+%\input{chapters/parameterized-systems/main}
+%\input{chapters/monotonic-abstraction/main}
+%\input{chapters/view-abstraction/main}
+\input{chapters/shape-analysis/main}
+%\input{experiments/index}
+
+%% -------------------------------------
+\backmatter
+\input{misc/backmatter}
+%% -------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,26 @@
+\begin{description}
+\item[A solution to the reachability problem] from
+  Section~\ref{section:reachability:problem}.
+\item[Abstraction and Concretization] functions define how to travel
+  between sets of views and sets of configurations. An important
+  notion to retain is that views work collectively to characterize
+  configurations.
+\item[Verfication Procedure] is composed of two nested loops, one of
+  which is a~simple fixpoint. The other loop searches for a~cut-off
+  point.
+\item[Soundness.] The method computes an invariant that covers the
+  reachable configurations of any size, using views of small sizes.
+\item[Completeness.] The method is complete for WQO and for almost
+  downward-closed invariants.
+\item[Approximation] is introduced in order to leverage the
+  entailement on views and makes it easier to compute.
+\item[Acceleration] is achieved by seeding the fixpoint computation with more views.
+\item[Requirements.] The procedure requires to be able to compute the
+  initial views, test for the characterization of bad configurations
+  (using the upward-closedness of the set of bad configurations nad
+  checking for the presence of some ``bad'' views).
+\item[Efficiency.] The method has proven to be very efficient as shown
+  in the results (see Paper~\ref{paper:VMCAI13}
+  and~\ref{paper:SAS14}). It exhibits the small model properties,
+  i.e.\ most patterns occur in small instances.
+\end{description}

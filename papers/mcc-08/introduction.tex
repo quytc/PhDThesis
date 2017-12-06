@@ -1,0 +1,174 @@
+%% ------------------------------------------------------------------------- 
+\Section{Introduction}
+%% ------------------------------------------------------------------------- 
+\label{section:introduction}
+
+The behaviours of concurrent (or multi-threaded) programs are highly
+nontrivial and hard to predict. It is important to develop rigorous
+methods to verify their correctness. It is now also widely accepted
+that verification methods should be \emph{automatic}.
+%
+This would allow engineers to perform verification, without needing to
+be familiar with the complex constructions and algorithms behind the
+tools.
+%
+
+In this paper, we will concentrate on a particular
+approach to  verification of concurrent programs, 
+namely that of \emph{model checking}~\cite{CES:modelchecking,QuSi:cesar}.
+%
+The aim of model checking is to provide an algorithmic solution
+to the verification problem.
+%
+Concurrent programs involve several complex features which often give
+rise to infinite state spaces.
+%
+First, there is no bound \emph{a priori} on the
+number of threads which may arise in a given run of the system.
+%
+In addition, each thread manipulates local variables which often
+range over unbounded domains.
+%
+Furthermore, a system has a dynamic configuration in the sense that
+threads can be created and terminated throughout execution of the
+system.
+%
+
+%% -------------------------
+We concentrate on checking a particular class of properties for
+concurrent programs, namely \emph{safety properties}.
+%
+Intuitively, a safety property states that ``nothing bad will
+ever occur during the execution of the system''.
+%
+In particular, we focus on \emph{race-freeness}, i.e. the absence of
+race conditions (also called data races) in shared-variable concurrent
+programs.
+%
+
+%% -------------------------
+A race condition is a situation in which one process changes a
+variable which another process has previously read and the other
+process does not get notified of the change.
+%
+A process can, for example, write a variable that a second process
+reads, but the first process continues execution -- namely races ahead
+-- and changes the variable again before the second process sees the
+result of the first change. Another example: when a process checks a
+variable and takes action based on the content of the variable, it is
+possible for another process to ``sneak in'' and change the variable
+in between the check and the action in such a way that the action is
+no longer appropriate.
+%
+Alternatively, one can define a race condition as the possibility of
+incorrect results in the presence on unlucky timing in concurrent
+programs, that is, getting the right answer relies on lucky timing.
+
+%% -------------------------
+%\bigskip%
+Race conditions are of particular interest because they can lead to
+rather devious bugs. These bugs are extremely hard to track since they
+are non-deterministic and difficult to reproduce. The kind of errors
+caused by race condition are very subtle and often manifest themselves
+in the form of corrupted or incorrect variable data. Unfortunately, it
+often means that the error will not harm the system immediately, but
+it will manifest itself when some other code is executed, which relies
+on the data to be correct. This makes the process of locating the
+original race condition even more difficult.
+%
+To avoid data corruption or incorrectness, the programmer uses
+synchronization techniques to constraint all possible process
+interleavings to only the desirable ones. Race condition usually
+unveil incorrectly synchronized program.
+
+%% -------------------------
+\paragraph{\bf Related Work.}
+Existing race checkers fall into three main categories: on-the-fly,
+ahead-of-time and post-mortem tools. They exhibit different strengths
+and can perform race detection, while our method focuses at the moment
+on race-freeness. The ahead-of-time approach encompasses static
+analysis and compile-time heuristics, while on-the-fly approaches are
+by nature dynamic. The post-mortem approach is a combination of static
+and dynamic techniques.
+
+Type-based solutions provide a strong assurance to the programmer, in
+addition to the familiarity of a compiler-based
+solution~\cite{FQ03}. If a program type-checks, it is guaranteed to be
+race-free. It is however necessary to examine the source code as a
+whole in order to draw conclusion about to find relations between the
+locks and the shared data that they protect. This is often alleviated
+by requiring annotations from the programmer, as to whether a function
+has an effect clause or not, such as ``the caller must hold lock
+L''. Moreover, this only forces a programming discipline and it can
+also disallow some race-free programs.
+
+Dynamic tools visit only feasible paths and have an accurate view of
+the values of the shared data, while static tools must be
+conservative. They are based on two main approaches: the lockset and
+the happens-before approaches. The lockset algorithm works on the
+assumption that shared variables should be protected by an appropriate
+lock and any failure to comply to that discipline is reported. Lockset
+tools tend to report many false positives. This technique has been
+first implemented in Eraser~\cite{SBNSA07:Eraser}. The happens-before
+technique~\cite{Lamport:ordering} watches for any accesses of shared
+variables that do not have an implied ordering between them. This
+technique is highly dependant on the actual thread execution ordering,
+and instrumentation might bias the analysis. Moreover, it only reports
+a subset of all race conditions (however real ones). These two main
+approaches are often combined to get the best of both worlds, e.g.\
+MultiRace and RaceTrack~\cite{YRC05:RaceTrack,PS03:MultiRace}.
+
+Model checkers, such as Verisoft, Bandera and
+KISS~\cite{HJM04:ContextInference, D03:Verisoft, QW04:Kiss,
+  CDHR00:Bandera}, check concurrent programs with a finite and fixed
+number of threads. They often require a user supplied abstraction.
+
+A precise way to detect race conditions would be to search the state
+space (of a \emph{model} of the program) for a state where multiple
+threads try to access and change the same variable.  The technique is
+sound (i.e. being able to prove the race-freeness of a concurrent
+program), but more importantly it seems to be much more precise than
+the other techniques. It indeed detects the race conditions themselves
+instead of detecting violations of the locking discipline that can be
+used to prevent race conditions.
+
+%% -------------------------
+\paragraph{\bf Verification Method.}
+We first construct a model for concurrent programs, where each
+configuration (snapshot) of the system is represented by a petri
+net. The transitions in the petri net represent the instructions of
+the program. The configuration of the system changes dynamically
+during its execution, by firing transitions in the petri net. The
+system starts running from an \emph{initial configuration} and we
+characterize a set of \emph{bad configurations} which violate the
+given safety property (i.e.\ configurations which should not occur
+during the execution of the system).
+%
+%
+Checking the safety property amounts then to performing
+\emph{reachability analysis}: Is it possible to reach a bad
+configuration from an initial configuration through a sequence of
+actions performed by different threads?
+
+%% -------------------------
+We will follow a particular methodology which we have earlier developed
+for model checking general classes of infinite-state systems
+ \cite{Parosh:Bengt:Karlis:Tsay:general}.
+%
+The method is designed to be applied for verification of
+safety properties for infinite-state systems 
+which are \emph{monotonic} w.r.t. a \emph{well quasi-ordering} on the set
+of configurations.
+%
+The main idea is to perform symbolic backward reachability analysis
+to check safety properties for such systems.
+%
+
+\paragraph{\bf Outline.}
+We present in Section~\ref{section:language} and
+Section~\ref{section:model} the type of programs we consider and how
+we extract a model from them. In Section~\ref{section:races}, we state
+the class of safety properties we want to check, and in
+Section~\ref{section:backwardreachability} a solution. We finish with
+a small description of our experimental results in
+Section~\ref{section:experiments} and a conclusion.

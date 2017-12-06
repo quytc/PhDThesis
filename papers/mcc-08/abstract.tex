@@ -1,0 +1,51 @@
+\begin{abstract}
+%
+  With the introduction of highly concurrent systems in standard
+  desktop computers, ensuring correctness of industrial-size
+  concurrent programs is becoming increasingly important. One of the
+  most important standards in use for developing multi-threaded
+  programs is the POSIX Threads standard, commonly known as
+  \emph{PThreads}.
+  % [the standard is known as IEEE Std 1003.1-2001 /Matz],
+%
+  Of particular importance, the analysis of industrial code should, as
+  far as possible, be automatic and not require annotations or other
+  forms of specifications of the code.
+
+  Model checking has been one of the most successful approaches to
+  program verification during the last two decades.
+%
+  The size and complexity of applications which can be handled have
+  increased rapidly through integration with symbolic techniques.
+%
+  These methods are designed to work on finite (but large) state
+  spaces. This framework fails to deal with several essential aspects
+  of behaviours for multi-threaded programs: there is no bound \emph{a
+    priori} on the number of threads which may arise in a given run of
+  the system; each thread manipulates local variables which often
+  range over unbounded domains; and the system has a dynamic structure
+  in the sense that threads can be created and killed throughout
+  execution of the system.
+%
+  In this paper we concentrate on checking a particular class of
+  properties for concurrent programs, namely \emph{safety properties}.
+  In particular, we focus on \emph{race-freeness}, that is, the
+  absence of race conditions (also known as data races) in
+  shared-variable pthreaded programs.
+
+  We will follow a particular methodology which we have earlier
+  developed for model checking general classes of infinite-state
+  systems
+  \cite{Parosh:Bengt:Karlis:Tsay:general,Parosh:Aletta:bqoTPN,Delzanno:cache,Emerson:Namjoshi:LICS,Esparza:Finkel:Mayr:LICS}
+  and apply a symbolic backward reachability analysis to verify the
+  safety property.
+%
+  Since we construct a model as an over-approximation of the original
+  program, proving the safety property in the model implies that the
+  property also holds in the original system.
+%
+  Surprisingly, it leads to a quite efficient analysis which can be
+  carried out \emph{fully automatically}.
+
+
+\end{abstract}

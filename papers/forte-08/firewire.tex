@@ -1,0 +1,157 @@
+%
+\subsection{The IEEE 1394 Tree Identification Protocol}
+%
+
+The 1394 High Performance serial bus~\cite{ieee:1394} is used to transport digitized video and
+audio signals within a network of multimedia systems and devices. 
+% 
+
+The tree identification protocol is used in one of the phases implementing the IEEE 1394 protocol.
+%
+More precisely, it is run after a bus reset in the network and leads to the election of a unique 
+leader node.
+%
+
+In this section, we consider a version working on tree topologies.
+%
+Furthermore, we assume that (i) each inner node is connected to 3 neighbors, (ii) the root is connected 
+to 2 neighbors, and (ii) communication is atomic.
+%
+
+Initially, all nodes are in state \emph{undefined} ($u$). 
+%
+We identify two steps in the protocol depending on the number $n$ of neighbors which are 
+still in state $u$.
+%
+If $n>1$, the node waits for (``be my parent'') requests from its neighbors. 
+%
+If $n=1$, the node sends a request to the remaining neighbor in state $u$. 
+%
+Observe that we implicitly assume that the leaf nodes are the first to communicate with their neighbors.
+%
+
+Formally, we derive a parameterized tree system model $\parsys=\parsystuple$ as follows.
+%
+We define the set of states by $\states=\setcomp{\state_s^n}{s\in\set{u,c,l}\band n\in\set{leaf,inner,root}}$ 
+where the scripts $s$ and $n$ describe respectively the state and the nature of the node.
+%
+In the definition of the state ($s$), the letters $u$, $c$ and $l$ stand respectively for \emph{undefined}, 
+\emph{child} and \emph{leader}.
+%
+In a similar manner to the previous section, we drop the script(s) whenever we mean that it can take any value 
+(see caption of Figure~\ref{fig:arbiter:rules}).
+% 
+
+The rewrite rules $\rwrules$ are described below.
+%
+\begin{itemize}
+\item The leaves initiate the communications:
+
+\begin{center}
+  \begin{tikzpicture}[show background rectangle]
+    \tikzstyle{level 1}=[level distance=1cm,sibling distance=2cm]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+    \node {$\state_u$}
+    child{node{$\state_u^{leaf}$/$\state_c$}}
+    child[level distance=1cm,sibling distance=0cm]{node[draw=none]{} edge from parent[draw=none]};
+  \end{tikzpicture}
+%
+\begin{tikzpicture}[show background rectangle]
+    \tikzstyle{level 1}=[level distance=1cm,sibling distance=2cm]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+    \node {$\state_u$}
+    child[level distance=1cm,sibling distance=0cm]{node[draw=none]{} edge from parent[draw=none]}
+    child{node{$\state_u^{leaf}$/$\state_c$}};
+\end{tikzpicture}
+\end{center}
+
+\item The inner nodes become children or wait for requests:
+
+\begin{center}
+  \begin{tikzpicture}[grow cyclic,show background rectangle]
+    \tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+    \node {$\state_u$/$\state_c$}
+    child {node {$\state_u$}}
+    child[level distance=1.3cm] {node {$\state_c$}}
+    child {node {$\state_c$}};
+  \end{tikzpicture}
+  % 
+  \begin{tikzpicture}[grow cyclic,show background rectangle]
+    \tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+    \node {$\state_u$/$\state_c$}
+    child {node {$\state_c$}}
+    child[level distance=1.3cm] {node {$\state_u$}}
+    child {node {$\state_c$}};
+  \end{tikzpicture}
+  % 
+  \begin{tikzpicture}[grow cyclic,show background rectangle]
+    \tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+    \node {$\state_u$/$\state_c$}
+    child {node {$\state_c$}}
+    child[level distance=1.3cm] {node {$\state_c$}}
+    child {node {$\state_u$}};
+  \end{tikzpicture}
+\end{center}
+
+\item The leader is chosen:
+
+\begin{center}
+\begin{tikzpicture}[grow cyclic,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+\node {$\state_u$/$\state_l$}
+    child {node {$\state_c$}}
+    child[level distance=1.6cm] {node {$\state_c$}}
+    child {node {$\state_c$}};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[grow cyclic,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+\node {$\state_c$}
+    child{node {$\state_u^{leaf}$/$\state_l$}}
+    child[level distance=0cm]{node[draw=none]{} edge from parent[draw=none]}
+    child{node[draw=none]{} edge from parent[draw=none]};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[grow cyclic,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\tikzstyle{level 1}=[level distance=1cm,sibling angle=120]
+\begin{scope}[rotate=60]
+  \node {$\state_c$}
+    child{node {$\state_u^{leaf}$/$\state_l$}}
+    child{node[draw=none]{} edge from parent[draw=none]}
+    child[level distance=0cm]{node[draw=none]{} edge from parent[draw=none]};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\end{itemize}
+%
+
+The set of initial configurations $\init$ is represented by trees where all nodes
+are in state undefined, and the set of bad constraints $\fconfs$ is represented by 
+trees where at least 2 leaders are elected.
+%
+\begin{center}
+\begin{tikzpicture}[level distance=1cm,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\node {$\state_l$} child {node {$\state_l$}}
+child[sibling distance=0cm]{node[draw=none]{} edge from parent[draw=none]};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[level distance=1cm,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\node {$\state_l$}
+child[sibling distance=0cm]{node[draw=none]{} edge from parent[draw=none]}
+child {node {$\state_l$}};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[level distance=1cm,show background rectangle]
+\tikzstyle{every node}=[draw,rounded corners,minimum width=1cm]
+\node {$\state$} child {node {$\state_l$}} child {node {$\state_l$}};
+\end{tikzpicture}
+\end{center}
+%

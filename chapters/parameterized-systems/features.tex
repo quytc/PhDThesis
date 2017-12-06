@@ -1,0 +1,167 @@
+%% ====================================================================
+\section{Features}
+\label{section:paramsys:features}
+\KW{Features}%
+\index{Parameterized Systems!Features}%
+%% ====================================================================
+% 
+The parallel composition of several processes can be further
+characterized with the following features, which make the task of
+parameterized verification complex and interesting: %
+\begin{itemize}
+\item %[(i)]
+  the topology,
+\item %[(ii)]
+  the way the process can communicate with each other and
+\item \index{Finite-state}\index{Infinite-state}%[(iii)]
+  the nature of each process itself, whether it is finite-state or
+  not. In this chapter, %thesis
+  each component is however restricted to be finite-state. %
+  %, though they actually can be infinite-state.
+\end{itemize}
+
+\smallskip
+%% ********************************************************************
+\KW{Topology}%
+\index{Topology}%
+\index{Topology!linear}%
+\index{Topology!ring}%
+\index{Topology!tree}%
+\index{Topology!multiset}%
+%% ********************************************************************
+The topology describes the way the processes are arranged and
+implicitly how they can refer to each other, without necessarily
+revealing their identity. %
+% 
+For the \emph{linear} topology, processes are organized in an array
+and can distinguish between %any of
+their left and right neighbors. %
+For a \emph{ring}, they can inspect their immediate neighbor, while
+for a~\emph{tree}, they inspect their parent and/or children
+processes. %
+Finally, the case where there is no particular structure and where
+processes can refer to any other processes is called a \emph{multiset}
+topology.
+ 
+%% Topologies
+%{\noindent\centering \tikzinput{img/topologies}\par}
+%
+\begin{wrapfigure}{r}{0.58\linewidth}
+  \hfill%
+  \tikzinput{img/topologies}
+  \vspace{-1em}
+\end{wrapfigure}
+%
+%% ********************************************************************
+\KW{Global conditions}%
+\index{Global Conditions}%
+\index{Global Transitions}%
+%% ********************************************************************
+Processes can interact with each other and perform actions potentially
+in any order or % and
+simultaneously. %
+Those actions are conditioned on the status of the other processes:
+Before it performs its action, a process can inspect other processes
+according to the topology, and their status can allow or prevent the
+action from the process.
+% 
+We refer to these transitions as being \emph{guarded} by
+a~\emph{global condition}, or just \emph{global transitions}. %
+% 
+For example, in a linear topology, a process (at position~$i$) may be
+able to perform a transition only if all processes to its left
+(i.e. with index~$j<i$) satisfy a particular property.
+%
+Sometimes, it is only required for \emph{some} rather than \emph{all},
+as depicted in Figure~\ref{figure:example:transition}.
+% These transitions are also called existentially and
+% universally guarded transitions.
+% 
+%% ********************************************************************
+\KW{Local transitions}%
+\index{Local Transitions}%
+%% ********************************************************************
+On the other hand, it is occasionally not necessary to refer to other
+processes at all before performing an action. %
+% It is the case when a process performs its action regardless of the
+% status of the other processes.
+% 
+These actions are by opposition called \emph{local transitions}.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[b]%hb
+  \begin{minipage}{0.56\linewidth}
+    \noindent%
+    \tikzinput{img/transition}
+  \end{minipage}\begin{minipage}{0.44\linewidth}
+    \caption{Example of global transition for a linear topology:
+      a~process in state~\s[i]{s} may change to state~\s[i]{d} provided
+      that there exists another process in state~\s[witness]{w} on
+      its~right.}
+    \label{figure:example:transition}
+  \end{minipage}
+\end{figure}
+\endgroup
+
+
+%% ********************************************************************
+\KW{Non-atomic global conditions}%
+\index{Global Conditions!non-atomic}%
+%% ********************************************************************
+A major issue %with such a transition system
+is that global conditions are not necessarily checked atomically. %
+% 
+In case other processes can perform transitions, while a global
+condition check is carried out, the system must in fact distinguish
+intermediate states.
+%
+\index{State-space!explosion}%
+These interleavings make the state-space grow even further.
+%
+We will see that the method from
+Chapter~\ref{chapter:view:abstraction} %(page~\pageref{chapter:view:abstraction})
+can handle elegantly this complex setting.
+%, for which other techniques have troubles.
+
+%% ********************************************************************
+\KW{Communi-cation primitives}%
+\index{Communication primitives}%
+%% ********************************************************************
+% Finally, besides local and global transitions, there are other types of
+% \emph{communication primitives}, i.e.\ rules that a process must
+% follow in order to perform an action, depending on the topology or
+% not.
+Apart from local and global transitions,
+% belong to the class of \emph{asynchronous communication primitives}.
+%
+we complete the list with the other types of transitions, which might
+depend on the topology or not.
+%there are other rules that a process must follow in order to perform
+%an action, depending on the topology or not.
+% 
+%% ********************************************************************
+\KW{Broadcast and Rendez-vous}%
+\index{Broadcast Transitions}%
+\index{Rendez-vous Transitions}%
+%% ********************************************************************
+For a \emph{broadcast transition}, a process is forced to change state
+synchronously with an arbitrary number of processes.
+%
+For a \emph{rendez-vous} transition, it is only required from one
+extra process. %
+%% ********************************************************************
+\KW{Shared variable update}%
+\index{Shared variable update}%
+%% ********************************************************************
+For \emph{shared variable} update, a~process communicates the updated
+value to the other processes.
+%(often modeled as a broadcast).
+%% ********************************************************************
+\KW{Process creation and deletion}%
+\index{Process creation and deletion}%
+%% ********************************************************************
+Finally, process \emph{creation} and \emph{deletion} make the topology
+dynamic, but it is often not a major issue, %
+%as we will see in later chapters.
+as shown in Paper~\ref{paper:VMCAI13}.

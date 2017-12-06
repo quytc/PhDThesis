@@ -1,0 +1,168 @@
+
+%% ====================================================================
+\section{Formal Definition}
+\label{section:paramsys:definition}
+\index{Parameterized Systems!Formal definition}%
+%% ====================================================================
+% 
+\index{Finite-state systems}%
+\index{Topology!linear}%
+To simplify the presentation, we will only focus, in this chapter, on
+the case where processes are governed by a finite-state automaton and
+organized in a~linear topology.
+% 
+Other topologies are presented in paper~\ref{paper:VMCAI13},
+\ref{paper:MCC08} and \ref{paper:CAV08}.
+
+A parameterized system is a pair $\parsys=(\locs,\rules)$ where
+$\locs$ is a finite set of \emph{local states} of a process and
+$\rules$ is a set of \emph{transition rules} over $\locs$. %
+A transition rule is either {\it local} or {\it global}.
+% 
+A local rule is of the form $\src\trans\dst$, where the process
+changes its local state from $\src$ to $\dst$ independently from the
+local states of the other processes.
+% 
+\index{Universal transition}%
+\index{Existential transition}%
+A global rule is either \emph{universal} or \emph{existential}.
+%
+Recall that a global rule depends on the topology, %
+% and the communication primitives, 
+so it is here of the form:
+$$\quantrule{\src}{\dst}{\quantify}{\sim}{\witnesses}$$
+% 
+where $\quantify$ is either $\exists$ or $\forall$, for existential
+and universal conditions respectively, where $\sim$ is either $<$, $>$
+or $\neq$, to indicate which processes are concerned, and %finally
+where $S$ is a subset of $\locs$, describing the state of the other
+\emph{witness} processes.
+% 
+\index{Global Transitions!source}%
+\index{Global Transitions!destination}%
+\index{Global Transitions!range}%
+\index{Global Transitions!quantifier}%
+We call $\src$ the~\emph{source}, $\dst$ the~\emph{destination},
+$\quantify$ the~\emph{quantifier} and $\sim$ the~\emph{range}.
+%
+Informally, the $i^{th}$ process checks the local states (among
+$\witnesses$) of the other processes when it makes the move.
+%
+%  (here only
+% \emph{atomically}, i.e.\ the other processes do not change state while
+% the global check is carried out).
+% For the sake of presentation, we only consider, in this section, a
+% version where each process checks \emph{atomically} the other
+% processes. The more realistic and more difficult case, where the
+% atomicity assumption is dropped, will be introduced in
+% Section~\ref{section:non-atomic}.
+We consider, in this section only, a version where each process checks
+\emph{atomically} the other processes. The more realistic and more
+difficult case, where the atomicity assumption is dropped, will be
+introduced in the next section.
+%
+For instance, the condition $\forall\,j<i:\,\witnesses$ means that
+“every process $j$, with a lower index than $i$, should be in a local
+state that belongs to the set $\witnesses$.”
+%
+The condition $\exists\,j>i:\,\witnesses$ means that “there should be
+a process $j$ with higher index than $i$ with a local state listed in
+the set $\witnesses$”, etc\ldots%
+% the condition
+% $\forall\,j{\neq}i:\,\witnesses$ means that “the local state of all
+% processes, except the one at position~$i$, should be in the set
+% $\witnesses$”.
+
+%% ********************************************************************
+%\smallskip%
+\bigskip%
+\KW{Configurations}%
+\index{Configuration}%
+%% ********************************************************************
+A \emph{configuration} in $\parsys$ is a word over the
+alphabet~$\locs$, i.e.\ an array of process states.
+%
+We use \confs\ to denote the set of all configurations.
+%
+For a configuration~$c\in\confs$, we use $c[i]$ to denote %
+the state at position~$i$ in the array
+%the state of the $i^{th}$ process within the configuration~$c$ 
+and $\sizeof c$~for its size.
+%
+% We use~$c[i]$ to denote the state at position~$i$ in the array and
+% $\sizeof c$~for the size of the configuration.
+%
+We use $\range a b$ to denote the set of integers in the
+interval~$[a{,}b]$ (i.e.\ $\range{a}{b} = [a{,}b]\cap\nat$).
+
+%% ********************************************************************
+%\paragraph{Successors.}
+\KW{Successors}%
+\index{Successors}%
+\index{Post-image operator}%
+%% ********************************************************************
+%
+For a configuration~$c\in\confs$, a position $i\leq\sizeof c$, and a
+rule $\delta\in\rules$, we define how to transform the
+configuration~$c$ into another configuration if we allow the
+$i^{th}$ process in the array to perform the transition $\delta$.
+%
+% We call $c' = \delta(c,i)$ the immediate successor of $c$ under a
+% $\delta$-move of the $i^{th}$ process.
+%
+Formally, we define the immediate successor of $c$ under a
+$\delta$-move of the $i^{th}$ process, such that $\delta(c,i)=c'$ if
+and only if $c[i] = \src$, $c'[i] = \dst$, $c[j]=c'[j]$ for all
+$j:j\neq i$ and either (i)~$\delta$ is a local rule $\src\trans\dst$,
+or (ii)~$\delta$ is a global rule %of the form
+$\quantrule{\src}{\dst}{\quantify}{\sim}{\witnesses}$, and one of the
+following two conditions is satisfied: %
+\begin{itemize}
+\item %
+  $\quantify=\forall$ and for all $j\in\range{1}{\sizeof{c}}$ such
+  that $j\sim i$, it holds that $c[j]\in \witnesses$,%
+\item %
+  $\quantify=\exists$ and there exists some
+  $j\in\range{1}{\sizeof{c}}$ such that $j\sim i$ and
+  $c[j]\in \witnesses$.
+\end{itemize}
+%
+%
+% There are two cases to consider, since $\delta$ is either a local or a
+% global transition.
+% %
+% In the case where $\delta$ is a local transition, say, of the form
+% $\src\trans\dst$, and $c[i] = \src$, we define $c'$ with $c'[i] =
+% \dst$ and $c[j]=c'[j]$ for all $j:j\neq i$. 
+% %
+% On the other hand, when $\delta$ is a global transition, say, of the
+% form $\quantrule{\src}{\dst}{\quantify}{\sim}{\witnesses}$, and $c[i] = \src$, we
+% define $c'$ as follows: $c'[i] = \dst$ and $c[j]=c'[j]$ for all
+% $j:j\neq i$ only if one of the following conditions is satisfied:
+% \begin{itemize}
+% \item $\quantify$ is $\forall$ and for all $j:1\leq j\leq |c|$ such
+%   that $j\sim i$, it holds that $c[j]\in \witnesses$ %or
+% \item $\quantify$ is $\exists$ and there exists $j:1\leq j\leq |c|$
+%   such that $j\sim i$ and $c[j]\in \witnesses$.
+% \end{itemize}
+%
+Note that $\delta(c,i)$ is not defined if $c[i]\neq\src$.
+%
+We use \mbox{$c\transof{\delta}c'$} when $c'=\delta(c,i)$ for some
+$i\leq\sizeof c$, and $c \trans c'$ if $c\transof{\delta}c'$ for some
+$\delta\in\rules$.
+%
+We define $\transof{*}$ as the reflexive transitive closure of
+$\trans$ (i.e.\ the result of repeatedly applying $\trans$).
+%
+% For a~set of configurations $X\subseteq\confs$, we define the
+% \emph{post-image} of $X$ as the set %
+% $$
+% \post(X) = \setcomp{\delta(c,i)}{c\in X, i\leq\sizeof{c},\delta\in\Delta} = \setcomp{c'}{c\in X, c\trans c'}
+% $$
+% % $$
+% % \begin{array}{rcl}
+% % \post(X) & = & \setcomp{\delta(c,i)}{c\in X, i\leq\sizeof{c},\delta\in\Delta} \\
+% %          & = & \setcomp{c'}{c\in X, c\trans c'}
+% % \end{array}
+% % $$

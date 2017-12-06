@@ -1,0 +1,2064 @@
+\subsection*{Lemma~\ref{pre:js:monotonic:lemma}}
+%
+For graphs $\graph_1$, $\graph_2$, and $\graph_3$, 
+we want the following.
+%
+If $\graph_3\jlt\graph_1$ and 
+$\graph_1\pmovesto{\action}\graph_2$ for 
+some action $\action$, 
+then there should
+exist a $\graph_4$ such that 
+$\graph_3\pmovesto{\action}\graph_4$ 
+and
+$\graph_4\jleq\graph_2$.
+%
+We define $\graph_4$ by considering 
+the four cases corresponding to the definition of
+$\graph_3\jlt\graph_1$.
+%
+For each case of the ordering definition, 
+we find such a $\graph_4$ for one or two subcases 
+for each of the five actions.
+%
+The rest of the subcases can be derived in a similar manner.
+
+%incomplete version
+\begin{enumerate}
+% order definition
+\item {\bf Variable Deletion:}
+$\graph_3=\graph_1\delVar{\zvar}$ for
+some variable $\zvar$.
+
+If $\zvar\not\in\set{\xvar,\yvar}$.
+Define $\graph_4=\graph_2\delVar{\zvar}$.
+Both $\graph_4\jlt\graph_2$ and 
+$\graph_3\pmovesto{\action}\graph_4$ follow immediately
+from the definitions.
+%
+We assume $\zvar\in\set{\xvar,\yvar}$
+and consider
+the five possible forms of $\action$:
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+%  
+  Let $\zvar=\yvar$ (The case $\zvar=\xvar$ is obtained 
+  by permuting $\xvar$ and $\yvar$ in the definition of 
+  $\graph_1\pmovesto{\action}\graph_2$).
+  We have $\graph_3=\graph_1\delVar\yvar$.
+%  We differentiate three cases in the definition of $\graph_1\pmovesto{\action}\graph_2$:
+%  \begin{enumerate}
+%  \item
+%    If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$ 
+%    then $\labeling_3(\xvar)\neq\undef$ and $\labeling_3(\yvar)=\undef$.
+%    Observe that $\graph_4=(\graph_2\delVar{\yvar})\addEqVar{\xvar}{\yvar}
+%    =\graph_3\addEqVar{\xvar}{\yvar}$, and hence $\graph_3\pmovesto{\action}\graph_4$.
+%  \item
+ %
+  Say 
+  $\labeling_1(\xvar)=\undef$,
+  $\labeling_1(\yvar)\neq\undef$ and
+  $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$, we get 
+  $\labeling_3(\xvar)=\undef$ and
+  $\labeling_3(\yvar)=\undef$.
+  We define $\graph_4=\graph_2$, 
+  and get $\graph_4=\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+  Observe $\graph_1\in(\graph_3\addVar{\xvar})$, and hence
+  $\graph_3\pmovesto{\action}\graph_4$.
+%\item
+%    If  $\labeling_1(\yvar)=\undef$ we get $\graph_1=\graph_1\delVar{\yvar}=\graph_3$.
+%    Hence, $\graph_3\pmovesto{\action}\graph_4$ follows 
+%    from $\graph_1\pmovesto{\action}\graph_2$.
+%  \end{enumerate}
+%
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+  Let $\zvar=\yvar$.
+  (The case $\zvar=\xvar$ is obtained 
+  by permutation).
+  We have $\graph_3=\graph_1\delVar\yvar$.
+%  We differentiate three cases in the 
+%  definition of $\graph_1\pmovesto{\action}\graph_2$:
+  Consider the case where
+%  \begin{enumerate}
+%  \item If $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ 
+%    and $\graph_2=\graph_1$, we get $\labeling_3(\xvar)\neq\undef$, 
+%    and $\labeling_3(\yvar)=\undef$.
+%    Observe that $\graph_2\in\graph_3\addNotEqVar{\xvar}{\yvar}$, and 
+%    deduce $\graph_3\pmovesto{\action}\graph_4$.
+%  \item 
+  $\labeling_1(\xvar)=\undef$, 
+  $\labeling_1(\yvar)\neq\undef$ and 
+  $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+  We get 
+  $\labeling_3(\xvar)=\undef$ and 
+  $\labeling_3(\yvar)=\undef$.
+  We define $\graph_4=\graph_2$.
+  Observe $\graph_4\in\graph_1\addNotEqVar{\xvar}{\yvar}$ and 
+  $\graph_1\in\left(\graph_3\addVar{\xvar}\right)$.
+  We deduce $\graph_3\pmovesto{\action}\graph_4$.
+%  \item If $\labeling_1(\yvar)=\undef$ 
+%    we get $\graph_3=\graph_1$ and 
+%    $\graph_3\pmovesto{\action}\graph_4$ 
+%    follows directly from 
+%    $\graph_1\pmovesto{\action}\graph_2$.
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+  We look at both cases $\zvar=\xvar$ and $\zvar=\yvar$.
+  %
+  \begin{itemize}
+  \item In case $\zvar=\xvar$, we get $\graph_3=\graph_1\delVar{\xvar}$.
+%    We define $\graph_4=\graph_2$ and show 
+%    $\graph_3\pmovesto{\action}\graph_4$ 
+%in each subcase of the definition of
+%    for the following subcase of the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$ :  
+    %
+
+%    \begin{enumerate}
+%    \item If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+%      $\graph_2=\graph_1\delVar{\xvar}$, then we 
+%      get $\labeling_3(\xvar)=\undef$ and 
+%      $\labeling_3(\yvar)\nequals\undef$.
+%      Observe $\graph_3=\graph_1\delVar{\xvar}=\graph_2$ means 
+%      $\graph_3\pmovesto{\action}\graph_4$.
+%    \item 
+    Suppose $\labeling_1(\xvar)\neq\undef$, 
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph\delVar\xvar$ where $\graph=\graph_1\addEqVar{\xvar}{\yvar}$.
+    We define $\graph_4=\graph_2$.
+    We get $\labeling_3(\xvar)=\undef$ and 
+    $\labeling_3(\yvar)\equals\undef$.
+    Observe $\graph_2$ is in $(\graph_1\delVar{\xvar})\addVar{\yvar}$.
+    This means 
+    $\graph_4\in(\graph_3\addVar{\yvar})$,
+    and hence $\graph_3\pmovesto{\action}\graph_4$.
+%    \item If $\labeling_1(\xvar)=\undef$ we get $\graph_3=\graph_1$, and 
+%      $\graph_3\pmovesto{\action}\graph_4$
+%      follows from $\graph_1\pmovesto{\action}\graph_2$.
+%    \end{enumerate}
+    %
+  \item In case $\zvar=\yvar$, we get $\graph_3=\graph_1\delVar{\yvar}$.
+% and show 
+%    $\graph_3\pmovesto{\action}\graph_4$ 
+%in each subcase of the definition of
+%    for the following subcase of the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$ :  
+%    \begin{enumerate}
+%    \item If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+%      $\graph_2=\graph_1\delVar{\xvar}$, 
+%      then we get $\labeling_3(\xvar)\neq\undef$, and
+%      $\labeling_3(\yvar)=\undef$.
+%      Observe $\graph_4\in\graph_1\delVar\xvar$ 
+%      with $\graph_1=\graph_3\addEqVar{\xvar}{\yvar}$.
+%      We deduce $\graph_3\pmovesto{\action}\graph_4$.
+%    \item 
+    Suppose $\labeling_1(\xvar)=\undef$, 
+    $\labeling_1(\yvar)\nequals\undef$ and 
+    $\graph_2=\graph_1$.
+    Define $\graph_4=\graph_2$.
+    We have $\labeling_3(\xvar)=\undef$ and
+    $\labeling_3(\yvar)\equals\undef$.
+    Observe that $\graph_1\in(\graph_1\delVar{\yvar})\addVar{\yvar}$.
+    Hence, $\graph_4\in(\graph_3\addVar{\yvar})$.
+    We deduce $\graph_3\pmovesto{\action}\graph_4$.    
+%    \item If $\labeling_1(\yvar)=\undef$ we get $\graph_3=\graph_1$
+%      and define $\graph_4=\graph_2$.     
+%      Hence, $\graph_3\pmovesto{\action}\graph_4$ follows 
+%      from $\graph_1\pmovesto{\action}\graph_2$.
+%    \end{enumerate}
+  \end{itemize}
+%
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+We consider both cases $\zvar=\xvar$ and $\zvar=\yvar$.
+%
+  \begin{itemize}
+  \item In case $\zvar=\xvar$, we get $\graph_3=\graph_1\delVar{\xvar}$.
+%    \begin{enumerate}
+%    \item Suppose $\labeling_1(\yvar)\neq\undef$, 
+%      $\suc_1(\labeling_1(\yvar))\neq\undef$, 
+%      $\suc_1(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+%      $\graph_2=\graph_1\delVar{\xvar}$.
+%      We have $\labeling_3(\xvar)=\undef$, %
+%      $\labeling_3(\yvar)\neq\undef$ and
+%      $\suc_3(\labeling_3(\yvar))\neq\undef$. 
+%      $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.
+%    \item Suppose $\labeling_1(\xvar)\neq\undef$, 
+%      $\labeling_1(\yvar)\neq\undef$, 
+%      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, 
+%      $\suc(\labeling_1(\yvar))=\undef$ and
+%      $\graph_2=\graph\delVar{\xvar}$, where
+%      $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+%      We have $\labeling_3(\xvar)=\undef$, 
+%      $\labeling_3(\yvar)\neq\undef$, 
+%      $\labeling_3(\yvar)\neq\labeling_3(\nil)$ and  
+%      $\suc_3(\labeling_3(\yvar))=\undef$.
+%      This means $\graph_4\in(\graph_3\addEdge{\yvar})$.
+%      $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.
+%    \item 
+    Say $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    and there are graphs $\graph,\graph'$ such that
+    $\graph_2=\graph\delVar{\xvar}$, %
+    $\graph=\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph'\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+    Define $\graph_4=\graph_2$.
+    We have $\labeling_3(\xvar)=\undef$ and 
+    $\labeling_3(\yvar)=\undef$.
+    Observe $\graph_4=\graph_2=\graph\addVar{\xvar}$,
+    $\graph=\graph'\addEdgeBetween{\yvar}{\xvar}$,
+    $\graph'\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$ and
+    $\graph_1\in(\graph_1\delVar{\xvar})\addVar{\xvar}$.
+    $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.    
+%    \item If $\labeling_1(\xvar)=\undef$ then 
+%      $\graph_3=(\graph_1\delVar{\xvar})=\graph_1$ and 
+%      $\graph_3\pmovesto{\action}\graph_4$
+%      follows from $\graph_1\pmovesto{\action}\graph_2$.
+%    \end{enumerate}
+    %
+  \item In case $\zvar=\yvar$, 
+    we get $\graph_3=\graph_1\delVar{\yvar}$.
+% and show 
+%    $\graph_3\pmovesto{\action}\graph_4$ in 
+%    the following subcase of the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$ :  
+    %
+%    \begin{enumerate}
+%    \item 
+    Suppose $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc_1(\labeling_1(\yvar))\neq\undef$, %
+    $\suc_1(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$. 
+    We define $\graph_4=\graph_2$.
+    We have   $\labeling_3(\xvar)\neq\undef$, %
+    $\labeling_3(\yvar)=\undef$.
+    Observe 
+    $\graph_4=\graph_2=\graph_1\delVar{\xvar}$,
+    $\graph_1=\graph_1\addEdgeBetween{\yvar}{\xvar}$,
+    $\graph_1\in(\graph_1\delVar{\yvar})\addVarAsPredOf{\xvar}{\yvar}$.
+    $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.    
+%     \item Suppose $\labeling_1(\xvar)\neq\undef$, %
+%      $\labeling_1(\yvar)\neq\undef$, %
+%      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%      $\suc(\labeling_1(\yvar))=\undef$ and
+%      $\graph_2=\graph\delVar{\xvar}$, where
+%      $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+%      We have  $\labeling_3(\xvar)\neq\undef$, %
+%      $\labeling_3(\yvar)=\undef$.
+%    \item Suppose $\labeling_1(\xvar)=\undef$, %
+%      $\labeling_1(\yvar)\neq\undef$, %
+%      $\suc(\labeling_1(\yvar))\neq\undef$ and %
+%      $\graph_2=\graph_1$.
+%      We have  $\labeling_3(\xvar)=\undef$, %
+%      $\labeling_3(\yvar)=\undef$.
+%    \item Suppose $\labeling_1(\xvar)=\undef$, %
+%      $\labeling_1(\yvar)\neq\undef$, %
+%      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%      $\suc(\labeling_1(\yvar))=\undef$ and %
+%      $\graph_2=\graph_1\addEdge{\yvar}$.
+%      We have $\labeling_3(\xvar)=\undef$, %
+%      $\labeling_3(\yvar)=\undef$.
+%    \item Suppose $\labeling(\yvar)=\undef$.   
+%      $\graph_3=(\graph_1\delVar{\yvar})=\graph_1$ and 
+%      $\graph_3\pmovesto{\action}\graph_4$
+%      follows from $\graph_1\pmovesto{\action}\graph_2$.
+%    \end{enumerate}
+    %
+  \end{itemize}
+%
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+  %
+  \begin{itemize}
+  \item In case $\zvar=\xvar$, we get $\graph_3=\graph_1\delVar{\xvar}$.
+%    $\graph_3\pmovesto{\action}\graph_4$ in 
+%    the following subcase of the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$ :  
+%  \begin{enumerate}
+%  \item \label{pre:case:dotNextAssignedA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delEdge{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, %
+%    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedC}%
+    Say
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc_1(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+    We have 
+    $\labeling_3(\xvar)=\undef$, %
+    $\labeling_3(\yvar)\neq\undef$, %
+    Define $\graph_4=\graph_2$. 
+    Observe $\graph_4=\graph_1=\graph_1\delEdge{\xvar}$,
+    and $\graph_1\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedD}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)=\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+%    $\graph_2\in\graph_1\addVar{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedE}%
+%    $\labeling_1(\xvar)=\undef$,%
+%    $\labeling_1(\yvar)\neq\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, where %
+%    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    there are graphs $\graph,\graph'$ such that
+%    $\graph\in\graph_1\addVar{\yvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph'\delEdge{\xvar}$.
+%  \end{enumerate}
+  \item In case $\zvar=\yvar$, we get $\graph_3=\graph_1\delVar{\yvar}$.
+%    $\graph_3\pmovesto{\action}\graph_4$ in 
+%    the following subcase of the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$ :  
+%  \begin{enumerate}
+%  \item \label{pre:case:dotNextAssignedA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delEdge{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, %
+%    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedC}%
+    Say
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc_1(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+    We have 
+   $\labeling_3(\xvar)\neq\undef$, %
+    $\suc_3(\labeling_3(\xvar))=\undef$, %
+    $\labeling_3(\yvar)\neq\undef$, %
+    $\labeling_3(\xvar)\neq\labeling_3(\nil)$ %.
+    Define $\graph_4=\graph_2$. 
+    Observe $\graph_4\in(\graph\delEdge{\yvar})\addVar{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedD}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)=\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+%    $\graph_2\in\graph_1\addVar{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedE}%
+%    $\labeling_1(\xvar)=\undef$,%
+%    $\labeling_1(\yvar)\neq\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, where %
+%    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    there are graphs $\graph,\graph'$ such that
+%    $\graph\in\graph_1\addVar{\yvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph'\delEdge{\xvar}$.
+%  \end{enumerate}
+  \end{itemize}
+  %
+\end{enumerate}
+% order definition
+\item {\bf Vertex Deletion:}
+$\graph_3=\graph_1\delVertex{\vertex}$ for
+some isolated vertex $\vertex$.
+
+We consider
+the five possible forms of $\action$:
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+%
+%We look in the definition of
+%$\graph_1\pmovesto{\action}\graph_2$, at the 
+%case  where 
+%
+%\begin{enumerate}
+%cases for equal
+%
+%\item 
+%\label{pre:js:monotonic:lemma:equal:isolated}
+%Consider the subcases~(\ref{pre:case:equalsA}),
+%~(\ref{pre:case:equalsB}) and
+%~(\ref{pre:case:equalsC}).
+%
+%We have that the vertex $\vertex$ is still 
+%isolated in $\graph_2$.
+%
+%We define $\graph_4=\graph_2\delVertex{\vertex}$.
+%
+%$\graph_4\jlt\graph_2$ follows by definition.
+%
+%$\graph_3\pmovesto{\action}\graph_4$ 
+%follows directly from 
+%$\graph_1\pmovesto{\action}\graph_2$.
+%
+%\item In the case~(\ref{pre:case:equalsD}),
+%we have by assumption that 
+Say 
+$\labeling_1(\xvar)=\undef$, 
+$\labeling_1(\yvar)=\undef$
+and
+$\graph_2=\graph\addEqVar{\xvar}\yvar$ for a
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+We have $\labeling_3(\yvar)=\undef$ and 
+$\labeling_3(\xvar)=\undef$.
+%
+We differentiate two cases depending 
+on whether $\vertex$ is also isolated
+in $\graph_2$.
+%
+\begin{itemize}
+\item 
+$\vertex$ is isolated in $\graph_2$.
+%
+We define $\graph_4=\graph_2\delVertex{\vertex}$.
+%
+Observe $\graph_4=
+(\graph\addEqVar{\xvar}\yvar)\delVertex{\vertex}$ 
+for a
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+Since $\vertex$ is isolated in $\graph_2$, 
+we get 
+$\graph_4
+=\graph'\addEqVar{\xvar}\yvar$
+and 
+$\graph'
+\in(\graph_3\addVar\xvar)$, hence
+$\graph_3\pmovesto{\action}\graph_4$.
+\item $\vertex$ is not isolated in 
+$\graph_2=(\graph\addEqVar{\xvar}\yvar)$ 
+with
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+We define $\graph_4=\graph_2$.
+%
+Observe that $\vertex$ is 
+pointed by $\xvar$ and $\yvar$.
+Also, $\graph\in\graph_3\addVar{\xvar}$ 
+($\xvar$ is made to point to a new vertex).
+\end{itemize}
+%
+%\end{enumerate}
+%
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+Consider the case where 
+%  \begin{enumerate}
+%  \item \label{pre:case:notEqualsA}%
+%   $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:notEqualsB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:notEqualsC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+%  \item \label{pre:case:notEqualsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for a
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+We separate two subcases:
+\begin{itemize}
+\item If $\labeling_2(\xvar)\nequals\vertex$ and 
+  $\labeling_2(\yvar)\nequals\vertex$, then
+  define $\graph_4=\graph_2\delVertex{\vertex}$.
+  Observe: 
+  $\graph_4\in(\graph\delVar{\vertex})\addNotEqVar{\xvar}{\yvar}$ 
+  and $(\graph\delVar{\vertex})\in
+  \left((\graph_1\delVar{\vertex})\addVar{\xvar}\right)$.
+\item If $\labeling_2(\xvar)\equals\vertex$ 
+  ($\labeling_2(\yvar)\equals\vertex$ is similar), then 
+  define $\graph_4=\graph_2$.
+  Observe: 
+  $\graph_2\in(\graph\addNotEqVar{\xvar}{\yvar})$ 
+  and $\graph\in
+  \left((\graph_1\delVar{\vertex})\addVar{\xvar}\right)$.
+  ($\xvar$ is made to point to a new vertex).
+\end{itemize}
+% 
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+%We look in the definition of
+%$\graph_1\pmovesto{\action}\graph_2$, at the 
+%case  where 
+%  \begin{enumerate}
+%  \item \label{pre:case:assignedA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+%  \item \label{pre:case:assignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+%    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:assignedC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$ and %
+%    $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:assignedD}%
+ Say
+ $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\equals\undef$ and %
+    $\graph_2\in(\graph_1\addVar{\yvar})$.
+Define $\graph_4=\graph_2$ if $\labeling_2(\yvar)\equals\vertex$,
+and $\graph_4=\graph_2\delVertex{\vertex}$ otherwise.
+Observe that in both cases we have $\graph_4\in\graph_3\addVar{\yvar}$.
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+%We look in the definition of
+%$\graph_1\pmovesto{\action}\graph_2$, at the 
+%case  where 
+%
+%  \begin{enumerate}
+%  \item \label{pre:case:assignedDotNextA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+%    $\graph_2=\graph_1\delVar{\xvar}$.
+    %
+%  \item \label{pre:case:assignedDotNextB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and
+%    $\graph_2=\graph\delVar{\xvar}$, where
+%    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+%  \item \label{pre:case:assignedDotNextC}%
+Say
+$\labeling_1(\xvar)\neq\undef$, %
+$\labeling_1(\yvar)=\undef$ %
+and there are graphs $\graph,\graph'$ such that
+$\graph_2=\graph'\delVar{\xvar}$, %
+$\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+$\graph\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+We find $\tilde{\graph},\tilde{\graph}'$ such that
+$\graph_4=\tilde{\graph}\delVar{\xvar}$, %
+$\tilde{\graph}'=\tilde{\graph}\addEdgeBetween{\yvar}{\xvar}$ and %
+$\tilde{\graph}=\graph_3\addVarAsPredOf{\xvar}{\yvar}$.
+\begin{itemize}
+\item If $\labeling_2(\yvar)\nequals\vertex$, then
+  define $\graph_4=\graph_2\delVertex{\vertex}$.
+  Choose $\tilde{\graph}'=\graph'\delVertex{\vertex}$ and 
+  $\tilde{\graph}=\graph\delVertex{\vertex}$.
+\item If $\labeling_2(\yvar)=\vertex$, then
+  define $\graph_4=\graph_2$.
+  Choose $\tilde{\graph}'=\graph'$ and 
+  $\tilde{\graph}=\graph$.
+  (the vertex removed in $\graph_3\delVar{\xvar}$ is added 
+  as a predecessor of $\xvar$).
+\end{itemize}
+
+%  \item \label{pre:case:assignedDotNextD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+%    $\graph_2=\graph_1$.
+%  \item \label{pre:case:assignedDotNextE}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and %
+%    $\graph_2=\graph_1\addEdge{\yvar}$.
+%  \item \label{pre:case:assignedDotNextF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ %
+%    there are graphs $\graph,\graph',\graph_3$ such that
+%    $\graph\equals\graph_1\addVar{\xvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\xvar}{\yvar}$, %
+%    $\graph_3\equals\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph_2\in \graph\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph\in \graph\addVar{\xvar}$.
+%    Observe that \xvar\ just serves here as a temporary variable.
+%  \end{enumerate}
+  %
+  \item $\action$ is of the form $\nxt\xvar\assigned\yvar$.
+    %
+    We Consider the case where:
+    %look in the definition of
+    %$\graph_1\pmovesto{\action}\graph_2$, at the 
+    %case  where 
+    %
+%    \begin{enumerate}
+%  \item \label{pre:case:dotNextAssignedA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delEdge{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, %
+%    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedC}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+%    and %
+%    $\graph_2=\graph_1$.
+%  \item \label{pre:case:dotNextAssignedD}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)=\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+%    $\graph_2\in\graph_1\addVar{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+    We find a $\graph'$ such that 
+    $\graph_4=\graph'\delEdge{\xvar}$, where %
+    $\graph'\in\graph_3\addVarAsPredOf{\yvar}{\xvar}$.
+\begin{itemize}
+\item If $\labeling_2(\yvar)\nequals\vertex$, then
+  define $\graph_4=\graph_2\delVertex{\vertex}$.
+  Choose $\graph'=\graph\delVertex{\vertex}$.
+\item If $\labeling_2(\yvar)=\vertex$, then
+  define $\graph_4=\graph_2$.
+  Choose $\graph'=\graph$.
+  (the vertex removed in $\graph_3\delVar{\xvar}$ is added 
+  as a predecessor of $\xvar$).
+\end{itemize}
+%  \item \label{pre:case:dotNextAssignedF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    there are graphs $\graph,\graph'$ such that
+%    $\graph\in\graph_1\addVar{\yvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph'\delEdge{\xvar}$.
+%  \end{enumerate}
+  %
+%
+\end{enumerate}
+% order definition
+\item {\bf Edge Deletion:}
+%
+We consider
+the five possible forms of $\action$:
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+%
+In all four subcases, the deletion of an edge followed by 
+firing the action $\action$ results in the same configuration
+$\graph_4$ as firing $\action$ then deleting the same edge.
+%  We look in the definition of
+%  $\graph_1\pmovesto{\action}\graph_2$, at the 
+%  case  where 
+%  \begin{enumerate}
+%  \item
+%    \label{pre:case:equalsA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+%  \item
+%    \label{pre:case:equalsB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\graph_1\addEqVar{\xvar}{\yvar}$.
+%  \item
+%    \label{pre:case:equalsC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$ and
+%    $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+%  \item
+%    \label{pre:case:equalsD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\graph\addEqVar{\xvar}\yvar$ for some
+%    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+ %
+In all four subcases, the deletion of an edge followed by 
+firing the action $\action$ results in the same configuration
+$\graph_4$ as firing $\action$ then deleting the same edge.
+%  We look in the definition of
+%  $\graph_1\pmovesto{\action}\graph_2$, at the 
+%  case  where 
+  %  
+%  \begin{enumerate}
+%  \item \label{pre:case:notEqualsA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:notEqualsB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:notEqualsC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+%  \item \label{pre:case:notEqualsD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for some
+%    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+    % 
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+In all four subcases, the deletion of an edge followed by 
+firing the action $\action$ results in the same configuration
+$\graph_4$ as firing $\action$ then deleting the same edge.
+%  We look at the case  where 
+%  \begin{enumerate}
+%  \item \label{pre:case:assignedA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+%  \item \label{pre:case:assignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+%    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:assignedC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$ and %
+%    $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:assignedD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\equals\undef$ and %
+%    $\graph_2\in\graph_1\addVar{\yvar}$.
+    % 
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+%
+  We look at the case  where 
+  %
+  %  \begin{enumerate}
+  %  \item \label{pre:case:assignedDotNextA}%
+  $\labeling_1(\xvar)\neq\undef$, %
+  $\labeling_1(\yvar)\neq\undef$, %
+  $\suc(\labeling_1(\yvar))\neq\undef$, %
+  $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+  $\graph_2=\graph_1\delVar{\xvar}$.
+%
+  We distinguish two cases:
+  \begin{itemize}
+  \item If the deleted edge is not the 
+    one between $\yvar$ and its successor;
+    we define $\graph_4=\graph_3\delVar{\xvar}$, and hence 
+    $\graph_3\pmovesto{\action}\graph_4$.
+    Observe $\graph_4\jlt\graph_2$ by deletion of the same edge.
+  \item If the deleted edge is the one between $\yvar$ and its successor.
+    Observe $\labeling_3(\xvar)\neq\undef$, %
+    $\labeling_3(\yvar)\neq\undef$, %
+    $\labeling_3(\yvar)\neq\labeling_3(\nil)$ and 
+    $\suc_3(\labeling_3(\yvar))=\undef$. 
+    We define $\graph_4=\graph\delVar{\xvar}$, where
+    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+    Observe this means $\graph_4=\graph_2$, and 
+    $\graph_3\pmovesto{\action}\graph_4$.
+  \end{itemize}
+  %
+%  \item \label{pre:case:assignedDotNextB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and
+%    $\graph_2=\graph\delVar{\xvar}$, where
+%    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+%  \item \label{pre:case:assignedDotNextC}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ %
+%    and there are graphs $\graph,\graph'$ such that
+%    $\graph_2=\graph'\delVar{\xvar}$, %
+%    $\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+%    $\graph=\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+%  \item \label{pre:case:assignedDotNextD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+%    $\graph_2=\graph_1$.
+%  \item \label{pre:case:assignedDotNextE}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and %
+%    $\graph_2=\graph_1\addEdge{\yvar}$.
+% \item \label{pre:case:assignedDotNextF}%
+%  $\labeling_1(\xvar)=\undef$, %
+%  $\labeling_1(\yvar)=\undef$ %
+%  and $\graph=\graph_1\addEdge{\yvar}$ 
+%  for some $\graph_1\in\graph\addNotEqVar{\nil}{\yvar}$.
+%
+  %  \end{enumerate}
+  %
+  \item $\action$ is of the form $\nxt\xvar\assigned\yvar$.
+  %
+%    We look in the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$, at the 
+%    case  where 
+  %
+ %  \begin{enumerate}
+ %  \item \label{pre:case:dotNextAssignedA}%
+ Say
+   $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delEdge{\xvar}$.
+    We distinguish two cases:
+    \begin{itemize}
+    \item Suppose the deleted edge is not the 
+      one between $\xvar$ and its successor;
+      we define $\graph_4=\graph_3\delEdge{\xvar}$.
+      $\graph_4\jlt\graph_2$ is obtained by deletion of the same edge.
+    \item Suppose the deleted edge is the one between $\xvar$ 
+      and its successor.
+      This means $\graph_2=\graph_3$.
+      We define $\graph_4=\graph_3$.
+    \end{itemize}
+    %  \item \label{pre:case:dotNextAssignedB}%
+  %   $\labeling_1(\xvar)\neq\undef$, %
+ %    $\suc(\labeling_1(\xvar))\neq\undef$, %
+ %    $\labeling_1(\yvar)=\undef$ and %
+ %    $\graph_2=\graph\delEdge{\xvar}$, %
+ %    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+ %  \item \label{pre:case:dotNextAssignedC}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+%    and %
+%    $\graph_2=\graph_1$.
+ %  \item \label{pre:case:dotNextAssignedD}%
+ %    $\labeling_1(\xvar)\neq\undef$, %
+  %   $\suc(\labeling_1(\xvar))=\undef$, %
+  %   $\labeling_1(\yvar)=\undef$, %
+  %   $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+  %   $\graph_2\in\graph_1\addVar{\yvar}$.
+  % \item \label{pre:case:dotNextAssignedE}%
+  %   $\labeling_1(\xvar)=\undef$,%
+   %  $\labeling_1(\yvar)\neq\undef$ and %
+  %   $\graph_2=\graph\delEdge{\xvar}$, where %
+  %   $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+ %  \item \label{pre:case:dotNextAssignedF}%
+ %    $\labeling_1(\xvar)=\undef$, %
+  %   $\labeling_1(\yvar)=\undef$ and %
+ %    there are graphs $\graph,\graph'$ such that
+ %    $\graph\in\graph_1\addVar{\yvar}$, %
+  %   $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+  %   $\graph_2=\graph'\delEdge{\xvar}$.
+  % \end{enumerate}
+  %
+\end{enumerate}
+% order definition
+\item {\bf Contraction:}
+  We let $\vertex$ be the contracted simple vertex in $\graph_3\jlt\graph_1$.
+
+  We consider a case for each of the five possible 
+  forms of $\action$:
+%
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+%
+We look at the case where :
+  % 
+%  \begin{enumerate}
+%  \item
+%    \label{pre:case:equalsA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+%  \item
+%    \label{pre:case:equalsB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\graph_1\addEqVar{\xvar}{\yvar}$.
+%  \item
+%    \label{pre:case:equalsC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$ and
+%    $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+%  \item
+%    \label{pre:case:equalsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph\addEqVar{\xvar}\yvar$ for a
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+We distinguish two cases:
+\begin{itemize}
+\item If $v$ is simple in $\graph_2$; 
+  we define $\graph_4=\graph'\addEqVar{\xvar}\yvar$ with $\graph'$
+  obtained by contracting $\graph$ and eliminating $v$.
+  Observe $\graph'\in\left(\graph_3\addVar{\xvar}\right)$.
+\item If $v$ is not simple in $\graph_2$, 
+  we define $\graph_4=\graph'\addEqVar{\xvar}\yvar$ with $\graph'=\graph$.
+  Observe $\graph'\in\left(\graph_3\addVar{\xvar}\right)$ 
+  by insertion of a simple vertex.
+\end{itemize}
+
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+   We Consider 
+%look in the definition of
+%    $\graph_1\pmovesto{\action}\graph_2$, at the 
+%    case  where :
+%
+%  \begin{enumerate}
+%  \item \label{pre:case:notEqualsA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:notEqualsB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:notEqualsC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$ and %
+%    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+%  \item \label{pre:case:notEqualsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for a 
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+    % 
+We distinguish two cases:
+\begin{itemize}
+\item If $v$ is simple in $\graph_2$; 
+  we define $\graph_4\jlt\graph_2$ by contracting $\graph_2$ and eliminating
+  $v$. Observe $\graph_4\in\graph'\addNotEqVar{\xvar}{\yvar}$ and 
+  $\graph'\in\left(\graph_3\addVar{\xvar}\right)$ for $\graph'$ obtained
+  by contraction of $\graph$ and elimination of $v$.
+%  Hence $\graph_3\pmovesto{\action}\graph_4$.
+\item If $v$ is not simple in $\graph_2$, 
+  we define $\graph_4=\graph_2$.
+  Observe $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ and 
+  $\graph\in\left(\graph_3\addVar{\xvar}\right)$ by insertion of a simple vertex
+  pointed by \xvar for the same $\graph$. 
+  $\graph$ is the same as in the definition of $\graph_1\pmovesto{\action}\graph_2$.
+\end{itemize}
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+We look at the case where 
+%   \begin{enumerate}
+%  \item \label{pre:case:assignedA}%
+%    $\labeling_1(\xvar)\nequals\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$, %
+%    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+%  \item \label{pre:case:assignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+%    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+%  \item \label{pre:case:assignedC}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\nequals\undef$ and %
+%    $\graph_2=\graph_1$.
+    % 
+%  \item \label{pre:case:assignedD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\equals\undef$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+    % 
+We distinguish two cases:
+\begin{itemize}
+\item If $v$ is simple in $\graph_2$; 
+  we define $\graph_4\jlt\graph_2$ by contracting $\graph_2$ and eliminating
+  $v$. Observe $\graph_4\in\graph_3\addVar{\yvar}$.
+\item If $v$ is not simple in $\graph_2$, 
+  we define $\graph_4=\graph_2$.
+  Observe $\graph_4\in\left(\graph_3\addVar{\xvar}\right)$ by the insertion
+  of a simple vertex.
+\end{itemize}
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+%  We look in the definition of
+%  $\graph_1\pmovesto{\action}\graph_2$, at the 
+%  case  where  
+  We consider 
+% \begin{enumerate}
+%  \item \label{pre:case:assignedDotNextA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+%    $\graph_2=\graph_1\delVar{\xvar}$.
+    %
+%  \item \label{pre:case:assignedDotNextB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and
+%    $\graph_2=\graph\delVar{\xvar}$, where
+%    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+%  \item \label{pre:case:assignedDotNextC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    and there are graphs $\graph,\graph'$ such that
+    $\graph_2=\graph'\delVar{\xvar}$, %
+    $\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+%
+    We distinguish two cases:
+    \begin{itemize}
+    \item If $v$ is simple in $\graph_2$; 
+      we define $\graph_4\jlt\graph_2$ by contracting $\graph_2$ and eliminating
+      $v$. Observe 
+      $\graph_4=\tilde{\graph}'\delVar{\xvar}$, %
+      $\tilde{\graph}'=\tilde{\graph}\addEdgeBetween{\yvar}{\xvar}$ and %
+      $\tilde{\graph}\in\graph_3\addVarAsPredOf{\xvar}{\yvar}$ 
+      for $\tilde{\graph}$, resp. $\tilde{\graph}'$, obtained
+      by contraction and elimination of $\vertex$ 
+      in $\graph$, resp. $\graph'$.
+    \item If $\vertex$ is not simple in $\graph_2$, 
+      we define $\graph_4=\graph_2$.
+      Observe 
+      $\graph_4=\graph\delVar{\xvar}$, 
+      $\graph=\graph'\addEdgeBetween{\yvar}{\xvar}$ and 
+      $\graph'\in\graph_3\addVarAsPredOf{\xvar}{\yvar}$ (by insertion
+      of a simple vertex before $\xvar$ and making $\yvar$ point to it).
+      Hence $\graph_3\pmovesto{\action}\graph_4$.
+    \end{itemize}
+%  \item \label{pre:case:assignedDotNextD}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+%    $\graph_2=\graph_1$.
+%  \item \label{pre:case:assignedDotNextE}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+%    $\suc(\labeling_1(\yvar))=\undef$ and %
+%    $\graph_2=\graph_1\addEdge{\yvar}$.
+%  \item \label{pre:case:assignedDotNextF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ %
+%    there are graphs $\graph,\graph',\graph_3$ such that
+%    $\graph\equals\graph_1\addVar{\xvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\xvar}{\yvar}$, %
+%    $\graph_3\equals\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph_2\in \graph\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph\in \graph\addVar{\xvar}$.
+%    Observe that \xvar\ just serves here as a temporary variable.
+%  \end{enumerate}
+  %
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+%
+%  We look in the definition of
+%  $\graph_1\pmovesto{\action}\graph_2$, at the 
+%  case  where 
+We consider 
+  %
+%  \begin{enumerate}
+%  \item \label{pre:case:dotNextAssignedA}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+%    $\graph_2=\graph_1\delEdge{\xvar}$.
+%  \item \label{pre:case:dotNextAssignedB}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))\neq\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    $\graph_2=\graph\delEdge{\xvar}$, %
+%    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedC}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)\neq\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+%    and %
+%    $\graph_2=\graph_1$.
+%  \item \label{pre:case:dotNextAssignedD}%
+%    $\labeling_1(\xvar)\neq\undef$, %
+%    $\suc(\labeling_1(\xvar))=\undef$, %
+%    $\labeling_1(\yvar)=\undef$, %
+%    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+%    $\graph_2\in\graph_1\addVar{\yvar}$.
+%  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,%
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+    We distinguish two cases:
+    \begin{itemize}
+    \item If $v$ is simple in $\graph_2$; 
+      we define $\graph_4\jlt\graph_2$ by contracting $\graph_2$ and eliminating
+      $v$. For $\graph'$ obtained
+      by contraction and elimination of $\vertex$ 
+      from $\graph$, we observe 
+      $\graph_2=\graph'\delEdge{\xvar}$ with 
+      $\graph'\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+    \item If $\vertex$ is not simple in $\graph_2$, 
+      we define $\graph_4=\graph_2$.
+      Observe that
+      $\graph_2=\graph\delEdge{\xvar}$, with %
+      $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$
+      (insertion of a simple vertex before $\xvar$ and making $\yvar$ point to it).
+    \end{itemize}
+%  \item \label{pre:case:dotNextAssignedF}%
+%    $\labeling_1(\xvar)=\undef$, %
+%    $\labeling_1(\yvar)=\undef$ and %
+%    there are graphs $\graph,\graph'$ such that
+%    $\graph\in\graph_1\addVar{\yvar}$, %
+%    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+%    $\graph_2=\graph'\delEdge{\xvar}$.
+%  \end{enumerate}
+  %
+\end{enumerate}
+%
+\end{enumerate}
+
+
+
+% trying with the complete version.
+\forget{
+\begin{enumerate}
+% order definition
+\item {\bf Variable Deletion:}
+$\graph_3=\graph_1\delVar{\zvar}$ for
+some variable $\zvar$.
+
+If $\zvar\not\in\set{\xvar,\yvar}$.
+Define $\graph_4=\graph_2\delVar{\zvar}$.
+Both $\graph_4\jlt\graph_2$ and 
+$\graph_3\pmovesto{\action}\graph_4$ follow immediately
+from the definitions.
+
+We assume $\zvar\in\set{\xvar,\yvar}$
+and consider
+the five possible forms of $\action$:
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+  
+  Let $\zvar=\yvar$ (The case $\zvar=\xvar$ is obtained 
+  by permuting $\xvar$ and $\yvar$ in the definition of 
+  $\graph_1\pmovesto{\action}\graph_2$).
+  We have $\graph_3=\graph_1\delVar\yvar$.
+  Define $\graph_4=\graph_2$.
+  We differentiate three cases in the definition of $\graph_1\pmovesto{\action}\graph_2$:
+  \begin{enumerate}
+  \item
+    If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$ 
+    then $\labeling_3(\xvar)\neq\undef$ and $\labeling_3(\yvar)=\undef$.
+    Observe that $\graph_4=(\graph_2\delVar{\yvar})\addEqVar{\xvar}{\yvar}
+    =\graph_3\addEqVar{\xvar}{\yvar}$, and hence $\graph_3\pmovesto{\action}\graph_4$.
+  \item
+    If $\labeling_1(\xvar)=\undef$,
+    $\labeling_1(\yvar)\neq\undef$ and
+    $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$, we get 
+    $\labeling_3(\xvar)=\undef$,
+    $\labeling_3(\yvar)=\undef$
+    and $\graph_4=\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+    Observe $\graph_1\in(\graph_3\addVar{\xvar})$, hence
+    $\graph_3\pmovesto{\action}\graph_4$.
+  \item
+    If  $\labeling_1(\yvar)=\undef$ we get $\graph_1=\graph_1\delVar{\yvar}=\graph_3$.
+    Hence, $\graph_3\pmovesto{\action}\graph_4$ follows 
+    from $\graph_1\pmovesto{\action}\graph_2$.
+  \end{enumerate}
+%
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+  %
+  \begin{itemize}
+  \item In case $\zvar=\xvar$, we get $\graph_3=\graph_1\delVar{\yvar}$.
+    We define $\graph_4=\graph_2$ and show 
+    $\graph_3\pmovesto{\action}\graph_4$ in each subcase of the definition of
+    $\graph_1\pmovesto{\action}\graph_2$ :  
+    %
+    \begin{enumerate}
+    \item If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+      $\graph_2=\graph_1\delVar{\xvar}$, then we 
+      get $\labeling_3(\xvar)=\undef$ and 
+      $\labeling_3(\yvar)\nequals\undef$.
+      Observe $\graph_3=\graph_1\delVar{\xvar}=\graph_2$ means 
+      $\graph_3\pmovesto{\action}\graph_4$.
+    \item If $\labeling_1(\xvar)\neq\undef$, 
+      $\labeling_1(\yvar)=\undef$ and
+      $\graph_2=\graph\delVar\xvar$ where $\graph=\graph_1\addEqVar{\xvar}{\yvar}$, 
+      then we get $\labeling_3(\xvar)=\undef$ and 
+      $\labeling_3(\yvar)\equals\undef$.
+      Observe $\graph_2$ is in $(\graph_1\delVar{\xvar})\addVar{\yvar}$.
+      This means 
+      $\graph_4\in((\graph_1\delVar{\xvar})\addVar{\yvar})=(\graph_3\addVar{\yvar})$,
+      and hence $\graph_3\pmovesto{\action}\graph_4$.
+    \item If $\labeling_1(\xvar)=\undef$ we get $\graph_3=\graph_1$, and 
+      $\graph_3\pmovesto{\action}\graph_4$
+      follows from $\graph_1\pmovesto{\action}\graph_2$.
+    \end{enumerate}
+    %
+  \item In case $\zvar=\yvar$, we get $\graph_3=\graph_1\delVar{\yvar}$.
+    We define $\graph_4=\graph_2$ and show 
+    $\graph_3\pmovesto{\action}\graph_4$ in each subcase of the definition of
+    $\graph_1\pmovesto{\action}\graph_2$ :  
+    \begin{enumerate}
+    \item If $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+      $\graph_2=\graph_1\delVar{\xvar}$, 
+      then we get $\labeling_3(\xvar)\neq\undef$, and
+      $\labeling_3(\yvar)=\undef$.
+      Observe $\graph_4\in\graph_1\delVar\xvar$ 
+      with $\graph_1=\graph_3\addEqVar{\xvar}{\yvar}$.
+      We deduce $\graph_3\pmovesto{\action}\graph_4$.
+    \item If $\labeling_1(\xvar)=\undef$, 
+      $\labeling_1(\yvar)\nequals\undef$ and 
+      $\graph_2=\graph_1$, we get $\labeling_3(\xvar)=\undef$ and
+      $\labeling_3(\yvar)\equals\undef$.
+      Observe that $\graph_1\in(\graph_1\delVar{\yvar})\addVar{\yvar}$.
+      Hence, $\graph_4\in(\graph_3\addVar{\yvar})$.
+      We deduce $\graph_3\pmovesto{\action}\graph_4$.    
+    \item If $\labeling_1(\yvar)=\undef$ we get $\graph_3=\graph_1$
+      and define $\graph_4=\graph_2$.     
+      Hence, $\graph_3\pmovesto{\action}\graph_4$ follows 
+      from $\graph_1\pmovesto{\action}\graph_2$.
+    \end{enumerate}
+  \end{itemize}
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+  Let $\zvar=\yvar$.
+  (The case $\zvar=\xvar$ is obtained 
+  by permuting $\xvar$ and $\yvar$ in the definition of 
+  $\graph_1\pmovesto{\action}\graph_2$).
+  We have $\graph_3=\graph_1\delVar\yvar$.
+  Define $\graph_4=\graph_2$.
+  We differentiate three cases in the 
+  definition of $\graph_1\pmovesto{\action}\graph_2$:
+  \begin{enumerate}
+  \item If $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ 
+    and $\graph_2=\graph_1$, we get $\labeling_3(\xvar)\neq\undef$, 
+    and $\labeling_3(\yvar)=\undef$.
+    Observe that $\graph_2\in\graph_3\addNotEqVar{\xvar}{\yvar}$, and 
+    deduce $\graph_3\pmovesto{\action}\graph_4$.
+  \item If $\labeling_1(\xvar)=\undef$, 
+    $\labeling_1(\yvar)\neq\undef$ and 
+    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$, we get 
+    $\labeling_3(\xvar)=\undef$, 
+    $\labeling_3(\yvar)=\undef$.
+    Observe $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$ and 
+    $\graph_1\in\left(\graph_3\addVar{\xvar}\right)$.
+    We deduce $\graph_3\pmovesto{\action}\graph_4$.
+  \item If $\labeling_1(\yvar)=\undef$ 
+    we get $\graph_3=\graph_1$ and 
+    $\graph_3\pmovesto{\action}\graph_4$ 
+    follows directly from 
+    $\graph_1\pmovesto{\action}\graph_2$.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+  \begin{itemize}
+  \item In case $\zvar=\xvar$, we get $\graph_3=\graph_1\delVar{\xvar}$.
+    We define $\graph_4=\graph_2$ and show 
+    $\graph_3\pmovesto{\action}\graph_4$ in each subcase of the definition of
+    $\graph_1\pmovesto{\action}\graph_2$ :  
+    \begin{enumerate}
+    \item Suppose $\labeling_1(\yvar)\neq\undef$, 
+      $\suc_1(\labeling_1(\yvar))\neq\undef$, 
+      $\suc_1(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+      $\graph_2=\graph_1\delVar{\xvar}$.
+      We have $\labeling_3(\xvar)=\undef$, %
+      $\labeling_3(\yvar)\neq\undef$ and
+      $\suc_3(\labeling_3(\yvar))\neq\undef$. 
+      $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.
+    \item Suppose $\labeling_1(\xvar)\neq\undef$, 
+      $\labeling_1(\yvar)\neq\undef$, 
+      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, 
+      $\suc(\labeling_1(\yvar))=\undef$ and
+      $\graph_2=\graph\delVar{\xvar}$, where
+      $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+      We have $\labeling_3(\xvar)=\undef$, 
+      $\labeling_3(\yvar)\neq\undef$, 
+      $\labeling_3(\yvar)\neq\labeling_3(\nil)$ and  
+      $\suc_3(\labeling_3(\yvar))=\undef$.
+      This means $\graph_4\in(\graph_3\addEdge{\yvar})$.
+      $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.
+    \item Suppose $\labeling_1(\xvar)\neq\undef$, %
+      $\labeling_1(\yvar)=\undef$ %
+      and there are graphs $\graph_5,\graph_6$ such that
+      $\graph_2=\graph_5\delVar{\xvar}$, %
+      $\graph_6=\graph_5\addEdgeBetween{\yvar}{\xvar}$ and %
+      $\graph_6=\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+      We have $\labeling_3(\xvar)=\undef$ and 
+      $\labeling_3(\yvar)=\undef$.
+      Observe $\graph_2\in\graph_7\addEdge{\yvar}$ for
+      $\graph_7\in(\graph_1\delVar{\xvar})\addVar{\yvar}$
+      such that $\labeling_7(\yvar)\neq\labeling_7(\nil)$ 
+      (take $\graph_7=\graph_2\delEdge{\yvar}$).
+      This means $\graph_4\in\graph\addEdge{\yvar}$
+      for $\graph_7\in(\graph_3\addVar{\yvar})$
+      such that $\labeling_7(\yvar)\neq\labeling_7(\nil)$.
+      $\graph_3\pmovesto{\action}\graph_4$ follows from the definitions.    
+    \item If $\labeling_1(\xvar)=\undef$ then 
+      $\graph_3=(\graph_1\delVar{\xvar})=\graph_1$ and 
+      $\graph_3\pmovesto{\action}\graph_4$
+      follows from $\graph_1\pmovesto{\action}\graph_2$.
+    \end{enumerate}
+    %
+  \end{itemize}
+%
+  \begin{itemize}
+  \item In case $\zvar=\yvar$, we get $\graph_3=\graph_1\delVar{\yvar}$.
+    We define $\graph_4=\graph_2$ and show 
+    $\graph_3\pmovesto{\action}\graph_4$ in each subcase of the definition of
+    $\graph_1\pmovesto{\action}\graph_2$ :  
+    %
+    \begin{enumerate}
+    \item Suppose $\labeling_1(\yvar)\neq\undef$, %
+      $\suc(\labeling_1(\yvar))\neq\undef$, %
+      $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+      $\graph_2=\graph_1\delVar{\xvar}$. 
+      We have   $\labeling_3(\xvar)\neq\undef$, %
+      $\labeling_3(\yvar)=\undef$.
+      Observe 
+      $\graph_1=(\graph_1\delEdge{\yvar})\addEdgeBetween{\yvar}{\xvar}$
+      and $(\graph_1\delEdge{\yvar})\in(\graph_1\delVar{\yvar})
+      \addVarAsPredOf{\yvar}{\xvar}$.
+      Together with $\graph_4=\graph_2$ and $\graph_3=\graph_1\delVar{\yvar}$,
+      we get $\graph_4=\graph_1\delVar{\xvar}$
+     \item Suppose $\labeling_1(\xvar)\neq\undef$, %
+      $\labeling_1(\yvar)\neq\undef$, %
+      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+      $\suc(\labeling_1(\yvar))=\undef$ and
+      $\graph_2=\graph\delVar{\xvar}$, where
+      $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+      We have  $\labeling_3(\xvar)\neq\undef$, %
+      $\labeling_3(\yvar)=\undef$.
+    \item Suppose $\labeling_1(\xvar)=\undef$, %
+      $\labeling_1(\yvar)\neq\undef$, %
+      $\suc(\labeling_1(\yvar))\neq\undef$ and %
+      $\graph_2=\graph_1$.
+      We have  $\labeling_3(\xvar)=\undef$, %
+      $\labeling_3(\yvar)=\undef$.
+    \item Suppose $\labeling_1(\xvar)=\undef$, %
+      $\labeling_1(\yvar)\neq\undef$, %
+      $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+      $\suc(\labeling_1(\yvar))=\undef$ and %
+      $\graph_2=\graph_1\addEdge{\yvar}$.
+      We have $\labeling_3(\xvar)=\undef$, %
+      $\labeling_3(\yvar)=\undef$.
+    \item Suppose $\labeling(\yvar)=\undef$.   
+      $\graph_3=(\graph_1\delVar{\yvar})=\graph_1$ and 
+      $\graph_3\pmovesto{\action}\graph_4$
+      follows from $\graph_1\pmovesto{\action}\graph_2$.
+    \end{enumerate}
+    %
+  \end{itemize}
+%
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+  %
+  \begin{enumerate}
+  \item \label{pre:case:dotNextAssignedA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delEdge{\xvar}$.
+  \item \label{pre:case:dotNextAssignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, %
+    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+  \item \label{pre:case:dotNextAssignedC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:dotNextAssignedD}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)=\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,%
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+  \item \label{pre:case:dotNextAssignedF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    there are graphs $\graph,\graph'$ such that
+    $\graph\in\graph_1\addVar{\yvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+    $\graph_2=\graph'\delEdge{\xvar}$.
+  \end{enumerate}
+  %
+\end{enumerate}
+% order definition
+\item {\bf Vertex Deletion:}
+$\graph_3=\graph_1\delVertex{\vertex}$ for
+some isolated vertex $\vertex$.
+
+We consider
+the five possible forms of $\action$:
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+%
+\begin{enumerate}
+%cases for equal
+%
+\item 
+\label{pre:js:monotonic:lemma:equal:isolated}
+Consider the subcases~(\ref{pre:case:equalsA}),
+~(\ref{pre:case:equalsB}) and
+~(\ref{pre:case:equalsC}).
+%
+We have that the vertex $\vertex$ is still 
+isolated in $\graph_2$.
+%
+We define $\graph_4=\graph_2\delVertex{\vertex}$.
+%
+$\graph_4\jlt\graph_2$ follows by definition.
+%
+$\graph_3\pmovesto{\action}\graph_4$ 
+follows directly from 
+$\graph_1\pmovesto{\action}\graph_2$.
+%
+\item In the case~(\ref{pre:case:equalsD}),
+we have by assumption that 
+$\labeling_1(\xvar)=\undef$, 
+$\labeling_1(\yvar)=\undef$
+and
+$\graph_2=\graph\addEqVar{\xvar}\yvar$ for some
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+We differentiate two cases depending 
+on whether $\vertex$ is also isolated
+in $\graph_2$.
+%
+\begin{itemize}
+\item 
+$\vertex$ is isolated in $\graph_2$.
+%
+From $\graph_3=\graph_1\delVertex{\vertex}$
+we get $\labeling_3(\xvar)=\undef$ and 
+$\labeling_3(\yvar)=\undef$.
+%
+We define $\graph_4=\graph_2\delVertex{\vertex}$.
+%
+From the definition of $\graph_2$ we get 
+$\graph_4=
+(\graph\addEqVar{\xvar}\yvar)\delVertex{\vertex}$ 
+for some
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+Since $\vertex$ is isolated in $\graph_2$, 
+we get 
+$\graph_4
+=\graph'\addEqVar{\xvar}\yvar$
+and 
+$\graph'
+\in((\graph_1\delVertex{\vertex})\addVar\xvar)$, hence
+$\graph_3\pmovesto{\action}\graph_4$.
+\item $\vertex$ is not isolated in 
+$\graph_2=(\graph\addEqVar{\xvar}\yvar)$ 
+for some
+$\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+%
+We define $\graph_4=\graph$.
+%
+Observe that $\vertex$ is not isolated in 
+$\graph_4$.
+%
+Also $\graph_4\jlt\graph_2$ by deletion of the
+variable $\yvar$.
+%
+By construction, we get 
+$\graph_3\pmovesto{\action}\graph_4$.
+\end{itemize}
+%
+\end{enumerate}
+%
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+  \item \label{pre:case:assignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:assignedC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$ and %
+    $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:assignedD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\equals\undef$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+  \begin{enumerate}
+  \item \label{pre:case:notEqualsA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:notEqualsB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:notEqualsC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+  \item \label{pre:case:notEqualsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for some
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedDotNextA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$, %
+    $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    %
+  \item \label{pre:case:assignedDotNextB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and
+    $\graph_2=\graph\delVar{\xvar}$, where
+    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+  \item \label{pre:case:assignedDotNextC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    and there are graphs $\graph,\graph'$ such that
+    $\graph_2=\graph'\delVar{\xvar}$, %
+    $\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph=\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+  \item \label{pre:case:assignedDotNextD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:assignedDotNextE}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and %
+    $\graph_2=\graph_1\addEdge{\yvar}$.
+  \item \label{pre:case:assignedDotNextF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    there are graphs $\graph,\graph',\graph_3$ such that
+    $\graph\equals\graph_1\addVar{\xvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\xvar}{\yvar}$, %
+    $\graph_3\equals\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph_2=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph_2\in \graph\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph\in \graph\addVar{\xvar}$.
+    Observe that \xvar\ just serves here as a temporary variable.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+  %
+  \begin{enumerate}
+  \item \label{pre:case:dotNextAssignedA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delEdge{\xvar}$.
+  \item \label{pre:case:dotNextAssignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, %
+    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+  \item \label{pre:case:dotNextAssignedC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:dotNextAssignedD}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)=\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,%
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+  \item \label{pre:case:dotNextAssignedF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    there are graphs $\graph,\graph'$ such that
+    $\graph\in\graph_1\addVar{\yvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+    $\graph_2=\graph'\delEdge{\xvar}$.
+  \end{enumerate}
+  %
+%
+\end{enumerate}
+% order definition
+\item {\bf Edge Deletion:}
+$\graph=\gupdate{\graph'}{\suc}\updateby{\vertex}{\undef}$ 
+for some
+$\vertex\in\vertices'$.
+%
+We consider
+the five possible forms of $\action$:
+%
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+  % 
+  \begin{enumerate}
+  \item
+    \label{pre:case:equalsA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+  \item
+    \label{pre:case:equalsB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph_1\addEqVar{\xvar}{\yvar}$.
+  \item
+    \label{pre:case:equalsC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$ and
+    $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+  \item
+    \label{pre:case:equalsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph\addEqVar{\xvar}\yvar$ for some
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+  \item \label{pre:case:assignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:assignedC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$ and %
+    $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:assignedD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\equals\undef$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+  \begin{enumerate}
+  \item \label{pre:case:notEqualsA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:notEqualsB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:notEqualsC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+  \item \label{pre:case:notEqualsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for some
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedDotNextA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$, %
+    $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    %
+  \item \label{pre:case:assignedDotNextB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and
+    $\graph_2=\graph\delVar{\xvar}$, where
+    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+  \item \label{pre:case:assignedDotNextC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    and there are graphs $\graph,\graph'$ such that
+    $\graph_2=\graph'\delVar{\xvar}$, %
+    $\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph=\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+  \item \label{pre:case:assignedDotNextD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:assignedDotNextE}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and %
+    $\graph_2=\graph_1\addEdge{\yvar}$.
+  \item \label{pre:case:assignedDotNextF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    there are graphs $\graph,\graph',\graph_3$ such that
+    $\graph\equals\graph_1\addVar{\xvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\xvar}{\yvar}$, %
+    $\graph_3\equals\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph_2=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph_2\in \graph\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph\in \graph\addVar{\xvar}$.
+    Observe that \xvar\ just serves here as a temporary variable.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+  %
+  \begin{enumerate}
+  \item \label{pre:case:dotNextAssignedA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delEdge{\xvar}$.
+  \item \label{pre:case:dotNextAssignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, %
+    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+  \item \label{pre:case:dotNextAssignedC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:dotNextAssignedD}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)=\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,%
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+  \item \label{pre:case:dotNextAssignedF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    there are graphs $\graph,\graph'$ such that
+    $\graph\in\graph_1\addVar{\yvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+    $\graph_2=\graph'\delEdge{\xvar}$.
+  \end{enumerate}
+  %
+\end{enumerate}
+% order definition
+\item {\bf Contraction:}
+ There are
+ vertices $\vertex_1,\vertex_2,\vertex_3\in\vertices'$ and graphs
+ $\graph_1,\graph_2$ such that $\vertex_2$ is simple,
+ $\suc'(\vertex_1)=\vertex_2$, $\suc'(\vertex_2)=\vertex_3$,
+ $\graph_1=\gupdate{\graph'}{\suc}\updateby{\vertex_2}{\undef}$,
+ $\graph_2=\gupdate{\graph_1}{\suc}\updateby{\vertex_1}{\vertex_3}$
+ and $\graph=\graph_2\delVertex{\vertex_2}$.
+
+We consider
+the five possible forms of $\action$:
+%
+%
+\begin{enumerate}
+%actions
+\item $\action$ is of the form $\xvar\equals\yvar$.
+  % 
+  \begin{enumerate}
+  \item
+    \label{pre:case:equalsA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+  \item
+    \label{pre:case:equalsB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph_1\addEqVar{\xvar}{\yvar}$.
+  \item
+    \label{pre:case:equalsC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$ and
+    $\graph_2=\graph_1\addEqVar{\yvar}{\xvar}$.
+  \item
+    \label{pre:case:equalsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+    $\graph_2=\graph\addEqVar{\xvar}\yvar$ for some
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    % 
+  \item \label{pre:case:assignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and
+%    $\graph_2=\left(\graph_1\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+    $\graph_2=\graph\delVar\xvar$ where $\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:assignedC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$ and %
+    $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:assignedD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\equals\undef$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\nequals\yvar$.
+  %  
+  \begin{enumerate}
+  \item \label{pre:case:notEqualsA}%
+    $\labeling_1(\xvar)\nequals\undef$, %
+    $\labeling_1(\yvar)\nequals\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\yvar)$ and $\graph_2=\graph_1$.
+    % 
+  \item \label{pre:case:notEqualsB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:notEqualsC}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2\in\graph_1\addNotEqVar{\yvar}{\xvar}$.
+    % 
+  \item \label{pre:case:notEqualsD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2\in\graph\addNotEqVar{\xvar}{\yvar}$ for some
+    $\graph\in\left(\graph_1\addVar{\xvar}\right)$.
+    % 
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+  \begin{enumerate}
+  \item \label{pre:case:assignedDotNextA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$, %
+    $\suc(\labeling_1(\yvar))=\labeling_1(\xvar)$ and
+    $\graph_2=\graph_1\delVar{\xvar}$.
+    %
+  \item \label{pre:case:assignedDotNextB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and
+    $\graph_2=\graph\delVar{\xvar}$, where
+    $\graph=\graph_1\addEdgeBetween{\yvar}{\xvar}$.
+  \item \label{pre:case:assignedDotNextC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    and there are graphs $\graph,\graph'$ such that
+    $\graph_2=\graph'\delVar{\xvar}$, %
+    $\graph'=\graph\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph=\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+  \item \label{pre:case:assignedDotNextD}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\yvar))\neq\undef$ and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:assignedDotNextE}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\yvar)\neq\labeling_1(\nil)$, %
+    $\suc(\labeling_1(\yvar))=\undef$ and %
+    $\graph_2=\graph_1\addEdge{\yvar}$.
+  \item \label{pre:case:assignedDotNextF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ %
+    there are graphs $\graph,\graph',\graph_3$ such that
+    $\graph\equals\graph_1\addVar{\xvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\xvar}{\yvar}$, %
+    $\graph_3\equals\graph'\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph_2=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph_2\in \graph\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph\in \graph\addVar{\xvar}$.
+    Observe that \xvar\ just serves here as a temporary variable.
+  \end{enumerate}
+  %
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+  %
+  \begin{enumerate}
+  \item \label{pre:case:dotNextAssignedA}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+    $\graph_2=\graph_1\delEdge{\xvar}$.
+  \item \label{pre:case:dotNextAssignedB}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))\neq\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, %
+    where $\graph=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$.
+  \item \label{pre:case:dotNextAssignedC}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)\neq\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ %
+    and %
+    $\graph_2=\graph_1$.
+  \item \label{pre:case:dotNextAssignedD}%
+    $\labeling_1(\xvar)\neq\undef$, %
+    $\suc(\labeling_1(\xvar))=\undef$, %
+    $\labeling_1(\yvar)=\undef$, %
+    $\labeling_1(\xvar)\neq\labeling_1(\nil)$ and %
+    $\graph_2\in\graph_1\addVar{\yvar}$.
+  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling_1(\xvar)=\undef$,%
+    $\labeling_1(\yvar)\neq\undef$ and %
+    $\graph_2=\graph\delEdge{\xvar}$, where %
+    $\graph\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$.
+  \item \label{pre:case:dotNextAssignedF}%
+    $\labeling_1(\xvar)=\undef$, %
+    $\labeling_1(\yvar)=\undef$ and %
+    there are graphs $\graph,\graph'$ such that
+    $\graph\in\graph_1\addVar{\yvar}$, %
+    $\graph'\in\graph\addVarAsPredOf{\yvar}{\xvar}$ and %
+    $\graph_2=\graph'\delEdge{\xvar}$.
+  \end{enumerate}
+  %
+\end{enumerate}
+%
+\end{enumerate}.
+}

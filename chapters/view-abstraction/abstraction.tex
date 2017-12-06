@@ -1,0 +1,167 @@
+%% ====================================================================
+\section{Abstract Domain}
+\label{section:view:abstraction}
+\index{Abstraction}%
+%% ====================================================================
+
+
+The \emph{view abstraction} considers the configurations of the system
+from the perspective of a few \emph{fixed} number of processes.
+%
+The abstraction is parameterized by a constant $k$, and any
+configuration is intuitively ``broken down into pieces'' of size~(at
+most)~$k$, called \emph{views}.
+%
+A view retains the information about $k$ processes from a
+configuration and abstracts away the other processes. %
+There is a certain freedom in what information to retain and what to
+abstract away. %
+For the $k$ remaining processes, the information could be partial
+or %stay
+intact, while the information about the abstracted processes could be
+fully or partially discarded. %
+This choice defines the level of abstraction that transforms
+configurations into views. %
+% We will see in Section~\ref{section:view:contexts} that there is a
+% fine and simple balance to strike in what information to retain and
+% what to abstract away.
+
+%\smallskip%
+%% ********************************************************************
+\KW{Abstraction}%
+%% ********************************************************************
+We first define a simple abstraction: for every $k\in\nat$, the $k$
+chosen processes are retained intact, while the other abstracted
+processes are ignored. %
+\index{View}%
+A view is then a subword of a configuration, using the subword
+relation~$\subword$ from Section~\ref{section:upward:closed}. %
+% We present another variant in Section~\ref{section:view:contexts}.
+% 
+We use $\views$ to denote the set of all views (and $\viewsof k$ for
+the set of views of size up to~$k$). %
+% (i.e.\ $\confsof k=\setcomp{c\in\confs}{\sizeof{c}\leq k}, \viewsof
+% k=\confs_{\leq k}$).
+Since views are here configurations of smaller sizes, we have hence
+that %
+$\viewsof{k} = \setcomp{v\in\views}{\sizeof{v}\leq k} \subseteq
+\setcomp{c\in\confs}{\sizeof{c}\leq k}$.
+%
+The \emph{abstraction function} \index{Abstraction}%
+$\Absof k : \confs\mapsto 2^{\viewsof k}$ maps a~configuration $c$
+into the set of
+all its views (subwords) of size up to $k$:
+%
+$$\Absof k (c) = \setcomp{v\in\viewsof k}{v\subword c}$$
+% 
+We lift $\Absof k$ to sets of configurations as usual.
+% 
+% Recall that we restrain the presentation in this chapter to linear
+% topology. %
+% % Formally, 
+% We define the downward-closure of a~configuration~$c$, using the
+% subword relation~$\subword$ from Section~\ref{section:upward:closed},
+% as the set $\setcomp{d\in\confs}{d\subword c}$ of all smaller (in
+% size) configurations that are subword of~$c$. %
+% We use $\dcl{c}$ to denote it.
+% % 
+Observe that views ressemble configurations of smaller sizes but this
+does not always need to be the case: they can be complex abstract
+entities (c.f.\ Section~\ref{section:view:contexts}). %
+
+%% ********************************************************************
+\KW{Concretization}%
+%% ********************************************************************
+The \emph{concretization function} \index{Concretization}%
+$\Concof k : 2^{\viewsof k}\mapsto 2^\confs$ takes as input a~set of
+views $V\subseteq\viewsof k$, and returns the set of configurations
+that can be reconstructed from the views in $V$.
+%
+In other words,\footnote{In the field of 
+  abstract interpretation, $(\Absof k, \Concof k)$ forms a
+  Galois connection (see Paper~\ref{paper:SAS14} and~\ref{paper:STTT15}).%
+  \index{Galois Connection}%
+}
+$$\Concof{k}(V) =
+\setcomp{c\in\confs}{\Absof{k}(c)\subseteq V}$$
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  \centering
+  \tikzinput{img/view-example-abstraction}
+  \caption{Consider the configurations on the left, theirs views in
+    the middle and their concretization on the right. %
+    The concretization contains the original set of configurations,
+    but also the extra configuration \protect\w{1,2,4}, %
+    i.e.\ this abstraction is an over-approximation.}
+  \label{figure:view:abstraction:example}
+\end{figure}
+\endgroup
+
+%\smallskip%
+%% ********************************************************************
+\KW{View work collectively}%
+%% ********************************************************************
+In general, the set of views \emph{collectively} represent a set of
+reachable configurations.
+%
+There is an important subtlety here to catch: No information about
+configurations is necessarily destorted or ignored in this
+abstraction, the configurations are merely scattered across views. If
+the information about a given process is ignored in one view, it will
+necessarily appear in another view.
+%
+It is an over-approximation because the views can reconstruct the
+configurations they emerge from, but they could also be recombined to
+form new configurations that were not part of the original system, for
+any size, as illustrated in the example from
+Figure~\ref{figure:view:abstraction:example}.
+
+%% ********************************************************************
+%\paragraph{Precision.}
+\KW{Precision}%
+\index{Precision of View Abstraction}%
+%% ********************************************************************
+It is important to observe the precision of the set
+$\Concof{k}(V)$. As we just mentioned, the views work collectively to
+represent the set of configurations. If a view, say \w{1,2}, is
+recombined into the configuration \w{1,2,3} in $\Concof{2}(V)$, it
+must be the case that the views \w{1,3} and \w{2,3} were \emph{also}
+present in $V$.
+%
+\index{Process correlation}%
+The correlation between the $k$ processes appearing in a~view
+increases the precision of the abstraction. In other words, we get
+more precise recombinations with larger $k$, i.e.\ formally, for a set
+of configurations $X\in\confs$,
+$$
+\Concof{1}(\Absof{1}(X))\supseteq 
+\Concof{2}(\Absof{2}(X))\supseteq
+\Concof{3}(\Absof{3}(X))\supseteq
+% \cdots\supseteq
+% \Concof{k}(\Absof{k}(X))\supseteq
+\cdots\supseteq X$$
+
+%% ********************************************************************
+%\paragraph{Abstract post-image.}
+\KW{Concrete post-image}%
+\index{Post-image operator}%
+%% ********************************************************************
+For a~set of configurations $X\subseteq\confs$, we define the
+\emph{post-image} of $X$ as the set %
+$\post(X) = \setcomp{\delta(c,i)}{c\in X,
+  i\leq\sizeof{c},\delta\in\Delta} = \setcomp{c'}{c\in X, c\trans
+  c'}$.
+%% ********************************************************************
+%\paragraph{Abstract post-image.}
+\KW{Abstract post-image}%
+\index{Abstract Post-image operator}%
+%% ********************************************************************
+%
+The \emph{abstract post-image} of a~set of views
+$V\subseteq\viewsof{k}$ is defined, as usual, as the composition
+$\apost{k}(V) = \Absof{k}(\post(\Concof{k}(V)))$.
+
+
+

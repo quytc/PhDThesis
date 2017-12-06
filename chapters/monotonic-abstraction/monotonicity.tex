@@ -1,0 +1,158 @@
+%% ====================================================================
+\section{Monotonicity}
+%% ====================================================================
+\KW{Monotonicity}%
+\index{Monotonicity}%
+%% ********************************************************************
+Monotonicity is a mathematical notion that comes from calculus,%
+\footnote{In calculus, a function $f$ defined on a subset \domain\ of
+  the real numbers \reals\ is called monotonic if it is either
+  entirely increasing \emph{or} decreasing. It is called increasing
+  (resp.\ decreasing), if for all $x$ and $y$ in \reals\ such that $x
+  \leq y$, it holds that $f(x)\leq f(y)$ (resp.\ $f(x)\geq f(y)$). So
+  $f$ either preserves the order, or reverses the order, consistently
+  over the domain \domain .} %
+which deals with functions over sets that preserve a given preorder
+$\preorder$. For a monotonic function $f$ over a domain \domain ,
+whenever two elements $a$ and $b$ in \domain\ are ordered such that
+$a\preorder b$, it holds that $f(a) \preorder f(b)$.
+
+%% ********************************************************************
+\KW{Monotonic Systems}%
+%% ********************************************************************
+%
+\noindent%
+\begin{wrapfigure}{r}[0pt]{0.45\linewidth}
+  \centering
+  \tikzinput{img/monotonicity}
+  \caption{Monotonicity of the rule~$\delta$ with respect to the
+    subword relation~$\subword$.}
+  \label{figure:monotonicity}
+\end{wrapfigure}
+%
+A parameterized system \mbox{${\parsys}=(\locs,\rules)$} is
+\emph{monotonic} (with respect to preorder $\subword$),
+% from Section~\ref{section:upward:closed})%
+if for each rule $\delta\in\rules$ and configurations $c_1$, $c_2$ and
+$c_3$, such that $c_1\transof{\delta} c_2$ and $c_1\subword c_3$, then
+there exists a configuration $c_4$ such that $c_3\transof{\delta} c_4$
+and $c_2\subword c_4$. That is to say, if we can fire a transition on
+a configuration, we can also fire it on a larger configuration, and
+the results are ordered accordingly.
+%
+This is illustrated in Figure~\ref{figure:monotonicity}.
+% For a parameterized system \mbox{${\parsys}=(\locs,\rules)$}, if the
+% rules from \rules\ are monotonic with respect to preorder $\subword$
+% from Section~\ref{section:upward:closed}, it is possible to transform
+% an upward-closed set of configurations into another upward-closed set.
+% %
+% %In other words, the upward-closedness is preserved and
+% The parameterized system \parsys\ is called \emph{monotonic} w.r.t.\
+% $\subword$.
+% %
+% Indeed, consider a monotonic rule $\delta\in\rules$ and the
+% configurations $c_1$, $c_2$ and $c_3$, such that $c_1\transof{\delta}
+% c_2$ and $c_1\subword c_3$, then there exists a configuration $c_4$
+% such that $c_3\transof{\delta} c_4$ and $c_2\subword c_4$. That is to
+% say, if we can fire a transition on a configuration, we can also fire
+% it on a larger configuration, and the results are ordered accordingly.
+
+In~\cite{Parosh:Bengt:Karlis:Tsay:general}, it is shown that for
+monotonic systems, the upward-closedness is preserved when computing
+predecessors, that is, if a set is upward-closed, so is its
+pre-image. This is an important property that we use in the next
+section.
+
+%% ********************************************************************
+\KW{Universal not monotonic}%
+\index{Non-Monotonicity}%
+%% ********************************************************************
+However, systems are not always monotonic.
+%
+This is for example the case if \rules\ contains an universally
+quantified global transition. For example, if $\delta\in\rules$ is of
+the form $\quantrule{s}{d}{\forall}{\neq}{\set{w}}$, the subword
+relation is not necessarily preserved by $\delta$ as depicted in
+Figure~\ref{figure:universal:not:monotonic}.
+
+\noindent%
+\begin{wrapfigure}{l}[0pt]{0.6\linewidth}
+  %\centering
+  \tikzinput[\linewidth]{img/universal-not-monotonic}
+  %\setlength{\abovecaptionskip}{-1em plus 0.3em}
+  \caption{Universal transitions are not monotonic. Therefore, we add
+    transitions and over-approximate the transition relation
+    $\trans$.}
+  \label{figure:universal:not:monotonic}
+  \smallskip
+\end{wrapfigure}
+%
+%% ********************************************************************
+\KW{Reachability for MTS is decidable}%
+\index{Reachability}%
+\index{Decidability}%
+%% ********************************************************************
+It has been shown that, for monotonic systems, the problem of
+determining if a set of bad configurations is reachable from some
+initial configurations is decidable~\cite{MTSdecidable}, 
+%despite an infinite state-space.
+even though the state-space is infinite.
+
+%% ********************************************************************
+\KW{Monotonic Abstraction}%
+\index{Abstraction}%
+\index{Over-approximation}%
+%% ********************************************************************
+Therefore, the strategy is to make the system monotonic by introducing
+an over-approximation.
+% The new abstract system will contain more
+% transitions. All transitions from the original system are preserved.
+Existential and local transitions are preserved from the original
+system as-is, since they are monotonic.
+%
+Universal transitions, however, are not and we over-approximate them
+using the scenario depicted in
+Figure~\ref{figure:universal:not:monotonic}.
+%
+Informally, for every rule $\delta\in\rules$, we define a new
+successor function $\abstrans\delta$ such that $\abstrans\delta$
+coincide with $\delta$ if $\delta$ is a local transition or an
+existential global transition. In the case where $\delta$ is an
+universal global transition, %
+% say, of the form
+%$\quantrule{\src}{\dst}{\forall}{\sim}{\witnesses}$
+we define $\delta$ in the following manner (here only giving the
+intuition):
+%
+We first remove the process states from the configuration, if they
+violate the guard, i.e.\ if they don't respect the global condition
+from the rule (which effectively disables the transition).
+%
+This creates a potentially smaller configuration on which we can apply
+$\delta$ as usual. We say that we ``go down on the ordering'' before
+applying~$\delta$.
+
+The successor functions $\abstrans\delta$ form a new set
+$\abstrans\rules$ and the abstract parameterized system %
+$\abstrans\parsys = (\locs,\abstrans\rules)$ induces a transition
+system $(\confs,\atrans)$ that is now monotonic and preserves the
+order $\subword$ (as depicted in
+Figure~\ref{figure:abstract:monotonic}).
+%
+It is decidable to prove that the bad configurations are not reachable
+from some initial ones in the new abstract transition system
+$\abstrans\parsys$. Since it is an over-approximation, it contains the
+original transition system $(\confs,\trans)$ and proving the abstract
+system safe implies that the original parameterized system $\parsys$
+is also safe.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[b]
+  \smallskip
+  \centering
+  \tikzinput{img/abstract-monotonic}
+  \caption{The abstract transition relation $\atrans$ is monotonic.}
+  \label{figure:abstract:monotonic}
+\end{figure}
+\endgroup

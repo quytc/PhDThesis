@@ -1,0 +1,80 @@
+\section{Parameterized Tree Systems}
+\label{sec:parsys}
+%
+
+A parameterized tree system consists of an arbitrary (but finite) number of
+identical processes, arranged in a (binary) tree topology.
+%
+Each process is a finite-state automaton.
+%
+The transitions of the automaton are conditioned by the current local state and 
+possibly the local states of other processes (parent, children, etc).
+%
+A transition may change the states of all processes involved in the condition.
+%
+A parameterized tree system induces an infinite family of finite-state systems,
+namely one for each size and each structure of the tree.
+%
+The aim is to verify correctness of the systems for the whole family
+regardless of the number of processes in the system or the particular form
+of the tree.
+%
+
+Formally, a parameterized tree system $\parsys$ is a tuple $\parsystuple$ where 
+$\states$ is a finite set of \emph{local states}, and $\rwrules\subseteq\trees{\states
+\times\states}$ is a finite set of trees called \emph{rewrite rules}.
+%
+For each rule $\rwrule=\tuple{\nodes,\labeling}\in\rwrules$, we associate two special 
+trees in $\trees{\states}$ called \emph{left} and \emph{right} trees of $\rwrule$, and 
+denoted respectively by $\tleft{\rwrule}$ and $\tright{\rwrule}$.
+%
+We define $\tleft{\rwrule}:=\tuple{\nodes,\tleft{\labeling}}$ and $\tright{\rwrule}:=\tuple{
+\nodes,\tright{\labeling}}$, where $\tleft{\labeling}$ and $\tright{\labeling}$ are obtained 
+from $\labeling$ by projecting on the first and the second component of $\states\times\states$.
+%
+More precisely, for any node $\node\in\nodes$, if $\labeling(\node)=(\state,\state')$ 
+then $\tleft{\labeling}(\node):=\state$ and  $\tright{\labeling}(\node):=\state'$. 
+%
+
+\begin{example}
+\label{exp:percolate}
+%
+We consider the percolate protocol where the set of states $\states$
+is defined by $\set{\state_0,\state_1,\state_u}$ and the transition
+rules $\rwrules=\set{\rwrule_1, \rwrule_2,\rwrule_3,\rwrule_4}$ are as
+depicted in Figure~\ref{fig_percolate_rules}.
+%
+The protocol evaluates the disjunction of the values in the leaves up to the root.
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}[show background rectangle]
+\tikzstyle{level 1}=[sibling distance=13mm]
+\tikzstyle{every node}=[draw,rounded corners]
+\node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\rwrule_1$};
+\node {$\state_u/\state_0$} child {node {$\state_0/\state_0$}} child {node{$\state_0/\state_0$}};
+\end{tikzpicture}
+\begin{tikzpicture}[show background rectangle]  
+\tikzstyle{level 1}=[sibling distance=13mm]     
+\tikzstyle{every node}=[draw,rounded corners]
+\node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\rwrule_2$};
+\node {$\state_u/\state_1$} child {node {$\state_1/\state_1$}} child {node{$\state_0/\state_0$}};
+\end{tikzpicture}
+\begin{tikzpicture}[show background rectangle]  
+\tikzstyle{level 1}=[sibling distance=13mm]     
+\tikzstyle{every node}=[draw,rounded corners]
+\node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\rwrule_3$};
+\node {$\state_u/\state_1$} child {node {$\state_0/\state_0$}} child {node{$\state_1/\state_1$}};
+\end{tikzpicture}
+\begin{tikzpicture}[show background rectangle]  
+\tikzstyle{level 1}=[sibling distance=13mm]     
+\tikzstyle{every node}=[draw,rounded corners]
+\node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\rwrule_4$};
+\node {$\state_u/\state_1$} child {node {$\state_1/\state_1$}} child {node{$\state_1/\state_1$}};
+\end{tikzpicture}
+\caption{The transition rules of the percolate protocol.}
+\label{fig_percolate_rules}
+\end{figure}
+%
+\end{example}
+%

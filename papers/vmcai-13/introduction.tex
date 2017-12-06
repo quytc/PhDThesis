@@ -1,0 +1,334 @@
+\section{Introduction}
+\label{section:introduction} 
+
+%\paragraph{Background.}
+%
+We address verification of safety properties
+for {\it parameterized systems} that
+consist of arbitrary numbers
+of components (processes)  organized
+according to a regular pattern.
+%
+%
+The task is to perform \emph{parameterized verification}, i.e., to
+verify correctness regardless of the number of processes.
+%
+%
+This amounts to the verification of an infinite family;
+namely one for each possible size of the system.
+%
+The term {\it parameterized} refers to the fact that the size
+of the system is (implicitly) a parameter of the verification problem.
+%
+Parameterized systems arise naturally in the modeling of mutual
+exclusion algorithms, bus protocols, distributed algorithms,
+telecommunication protocols, and cache coherence protocols.
+%
+For instance, the specification of a mutual exclusion protocol may be 
+parameterized by the number of processes that
+participate in  a given session of the protocol.
+%
+In such a case, it is interesting to verify 
+correctness regardless of the number of participants in a particular session.
+%
+As usual, the verification of safety properties can be
+reduced
+to the problem of checking the reachability of a set of {\it bad
+configurations} (the set of configurations that violate the safety property).
+
+\paragraph{Existing approaches.}
+%
+An important approach to parameterized verification has been
+{\it regular model checking}
+\cite{KMMPS2001,AJNO:simple,BLW03} in which
+regular languages are used
+as symbolic representations of infinite sets of 
+system configurations, and automata-based techniques are employed to implement the verification
+procedure.
+%
+The main problem with such techniques is that  they
+are heavy since they usually rely on several layers of computationally
+expensive automata-theoretic constructions, in many cases
+leading to a state space explosion that
+severely limits their applicability.
+%
+Another class of methods analyze {\it approximated} system
+behavior through the use of abstraction techniques.
+%
+Such methods include  {\it counter abstraction}
+\cite{GerSis:many,PXZ02},
+ {\em invisible invariant} generation~\cite{APRXZ01,PRZ-tacas01},
+{\em environment abstraction}~\cite{CTV06}, and
+ {\it monotonic  abstraction}~\cite{rmc:wo:transducers}
+(see Section~\ref{section:related_work}).
+
+
+In a similar manner to \cite{cutoff}, this work is inspired by a
+strong empirical evidence that parameterized systems often enjoy a
+{\it small model property}.
+%
+More precisely, analyzing only a small number of processes (rather
+than the whole family) is sufficient to capture the reachability of
+bad configurations.
+%
+%There are two reasons for that.
+%
+On the one hand, bad configurations can often be characterized by
+minimal conditions that are possible to specify through a fixed number
+of {\it witness} processes.
+%
+For instance, in a mutual exclusion protocol, a bad configuration
+contains {\it two} processes in their critical sections; and in a
+cache coherence protocol, a bad configuration contains {\it two} cache
+lines in their {\it exclusive} states.
+%
+In both cases, having the two witnesses is sufficient
+to make the configuration bad 
+(regardless of the actual size of the configuration).
+%
+On the other hand, it is usually the case that such bad patterns (if
+existing) appear already in small instances of the system, as observed
+in our experimental section.%~\ref{section:experiments}.
+
+\paragraph{Our approach.}
+%
+We introduce a method that exploits the small model property, and
+performs parameterized verification by only inspecting a small set of
+{\it fixed} instances of the system.
+%
+% The main advantage of the method is its surprising simplicity which
+% makes it efficient, extensible, and easy to understand.  It only
+% performs straightforward manipulations with a finite number of
+% configurations of the system that do not involve any complicated
+% symbolic representation or intricate algorithms.
+%
+Furthermore, the instances that need to be considered are 
+often small in size
+(typically three or four processes) which allows for a very
+efficient verification procedure.
+%
+The framework can be applied uniformly
+to generate {\it fully automatic} verification algorithms
+for wide classes of parameterized systems including ones that
+operate on linear, ring, or tree-like topologies, or systems
+that contain unbounded collections of anonymous processes
+ (the latter class is henceforth referred to as having~a~{\it
+multiset}~topology).
+%
+% The main characteristic feature of this method is its surprising
+% simplicity which makes it efficient, extensible, and also easy to
+% understand and implement.
+
+At the heart of the method is an operation that allows to detect {\it
+  cut-off} points beyond which the verification procedure need not
+continue.
+%
+Intuitively, reaching a cut-off point means that we need not inspect % ...search, explore...
+larger instances of the system: the information collected so far
+during the exploration of the state space allows us to conclude safely
+that no bad configurations will occur in the larger instances.
+%
+The cut-off analysis is executed {\it dynamically} in the sense that
+it is performed on-the-fly during the verification procedure itself.
+%
+It is based on an abstraction function, called {\it view abstraction},
+parameterized by a constant $k$, and it approximates a
+configuration %$\conf$
+by the set of all its projections containing at most
+$k$ processes. We call the sub-configurations {\it views}.
+%
+For instance, when a configuration is a word of process states
+(represented as an array of processes), its abstraction is the set of
+all its subwords of length at most $k$.
+%
+Furthermore, for a given set of views $X$, its concretization, denoted
+as $\gammaof k (X)$, is the set of configurations (of any size) for which {\it all}
+their views belong to $X$.
+
+The verification method performs two search procedures in parallel.
+%
+The first performs a standard (explicit-state) forward reachability
+analysis trying to find a bad configuration among system
+configurations of size $k$ (for some natural number $k$).
+%
+If a bad configuration is encountered then the system is not safe.
+%
+The second procedure performs a {\it symbolic} forward reachability
+analysis in the abstract domain of sets of views of size at most $k$.
+%
+%
+When the computation terminates, it will have collected an 
+over-approximation of all views of size up to $k$ of all reachable configurations (of all sizes).
+%
+If there is no bad configuration in the concretization of this set, 
+then a cut-off point has been found and the system can be claimed safe.
+%
+If neither of the parallel procedures reaches a conclusion during iteration
+$k$, the value of $k$ is increased by one (thus increasing
+the precision of the abstraction).
+%
+Notice that the abstract search requires computing the \emph{abstract post-image} of a set $X$ of 
+views of size at most $k$, which is the set $X'$ of views (of size at most $k$) of successors of $\gammaof k (X)$.
+%
+Obviously, this cannot be performed straightforwardly since
+the set of configurations $\gammaof k (X)$ is infinite.
+%
+A crucial contribution of the paper is to show that,
+for all the classes of parameterized systems that we consider,
+it is sufficient to only compute successors of configurations from 
+$\gammaof k (X)$ that are of the size at most $k+\ell$, where $\ell$ is a small constant, typically 1.
+%
+Intuitively, the reason is that the precondition for firing a
+transition is the presence of a {\it bounded } number of processes in
+certain states.
+%
+The views need only to encompass these processes in order to determine
+the successor view.
+%
+This property is satisfied by a wide class of concurrent systems including the
+ones we consider in this paper.
+%
+For instance, in rendez-vous communication between a pair of
+processes, the transition is conditioned by the states of {\it two}
+processes; in broadcast communication, {\it one} process initiates the
+transition (while the other processes may be in any state); in
+existential global transitions (see below), we need {\it two}
+processes, namely the witness and the process performing the
+transition; in Petri nets, the number of required processes is bounded
+by the in-degree of the transitions (which is fixed for a given Petri
+net), etc.
+%
+We will show formally that this property is satisfied by all the types
+of transitions we consider.
+
+\paragraph{Applications.}
+%
+We have instantiated the method to obtain automatic verification
+procedures for four classes of parameterized systems, namely
+systems where the processes are organized as arrays, 
+rings, trees, or multisets.
+%
+Each instantiation is straightforward and is achieved by defining
+the manner in which we define the views of a configuration.
+%
+More precisely, these views are (naturally)  defined as
+subwords, cyclic subwords, subtrees, resp.\ subsets for the
+above four classes.
+%
+Once the views are fixed we obtain a fully 
+automatic procedure for all parameterized systems in the class.
+%
+In the systems we consider, we allow a rich set of features, 
+in which processes may perform local transitions, rendez-vous,
+broadcasts, and universally or existentially guarded transitions.
+%
+In a universally guarded transition, the process checks whether the
+states of {\it all} other processes inside the system satisfy a given
+constraint before it performs the transition.
+%
+In an existentially quantified transition, the processes
+checks that there is {\it at least one} other process
+ satisfying the condition.
+%
+Furthermore, we allow dynamic behaviors such as
+the creation and deletion of processes during 
+the execution of the system.
+
+
+In the basic variant of our method, we assume that existential and
+universal global conditions of transitions are checked atomically.
+%
+The same assumption is made in many landmark works on parameterized
+systems
+(e.g. \cite{CTV06,PRZ-tacas01,BHV04,AJNO:simple,APRXZ01,Namjoshi:VMCAI07,rmc:wo:transducers}).
+%
+However, actual implementations of global checks are usually not
+atomic.
+%
+They are typically implemented as for-loops ranging over indices of
+processes.
+%
+Iterations of such a loop may be interleaved with transitions of other
+processes, therefore modeling the loop as an atomic transition means
+under-approximating the behavior of the system.
+%
+Verification of systems with non-atomic global checks is significantly
+harder.
+%
+It requires to distinguish intermediate states of a for-loop performed
+by a process. Their number is proportional to the number of processes
+in the system.
+%
+Moreover, any number of processes may be performing a for-loop at the
+same time.
+%
+% This makes even number of states of individual process unbounded since
+% their sizes are now parameterized by the number of processes in the
+% system.
+%
+As we will show, our method can be easily adapted to this setting,
+while retaining its simplicity and efficiency.
+
+
+\paragraph{Implementation.}
+%
+%% I changed the order of the 2 following paragraphs (cuz it mentionned "the tool"). /Fred
+%
+We have implemented a prototype based on the method and run
+it on a wide class of benchmarks, including 
+mutual exclusion protocols on arrays
+ (e.g., Burns', Szymanski's, and Dijkstra's protocols),
+cache coherent protocols (e.g., MOSI and German's protocol),
+different protocols on tree-like architectures
+(e.g. percolate, arbiter, and leader election),
+ring protocols (token passing), % and leader election), 
+and different Petri nets.
+%
+
+The class of systems we consider have undecidable
+reachability properties, and hence our method
+is necessarily incomplete
+(the verification procedure is not guaranteed to terminate in case
+the safety property is satisfied).
+%
+However, as shown by our experimentation, the tool
+terminates efficiently on all the tested benchmarks.
+
+\paragraph{Completeness.}
+Although the method is not complete in general, we show that is
+complete for a large class of systems, namely those
+that induce
+{\it well quasi-ordered} transition systems \cite{Parosh:Bengt:Karlis:Tsay:general,abdulla:well} and satisfy certain additional technical requirements.
+%
+This implies that our method is complete for e.g., Petri nets.
+%lossy channel systems \cite{AbJo:lossy}, and systems that
+%are generated by monotonic abstraction \cite{rmc:wo:transducers}.
+%
+Notice that, as evident from our experiments, 
+the method can in practice handle even systems that are outside the class.
+
+
+\paragraph{Outline.}
+To simplify the presentation, we instantiate our framework in a
+step-wise manner.
+%
+In Section~\ref{section:parameterized_systems}, we introduce our model
+for parameterized systems operating on linear topologies and describe
+our verification method in Section~\ref{section:verification_method}.
+%
+In Section~\ref{section:extensions}, we describe how the framework can
+be extended to incorporate other kinds of transitions such as
+broadcast, rendez-vous, dynamic process deletion/creation, and
+non-atomic checks of global conditions; and to cover other classes of
+topologies such as ring, multiset, and tree-like structures.
+%
+The completeness of our method for well quasi-ordered systems is shown
+in Section~\ref{section:completeness}.
+%
+We report on our experimental results in 
+Section~\ref{section:experiments}, and 
+describe related work in Section~\ref{section:related_work}.
+%
+Finally, we give some conclusions and directions for future
+research in Section~\ref{section:conclusion}.
+%

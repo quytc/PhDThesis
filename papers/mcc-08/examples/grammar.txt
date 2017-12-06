@@ -1,0 +1,15 @@
+     P::= defn thlist               (program)
+thlist::= null | stmt || thlist     (thread list)
+  defn::= Y 
+         | lock L | cond CV
+         | defn; defn               (definitions)
+  stmt::= read X | write X
+         | while(b) {stmt}
+	 | if(b) {stmt} else {stmt}
+	 | acquire(L) | release(L)
+	 | wait(CV,L) | signal(CV)
+	 | join | exit
+	 | stmt;stmt                 (statements)
+     b::= true | false               (boolean)
+
+TODO = make it better

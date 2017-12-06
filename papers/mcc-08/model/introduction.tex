@@ -1,0 +1,43 @@
+\section{Introduction}
+
+A race condition is a situation in a shared-variable concurrent
+program in which one process changes a variable that another process
+has previously read and that other process doesn't get notified of the
+change.\daz{or just doesn't see the change}
+
+A process can, for example, write a variable that a second process
+reads, but the first process continues execution -- namely races ahead
+-- and changes the variable again before the second process sees the
+result of the first change. Another example: when a process checks a
+variable and takes action based on the content of the variable, it is
+possible for another process to ``sneak in'' and change the variable
+in between the check and the action in such a way that the action is
+no longer appropriate.
+
+Alternatively, one can define a race condition as the possibility of
+incorrect results in the presence on unlucky timing in concurrent
+programs, that is, getting the right answer relies on lucky timing.
+
+\bigskip%
+Race condition are of particular interest because they can lead to
+some rather devious bugs. These bugs are extremely hard to track since
+they are non-deterministic and difficulty reproducable. The kind of
+errors caused by race condition are very subtle and often manifest
+themselves in the form of corrupted or incorrect variable
+data. Unfortunately, if often means that the error won't crash the
+system immediately, but will wait until some other code is executed
+and which relies on the data to be correct, making the process of
+locating the original race condition even more difficult.
+
+To avoid data corruption or incorrectness, the programmer uses
+synchronization techniques to constraint all possible process
+inter-leavings to only the desirable ones. Race condition usually
+lead to an incorrectly synchronized program.
+
+A precise way to detect race conditions would be to search the state
+space (of a \emph{model} of the program) for a state where multiple
+threads try to access and change the same variable.  The technique is
+sound, but more importantly it seems to be much more precise than
+other techniques (static analysis, dynamic detection, ...). It indeed
+detects the race conditions themselves instead of detecting violations
+of the locking discipline that can be used to prevent race conditions.

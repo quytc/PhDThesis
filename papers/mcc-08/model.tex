@@ -1,0 +1,402 @@
+\Section{Model}
+\label{section:model}
+
+%% ---------------------------------------
+\SubSection{Petri Nets}
+%% ---------------------------------------
+%\myparagraph{Definition.}
+A Petri net $\pn$ is a tuple $\pntuple$ 
+where $\pnplaces$ is a finite set of \emph{places},
+$\pntransitions$ is a finite set of \emph{transitions}
+and $\flowrel\subseteq(\pnplaces\times\pntransitions)\union(\pntransitions\times\pnplaces)$
+is the \emph{flow relation}, such that $\pnplaces\intersect\pntransitions=\emptyset$.
+
+%
+If $\tuple{\pnplace,\pntransition}\in\flowrel$, $\pnplace$ is said to
+be an \emph{input} place of $\pntransition$ and if
+$\tuple{\pntransition,\pnplace}\in\flowrel$, $\pnplace$ is said to be
+an \emph{output} place of $\pntransition$.
+%
+We use $\inputof{\pntransition}=\setcomp{\place\in\places}{\tuple{\place,\transition}\in\flowrel}$ and
+$\outputof{\pntransition}=\setcomp{\place\in\places}{\tuple{\transition,\place}\in\flowrel}$ to denote the sets of input places and
+output places of $\pntransition$ respectively.
+
+%
+A \emph{configuration} $\conf$ of a Petri net, often called a
+\emph{marking} in the literature, is a multiset over $\pnplaces$ and
+represents a valuation of %defines
+the number of \emph{tokens} in each place.
+%
+
+%\myparagraph{Operational semantics. }
+%
+The transition system induced by a Petri net consists of the set
+configurations together with the transition relation defined on them.
+%
+The operational semantics of a Petri net is defined through the notion
+of \emph{firing} transitions. This gives a transition relation on the
+set of configurations.
+%
+More precisely, a transition fires by removing tokens from its input
+places and creating new tokens which are distributed to its output
+places. A transition is \emph{enabled} if each of its input places has
+at least one token. A transition may fire if it is
+enabled. \footnote{Petri nets allow multiple arcs from a place to a
+  transition (and vice-versa), where as many tokens are removed (or
+  created) when an enabled transition fires. But we will not use that
+  construct.}%
+%
+Formally, when a transition $\pntransition$ is enabled, we write
+$\conf\movesto{\pntransition}\conf'$ if $\conf'$ is the result of
+firing $\pntransition$ on $\conf$.
+%
+We define $\movesto{}$ as
+$\bigcup_{\pntransition\in\pntransitions}\movesto{\pntransition}$ and
+use $\movesto{*}$ to denote the reflexive transitive closure of
+$\movesto{}$.
+%
+For sets $\confs_1$ and $\confs_2$ of configurations, 
+we use $\confs_1\movesto{}\confs_2$ to denote that
+$\conf_1\movesto{}\conf_2$ for some $\conf_1\in\confs_1$ and $\conf_2\in\confs_2$.
+%
+% By  $\conf_1\movesto{}\confs_2$ we mean 
+% $\set{\conf_1}\movesto{}\confs_2$.
+% %
+% We define $\conf_1\movesto{*}\confs_2$, $\confs_1\movesto{*}\confs_2$, etc in a similar manner to above.
+
+
+%% ---------------------------------------
+\SubSection{Modeling programs using Petri Nets}
+%% ---------------------------------------
+
+We model the flow of control in SML programs using Petri Nets.  A
+concurrent program contains multiple separate threads of control and
+each thread is assigned a particular task, so-called \emph{job type},
+modeled by a petri net. SML programs have a finite number of job
+types. Multiple instances of a job type will be modeled by multiple
+tokens. Note that the structure of the petri net is then static.
+
+Transitions in the petri net correspond to thread statements and
+places are used to control the flow and the shared variable
+dependencies.
+%
+This modeling formally captures the concurrency between threads using
+the concurrency constructs of a petri net, captures synchronization
+between threads (e.g. locks, access to shared variables, condition
+variables, ...) using appropriate mechanisms in the net, and
+formalizes the fact that data is abstracted in a sound manner.
+%
+In the following, a place will be represented by a
+\tikz{\node[place,minimum size=1ex]{};} and by a
+\tikz{\node[place,shared,minimum size=1.1ex]{};} when it is shared. A
+transition will be represented as \tikz{\node[transition]{};}.
+
+%% -------------------------------
+\myparagraph{Reading and Writing a shared variable.}
+%% -------------------------------
+A shared variable $v$ is associated with two places,
+$\LD{v}$ and $\ST{v}$. A thread places a token in $\LD{v}$
+(resp. $\ST{v}$) if it is currently accessing the variable $v$ for
+reading (resp. writing). We model read and write accesses to shared
+variables with two transitions.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+  \node[place,label=left:$in$] (in) at (0,0) {};
+  \node[place](temp) at(0,-2){};
+  \node[place,label=left:$out$](out) at(0,-4){};
+  \node[place,shared,label=below:$\LD{x}$](Rx) at (2,-2){};
+  \node[transition](t1) at (0,-1){} edge [pre] (in) edge [post] (temp);
+  \node[transition](t2) at (0,-3){} edge [pre] (temp) edge [post] (out);
+  \draw[post] (t1.-15) to[out=-90,in=165] (Rx);  
+  \draw[pre] (t2.15) to[out=90,in=-165] (Rx);  
+
+  \begin{pgfonlayer}{my background}
+    \node[dottedrectangle,fit=(t1) (temp) (t2)] (r){};
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+  \node[place,label=right:$in$] (in) at (0,0) {};
+  \node[place](temp) at(0,-2){};
+  \node[place,label=right:$out$](out) at(0,-4){};
+  \node[place,shared,label=above:$\ST{x}$](Rx) at (-2,-2){};
+  \node[transition](t1) at (0,-1){} edge [pre] (in) edge [post] (temp);
+  \node[transition](t2) at (0,-3){} edge [pre] (temp) edge [post] (out);
+  \draw[post] (t1.-165) to[out=-90,in=15] (Rx);  
+  \draw[pre] (t2.165) to[out=90,in=-15] (Rx);  
+
+  \begin{pgfonlayer}{my background}
+    \node[dottedrectangle,fit=(t1) (temp) (t2)] (r){};
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+
+%% -------------------------------
+\myparagraph{Acquiring and releasing a lock.}
+%% -------------------------------
+There is a place $\pnplace[L]$ associated with each lock. Intuitively,
+if $\pnplace[L]$ contains a token, the lock is free, otherwise it is
+busy. This ensures that only one thread can hold the lock at a
+time. Note that $\pnplace[L]$ is a global variable.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+  \node[place,label=left:$in$] (in) at (0,0) {};
+  \node[place,shared,label=right:$L$](L) at (2,0){};
+  \node[place,label=left:$out$](out) at(0,-2){};
+
+  \node[transition,label=right:$lock$](trans) at (0,-1){} edge [pre] (in) edge [post] (out);
+  \draw[pre] (trans.15) to[out=90,in=-165] (L);  
+\end{tikzpicture}
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+  \node[place,label=left:$in$] (in) at (0,0) {};
+  \node[place,shared,label=right:$L$](L) at (2,-2){};
+  \node[place,label=left:$out$](out) at(0,-2){};
+
+  \node[transition,label=right:$unlock$](trans) at (0,-1){} edge [pre] (in) edge [post] (out);
+  \draw[post] (trans.-15) to[out=-90,in=165] (L);  
+\end{tikzpicture}
+
+%% -------------------------------
+\myparagraph{Waiting on a condition variable.}
+%% -------------------------------
+A condition variable is modeled with 3 places, namely $\pnplace[cond]$,
+$\pnplace[signal]$ and $\pnplace[ready]$, and 3 transitions as follows.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+  \node[place,label=left:$in$] (win)   at (1,3)  {};
+  \node[place,shared,label=above:$L$]  (L)    at (-1,0)  {};
+  \node[place,label=left:$out$](wout)  at (1,-2) {};
+  \node[place]                 (temp) at (1,0) {};
+  \node[place,shared](cond)  at (4,1.5) {};
+  \node[place,shared](wakeUp)  at (5.2,1.5) {};
+  \node[place,shared](ready)  at (4.6,-0.5) {};
+
+  \node[above=3pt,inner sep=0pt](condLabel) at (cond.120) {$cond$};
+  \node[above=1pt,inner sep=0pt](signalLabel) at (wakeUp.60) {$signal$};
+  \node[right=1pt,inner sep=0pt](readyLabel) at (ready.east) {$ready$};
+
+  \node[transition,label={[scale=0.8]left:$win$}](twin) at (1,2){} edge [pre] (win) edge [post] (temp);
+  \node[transition,label={[scale=0.8]left:$wout$}](twout) at (1,-1){} edge [pre] (temp) edge [post] (wout);
+  \node[transition,label={[scale=0.8]left:$tr$}](tready) at (4.6,0.5){} edge [post] (ready);
+
+  \draw[post] (twin.-165) to[out=-90,in=15] (L);
+  \draw[post] (twin.-15) to[out=-90,in=180] (cond);  
+  \draw[pre] (twout.165) to[out=90,in=-15] (L);
+  \draw[pre] (twout.15) to[out=90,in=-180] (ready);  
+
+  \draw[pre] (tready.165) to[out=90,in=-90] (cond);
+  \draw[pre] (tready.15) to[out=90,in=-90] (wakeUp);
+
+  \node(cheating) at (6.5,0) {};
+  \node(cheating2) at (-2,0) {};
+
+  \begin{pgfonlayer}{my background}
+    \node[dottedrectangle,fit=(cond) (wakeUp) (ready) (condLabel) (signalLabel) (readyLabel), inner sep=0pt] (r){};
+    \node[below,scale=0.7] at (r.south) {Condition Variable};
+    \node[dottedrectangle,fit=(temp) (twin) (twout)]{};
+  \end{pgfonlayer}
+\end{tikzpicture}
+
+\noindent%
+The transition $win$ releases the lock and places a token in the
+$\pnplace[cond]$ place. The thread is then blocked since neither $wout$
+nor $tr$ are enabled. If another thread places a token in
+$\pnplace[signal]$, $tr$ is enabled. If $tr$ fires, the blocked thread
+is ready to fire $wout$ to resume execution, with an eventual delay
+for (re-)acquiring the lock.
+% (Another thread might have indeed acquired the lock while this
+% thread was waiting on the condition variable).
+
+\pagebreak
+%% -------------------------------
+\myparagraph{Signaling a condition variable.}
+%% -------------------------------
+A thread can wake up another blocked thread by placing a token in the
+$\pnplace[signal]$ place.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+  \node[place,shared](cond)  at (3,1) {};
+  \node[place,shared](wakeUp)  at (4,1) {};
+  \node[place,shared](ready)  at (3.5,-1) {};
+
+  \node[above=3pt,inner sep=0pt](condLabel) at (cond.120) {$cond$};
+  \node[above=1pt,inner sep=0pt](signalLabel) at (wakeUp.60) {$signal$};
+  \node[right=1pt,inner sep=0pt](readyLabel) at (ready.east) {$ready$};
+
+  \node[transition,label={[scale=0.8]left:$tr$}](tready) at (3.5,0){} edge [post] (ready);
+  \draw[pre] (tready.165) to[out=90,in=-90] (cond);
+  \draw[pre] (tready.15) to[out=90,in=-90] (wakeUp);
+
+  \node[place,label=right:$in$](sin)  at (8,2) {};
+  \node[place,label=right:$out$](sout)  at (8,0) {};
+  \node[transition,label={[scale=0.8]right:$ts$}](tsignal) at (8,1){} edge [pre] (sin) edge [post] (sout);
+  \draw[post] (tsignal.-165) to[out=-90,in=0] (wakeUp);
+
+  \node[transition,rotate=30,scale=0.7,label={[scale=0.8]right:$conflict$}](dead) at (5.7,-1){};
+  \draw[pre] (dead) to[in=-30,out=120] (wakeUp.-30);
+
+  \node(cheating) at (9.5,0) {};
+  \node(cheating2) at (1,0) {};
+
+  \begin{pgfonlayer}{my background}
+    \node[dottedrectangle,fit=(cond) (wakeUp) (ready) (condLabel) (signalLabel) (readyLabel), inner sep=0pt] (r){};
+    \node[below,scale=0.7] at (r.south) {Condition Variable};
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\noindent%
+Signaling a condition variable in the model while no thread is waiting
+on it should have no effect. That is to say, the token in
+$\pnplace[signal]$ should be consumed if the $\pnplace[cond]$ place is
+empty. To alleviate the problem, we use a $\pntransition[conflict]$
+transition. Recall that an enabled transition only \emph{may} fire. As
+it is not possible to model the firing of a transition based on the
+condition that a place is empty, we introduce an abstraction where
+signals might be lost (i.e.\ signaling a condition variable might not
+wake up other threads which are waiting on that condition variable).
+%
+Nevertheless, it is an over-approximation so we do not bias
+correctness.
+%\daz{rewrite that last sentence better}
+
+%% -------------------------------
+\myparagraph{Branching.}
+%% -------------------------------
+The \emph{if}, \emph{if-then-else} and \emph{while} statements are
+easily implemented with \emph{branch} and \emph{goto}. We therefore
+only model those latter.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+  \node[place,label=left:$in$](in)  at (0,0) {};
+  \node[place,label=left:$out_1$](out1)  at (-2,-2) {};
+  \node[place,label=right:$out_2$](out2)  at (2,-2) {};
+
+  \node(cheating) at (-4,0) {};
+  \node(cheating2) at (4,0) {};
+
+  \node[transition,label={[scale=0.8]left:$if\ true$}](btrue) at (-2,-1){} edge [pre] (in) edge [post] (out1);
+  \node[transition,label={[scale=0.8]right:$if\ false$}](bfalse) at (2,-1){} edge [pre] (in) edge [post] (out2);
+
+\end{tikzpicture}
+
+\noindent%
+Since we abstract away all data, we cannot determine the branching
+based on a predicate evaluation. So we use an abstraction where the
+program takes both branches and model it with two transitions. This
+eventually introduces false behaviours, and increase the number of
+false positives. Nevertheless, it is again an over-approximation and
+does not bias the correctness argument. If, for example, the predicate
+in the while loop evaluates while reading some shared variable
+(e.g. $while(x<10)$), we would model it as a cascade of a read
+instruction followed by a branch.
+%
+%\daz{write that better again.}
+
+
+%% Cheating the formatting
+\vspace{6cm}
+
+%% -------------------------------
+\myparagraph{Goto or jump.} 
+%% -------------------------------
+This is only introduced as a convenience to work in conjunction with
+\emph{branch} and model the control flow.
+
+\noindent%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+  \node[place,label=left:$in$](in)  at (0,0) {};
+  \node[place,label=right:$out$](out)  at (3,0) {};
+  \node[transition,rotate=90](goto) at (1.5,0){} edge [pre] (in) edge [post] (out);
+
+\end{tikzpicture}
+
+%% -------------------------------
+\myparagraph{Creating a new thread.}
+%% -------------------------------
+
+\noindent%
+\begin{minipage}{0.59\linewidth}
+  A new thread is associated with a job type and an initial
+  place. Firing the $create$ transition produces a new token that we
+  place in the initial place of the new job type. The calling thread
+  will continue its execution. Note that $same$ and $new$ place can
+  coincide. It would be easy to extend the transitions to multiple
+  arcs.
+\end{minipage}
+\begin{minipage}{0.4\linewidth}
+\hfill%
+\begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+  \node[place,label=left:$in$](in)  at (0,0) {};
+  \node[place,label=below:$same$](out1)  at (-1,-2) {};
+  \node[place,label=below:$new$](out2)  at (1,-2) {};
+
+  \node[transition,label={[scale=0.8]right:$create$}](t) at (0,-1){} edge [pre] (in);
+  \draw[post] (t.-165) to[out=-90,in=15] (out1);
+  \draw[post] (t.-15) to[out=-90,in=165] (out2);
+\end{tikzpicture}
+\end{minipage}%
+
+
+%% -------------------------------
+\SubSection{An example}
+%% -------------------------------
+
+As the petri net of a concurrent program written in the SML language
+can quickly grow in size, we only show a short example presented in
+Figure~\ref{fig:modelExampleCS}, which models the program from
+Figure~\ref{fig:languageExampleCS}.
+
+\begin{figure}[h]
+  \begin{tikzpicture}[scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+    \node(cheating) at(-2,0){};
+
+    \node[place,label=right:$init$,tokens=2](in)  at (4,0) {};
+    \node[place](lockOut) at (0,0) {};
+    \node[place](temp1) at (0,-2) {};
+    \node[place](readOut) at (0,-4) {};
+    \node[place](temp2) at (0,-6) {};
+    \node[place](writeOut) at (0,-8) {};
+    \node[place,label=right:$end$](unlockOut) at (4,-8) {};
+
+    \node[transition,rotate=90,label={[scale=0.9]above left:$lock$}](tlock) at (2,0){} edge [pre] (in) edge [post] (lockOut);
+    \node[transition](treadIn) at (0,-1){} edge [pre] (lockOut) edge [post] (temp1);
+    \node[transition](treadOut) at (0,-3){} edge [pre] (temp1) edge [post] (readOut);
+    \node[transition](twriteIn) at (0,-5){} edge [pre] (readOut) edge [post] (temp2);
+    \node[transition](twriteOut) at (0,-7){} edge [pre] (temp2) edge [post] (writeOut);
+    \node[transition,rotate=90,label={[scale=0.9]below right:$unlock$}](tunlock) at (2,-8){} edge [pre] (writeOut) edge [post] (unlockOut);
+
+    \node[place,shared,label=right:$L$,tokens=1] (L)  at (6,-4) {};
+    \node[place,shared,label=right:$\LD{counter}$] (Rc)  at (2,-3.5) {};
+    \node[place,shared,label=right:$\ST{counter}$] (Wc)  at (2,-4.5) {};
+
+    \draw[pre] (tlock.-165) to[out=0,in=90] (L);
+    \draw[post] (tunlock.-15) to[out=0,in=-90] (L);
+
+    \draw[post] (treadIn.-15) to[out=-90,in=120] (Rc.120);
+    \draw[pre] (treadOut.15) to[out=90,in=150] (Rc.150);
+
+    \draw[post] (twriteIn.-15) to[out=-90,in=-150] (Wc.-150);
+    \draw[pre] (twriteOut.15) to[out=90,in=-120] (Wc.-120);
+
+  \begin{pgfonlayer}{my background}
+    \node[dottedrectangle,fit=(Rc) (Wc)] (r){};
+    \node[dottedrectangle,fit=(treadIn) (treadOut)] (read){};
+    \node[dottedrectangle,fit=(twriteIn) (twriteOut)] (write){};
+  \end{pgfonlayer}
+
+  \end{tikzpicture}
+  \caption{Modeling the critical section problem with petri nets.}
+  \label{fig:modelExampleCS}
+\end{figure}

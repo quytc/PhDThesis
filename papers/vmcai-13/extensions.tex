@@ -1,0 +1,545 @@
+%
+%--------------------------------------------------------
+\section{Extensions}
+\label{section:extensions}
+%--------------------------------------------------------
+In this section, we describe how to extend the class of parameterized
+systems that we presented in
+Section~\ref{section:parameterized_systems}.
+%
+The extensions are obtained 
+1) by extending the types of transition rules that we allow, 
+2) by replacing transitions with atomically checked global conditions by more realistic for-loops, and
+3) by considering topologies other than the linear ones. 
+% 
+As we shall see below, the extensions can be handled by our method
+with straightforward extensions of the method of
+Section~\ref{section:verification_method}.
+
+
+%--------------------------------------------------------
+\subsection{More Communication Mechanisms}
+%--------------------------------------------------------
+
+%--------------------------------------------------------
+\paragraph{Broadcast.}
+\label{section:broadcast}
+%--------------------------------------------------------
+In a~broadcast transition, an arbitrary number of processes change
+states simultaneously. A broadcast rule is a~pair 
+$(\loc\trans\loc',\{\locr_1\trans\locr_1',\ldots,\locr_m\trans\locr_m'\})$.
+%
+It is deterministic in the sense that 
+$\locr_i\neq\locr_j$ for $i\neq j$.
+%
+The broadcast is initiated by a~process, 
+called the \emph{initiator}, 
+which triggers the transition 
+rule $\loc\trans\loc'$. 
+%
+Together with the initiator, an arbitrary number of processes, 
+called
+the \emph{receptors}, change state simultaneously.
+%
+More precisely, if the local
+state of a~process is $\locr_i$, then the process changes
+its local state to $\locr_i'$. 
+%
+Processes whose local states are different from
+$\loc,\locr_1,\ldots\locr_m$ remain passive during the broadcast.
+%
+Formally, the broadcast rule induces transitions $\conf\trans\conf'$
+of $\system$ where for some $i:1\leq i\leq |\conf|$, $\conf[i]=\loc$,
+$\conf'[i]=\loc'$, and for each $j:1\leq j\neq i \leq |\conf|$, if
+$\conf[j] = \locr_k$ (for some $k$) then $\conf'[j] = \locr_k'$,
+otherwise $\conf[j]=\conf'[j]$.
+%
+
+In a similar manner to globally guarded transitions, broadcast
+transitions have small preconditions.  Namely, to fire a~transition,
+it is enough that an initiator is present in the transition.
+%
+More precisely, for parameterized systems with local, global, and
+broadcast transitions, Lemma~\ref{lemma:apost} still holds (in the
+proof of Lemma~\ref{lemma:apost}, the initiator is treated analogously
+to a~witness of an existential transition).
+%
+Therefore, the verification method from
+Section~\ref{section:verification_method} can be used without any
+change.
+
+
+%--------------------------------------------------------
+\paragraph{Rendez-vous.}
+%--------------------------------------------------------
+
+In rendez-vous, multiple processes change their states simultaneously.
+A \emph{simple rendez-vous} transition rule is a~tuple of local rules
+$\delta = (\locr_1\trans\locr_1',\ldots,\locr_m\trans\locr_m'),m>1$.
+%
+Multiple occurrences of local rules with the same source state $\locr$
+in the tuple does not mean non-determinism, but that the rendez-vous
+requires multiple occurrences of $\locr$ in the configuration to be
+triggered.
+%
+Formally, the rule induces transitions $\conf\trans\conf'$ of
+$\system$ such that there are ${i_1},\ldots,{i_m}$ with $i_j\neq i_k$
+for all $j\neq k$, such that $\conf[i_1]\cdots\conf[i_m] =
+\locr_1\cdots\locr_m$, $\conf'[i_1]\cdots\conf'[i_m] =
+\locr_1'\cdots\locr_m' $, and $\conf'[\ell]=\conf[\ell]$ if
+$\ell\not\in\{{i_1},\ldots,{i_m}\}$.
+
+%In rendez-vous, multiple processes change their states simultaneously.
+%A rendez-vous transition rule is a~tuple of local rules
+%$\delta = (\locr_1\trans\locr_1',\ldots,\locr_m\trans\locr_m'),m>1$.
+%%
+%Multiple occurrences of local rules with the same source state $\locr$
+%in the tuple does not mean non-determinism, but that the rendez-vous
+%requires multiple occurrences of $\locr$ in the configuration to be
+%triggered.
+%
+%Additionaly, in order to model creation and deletion of processes
+%and also Petri net transitions that change numbers of tokens in the net, 
+%we allow $\delta$ contain two types of special transitions. 
+%These are rules of the form $\bullet\trans r$, $\bullet\not\in\locs$, used to model creation of a process in a state $r$,
+%and $r\trans\bullet$, used to model deletion of a process in a state $r$.
+%$\bullet$ is a special symbol s.t. $\bullet\not\in\locs$.
+
+%
+%Formally, the rule induces transitions $\conf\trans\conf'$
+%where $\conf'$ is generated from $\conf$ as follows.
+%First, we create an intermediate configuration $\conf^\bullet\in(\locs\cup\{\bullet\})^*$
+%such that there are ${i_1},\ldots,{i_m}$ with $i_j\neq i_k$
+%for all $j\neq k$, such that $\conf[i_1]\cdots\conf[i_m] =
+%\locr_1\cdots\locr_m$, $\conf'[i_1]\cdots\conf'[i_m] =
+%\locr_1'\cdots\locr_m' $, and $\conf'[\ell]=\conf[\ell]$ if
+%$\ell\not\in\{{i_1},\ldots,{i_m}\}$.
+
+%\newcommand\placeholder\bot
+\newcommand\placeholder\bullet
+
+Additionally, we define a \emph{generalized rendez-vous (or just
+  rendez-vous) transition rules} in order to model \emph{creation and
+  deletion} of processes and also Petri net transitions that change
+the number of tokens in the net. 
+%
+A generalized rendez-vous rule $\delta$ is as a simple rendez-vous
+rule, but it can in addition to the local rules contain two types of
+special rules: of the form $\placeholder\trans
+r,\placeholder\not\in\locs$ (acting as a placeholder), which are used
+to model creation of processes, and of the form $r\trans
+\placeholder$, which are used to model deletion of processes.
+%
+When a generalized rendez-vous rule is fired, the starting
+configuration is first enriched with $\placeholder$ symbols in order
+to facilitate creation of processes by the rule $\placeholder\trans
+r$, then the rule is applied as if it was a simple rendez-vous rule,
+treating $\placeholder$ as a normal state (states of the processes
+that are to be deleted are rewritten to $\placeholder$ by the rules
+$r\trans\placeholder$).  Finally, all occurrences of $\placeholder$
+are removed.
+%
+Formally, a generalized rendez-vous rule induces a transition
+$\conf\trans\conf'$ if there is
+$\conf_\placeholder\in\{\placeholder\}^*\conf[1]\{\placeholder\}^*\cdots\{\placeholder\}^*\conf[|\conf|]\{\placeholder\}^*$
+such that $\conf_\placeholder\trans\conf_\placeholder'$ is a
+transition of the system with states $Q\cup\{\placeholder\}$ induced
+by $\delta$ (treated as a simple rendez-vous rule), and $\conf'$
+arises from $\conf_\placeholder'$ by erasing all occurrences of
+$\placeholder$.
+
+Rendez-vous transitions have small preconditions, but unlike
+existentially quantified transitions, firing a transition may require
+presence of more than two (but still a fixed number) processes in
+certain states (the number is the arity of the transition).
+%
+It essentially corresponds to requiring the presence of more than one
+witness.
+%
+This is why Lemma~\ref{lemma:apost} holds here only in the weaker variant:
+
+\begin{lemma}
+\label{lemma:rendez-vous}
+Let $\rules$ contain rules of any previously described type (i.e.,
+local, global, broadcast, rendez-vous), and let $m+1$ is the largest
+arity of a~rendez-vous rule in $\rules$.  Then, for any $k$ and
+$\X\subseteq\viewsof k$, $\projof {\postof {\gammaof k (\X)}} k\,
+\cup\, V\; =\; \projof {\postof {\limgammaof k {k+m} (\X)}} k\,
+\cup\, V$.
+\end{lemma}
+
+
+
+%--------------------------------------------------------
+\paragraph{Global variables.}
+%--------------------------------------------------------
+Communication via shared variables is modeled using a~special
+process, called \emph{controller}. Its local state records the state
+of all shared variables in the system.  A~configuration of a~system
+with global variables is then a~word $s_1\ldots s_nc$ where
+$s_1,\ldots,s_n$ are the states of individual processes and $c$ is the state
+of the controller. An individual process can read and update a shared
+variable.
+%
+A~read is modeled by a~rendez-vous rule of the form $(s\trans
+s',c\trans c)$ where $c$ is a state of the controller and $s,s'$ are
+states of the process. An update is modeled using a~rendez-vous rule
+$(s\trans s',c\trans c')$.
+
+To verify systems with shared variables of finite domains, we use
+a~variant of the abstraction function which always keeps the state of
+the controller in the view.
+%
+Formally, for a~configuration $wc$ where $w\subseteq\locs^+$ and $c$
+is the state of the controller, $\alpha_k$ returns the set of words $vc$
+where $v$ is a~subword of $w$ of length at most $k$. The concretization and
+abstract-post image are then defined analogously as before, based on
+$\alpha_k$, Lemma~\ref{lemma:apost} and Lemma~\ref{lemma:invariant}
+still hold. The method of Section~\ref{section:method} can be thus
+used in the same way as before.
+
+%Broadcast communication may be used to model global variables. 
+%Communication via a~shared variable can be modelled in our framework using already described mechanisms.
+%A state of a~global variable with a~\emph{finite domain} is recorded in
+%a~local state of every process in the system. An assignment to such
+%variable is modelled by a~broadcast transition which updates the value of
+%local copy of each process.
+
+Another type of global variable is a~\emph{process pointer}, i.e., a
+variable ranging over process indices. This is used, e.g., in
+Dijkstra's mutual exclusion
+protocol. %(see Appendix~\ref{app:dijkstra}).
+A process pointer is modeled by a~local Boolean flag $p$ for each
+process state.  The value of $p$ is $\strue$ iff the pointer points to
+the process (it is true for precisely one process in every
+configuration). An update of the pointer is modeled by a~rendez-vous
+transition rule which sets to $\sfalse$ the flag of the process
+currently pointed to by the pointer and %simultaneously
+sets to $\strue$ the flag of the process which is to become the target
+of the pointer.
+
+\subsection{Transitions that do not Preserve Size}
+\label{section:nonsizepreserving}
+We now discuss the case when the transition relation does not preserve size of configurations, which happens in the case of generalised rendez-vous.
+%We have to cope with the issue that computation of $\reachof k$ becomes problematic. 
+$\reachof k$ then cannot be computed straightforwardly since
+computations reaching configurations of the size up to $k$ may traverse configurations of larger sizes.
+%Notice that computing $\reachof k$ on line~\ref{line:exact} of Algorithm~\ref{algorithm:basic} is straightforward only because 
+%(i) the number of configurations is of the size $k$ is finite and 
+%(ii) the transition relation does not change the size of configurations.
+Therefore, similarly as in \cite{Raskin:Viagra}, we only consider runs of the system visiting configurations of the size up to $k$.
+That is, on line~\ref{line:exact} of Algorithm~\ref{algorithm:basic}, instead of computing
+$\reachof k = \mu X.\,\inits_k\cup\post(X)$,
+we compute its underapproximation 
+$\mu X.\,(\inits\cup\post(X))\cap\confsof k$.
+%, the set of configurations that can be reached traversing configurations of size at most $k$.
+The computation terminates provided that $\confsof k$ is finite.
+The algorithm is still guaranteed to return Unsafe if a configuration in $\bad$ is reachable, 
+since then there is $k\in\nat$ such that the bad configuration is reachable by a finite path traversing configurations of the size at most $k$.
+
+
+
+%When the pointer changes, this
+%information must be passed onto all other processes, which we model as
+%a~broadcast transition. Concretely, upon a~pointer assignment, the
+%current process sets its local variable $p$ to $\strue$ and
+%simultaneously sets $p$ to $\sfalse$ in all other processes.
+
+%%--------------------------------------------------------
+%\paragraph{Dynamic creation and deletion of processes.}
+%%--------------------------------------------------------
+%We cannot model dynamic creation and deletion of processes
+%in a straightforward manner since the proof of Lemma~\ref{lemma:invariant}
+%requires the transition relation to preserve the length of
+%configurations.
+%%
+%However, we can overcome this issue by using the length-preserving
+%rules described above, together with a~simple mechanism of
+%placeholders. A placeholder is a~process in a~dummy state
+%$\bullet$. It holds a~place for a~process that can be possibly
+%created.  That is, the placeholder can take a~local transition
+%$\bullet\trans\loc$ to an initial state $\loc$ and become a~regular
+%process.  Conversely, a~process that is to be deleted in some local
+%state $\loc$ takes the transition $\loc\trans\bullet$.  An initial
+%configuration from $\inits$ may contain any number of
+%placeholders.
+%% In every run, the number of place holders is bounded by the size of
+%% configuration.
+%Every finite run of a~system creates only a~finite number $n$ of
+%processes, therefore it can be modeled by running the system from an
+%initial configuration with $n$ placeholders.
+
+%--------------------------------------------------------
+\subsection{Non-atomic Global Conditions} \label{section:non-atomic}
+%--------------------------------------------------------
+We extend our method to handle systems where global conditions are not checked atomically.
+%
+We replace both existentially and universally guarded transition rules by a~simple variant of a~for-loop rule:
+$$%
+\forrule q r \circ S s%
+$$
+where $q,r,s\in Q$ is resp.\ a~source state, a~target state, and an
+escape state, $\circ\in\{<,>,\neq\}$, and $S\subseteq Q$ is a
+\emph{condition}.
+%
+For instance, line 2 of Burns' protocol would be replaced by
+% $
+% \KwSty{if forall}\, j < i: \mathit{flag}[j] = 0 \ \KwSty{then\ goto}\ 3\ \KwSty{else\ goto}\ 1.
+% $
+$
+\forrule 2 3 < {\{1,2,3\}} 1
+$.
+
+
+The semantics of a~system with for-loop rules is defined as an
+extension of the transition system from
+Section~\ref{section:parameterized_systems}.  Configurations are
+extended with a~binary relation over their positions, that is,
+a~configuration is now a~pair $(\conf,\tick)$ where $\conf$ is a~word
+over $Q$ and $\tick$ is a~binary relation over its positions
+$\{1,\ldots,|\conf|\}$.
+%
+The relation $\tick$ is used to encode intermediate states of
+for-loops. Intuitively, a~process at position $i$ performing
+a~for-loop puts $(i,j)$ into $\tick$ to mark that it has processed the
+position $j$.
+
+Formally, a~parameterized system $\parsys=(\locs,\rules)$ which
+includes for-loop rules induces a~transition system $\transys =
+(\confs,\trans)$ where $C \subseteq Q^+\times (\nat\times\nat)$.  For
+technical convenience, we assume that a~source of a~for-loop rule in
+$\rules$ is not a~source of any other rule in $\rules$.%
+%
+\footnote{Without this restriction, the state of a~process would have
+  to contain additional information recording which for-loop is the
+  process currently performing.  Note that the restriction does not
+  limit the modeling power of the formalism.  Any potential branching
+  may be moved to predecessors of the sources of the for-loop.}%
+%
+Then every for-loop rule $ \forrule q r \circ S s $ induces
+transitions $t = (w,\tick) \trans (w',\tick')$ with $w[i] = q$ for
+some $i:1\leq i \leq |w|$ which may be of the following three forms:
+(illustrated using the aforementioned example rule from Burn's
+protocol).
+
+\tikzset{looplabel/.style={scale=0.7,draw=gray!10,fill=white,rounded corners=2pt,anchor=center}}
+%\begin{description}
+%\item[{Iteration:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  %\vspace{-6mm}%
+  {\bf Iteration:} The $i$th process checks that the state of a~next
+  unchecked process in the range is in $S$ and marks it.  That is,
+  there is $j:1\leq j \leq |w|$ with $j\circ i$, $(i,j)\not\in\tick$,
+  $w[j]\in S$, and the resulting configuration has $w'=w$ and
+  $\tick'=\tick\cup\{(i,j)\}$.
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{6mm}
+  \input{Ticks.iteration.tex}
+\end{minipage}
+
+%\vspace{-4mm}% Cheating
+%\item[{Escape:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  {\bf Escape:} If the state of some process in the range which is
+  still to be checked violates the loop condition, then the $i$th
+  process may escape to the state $s$.  That is, there is $j:1\leq j
+  \leq |w|$ with $j\circ i$, $(i,j)\not\in\tick$, and $w[j]\not\in S$.
+  The resulting configuration has $w'[k]=w[k]$ for all $k\neq i$ and
+  $w[i] = s$. The execution of the for-loop ends and the marks of
+  process $i$ are reset, i.e., $\tick' = \tick\setminus\{(i,k)\mid
+  k\in \nat\}$.
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{-6mm}
+  \input{Ticks.escape.tex}
+\end{minipage}
+
+%\item[{Terminal:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  {\bf Terminal:} When the states of all processes from the range have
+  been successfully checked, the for-loop ends and the $i$th process
+  moves to the terminal state $r$.  That is, if there is no $j:1\leq j
+  \leq |w|$ with $j\circ i$ and $(i,j)\not\in\tick$, then $w'[k]=w[k]$
+  for all $k\neq i$, $w'[i] = r$, and $\tick' =
+  \tick\setminus\{(i,k)\mid k\in \nat\}$.
+%marks of the $i$th process are reset. 
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{6mm}
+  \input{Ticks.terminal.tex}
+\end{minipage}
+%\end{description}
+
+Other rules behave as before on the $w$ part of configurations and they do not influence the $\tick$ part.
+That is, a~local, broadcast, or rendez-vous rule induces transitions $(w,\tick) \trans (w',\tick)$ where 
+$w\trans w'$ is a~transition induced by the rule as described in Section~\ref{section:parameterized_systems}.  
+
+
+\paragraph{Verification.}
+To verify systems with for-loop rules using our method, we define an abstraction $\project_k$.
+Intuitively, we view a~configuration $c = (w,\tick)$ as a~graph with vertices being the positions of $w$ and edges being defined by (i) the ordering of the positions and (ii) the relation $\tick$. The vertices are labeled by the states of processes at the positions. $\alpha_k(c)$ then returns the set of subgraphs of $c$ where every subgraph contains a~subset of at most $k$ vertices of $c$ (positions of $w$) and the maximal subset of edges of $c$ adjacent with the chosen vertices.
+
+Formally, given a~configuration $\conf = (w,\tick)$, 
+$\projof \conf k$ is the set of views $\view = (w',\tick')\in\confs$ 
+of size at most $k$ (i.e., $|w'| = l \leq k$) 
+such that there exists an injection $\rho:\{1,\ldots l\}\rightarrow\{1,\ldots,|w|\},l\leq k$ where
+for all $i,j:1\leq i,j \leq l$:
+\begin{itemize}
+\item
+$i<j$ iff $\rho(i)<\rho(j)$,
+\item
+$w'[i]=w[\rho(i)]$ (i.e., $w'\subword w$), and
+\item
+$(i,j)\in\tick'$ iff $(\rho(i),\rho(j))\in\tick$.
+\end{itemize}
+%
+The notions of concretization and abstract post-image are defined in
+the same manner as in Section~\ref{section:verification_method} based on
+based on $\alpha$.
+%
+Lemma~\ref{lemma:apost} holds here in the same wording (as shown in
+the appendix).
+%
+Thus the verification method for systems with for-loops is analogous
+to the method of Section~\ref{section:verification_method}.
+
+
+
+%--------------------------------------------------------
+\subsection{Tree Topology}
+\label{section:trees}
+%--------------------------------------------------------
+We extend our method to systems where configurations are trees.  For
+simplicity, we restrict ourselves to complete binary trees.
+%
+\paragraph{Trees.}
+Let $\nodes$ be a~prefix closed set of words over the alphabet
+$\{0,1\}$ called \emph{nodes} and let $\locs$ be a~finite set.
+%
+A (binary) \emph{tree} over $\locs$ is a~mapping
+$\tree:\nodes\rightarrow\locs$.
+%
+The node $\epsilon$ is called the \emph{root}, nodes that are not
+prefixes of other nodes are called \emph{leaves}.
+%
+For a~node $\node = \node'i,i\in\{0,1\}$, $\node'$ is the
+\emph{parent} of $\node$, the node $\node 0$ is the \emph{left child}
+of $\node$ and $\node 1$ is its \emph{right child}.
+%
+Every node $\node' =\node w,w\in\{0,1\}^+$ is a~\emph{descendant} of $\node$. 
+%and $\node$ is its \emph{ancestor}.
+The \emph{depth} of the tree is the length of the longest leaf.  A
+tree is \emph{complete} if all its leaves have the same length and
+every non-leaf node has both children.
+%
+A tree $\tree':\nodes'\rightarrow\locs$ is a~\emph{subtree} of
+$\tree$, denoted $\tree'\subtree\tree$, iff there exists a~injective
+map $\embed:\nodes'\rightarrow \nodes$ which respects the descendant
+relation and labeling. That is, $\tree'(\node) =
+\tree(\embed(\node))$ and $\node$ is a~descendant of $\node'$ iff
+$\embed(\node)$ is a~descendant of $\embed(\node')$.
+%
+
+\paragraph{Parameterized systems with tree topology.}
+The definitions for parameterized systems with a~tree topology are
+ analogous to the definitions for systems with a~linear topology 
+(Section~\ref{section:parameterized_systems}).
+%
+%Here, we only describe the differences.  
+%points where the parameterized systems with tree topology differ from systems with linear topology.   
+A parameterized system $\parsys = (\locs,\rules)$ induces a~transition
+system $\transys = (\confs,\trans)$ where $\confs$ is the set of
+complete trees over $\locs$.  The set $\rules$ of transition rules is
+a~set of {\it local} and \emph{tree} transition rules.  The
+transitions of $\trans$ are obtained from rules of $\rules$ as
+follows.  A {\it local} rule is of the form $\loc\trans\loc'$ and it
+locally changes the label of a~node from $\loc$ to $\loc'$.  A {\it
+  tree} rule is a~triple
+$\loc(\loc_0,\loc_1)\trans\loc'(\loc_0',\loc_1')$. The rule can be
+applied to a~node $\node$ and its left and right children $\node_0$,
+$\node_1$ with labels $\loc$, $\loc_0$, and $\loc_1$, respectively,
+and it changes their labels to $\loc'$, $\loc_0'$, and $\loc_1'$,
+respectively.
+
+The reachability problem is defined in a~similar manner to the case of
+linear systems. The set $\minbad$ of minimal bad configurations is
+a~finite set of trees over $\locs$, $\inits$ is a~regular
+tree-language, and $\bad$ is the upward closure of $\minbad$ w.r.t.\ the
+subtree relation $\subtree$.  In the notation $\confsof n$ and
+$\reachof n$, $n$ refers to the depth of trees rather than to the
+length of words.
+
+\paragraph{Verification.}
+The verification method of Section~\ref{section:verification_method}
+is easily extended to the tree topology. The text of
+Section~\ref{section:verification_method} can be taken almost verbatim
+with the difference that instead of words, we manipulate complete
+trees, subword relation is replaced by subtree relation, and $k$ now
+refers to the depth of trees rather than the length of words.
+%
+That is, a~view of size $k$ is a~tree of depth $k$ and the
+abstraction $\projof \tree k$ returns all complete subtrees of 
+depth at most $k$ of the tree $\tree$. 
+Concretization and abstract post-image are defined analogously as in Section~\ref{section:verification_method}, based on $\alpha_k$. 
+The set $\inits$ may be given in the form of a~tree automaton. 
+The computation of $\projof \inits k$ may be then done over the structure of the tree automaton.
+We can compute the abstract
+post-image since Lemma~\ref{lemma:apost} holds here in the same wording as in Section~\ref{section:method}. 
+The test $\gammaof k(\Vk)\cap\bad=\emptyset$ is carried out in the same way as in Section~\ref{section:method} since $\bad$ is an upward closure of a~set $\minbad$ w.r.t.
+$\subtree$. The points 1-4 of Section~\ref{section:method} are thus satisfied and Algorithm~\ref{algorithm:basic} can be used as a~verification procedure for systems with tree topology.
+
+
+%--------------------------------------------------------
+\subsection{Ring Topology}
+\label{section:rings}
+%--------------------------------------------------------
+The method can be extended also to systems with a~ring topology.
+In a~parameterized system with ring topology, processes are organized in a~circular array and they synchronize by near-neighbor communication.
+We model system with a~ring topology as systems with linear topology of Section~$\ref{section:parameterized_systems}$, where a~configuration $c\in Q^+$ is interpreted as a~circular word. 
+%
+The set $\rules$ may contain local and \emph{near-neighbor} transition rules. 
+A near-neighbor rule is a~pair $(\loc_1\trans\loc_1',\loc_2\trans\loc_2')$.
+% It induces the transition $\conf\trans\conf'$ of $\trans$ if either 
+% $\conf = \conf_L\,\loc_1\loc_2\,\conf_R$ and $\conf' = \conf_L\,\loc_1'\loc_2'\,\conf_R$ or 
+% $\conf = \loc_2\,\bar\conf\,\loc_1$ and  $\conf' = \loc_2'\,\bar\conf\,\loc_1'$. 
+% The latter case is needed because configurations encode circular words. 
+% The two ends must be allowed to communicate in the same way as other pairs of %neighbouring
+% adjacent processes.  
+It induces the transition $\conf\trans\conf'$ of $\trans$ if either
+$\conf = \conf_L\,\loc_1\loc_2\,\conf_R$ and $\conf' =
+\conf_L\,\loc_1'\loc_2'\,\conf_R$ (i.e.\ the 2 processes are adjacent
+in the configuration $c$) or $\conf = \loc_2\,\bar\conf\,\loc_1$ and
+$\conf' = \loc_2'\,\bar\conf\,\loc_1'$ (i.e.\ the 2 processes are
+positioned at the end of the configuration $c$). The latter case
+covers the communication between the extremities since configurations
+encode circular words.
+
+\paragraph{Verification.}
+A word $u$ is a~\emph{circular subword} of a~word $v$, denoted $u\csubword v$, iff there are $v_1,v_2$ such that $v = v_1v_2$ and $u \subword v_2\,v_1$.
+The only difference compared to the method for the systems with a~linear topology is  
+that the standard subword relation is in all definitions replaced by
+the circular subword relation $\csubword$. 
+%Moreover, an abstraction $\projof \conf k$ of a~configuration $\conf$ returns all circular subwords of $\conf$ of length~$k$.
+%
+An equivalent of Lemma~\ref{lemma:apost} holds here in unchanged
+wording, points 1-4 are satisfied, and Algorithm~\ref{algorithm:basic}
+is thus a~verification procedure for systems with ring topology.
+
+%--------------------------------------------------------
+\subsection{Multiset Topology}
+\label{section:multisets}
+%--------------------------------------------------------
+Systems which we refer to as systems with multiset topology are a
+special case of the systems with 
+a~linear topology of Section~\ref{section:parameterized_systems}. 
+Typical representatives of these systems are Petri nets, which correspond precisely to systems of Section~\ref{section:extensions} with only (generalized) rendez-vous transitions.
+Systems with multiset topology may contain all types of transitions
+including local, global, broadcast, and rendez-vous, with the
+exception of global transitions with the scope of indices
+$j>i$ and $j<i$ (i.e., only $j\neq i$ is permitted). 
+Since the processes have no way of distinguishing their respective positions within a~configuration,
+the notion of ordering of positions within a~configuration is not meaningful and configurations can be represented as multisets. 

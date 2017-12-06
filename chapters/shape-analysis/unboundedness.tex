@@ -1,0 +1,179 @@
+%% ====================================================================
+%\section[Abstracting Three Degrees of Unboundedness]%
+\section[Bounded Abstract Domain | No Garbage Collection]%
+%{Handling 3 Degrees of Unboundedness {\footnotesize and No Garbage Collection}}
+{Three Degrees of Unboundedness {\footnotesize and No Garbage Collection}}
+\label{section:unboundedness}
+\label{section:nogc}
+%% ====================================================================
+
+We can now specify if a property gets violated using the finite
+observers on an abstract stack using data independence.
+%
+Thus, we can handle
+Challenge~\ref{unbounded:data:domain:specification} and
+~\ref{unbounded:data:domain}.
+%
+However, the memory layout of heap cells (called \emph{shapes}) that
+the program can create and manipulate is not bounded in size.
+%
+To tackle Challenge~\ref{unbounded:heap:size}, it is necessary to
+handle the size of those shapes.
+
+Each thread has a finite set of variables and can access the heap
+cells that are pointed to by one of its variables or a global
+variable. The heap cell that are not pointed by any variable can be
+potentially accessed through a succession of \prgcode{next}
+pointers. Otherwise, they are considered garbage.
+%
+The idea is to only keep track of \emph{important} cells. Those are
+the ones pointed by some variable and the ones containing some
+\emph{important} data, i.e.\ \prgcode{red} and \prgcode{blue} in the
+case of Treiber's stack.
+%
+Intuitively, the cells not pointed by any variable play a~secondary
+role. There are merely ``relays'' between the cells that the threads
+can currently access. We do not need to keep how many there are, we
+only need to keep the memory layout they form.
+
+\index{Transitive Closure}%
+We thus adapt a variant of the transitive closure logic by Bingham and
+Rakamari\'c~\cite{BiRa:vmcai06} for reasoning about heaps with single
+selectors, to our framework. This formalism, called here \emph{shape
+  analysis}, %
+\index{Shape Analysis}\index{Heap Analysis}%
+tracks reachability properties \index{Reachability}%
+between pairs of pointer variables.
+%
+Moreover, we have developed a novel optimization, based on the
+observation that it suffices to track the possible relations between
+each pair of pointer variables \emph{separately}.
+% , analogously to the
+% use of DBMs used in reasoning about timed automata~\cite{Dill:DBM}.
+
+% , and we adapt it to our analysis, in which pairs of
+% threads are correlated.
+%
+
+
+%% -------------------------------------------
+We use shape analysis to cope with challenge~\ref{unbounded:heap:size}
+but it is still not enough to bound the shapes, since we have an
+unbounded number of threads. Each thread could have one~variable
+pointing to a~different cell and that creates an unbounded shape.
+%
+\index{Thread-Modular}%
+To cope with challenge~\ref{unbounded:threads}, we try to adapt the
+successful thread-modular approach~\cite{BLMRS:cav08}, which verifies
+a concurrent program by generating an invariant\index{Invariant} %
+that correlates the global state with the local state of an arbitrary
+thread.
+%
+In other words, it keeps track of the shape that \emph{one} thread can
+see, %realize
+abstracting away (and ignoring) all the other threads.
+%
+The resulting shape is necessarily of bounded size using the above
+transitive closure.
+%% -------------------------------------------
+We can draw a~parallel with the view abstraction method from
+Chapter~\ref{chapter:view:abstraction}, where the configurations are
+abstracted into views of size 1 ($k=1$).
+%
+\index{Interference}%
+The thread-modular approach includes a step where it takes the
+information about one thread and couples it with the information from
+another thread, in order to take into account %capture
+the interference %operations
+of all the other threads on the first thread.
+%
+This step is akin to the concretization from the view abstraction,
+where we extend the views which additional information from other
+views, in a consistent manner.
+
+%% -------------------------------------------
+However, this leaves us with a problem when $k=1$: the interfering
+step would create shapes where threads possibly share some particular
+cell, even though the concrete system would never produce those
+shapes.
+%
+This is a too coarse approximation that leads to erroneous behaviors.
+%
+\index{Garbage-Collection}%
+In fact, in the case of garbage collection, even though the
+thread-modular approach only keeps track of one thread, it is possible
+to get around the problem by including additional information on the
+shape cells, to reflect whether a cell is shared or not. Thanks to the
+guarantee that garbage collection provides, when a cell is created,
+the creating thread is the only one accessing that cell. The cell is
+fresh and we mark it as such. This flag is lost as soon as the cell
+becomes accessible by another thread or a global variable.
+\index{Fresh cell}%
+%
+This information allows the interference step to be more precise, and
+separate the situations where it would otherwise merge together two
+fresh cells from different threads, making the resulting cell
+erroneously shared. The thread-modular approach, along with the
+freshness information, is often enough to carry on the verification.
+
+%% -------------------------------------------
+\index{Non Garbage-Collection}%
+Nevertheless, it is not sufficient to cope with
+challenge~\ref{no:garbage:collection} and the ABA problem.
+%
+The generated invariant must be able to express that \emph{at most}
+one~thread accesses some cell on the global heap.
+%
+Since this cannot be expressed in general by the thread-modular
+approach, we need to extend it %the approach
+to generate invariants\index{Invariant} %
+that correlate the global state with the local states of an arbitrary
+\emph{pair} of threads.
+%
+\index{Thread Corrolation}%
+\index{Precision of View Abstraction}%
+By correlating two threads, we increase the precision of the
+abstraction, alleviating the above problem. This is similar to the
+view abstraction when $k=2$ and the concretization function extends
+views in a consistent manner.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  %\centering
+  \tikzinput[\linewidth]{img/shape-abstraction}
+  \caption{From a concrete shape into one of the shape abstractions}
+  \label{figure:shape:abstraction}
+\end{figure}
+\endgroup
+
+In Figure~\ref{figure:shape:abstraction}, we show how a concrete shape
+with three threads can be abstracted into a bounded abstract
+shape. The figure depicts only one of the shape abstraction that we
+obtain. There is a combinatorial factor in the choice of which two
+threads to pick out of, here, the three threads.
+%
+Indeed, the above abstraction techniques bring the needed precision
+for verification, at the price of significant state-space explosion,
+which mainly arises from the fact that, reusing the terminology from
+Chapter~\ref{chapter:view:abstraction}, the dynamically allocated
+heaps are scattered across several views which describe the
+correlation between pairs of threads.
+%
+We have therefore developed a novel optimization, where we
+\emph{merge} abstracted shapes and manipulate the compound instead of
+every individual abstracted shapes.
+\index{Symbolic Representation}%
+%
+Intuitively, merging does not bring a~penalizing %dreadful
+imprecision due to the structure of the retry-loops.
+\index{Retry-Loop}%
+%
+When the thread's local variables are initially placed, but the global
+shape changed through the actions of other threads, the current thread
+will detect it and restart its initialization.
+%
+Hence, recording precisely where those local variables are is often
+superfluous information that can be discarded.
+%
+We touch more on that optimization in the next section.

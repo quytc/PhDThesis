@@ -1,0 +1,293 @@
+%% ====================================================================
+\section{Verification procedure}
+\label{section:shape:verification:procedure}
+%% ====================================================================
+
+To verify that no trace of the program is accepted by an observer, we
+form, as in the automata-theoretic approach~\cite{VW:modelchecking},
+the cross-product of the program and the observer, synchronizing on
+abstract \emph{events}, and check that this cross-product cannot reach
+a~configuration where the observer is in an accepting state.
+%
+Synchronizing on abstract events means that we instrument the program
+to communicate with the observer every time it passes a~commit point
+successfully. The observer will then advance state depending on the
+event that has been communicated.
+
+Using data independence, shape analysis and thread bounding, we
+characterize \emph{all} the reachable configurations of the program,
+from the point of view of two distinct executing threads, with
+a~symbolic encoding.
+\index{Symbolic Representations}%
+%
+The encoding consists in a~combination of several layers of
+conjunctions and disjunctions, to record \emph{pairwise} the
+relationships of the local configurations of the two threads with each
+other, the relationships of the local variables of a thread with
+global variables, the observer configuration, and finally the
+assertions about the heap.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  %\centering
+  \tikzinput[1.08\linewidth]{img/shape-analysis}
+  \caption{Encoding during the analysis and a corresponding shape}
+  \label{figure:shape:encoding}
+\end{figure}
+\endgroup
+
+%
+For example, in Figure~\ref{figure:shape:encoding}, we represent the
+encoding in two parts. The first part is some bookkeeping information,
+denoted $\sigma$, consisting of the \prgcode{pc} of each thread and
+the observer state.
+%
+The second part is a~matrix representing the relationships between the
+variables pairwise.
+%
+A local variable $v$ from thread $n$ is denoted $v_n$.
+%
+In the running stack example, the variables in concern are the global
+variable~\prgcode{Top}, the special term~\nullconst\ (i.e.\ the
+\prgcode{null} constant), the local variables of the two current
+threads \prgcode{$t_1,x_1,t_2,n_2$}, %
+and the cells that contain important data, dictated by the observer,
+(here \prgcode{red} and \prgcode{blue}).
+%
+The precise mathematical definitions can be found in
+Paper~\ref{paper:TACAS13}.
+
+\newpage%
+Here, we only give the intuition behind the relationships:
+%succintly and intuitively.
+%
+\begin{itemize}[leftmargin=*]
+\item $t_a = t_b$: the variables $t_a$ and $t_b$ point to the same cell,
+\item $t_a \pointsto t_b$: the \prgcode{next} field of the cell $t_a$
+  points to, and $t_b$ point to the same cell,
+\item $t_a\reaches t_b$: $t_b$ points to a cell that can be reached by
+  following a chain of two or more \prgcode{next} fields from the cell
+  that $t_a$ points to,
+\item
+  $t_a \unrelated t_b$: none of 
+  $t_a = t_b$, %
+  $t_a \pointsto t_b$, %
+  $t_b \pointsto t_a$, %
+  $t_a \reaches t_b$, or %
+  $t_b \reaches t_a$ is true.
+  %% \item $\isfree{\term}$ means that the cell denoted by $\term$ is not allocated.
+\end{itemize}
+%
+% We use $\Pred$ to denote the set
+% $\set{=,\pointsto,\pointedby,\reaches,\reachedby,\unrelated}$ of all
+% shape relational symbols. %
+%Naturally, 
+For any term $t$, we let $t=\nullconst$ denotes that $t$ is
+null. % and $t\pointsto\undefconst$ denote that $t$ is undefined.
+%
+In Figure~\ref{figure:shape:encoding}, the relationship between $t_2$
+and $n_2$, denoted $\pi[t_2,n_2]$, is that they are unrelated.
+
+This encoding is precise enough to represent an~abstract
+shape. However, to combat an obvious state-space explosion problem, we
+\emph{merge} these matrix representations into yet another matrix
+where each cell is a disjunction of relations from the set
+$\set{=,\pointsto,\pointedby,\reaches,\reachedby,\unrelated}$.
+%
+We depict for example in Figure~\ref{figure:shape:merging}, two
+abstract shapes, where the threads are (of course) at the same
+\prgcode{pc}, which are merged into \emph{one} matrix
+representation. Notice that the matrix representation now also
+characterizes two other shapes that were not considered in the
+merge. In other words, this new matrix representation is an
+over-approximation of the set of concrete shapes it characterizes.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  %\centering
+  \tikzinput[\linewidth]{img/shape-merging}
+  \caption{Merging shapes: Each cell is a disjunction over
+    $\set{=,\pointsto,\pointedby,\reaches,\reachedby,\unrelated}$.}
+  \label{figure:shape:merging}
+\end{figure}
+\endgroup
+
+% \paragraph{Joined shape constraint.}
+% A joined shape constraint, for thread $i_1$ and
+% $i_2$, denoted as $\matrixrep(i_1,i_2)$, is a (typically large)
+% conjunction %
+% $\mathop\bigwedge_{\term_1,\term_2\in \cellterms(i_1,i_2)}
+% \entryof{\term_1}{\term_2}$ %
+% where $\entryof{\term_1}{\term_2}$ is a non-empty
+% disjunction of atomic heap constraints. %
+% % for the pair
+% % ($\term_1$,$\term_2$) of cell terms.
+% % (i.e.\ of the form $\term_1\somerel \term_2$ for ${\somerel}\in\Pred$).
+% % 
+% Intuitively, it is a matrix representing the heap parts accessible by
+% the two threads (along with the cell data). Such a representation can
+% be (exponentially) more concise than using a large disjunction of
+% conjunctions of atomic heap constraints, at the cost of some loss of
+% precision.
+
+%% ========================================================
+%\paragraph{Postcondition computation.}
+\KW{Postcondition}%
+\index{Post-image operator}%
+%% ========================================================
+We can now describe how those matrix representations will be
+manipulated and cover the different cases which arise in a concurrent
+setting.
+%
+We need to consider two cases: %
+On one hand, given a matrix, one of the two represented and currently
+executing threads performs a~step.
+%
+On the other hand, we must consider the case where another third and
+distinct thread interferes and changes the matrix, even when the two
+represented threads do not perform any step.
+
+In the first scenario, where one of the two represented threads
+performs a step, we can compute the resulting matrix usually in a
+straightforward manner.
+%
+We (i) remove all disjuncts that must be falsified by the
+step %
+(ii) add all disjuncts that may become true by the step, %
+(iii) saturate the result.
+%
+The details can be found in Paper~\ref{paper:TACAS13}.
+%
+For example, when the action is a~variable assignment from a given
+thread, the row and column relating that variable are ``canceled'' and
+the new information is derived from what it is assigned to. A
+saturation procedure determines whether there are new disjuncts to be
+added or if some old ones are to be voided.
+
+% Consider for instance the program statement {\code{x:=y.next}}. %
+% Since only the value of $x$ is changing, the transformer updates only
+% conjuncts $\entryof{\term}{x}$ and $\entryof{x}{\term}$ where
+% $\term\in\cellterms(i_1,i_2)$. %
+% All assertions about $x$ are reset by setting every conjunct
+% $\entryof{x}{\term}$ and $\entryof{\term}{x}$ to $\Pred$, for all
+% $\term\in\cellterms(i_1,i_2)$. %
+% (The disjunction over all elements of $\Pred$ is the assertion
+% $true$). %
+% We then set $\entryof{x}{y}$ to $x\pointedby y$, $\entryof{y}{x}$ to
+% $y\pointsto x$ and derive all predicates that may follow by
+% transitivity. %
+% Finally, we saturate the formula. It prunes the (newly added)
+% predicates that are inconsistent with the rest of the shape formula.
+% %Third, we infer possible relationships that the other cell terms can have with $x$ assuming $y\pointsto x$.
+% %We iterate through all $\term\in\cellterms(i_1,i_2,i_3)$, $x\neq \term \neq y$ and assign to $\entryof{x}{\term}$ the disjunction of all relationships between $x$ and $\term$ consistent with $x\pointsto y$ and $\entryof{y}{\term}$.
+
+% For {\code{x.next:=y}}, it is important to know the reachabilities
+% that depend on the pointer $x\code{.next}$. %
+% The representation might potentially contain imprecision %
+% (it might for instance state that, for a term $\term$,
+% $\entryof{\term}{x}$ contains $t\reachedby x$ and $t\reaches x$, %
+% even if we know, via a simpler analysis, that no cycles are generated). %
+% Hence, we first split the formula into stronger formulas in such a way
+% that we disambiguate the part of the reachability relation involving
+% $x$. %
+% %
+% On each resulting formula, we then remove reachability predicates
+% between cell terms that depend on $x\code{.next}$ %
+% (e.g., we remove $u\reaches v$ if $u\reaches x$ and $x\reaches v$). %
+% %(e.g., we replace $u\reaches v$ in $\entryof{u}{v}$ by $u\unrelated v$
+% %if $u\reaches x$ and $x\reaches v$). %
+% We then set $\entryof{x}{y}$ to $x\pointsto y$ and derive all
+% predicates that may follow by transitivity (e.g., if $u\reaches x$ and
+% $y\reaches v$, we add $u\reaches v$), and we saturate the result.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  %\centering
+  \tikzinput[\linewidth]{img/shape-interference}
+  \caption{Interference}
+  \label{figure:shape:interference}
+\end{figure}
+\endgroup
+
+%% ==================================================
+%\paragraph{Interference.}
+\KW{Interference}%
+\index{Interference}%
+%% ==================================================
+%
+% In the case where we need to account for possible interference on the
+% matrix by another thread, (distinct from the two it already
+% represents), we proceed as follows.
+In the case where we need to account for possible interference on the
+matrix by a third thread, we proceed as follows.
+%
+We %
+(i) extend the matrix with the interfering thread, %
+(ii) apply the first scenario to compute new matrices and %
+(iii) project away the interfering thread from the resulting matrices.
+%
+The steps are described in Figure~\ref{figure:shape:interference}.
+%
+On the top left corner, we show the abstract shape to be considered,
+(but we hide and replace the content of the matrices with dots).
+%
+%
+In step (i), if a~third interfering thread $i_3$ (here in light
+purple) is to exist in the presence of the two other passive threads
+$i_1$ and $i_2$ (here in yellow and light pink), then it must be the
+case that \emph{both} the shape correlating $i_1$ and $i_3$, and the
+shape correlating $i_2$ and $i_3$, must exist among the shapes that
+have been created by the program!
+%
+If so, we extend the first shape accordingly with the third thread,
+which might strenghten the information in the larger matrix.
+%
+Naturally, the $\sigma$ information is extend accordingly too.
+%
+We then apply a~post operation (step (ii)) as in the first scenario,
+which creates new matrices where the content related to thread $i_1$
+and $i_2$ might have changed (shown with stars).
+%
+Finally, in step (iii), we project away the third thread. The
+resulting matrices correlate thread $i_1$ and $i_2$ but are the result
+of a~third interfering thread.
+%
+Notice the similarity with the view extensions from
+Chapter~\ref{chapter:view:abstraction}.
+
+The main idea of the method is then to collect \emph{all} possible
+abstract shapes without sending the observer onto an accepting state.
+%
+\index{Fixpoint}%
+It is implemented using %a~straightforward
+a~fixpoint procedure, starting from the shapes that characterize the
+set of initial configurations of the program.
+%
+Upon termination, we obtain an invariant of the program which
+characterizes the configurations of the program from the point of view
+of two distinct executing threads $i_1$ and $i_2$.
+%
+The main advantage of the method is that it is a~direct approach for
+verifying that a~concurrent program is a linearizable implementation
+of, for example here, a stack. It consists in checking a~few small
+properties of the algorithm, and is thus suitable for automated
+verification.
+% 
+Previous approaches typically verified linearizability separately from
+conformance to a~simple abstraction, most often using simulation-based
+arguments, which are harder to automate than simple property-checking.
+%
+Moreover, the method can automatically verify concurrent programs that
+use explicit memory management. This was previously beyond the reach
+of automatic methods.
+%
+% In addition, on examples that have been verified automatically by
+% previous approaches, our implementation is in many cases significantly faster.
+%% Experimental evaluation, which shows that our technique can fully
+%% automatically verify a range of 
+%% concurrent implementations of common data
+%% structure implementations, such as queues, stacks, etc.
+%% \end{itemize}

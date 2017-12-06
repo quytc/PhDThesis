@@ -1,0 +1,137 @@
+%%% ====================================================================
+%\section{Parameterized Verification}
+%\label{section:paramsys}
+%%% ====================================================================
+%\KW{Parameter-ized systems are infinite-state}%
+%\index{Parameterized Systems}%
+%%% ********************************************************************
+%Many systems can actually be characterized as a family of finite-state
+%systems with one (or more) parameter ranging over an unbounded domain.
+%%
+%For each fixed value of the parameter, the system is finite-state.
+%%
+%However, a system that contains an \emph{a priori} unknown parameter
+%must behave properly regardless of the value of the parameter. It is
+%therefore considered infinite-state.
+%
+%%% ********************************************************************
+%\KW{Parameter-ized verification}%
+%\index{Parameterized Verification}%
+%%% ********************************************************************
+%The \emph{parameterized verification} problem is to prove
+%correctness %\footnote{\ldots and namely here safety only}
+%of the system, against some specification, for all values of the
+%parameter.
+%%
+%For example, in the case of a program manipulating a list, the
+%parameter could be the length of the list. The system as a whole is a
+%set of finite-state systems, one for each length of the list.
+%%
+%For a network protocol, the parameter could be the topology of the
+%network and the system is to be proven safe regardless of how the
+%network nodes are arranged.
+%
+%%% ********************************************************************
+%\KW{Parameter-ized systems}%
+%%% ********************************************************************
+%We concentrate in this thesis on a specific class of
+%\emph{parameterized systems}, namely, systems consisting of an
+%arbitrary number of processes (see
+%Chapter~\ref{chapter:parameterized:systems}). %
+%The size of the system is the parameter of the verification problem.
+%% 
+%For each value $n$ of the parameter, the system $S_n$ is the parallel
+%composition of $n$ processes, which can interact with each other at
+%any time.
+%%
+%\index{Safety}%
+%Given a specification, we prove safety for the family $(S_n)_{n\ge 0}$
+%--- as~a~whole --- by showing the non-reachability of some
+%(potentially infinite) set of \emph{bad states}. %
+%%
+%We use the following strategy:
+%\begin{strategy}
+%\item \index{Model}%
+%  We extract a model from each process in the system. This in turn
+%  defines the operational semantics with states and transitions for
+%  the entire family.
+%\item \index{Over-approximation}%
+%  We use an over-approximation to derive an abstract model from the
+%  original (infinite-state) model.  This defines a new state-space and
+%  set of transitions.
+%\item \index{Abstract Model}%
+%  We determine two sets in the abstract model:
+%  \begin{itemize}[itemsep=0pt, leftmargin=0cm]
+%    % \item the initial states --- usually mirroring the initial settings
+%    %   of the program,
+%  \item \index{Initial states}%
+%    the initial states, usually mirroring the initial settings of the
+%    program,
+%    % \item the bad states --- usually along the lines of the targeted
+%    %   property.
+%  \item \index{Bad states}%
+%    the bad states, usually along the lines of the targeted property.
+%  \end{itemize}
+%\item \index{Reachability}%
+%  We finally check whether the bad states are reachable from the
+%  initial states in the abstract model.
+%  % 
+%  % \item Apply model-checking techniques (from
+%  %   Chapter~\ref{chapter:monotonic:abstraction}~or~\ref{chapter:view:abstraction})
+%  %   to determine wether the bad states are reachable from the initial
+%  %   states, by following a sequence of transitions --- also known as the
+%  %   reachability problem.
+%\end{strategy}%
+%%
+%\index{Soundness}%
+%By construction of the over-approximation, showing that the abstract
+%model is safe, will imply that the original system is also correct
+%with respect to its specification, regardless of the number of
+%processes in the system.
+%%
+%We present a formal definition and some examples in the next chapter.
+%
+%%% ********************************************************************
+%\newpage
+%\subsection*{Heap analysis}
+%\KW{Heaps}%
+%\index{Heap Analysis}%
+%%% ********************************************************************
+%An important extension in this thesis is the application of
+%parameterized verification to the complex problem of shape analysis.
+%%
+%We consider programs that implement data-structures that can be
+%concurrently accessed by an arbitrary number of threads.
+%%
+%The data-structures, e.g.\ stacks and queues, are constructed using
+%singly-linked lists.
+%%
+%By following the chains of pointers, we observe that programs leave
+%memory footprints that we coin \emph{shapes} or \emph{heaps}.
+%
+%The number of threads is one dimension of the parametrization. 
+%%
+%Shape analysis can also be parameterized along other dimensions, such
+%as the size of the data-structure or the data domain.
+%%
+%In Chapter~\ref{chapter:shape:analysis}, we address the combined
+%challenges of an arbitrary number of threads, an unbounded size of
+%heaps and an unbounded data domain. Moreover, we do not assume the
+%presence of a garbage collector which makes the task even more
+%complex.
+%
+%The program specification itself is infinite since the programs can
+%manipulate data values from a domain of unbounded size.
+%%
+%It is not enough to inspect each shape and conclude that it belongs to
+%a particular set of bad shapes. We need to observe \emph{traces} of
+%events. We therefore pair each shape with a special \emph{observer}
+%whose role is to determine whether a sequence of events might not
+%occur for a particular data-structure.
+%%
+%We still apply the above-described strategy and conclude that the
+%program reaches a bad configuration when the observer is in a bad
+%state.
+%%
+%We dedicate Chapter~\ref{chapter:shape:analysis} to explain this
+%complex problem and the verification method in further details.

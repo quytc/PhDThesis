@@ -1,0 +1,130 @@
+%
+\section{Ordering}
+\label{section:orderings}
+In this section, we introduce an ordering on configurations.
+%
+Based on the ordering, we will define the coverability problem
+which we use to check safety properties, and
+define the abstract transition relation.
+%
+The latter is an over-approximation of the concrete transition relation.
+
+%\paragraph{\bf Ordering.} 
+\smallskip\noindent{\bf Ordering.} 
+Let $\graph=\tuple{\vertices,\suc,\labeling}$ and
+$\graph'=\tuple{\vertices',\suc',\labeling'}$.
+%
+We write $\graph\jlt\graph'$ to
+denote that one of the following properties is satisfied:
+(i)
+  {\it Variable Deletion}: %
+  $\graph=\graph'\delVar{\xvar}$ for some variable $\xvar$,
+  % 
+(ii)
+  {\it Vertex Deletion}: %
+  $\graph=\graph'\delVertex{\vertex}$ for some isolated vertex
+  $\vertex\in\vertices'$,
+  % 
+(iii)
+  {\it Edge Deletion}: %
+  $\graph=\gupdate{\graph'}{\suc}\updateby{\vertex}{\undef}$ for some
+  $\vertex\in\vertices'$, or
+  % 
+(iv)
+  {\it Contraction}: %
+  there are vertices $\vertex_1,\vertex_2,\vertex_3\in\vertices'$ and
+  graphs $\graph_1,\graph_2$ such that $\vertex_2$ is simple,
+  $\suc'(\vertex_1)=\vertex_2$, $\suc'(\vertex_2)=\vertex_3$,
+  $\graph_1=\gupdate{\graph'}{\suc}\updateby{\vertex_2}{\undef}$,
+  $\graph_2=\gupdate{\graph_1}{\suc}\updateby{\vertex_1}{\vertex_3}$
+  and $\graph=\graph_2\delVertex{\vertex_2}$.
+  % 
+  \ignore{%
+  \begin{minipage}{0.3\textwidth}
+    \begin{tikzpicture}[show background rectangle]
+      \begin{scope}[scale=0.5]
+        \node[xshift=-1cm,shape=circle,fill=white,draw=none,scale=0.7] (v1){$\vertex_1$};
+        \node[shape=circle,fill=white,draw=none,scale=0.7] (v2){$\vertex_2$};
+        \node[xshift=1cm,shape=circle,fill=white,draw=none,scale=0.7] (v3){$\vertex_3$};
+        \node[draw=none,above=3mm] at (v2) {Before contraction};
+      \end{scope}
+      \begin{scope}[scale=0.5,yshift=-2.3cm]
+        \node[xshift=-1cm,shape=circle,fill=white,draw=none,scale=0.7] (v4){$\vertex_1$};
+        \node[draw=none] (v5){};
+        \node[xshift=1cm,shape=circle,fill=white,draw=none,scale=0.7] (v6){$\vertex_3$};
+        \node[draw=none,above=3mm] at (v5) {After contraction};
+      \end{scope}
+      \draw[->] (v1) -- (v2);
+      \draw[->] (v2) -- (v3);
+      \draw[->] (v4) -- (v6);
+    \end{tikzpicture}
+  }%
+
+%
+%
+We write $\graph\lt\graph'$ to denote that there are
+$\graph_0\jlt\graph_1\jlt\graph_2\jlt\cdots\jlt\graph_n$ with $n\geq
+0$, $\graph_0=\graph$, and $\graph_n=\graph'$.
+%
+That is, we can obtain $\graph$ from $\graph'$ by performing a finite
+sequence of variable deletion, vertex deletion, edge deletion and contraction operations.
+%
+For configurations $\conf=\tuple{\cstate,\graph}$ and
+$\conf'=\tuple{\cstate',\graph'}$, we write $\conf\lt\conf'$ to
+denote that $\cstate'=\cstate$ and $\graph\lt\graph'$.
+%
+
+For a configuration $\conf$, we use $\uc{\conf}$ to denote the %
+{\it upward closure} of $\conf$, $\ie$
+$\uc{\conf}=\setcomp{\conf'}{\conf\lt\conf'}$.
+%
+We use $\dc{\conf}$ to denote the
+{\it downward closure} of $\conf$, $\ie$
+$\dc{\conf}=\setcomp{\conf'}{\conf'\lt\conf}$.
+%
+For a set $\confs$ of configurations, we define $\uc{\confs}$ as
+$\bigcup_{\conf\in\confs}\uc{\conf}$.
+%
+We define $\dc{\confs}$ analogously.
+%For sets $\confs_1$ and $\confs_2$ of configurations, we write
+%$\confs_1\lt\confs_2$ to denote that $\conf_1\lt\conf_2$ for some
+%$\conf_1\in\confs_1$ and $\conf_2\in\confs_2$.
+
+%\paragraph{\bf Safety Properties.}
+\smallskip\noindent{\bf Safety Properties.}
+In order to analyze safety properties, we
+study the {\it coverability problem} defined below.
+%
+
+\probbox{Coverability}
+{%
+  \item Sets $\initconfs$ and $\finalconfs$ of configurations.
+}{%
+Is it the case $\initconfs\movesto{*}\uc{\finalconfs}$?
+}
+\newline
+Intuitively, $\uc{\finalconfs}$ represents a set of ``bad'' states which we do not 
+want to reach during the execution of the program.
+\localnote{Fred: should we add ``starting from any configuration in $\initconfs$''}
+%
+This set is represented by a set $\finalconfs$ of minimal elements.
+%
+In Section~\ref{section:experiments}, we will describe how to encode
+properties such as garbage generation, dereferencing and shape
+violation as reachability of upward closed sets of configurations
+represented by finite sets of minimal elements.
+%
+Therefore, checking safety with respect to these properties
+amounts to solving the coverability problem.
+
+%\paragraph{\bf Abstract Transition Relation.}
+\smallskip\noindent{\bf Abstract Transition Relation.}
+We write $\conf_1\absmovesto{\transition}\conf_2$ to denote that there is a $\conf_3$ such that
+$\conf_3\lt\conf_1$ and $\conf_3\movesto{\transition}\conf_2$.
+%
+In other words, a step of the abstract transition relation consists of first moving to 
+a smaller configuration (wrt $\lt$) and then performing a step of the concrete transition relation.
+%
+Notice that the abstraction corresponds to an over-approximation and therefore
+any safety property which holds in the abstract system will also hold in the 
+concrete one.\localnote{Fred:we can add a figure here}

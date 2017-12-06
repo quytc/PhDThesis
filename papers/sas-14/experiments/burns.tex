@@ -1,0 +1,64 @@
+Burns' algorithm~\cite{Burns:protocol} implements a mutual exclusion
+protocol and can be modeled as a parameterized system where the
+processes are arranged in a linear topology. Each process can
+communicate with and distinguish its neighbors on its right or its
+left.
+
+The local state of a process ranges over state $\set{1,\ldots,6}$ where
+$6$ represents the critical section. Transitions are guarded with
+conditions on the states of the neighbors, on the right, the left or
+both and is enabled if the guard is not violated.
+
+Initially, all processes are in state $1$. A bad configuration is
+detected if 2 processes or more are in the critical section, ie if the
+array contains at least 2 processes in state $6$.
+
+The transitions are depicted in the following state diagram. $i$ is
+the the current process, $j$ is another process and $\state{j}$ its
+state.
+
+%
+\noindent%
+\begin{minipage}{0.62\linewidth}
+  % \lstinputlisting[caption={Burns' mutual exclusion protocol.}, style=custom, label=figure:BurnsCode]{burns-code.txt}
+  \lstinputlisting[style=custom]{experiments/burns-code.txt}
+\end{minipage}
+%
+\begin{minipage}{0.38\linewidth}
+\hfill%
+  \begin{tikzpicture}
+    \node[state,state-i] (n1) at (0,0) {1};
+    \node[state,state-n] (n2) at (2,0) {2};
+    \node[state,state-n] (n3) at (4,0) {3};
+    \node[state,state-n] (n4) at (4,-2) {4};
+    \node[state,state-n] (n5) at (2,-2) {5};
+    \node[state,state-b] (n6) at (0,-2) {6};
+  
+    \draw [->,myedge] (n1) -- (n2);
+    % \draw [->,myedge] (n2) to[out=120,in=60] (n1) node[mylabel,above]{$\exists j<i: \state{j}\not\in\set{1,2,3}$};
+    \draw [->,myedge] (n2) .. controls +(120:0.75) and +(45:0.75) .. (n1) node[mylabel,above]{$\exists j<i: \set{4,5,6}$};
+    
+    \draw [->,myedge] (n2) -- node[mylabel,above]{$\forall j<i: \set{1,2,3}$} (n3);
+    
+    \draw [->,myedge] (n3) -- (n4);
+    
+    \draw [->,myedge] (n4) -- node[mylabel,below]{$\forall j<i: \set{1,2,3}$} (n5);
+    
+    % \draw [->,myedge] (n5) to[out=90,in=-45] (n1) node[mylabel,pos=0.7,above right,sloped]{$\exists j<i: \set{4,5,6}$};
+    \draw [->,myedge] (n4) to[out=135,in=-45] node[mylabel,pos=0.45,above,sloped]{$\exists j<i: \set{4,5,6}$} (n1);
+    
+    \draw [->,myedge] (n5) -- node[mylabel,below]{$\forall j>i: \set{1,2,3}$} (n6);
+    
+    \draw [->,myedge] (n6) -- (n1);
+    
+  \end{tikzpicture}
+\end{minipage}
+%\def\initstate{\tikz[baseline=(n.base)]\node[state,fill=green!20,scale=0.7](n){1};}
+%\caption{A pseudocode of the $i$th process of
+%  Bruns's protocol and the corresponding transition rules (in the form of a transition diagram). A state of a process is composed form
+%  a program location and a value of the local variable
+%  $\mathit{flag}[i]$. Since value of $\mathit{flag}[i]$ is invariant
+%  at each location, states correspond to locations. Initially, all
+%  processes are in state {\protect\initstate}.
+%}
+%\caption{Pseudocode and transition rules of Burns' protocol.}

@@ -1,0 +1,40 @@
+% put this in the beginning of a paragraph and Latex will
+% automatically try to make it one line shorter, if possible
+
+\newcommand{\X}{\looseness -1}
+
+% - ignore command
+
+\newcommand{\ignore}[1]{}
+
+%% Having a note in the margin. Notes are numbered.
+%% ---------------------------------------------
+\newcommand{\NoteComment}[2]{%
+  \stepcounter{NoteCounter#1}%
+  {\scriptsize\bf$^{(\arabic{NoteCounter#1})}$}%
+  \marginpar
+  %[\fbox{
+  %   \parbox{2cm}{\raggedleft
+  %       \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+  %       \footnotesize #2}}]%
+  {\fbox{\parbox{25mm}{\raggedright 
+      \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \footnotesize #2}}}
+}
+\newcounter{NoteCounter}
+\newcommand{\Note}[1]{\NoteComment{}{#1}}
+% \renewcommand{\Note}[1]{} %% Uncomment to remove the comment
+\newcommand{\parosh}[1]{\Note{Parosh: #1}}
+\newcommand{\daz}[1]{\Note{Fred: #1}}
+
+%% Local note as footnotes.
+%% ---------------------------------------------
+\newcommand{\localnote}[1]{\footnote{#1}}
+\renewcommand{\localnote}[1]{}
+%% Uncomment to remove the comment footnote
+
+% - Tikz style definitions
+
+\tikzset{mystate/.style={circle,ball color=#1,draw=none},mystate/.default=black}
+\tikzset{transition/.style={thick,black,>=latex}}
+\tikzset{pair/.style={circle split,draw,double,fill=red!20,inner sep=1pt}}

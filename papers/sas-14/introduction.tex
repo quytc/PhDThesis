@@ -1,0 +1,238 @@
+%-----------------------------------
+\section{Introduction}
+\label{section:introduction}
+%-----------------------------------
+%
+We consider the verification of safety properties for
+\emph{parameterized systems} with global
+conditions. %
+They typically consist of an arbitrary number of components
+(processes) organized according to a certain topology. %
+%
+Processes in the system can perform a transition provided that they
+satisfy the global condition associated with this transition. %
+For example, in a linear topology, a process (at position~$i$) can
+perform a transition only if all processes to its left (i.e. with
+index~$j<i$) satisfy a property~$\varphi$. The latter is an
+universally quantified transition. %
+For an existentially quantified transition, it is required that
+\emph{some} (rather than \emph{all}) processes satisfy~$\varphi$.
+%
+% For a ring topology, (resp.\ a~tree topology), global conditions might
+% involve the immediate neighbor (resp.\ parent and/or children)
+% processes.
+% %
+% Notice that the global conditions are not necessarily checked
+% atomically: Other processes can perform transitions, even quantified,
+% while the global condition check is carried out.
+% %
+% % Other topologies are examined in a companion
+% % paper~\cite{AbHaHo:view:abstraction}.
+
+%
+The task is to perform \emph{parameterized verification}, i.e., to
+verify correctness regardless of the number of processes. %
+This amounts to the verification of an infinite family; namely one for
+each possible size of the system. %
+The term parameterized refers to the fact that the size of the system
+is (implicitly) a parameter of the verification problem. %
+%
+Parameterized systems arise naturally in the modeling of mutual
+exclusion algorithms, bus protocols, distributed algorithms,
+telecommunication protocols, and cache coherence protocols. %
+For instance, the specification of a mutual exclusion protocol may be
+parameterized by the number of processes that participate in a given
+session of the protocol. %
+%
+In such a case, it is interesting to verify correctness regardless of
+the number of participants in a particular session. %
+As usual, the verification of safety properties can be reduced to the
+problem of checking the reachability of a set of bad configurations
+(the set of configurations that violate the safety property).
+
+%% --------------------------
+The verification problem is known to be undecidable in general, but
+decidable for the subclass of parameterized systems which are well
+quasi-ordered
+(WQO)~\cite{Parosh:Bengt:Karlis:Tsay:general,abdulla:well}.
+%
+There are numerous methods targeting primarily WQO systems and proven
+to be complete for them. %
+Universally quantified transitions are not monotonic, and systems with
+such transitions are not WQO. %
+Some of these methods are however still sound for such systems, and
+were successfully used to verify many of them, mostly because these
+systems have an inductive and upward-closed invariant which is strong
+enough to imply safety. %
+The WQO specialized methods are bound to fail, if they cannot derive
+such upward-closed invariants.
+%
+Refer to Section~\ref{section:related_work} for more details on
+related works.
+
+%-----------------------------------
+\myparagraph{Our contribution.}
+%-----------------------------------
+We observe that there exists in fact a significant subclass of systems
+with ``almost'' upward-closed invariants, that is, invariants which
+may be expressed as a list % unions
+of \emph{finite} intersections of upward-closed sets.
+%
+Let us illustrate such a situation with a simple, yet characteristic,
+example: the implementation of a barrier synchronization.
+%
+A process arriving at the barrier must block and cannot proceed until
+all other processes reach this barrier.
+%
+The first process at the barrier acts as a \emph{pivot}. All other
+processes must wait as long as there is a pivot. %
+%
+When all processes have arrived at the barrier, the pivot can proceed,
+which in turn releases all the waiting processes.
+%
+
+\begin{wrapfigure}{r}{0.28\textwidth}
+  \vspace{-24pt}
+  %\hfill%
+  \begin{center}
+    \input demo
+  \end{center}
+  %\vspace{-6mm}
+  %\caption{State diagram (per process).}
+  \label{figure:demo}
+  \vspace{-24pt}
+\end{wrapfigure}
+%
+\noindent%
+% A process can be in state $\sP$ (\textbf{p}ivot), $\sW$ (\textbf{w}aiting), $\sB$ or $\sA$
+% (\textbf{b}efore and \textbf{a}fter the barrier).
+A process can be in state $\sP$ (pivot), $\sW$ (waiting), $\sB$ or
+$\sA$ (before and after the barrier).
+%
+All processes are initially in state $\sB$ and %
+a bad configuration is detected when there is a process in state $\sA$,
+while there is still a process in state $\sB$ %
+% (cf Figure~\ref{figure:barrier}).
+(cf the figure on the right).
+%
+It is clear that a pivot~$\sP$ can coexist with a process in state~$\sB$ and/or $\sW$, or
+is alone, i.e.\ the set of configurations $\set{\sP\wedge\sB^*\wedge\sW^*}$. %
+% and (ii) a process after the barrier can only coexist with other
+% process after the barrier or still waiting, i.e.\ the set of
+% configurations $\set{\sW^*\wedge\sA^+}$. %
+
+We observe that a waiting process $\sW$ strongly counts on the fact that
+if there is a delayed process $\sB$, then there is \emph{also} a process
+$\sP$. %
+Such a waiting process bases its decision to move through the barrier
+\emph{solely} on the absence of the pivot (which implies the absence
+of a process in the state $\sB$).
+%
+In other words, a configuration containing two processes in state
+$\sW$ and $\sB$ \emph{must} also contain a pivot $\sP$, i.e.\ it must
+be in $\uparrow\set{\sW^+\wedge\sB^+}\cap\uparrow\set{\sP}$.
+%
+An intersection of upward-closed sets is not generally upward-closed.
+%
+Deriving only $\uparrow\set{\sW^*\wedge\sB^*}$ is clearly not strong
+enough, because, in such a set, a process in state $\sW$ could cross
+the barrier, violating the safety property.
+% (The latter is not even inductive).
+%
+We can recognize here a pattern, common for many systems with almost
+upward-closed invariants: %
+Two processes $p_1$ and $p_2$ count collectively on the presence of
+another process $p_3$ in a certain state, in order to \emph{not}
+perform a critical step. %
+%This is captured by a \emph{context-sensitive} invariant.
+Any invariant that does not derive the presence of the blocking
+process $p_3$ is (potentially) not strong enough.
+%
+% The presence of an entity $E_1$ (here $\uparrow\set{W^+\wedge B^+}$) is implied by the presence of an entity $E_2$ ($\uparrow\set{P}$), 
+% and the system performs a critical step which involves testing the absence of $E_1$ by the absence of $E_2$. 
+% %
+% It is clear that the strong enough inductive invariant must imply that
+% $E_1 \Rightarrow E_2$, in other words, it cannot intersect with
+% $\uparrow E_1 \cap \uparrow E_2$.
+
+%% ---------------------------------
+We propose a method that can \emph{fully automatically} infer such
+\emph{context-sensitive} invariants. %
+Of course, since we are dealing with an undecidable problem, the
+method has its limitations. %
+For instance, we are not able to infer (even to express) invariants
+which involve equalities of numbers of processes in different states
+(such invariant could be expressed as an \emph{infinite} intersection
+of upward closed sets).
+
+% This work introduces a context-sensitive view abstraction based
+% on~\cite{AbHaHo:view:abstraction}, that alleviates the lack of
+% precision that the latter can exhibit. %
+Our method retains the simplicity and efficiency of the method
+from~\cite{AbHaHo:view:abstraction} for verification of WQO systems,
+on which it is based.
+%
+Thanks to its simplicity, we were able to extend it to handle
+fine-grained parameterized systems, where the global (quantified)
+conditions are checked non-atomically. %
+%
+The implementations of checking the global conditions are typically
+implemented as for-loops ranging over process indices.
+%
+Verification of systems with non-atomically checked global conditions
+is significantly harder. The models are closer to the real systems and
+require to distinguish intermediate states of a for-loop performed by
+a process. Moreover, any number of processes may be performing a
+for-loop simultaneously. %at the same time.
+%
+% The models are closer to to the real systems and can reveal bugs which
+% would otherwise stay hidden.
+%
+
+To the best of our knowledge, there is no other method which combines
+the ability to infer non upward-closed invariants with the support of
+fine-grained modeling.
+%
+In contrast to many landmark works on parameterized systems
+\cite{CTV06,PRZ-tacas01,BHV04,AJNO:simple,APRXZ01,Namjoshi:VMCAI07,rmc:wo:transducers}
+which either assume that the universally and existentially quantified
+transitions are performed atomically or that use simplified models
+that palliate to the non upward-closed invariants, %
+we were able to verify, e.g., the full fine-grained version of
+Szymanski's mutual exclusion protocol. %
+The latter was an open problem in parameterized verification. %
+% , which has been considered a
+% challenge in parameterized verification. %
+%
+%Besides Szymanski's protocol, 
+We have moreover tested our method on numerous other case studies,
+some of which cannot be verified by any other methods we are aware of,
+and we could observe the promising efficiency of the method.
+%
+% Finally, we show that when lifting our reasoning to a more abstract
+% level, we obtain a verification scheme which is complete for systems
+% with almost upward-closed invariants.
+Finally, we show that our method gives rise to a verification scheme
+which is complete for systems with almost upward-closed invariants.
+
+%% -----------------------------------------------------
+\myparagraph{Outline.}
+%% -----------------------------------------------------
+To simplify the presentation, we introduce the class of systems we
+consider in a stepwise manner. First, we consider a basic model in
+Section~\ref{section:paramsys} where we only allow atomically checked
+global conditions. We describe how to derive the view abstraction that
+retains enough information to carry out the verification procedure,
+fully automatically, in Section~\ref{section:method}.
+%
+Then, we introduce in Section~\ref{section:non-atomic} how the
+abstraction is adapted in order to handle the non-atomic setting. We
+describe how the abstracted system subtly characterizes the original
+system, with \emph{in-order} non-atomic checks, while retaining its
+simplicity.
+%
+We report on our experimental results in
+Section~\ref{section:experiments}, and describe related work in
+Section~\ref{section:related_work}. Finally, we give some conclusions
+and directions for future research in
+Section~\ref{section:conclusion}.

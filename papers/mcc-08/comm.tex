@@ -1,0 +1,172 @@
+% put this in the beginning of a paragraph and Latex will
+% automatically try to make it one line shorter, if possible
+
+\newcommand{\X}{\looseness -1}
+
+% - ignore command
+
+\newcommand{\ignore}[1]{}
+
+%% Having a note in the margin. Notes are numbered.
+%% ---------------------------------------------
+\newcommand{\NoteComment}[2]{%
+  \stepcounter{NoteCounter#1}%
+  {\scriptsize\bf$^{(\arabic{NoteCounter#1})}$}%
+  \marginpar
+  %[\fbox{
+  %   \parbox{2cm}{\raggedleft
+  %       \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+  %       \footnotesize #2}}]%
+  {\fbox{\parbox{25mm}{\raggedright 
+      \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \footnotesize #2}}}
+}
+\newcounter{NoteCounter}
+\newcommand{\Note}[1]{\NoteComment{}{#1}}
+% \renewcommand{\Note}[1]{} %% Uncomment to remove the comment
+\newcommand{\parosh}[1]{\Note{Parosh: #1}}
+\newcommand{\daz}[1]{\Note{Fred: #1}}
+
+%% Local note as footnotes.
+%% ---------------------------------------------
+\newcommand{\localnote}[1]{\footnote{#1}}
+\renewcommand{\localnote}[1]{}
+%% Uncomment to remove the comment footnote
+
+
+%% ---------------------------------------------
+
+\renewcommand{\daz}[1]{\localnote{Fred: #1}}
+
+\newcommand{\myparagraph}[1]{\noindent\textbf{#1}}
+%\renewcommand{\myparagraph}[1]{\paragraph{#1}}
+
+
+\newcommand{\intersect}{\ensuremath{\cap}}
+\newcommand{\Intersect}{\ensuremath{\bigcap}}
+\newcommand{\union}{\ensuremath{\cup}}
+\newcommand{\Union}{\ensuremath{\bigcup}}
+
+\newcommand{\tuple}[1]{\ensuremath{\left(#1\right)}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\setcomp}[2]{\ensuremath{\set{#1|\;#2}}}
+
+\newcommand{\LD}[1]{\ensuremath{Read_{#1}}}
+\newcommand{\ST}[1]{\ensuremath{Write_{#1}}}
+
+%% ================================
+%% Parosh
+%% ================================
+
+% multisets, words, etc
+\newcommand{\msets}[1]{{#1}^{\circledast}}
+\newcommand{\lst}[1]{\left[#1\right]}
+\newcommand{\mset}{M}
+\newcommand{\emptystring}{\varepsilon}
+\newcommand{\emptyword}{\emptystring}
+\newcommand{\word}{w}
+\newcommand{\append}{\cdot}
+\newcommand{\wordering}{\preceq}
+\newcommand{\chordering}{\wordering}
+\newcommand{\lastof}[1]{{\it last}\left(#1\right)}
+
+% ordering
+\newcommand{\uclosed}{U}
+\newcommand{\uc}[1]{\widehat{#1}}
+\newcommand{\genof}[1]{{\it gen}\left(#1\right)}
+\newcommand{\subsumes}{\sqsubseteq}
+
+% PN
+\newcommand{\pn}{\ensuremath{{\mathcal N}}}
+\newcommand{\pnplaces}{P}
+\newcommand{\place}{p}
+\newcommand{\places}{P}
+\newcommand{\pnplace}[1][p]{#1}
+\newcommand{\pntransition}[1][t]{#1}
+\newcommand{\pntransitions}{T}
+\newcommand{\flowrel}{F}
+\newcommand{\inputof}[1]{I\left(#1\right)}
+\newcommand{\outputof}[1]{O\left(#1\right)}
+\newcommand{\pntuple}{\tuple{\pnplaces,\pntransitions,\flowrel}}
+
+% problem definitions
+
+\newcommand{\acovproblem}{{\sc APRX-RACE-COV}}
+\newcommand{\covproblem}{{\sc RACE-COV}}
+
+\newcounter{probboxcounter}
+\setcounter{probboxcounter}{0}
+\newcommand{\probbox}[3]{%
+  \vspace{3mm}
+  \noindent
+  \framebox{
+    \begin{minipage}{0.95\hsize}
+      \noindent\underline{#1}
+
+      \noindent{\bf Instance:}
+
+      \begin{itemize}
+        #2
+      \end{itemize}
+
+      \noindent{\bf Question:}
+      #3
+    \end{minipage}
+  }
+  \vspace{2mm}
+}
+
+% transition systems
+\newcommand{\ts}{{\mathcal T}}
+\newcommand{\tstuple}{\tuple{\confs,\movesto{},\ordering,\initconfs}}
+\newcommand{\conf}{c}
+\newcommand{\confs}{C}
+\newcommand{\movesto}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\bad}{{\it Bad}}
+\newcommand{\finalconfs}{\confs_{\it fin}}
+\newcommand{\initconf}{\conf_{\it init}}
+\newcommand{\initconfs}{\confs_{\it init}}
+\newcommand{\pre}{{\it Pre}}
+\newcommand{\bmovesto}[1]{\stackrel{#1}{\leadsto}}
+\newcommand{\ordering}{\preceq}
+\newcommand{\tstriple}{\tuple{\confs,\movesto{},\ordering}}
+\newcommand{\worklist}{{\tt WorkList}}
+\newcommand{\explored}{{\tt Explored}}
+\newcommand{\state}{s}
+\newcommand{\initstate}{\state_{{\it init}}}
+\newcommand{\states}{S}
+\newcommand{\transition}{t}
+\newcommand{\transitions}{T}
+\newcommand{\rank}{{\it Rank}}
+
+%% TikZ styles
+\tikzset{background rectangle/.style={rounded corners,inner sep=1pt,bottom color=red!20,top color=white}}
+% Place and transition for the petri nets
+\tikzset{every place/.style={draw=blue,fill=blue!20,thick}}
+\tikzset{shared/.style={draw=green,fill=green!30!gray,thick}}
+\tikzset{every transition/.style={draw=red,fill=red!20,thick,minimum width=10mm,minimum height=1mm}}
+
+\pgfdeclarelayer{my background} 
+\pgfsetlayers{background,my background,main}
+
+\tikzset{dottedrectangle/.style={rounded corners,draw,dotted,inner sep=0pt}}
+
+%% --------------------------------------------------------------------------------------------------
+\lstset{ %
+  language=C,                     % choose the language of the code
+  basicstyle=\scriptsize,         % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny,              % the size of the fonts that are used for the line-numbers
+  stepnumber=0,                   % the step between 5 line-numbers. If it's 1 each line will be numbered
+%  numbersep=15pt,                 % how far the line-numbers are from the code
+%  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+ % frame=single,                  % adds a frame around the code
+%  tabsize=4,                      % sets default tabsize to 2 spaces
+%  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}

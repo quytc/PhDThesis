@@ -1,0 +1,161 @@
+\documentclass{llncs} 
+
+%\pdfpagesattr{/CropBox [122 102 490 690]} % LNCS page made biggest 
+
+%\usepackage{url}
+\usepackage{stmaryrd}
+%\usepackage{multirow}
+%\usepackage[english]{babel}
+%\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+%\usepackage{times}
+%\usepackage{pslatex}
+%\usepackage{graphics}
+\usepackage{amscd,amssymb,amsmath}
+%\usepackage[justification=centering]{caption}
+\usepackage{proof}
+%\usepackage{enumerate}
+\usepackage{latexsym}
+%\usepackage{xspace}
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{todo}
+\usepackage[boxed]{algorithm2e}
+%\usepackage[noend]{algorithmic}
+\usepackage[T1]{fontenc}
+\usepackage{fancyvrb}
+%\usepackage{listings}
+\usepackage{paralist}
+%\usepackage{MnSymbol}
+
+%\usepackage[quiet]{fontspec}
+%\fontspec [⟨font features⟩] {⟨font name⟩}
+%\newfontfamily ⟨cmd⟩ [⟨font features⟩] {⟨font name⟩}
+
+%% TikZ
+\usepackage[version=latest]{pgf}
+\usepackage{tikz}
+\usetikzlibrary{%
+  arrows,%
+  calc,%
+  decorations.pathmorphing,%
+  %calendar,%
+  %fit,%
+  %shapes,%
+  shapes.geometric,%
+  %shapes.misc,%
+  %shapes.symbols,%
+  %shapes.arrows,%
+  %shapes.callouts,%
+  %shapes.multipart,%
+  %backgrounds,%
+  matrix,%
+  %fadings,%
+  %through,%
+  positioning,%
+  %scopes,%
+  %decorations.shapes,%
+  %decorations.pathmorphing,%
+  %decorations.text,%
+  %shadows,%
+  %trees,%
+  snakes,%
+  petri,%
+  automata,%
+  backgrounds%
+}
+
+\input comm.tex
+%\pagecolor{white}
+%\pagecolor[rgb]{0,0,0.2}
+%\color{gray}
+%\color[rgb]{0,0,0.51}
+
+
+
+%------------------------------------------------------------------------- 
+%\pagestyle{empty} %% For the camera-ready version
+
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\input title.tex
+
+\input abstract.tex
+
+\input introduction.tex
+
+% \input overview.tex
+
+\input language.tex
+
+% \input wolper.tex
+
+%\input symbolic
+
+%% \input annotation
+
+\input ai.tex
+
+%\input observers_old.tex
+
+
+%% \input atomicity
+
+
+\input experiments.tex
+
+%\input experiments.new.tex
+
+\input conclusion.tex
+
+%% \section{Acknowledgements}
+%% \label{section:acknowledgements}
+%% This work was supported by the Uppsala Programming for Multicore
+%% Architectures Research Center
+%% % (\href{http://www.it.uu.se/research/upmarc}{UpMarc})
+%% (UpMarc) %
+%% and the Czech Science Foundation (project P103/10/0306).
+
+%------------------------------------------------------------------------- 
+{\small
+\bibliographystyle{abbrv}
+\bibliography{bibdatabase}
+}
+
+% \newpage
+% \appendix
+
+% \input{observers.tex}
+
+%\input data_independence.tex
+
+% \newpage
+% \section{Here is Really Old Text}
+
+
+%%%%%%%
+% \newpage 
+% \newpage
+% \section{Here is Really Old Text}
+% \input old-ai.tex
+%%%%%%%
+
+%\include{examples}
+
+%\include{ai-appendix}
+
+%\input scott-annotate
+
+%\input behaviors
+
+%\input app_grops
+
+%\input app_pre
+
+%\input backup
+%\input atomicity-backup
+
+
+\end{document}

@@ -1,0 +1,107 @@
+% -------------------------
+\makeatletter
+\if@UU@margnum
+\subsection*{Tree topologies}
+\else
+\subsection{Tree topologies}
+\fi
+\makeatother
+% -------------------------
+
+Finally, we extend the method to parameterized systems, here organized
+according to a~tree topology.
+%
+The topology and the communication primitives define the behaviour of
+the system, which is modeled similarly as in
+Section~\ref{section:paramsys:definition}.
+%
+In the linear case, global conditions could mention the state of
+processes on the right or left of a given process.
+%
+With tree topologies, it is no longer the case, but we see a closely
+related notion: \emph{pattern matching}.
+
+A configuration of the system is represented by a tree over a finite
+set of local process states~$\locs$.
+%
+The behaviour of the system is induced by a set of
+transitions~$\rules$ conditioned by the local states of neighboring
+processes, i.e.\ the parent and children processes.
+%
+In this topology, a transition is a \emph{rewriting rule} which may
+change the states of all involved processes. %
+The arity or the order of the children might be relevant.
+%
+For example, in Figure~\ref{figure:tree:transition}, a process in
+state $a_1$ can change state if the parent is in state $p_1$ and the
+children are in state $b_1$ and $c_1$.
+%
+In such a case, the process changes state to $a_2$ and the parent and
+the two children change state to $p_2,b_2,c_2$, respectively.
+%
+In other words, process $a_1$ fits the pattern of the rewriting rule,
+when $p_1,b_1,c_1$ are its neighbors.
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  \centering
+  \tikzinput{img/tree-transition}
+  \caption{A tree transition~$\delta$: If the pattern
+    $p_1,a_1,b_1,c_1$ is found in the tree, the rule is applied and
+    the nodes change their local state to $p_2,a_2,b_2,c_2$
+    respectively.}
+  \label{figure:tree:transition}
+\end{figure}
+\endgroup
+
+The subword relation is replaced by a tree embedding
+relation. Intuitively, a tree $t$ is embedded in tree $t'$ if it is
+possible to obtain $t$ by removing nodes from $t$. Removing nodes is a
+complex operation that \mbox{re-attaches} the subtrees of a node to
+its parent.  The embedding relation is presented in details in
+paper~\ref{paper:FORTE08}.
+
+We over-approximate the behaviour of the system by modifying the
+semantics of the transitions, such that a rule is applied to
+a node and two nodes in its left and right subtrees (rather than its
+immediate left and right children).
+%
+Nodes ``violating'' the pattern are removed, i.e.\ we ``go down in the
+ordering'' before we apply the rule (see
+Figure~\ref{figure:tree:transition:abstract}).
+%
+The resulting abstract transition system is then monotonic with
+respect to the tree embedding relation on configurations --- larger
+configurations are able to perform the same transitions as smaller
+ones with results ordered accordingly.
+%
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[hb]
+  \centering
+  \tikzinput{img/tree-abstract-transition}
+  \caption{An abstract tree transition: the pattern to apply the
+    rule~$\abstrans\delta$ is searched in the subtree, rather than the
+    immediate children or parent.}
+  \label{figure:tree:transition:abstract}
+\end{figure}
+\endgroup
+
+Since the abstract transition relation is monotonic and the tree
+embedding relation is a WQO (by Kruskal's theorem~\cite{kruskal}), it
+follows that we can apply the backward reachability analysis of
+Algorithm~\ref{algo:backward:procedure}, with the guaranty that it
+terminates.
+
+Upward-closed sets of configurations are symbolically (and finitely)
+represented with trees, which allows the reachability analysis to be
+performed by computing predecessors of trees, simply and efficiently
+--- more than applying transducer relations on general tree regular
+languages~\cite{rmc:wo:transducers}.
+%
+Based on the method, we have implemented a prototype which works well
+on several tree-based protocols such as the percolate, leader
+election, tree-arbiter, and the IEEE 1394 Tree identity protocols (see
+Paper~\ref{paper:FORTE08}).

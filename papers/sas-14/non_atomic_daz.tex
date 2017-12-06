@@ -1,0 +1,305 @@
+%
+%-----------------------------------
+\section{Non-atomically checked global conditions}
+\label{section:non-atomic}
+%-----------------------------------
+We extend our model and method to handle parameterized systems where
+global conditions are \emph{not} checked atomically.
+%
+We replace both existentially and universally guarded transition rules
+by the following variant of a~for-loop rule:
+$$%
+\forrule \circ \witnesses s {s'} e%
+$$
+where $s\in\locs$ is a \emph{source} state, $s'\in\locs$ is a
+\emph{target} state and $e\in Q$ is an \emph{escape}
+state. $\circ\in\{<,>,\neq\}$ describes the \emph{range} of iterations
+and $\witnesses\subseteq Q$ is a \emph{condition}.
+%
+For instance, line 3 of Szymanski's protocol would be replaced by
+\mbox{$\forrule \neq {\neg\set{1,2}} 3 7 4$}. 
+
+For a configuration $c$, a process at position $i$ inspects the state
+of another process at position $j$, \emph{in-order}.
+%
+If the latter is not a condition for the $i^{th}$ process to escape,
+we say that $i$ \emph{ticks} $j$, unless there is no more process to
+inspect and the $i^{th}$ completes its transition.
+%
+Without loss of generality, we will assume that the for-loops iterate
+through process indices in increasing order.
+
+%% -------------------------------------------------
+\myparagraph{Concrete semantics.}
+%% -------------------------------------------------
+%
+We extend the semantics of a system with for-loop rules from
+transition systems of Section~\ref{section:paramsys} in the following
+way: %
+A configuration is now a pair $c = (q_1\cdots q_n,\tick)$ where
+$q_1\cdots q_n\in Q^+$ as before and $\tick:\range 1 n \rightarrow
+\range 0 n$ is a total map which assigns to every position $i$ of $c$
+the last position which has been ticked by the $i^{th}$ process. %
+Initially, before ticking any process, it is assigned~$0$.
+%
+For convenience, for a (partial) function $f$ , we use
+$f\updateby{a}{b}$ to denote the function $f'$ such that $f'(a)=b$ and
+$f'(x)=f(x)$ if $x\neq a$.
+
+
+Consider a rule $\delta = \forrule \circ \witnesses {s} {t} {e}$ from
+$\rules$. %
+For a configuration $c$ with $|c| = n$ and a position $i\in\range 1
+{n}$, we define the post-image $\delta(c,i)$ to be the configuration
+$c'=(q_1\cdots q_{i-1}q_i'q_{i+1}\cdots q_n,\tick')$ if $q_i = s$ and
+one of the three following scenari holds.
+%
+The process at position $i$ tries first to determine which position to
+tick next.
+%
+(i) If there is no more position $j$ to tick in the considered range
+$j\circ i$, we say that process $i$ \emph{terminates}. %
+We then have $q_i'= t$ and $\tick\updateby{i}{0}$.
+(ii) 
+
+\NOTE{I stop here for tonight. There is a problem with $\tick\updateby{i}{0}$ when the range for the next post from $t$ is $j>i$.}
+
+Let $\next(i) = \tick(i)+1$ if $n\geq \tick(i)+1\circ i$ and undefined
+otherwise.  If $\next(i)$ is undefined, 
+
+
+
+.  In this
+case, we say that the $i$th process of $c$ performs terminal
+transition.  Otherwise, there are two possibilities: if
+$q_{\next(i)}\in S$, then $\tick(i)$ is set to $\next(i)$ and we say
+that the $i$th process performs an iteration, else if
+$q_{\next(i)}\not\in S$, then the state of the $i$th process changes
+to $e$, $\tick(i)$ is set to $0$, and we say that the $i$th process
+performs an escape transition.
+
+%
+\paragraph{Instantiation of the view abstract domain.}
+We now instantiate the abstract domain described in Section~\ref{section:method} by specifying new notions projection and entailment on the views. They will be analogies of the original ones, customized to the new notion of configuration and successor function.
+A view is now a tripple $\view = (R_0q_1R_2\ldots q_nR_{n},\tick,\unticked)$ where
+$(q_1\cdots q_n,\tick)$ is a configuration called the \emph{base} of $v$, 
+$R_0,\ldots,R_{n}\subseteq Q$ are \emph{contexts} and
+$\unticked:\range 1 n\rightarrow 2^\locs$ is a total map which assigns 
+a subset of $R_{\tick(i)}$ 
+%a subset of $\importantof i \cap R_{\tick(i)}$ 
+to every $i\in\range 1 n$. 
+Intuitivelly, $\loc \in R_{\tick(i)}$ symbolises existence of a process in a state $\loc$ which 
+%is important for the $i$th process, 
+appears between the ${\tick(i)}$th and the ${\tick(i+1)}$th position and has not yet been ticked by the $i$th process. 
+
+%
+For $h\in H_k, k\leq n$,
+$\proj h c = (\proj h {q_1\cdots q_n},\tick',\unticked')$ where
+for $i\in \range 1 k$, 
+\begin{inparaenum}[(i)]
+\item
+$\tick'(i)$ equals the largest $j$ for which $h(j)\leq \tick(i)$, and
+\item
+given the smallest $\ell\in\range 1 k$ such that $\tick(h(i))\leq h(\ell)$,
+%$\unticked(i) = \importantof i \cap \{b_j\mid \tick'(h(i)) < j < h(\ell)\}$. 
+$\unticked(i) = \{b_j\mid \tick'(h(i)) < j < h(\ell)\}$. 
+\end{inparaenum}
+%
+
+The entialment relation between views 
+$v = (R_0q_1R_2\ldots q_nR_{n},\tick,\unticked)$,
+$v' = (R_0'q_1'R_2'\ldots q_n'R_{n}',\tick',\unticked')$,
+is defined so that $u\entails v$ iff  
+\begin{enumerate}
+%\item
+%$R_0q_1R_2\ldots q_nR_{n}\entails R_0'q_1'R_2'\ldots q_n'R_{n}'$, 
+\item
+both have the same base,
+\item
+$R_0\subseteq R_0',\ldots,R_n\subseteq R_n'$, and
+\item
+$\unticked(1)\subseteq \unticked'(1),\ldots,\unticked(n)\subseteq \unticked'(n)$.
+%for all $i\in\range 1 n$, ${\unticked(i)}\subseteq{\unticked'(i)}$.
+\end{enumerate}
+This intuitivelly means that larger contexts pose more restrictions on configurations, and more unticked states within a context can only block more effectivelly the progress of ticking.
+%Let us consider a strictly increasing injection $h\in H_{n}^{k}$.
+%We use $\spanof h i$ to denote the set $\range{1}{h(1)}$ if $i=0$, the
+%set $\rangesopen{h(i)}{h(i+1)}$ if $0<i< k$, and the set
+%$\rangesopen{h(k)}{n}$ if $i=k$. 
+
+%
+Abstraction, concretization, and $\spost$ are then defined based on the definition of projection and entailment in the same way as before.
+
+%\note{for two views with $\view \sentailed \view'$ and any set $X$ of views, $\gamma(X\cup \view) \subseteq \gamma(X\cup\view')$ (prove)?}
+
+%\newpage
+\newcommand{\imap}{h}
+\newcommand{\imapf}{f}
+\newcommand{\imapg}{g}
+\newcommand{\imapplus}{h_+}
+\newcommand{\imapminus}{h_-}
+\newcommand{\imapprime}{h'}
+\newcommand{\imapsof}[2]{H_{#1}^{#2}}
+\renewcommand{\proj}[2]{\Pi_{#1}(#2)}
+\renewcommand{\apost}{\Delta^{\#}_k}
+%\renewcommand{\apost}{\abstractof k\circ\Delta\circ{\max}\circ\gamma_k^{k+2}}
+%\renewcommand{\proj}[2]{#2 {\downharpoonright}_{{#1}}}
+---------------------------------------------\\
+In order to prove that $\apost$ overapproximates the abstract post (Lemma~2), we first prove an auxiliary Lemma~\ref{lemma:aux}.
+\begin{lemma}\label{lemma:aux}
+Let $\delta\in\Delta$, 
+$\conf\in\confs,|c|=n$, let $k \leq m \leq n$,
+and $\imap\in \imapsof n k$.
+\begin{enumerate}
+\item\label{item:composition}
+For $\imapf\in \imapsof {n} {m}, \imapg\in \imapsof {m} {k}$, $\Pi_{\imapg\circ\imapf} = \Pi_{\imapg} \circ \Pi_\imapf$.
+\item\label{item:samepost}
+If $\delta(c,k)$ and $\delta(\proj \imap c ,\imap^{-1}(k))$ are defined then
+$\proj \imap {\delta (c,k)} = \delta (\proj \imap {c}, \imap^{-1}(k))$.
+\item\label{item:monotonicity}
+For two view of size $n$ s.t. $v\sentails v'$, we have that 
+\begin{inparaenum}
+\item\label{item:post}
+$\delta(v,k)\sentails \delta(v',k)$ and 
+\item\label{item:projection}
+$\proj h v \sentails \proj h {v'}$.
+\end{inparaenum}
+\end{enumerate}
+\end{lemma}
+\begin{proof}TODO
+%\begin{enumerate}
+%\item
+%%We will show claim for $\imapf$ and $\imapg$ such that the range of $\imapg$ equals the range of $\imapf$ plus one element, say $\ell$. The claim of the lemma (with general $\imapg$ and $\imapf$) then follows by simple induction to the size of the difference of ranges of $\imapf$ and $\imapg$.
+%
+%Let us have a view $v = R_1x_1\cdots x_n R_{n+1}$, then, by definition,  
+%$\proj \imapf v = R_1' x_{\imapf(1)} R_2' x_{\imapf(2)} \cdots x_{\imapf(m)} R_{m+1}'$ where 
+%for each $1\leq i \leq m+1$,\\ $R_i' = (\Cup_{j\in\spanof \imapf i} R_j) \Cup (\Cup_{j\in\spanof \imapf i\setminus \{i\}} \{x_j\})$, 
+%and\\
+%$\proj \imapg {v'} = 
+%R_1'' x_{\imapg(\imapf(1))} R_2'' x_{\imapg(\imapf(2))} \cdots x_{\imapg(\imapf(m))} R_{k+1}''$ 
+%where 
+%for each $1\leq i \leq k+1$,\\ $R_i'' = (\Cup_{j\in\spanof \imapg i} R'_j) \Cup (\Cup_{j\in\spanof \imapg i\setminus \{i\}} \{x_j\})$ which after substitution equals\\
+%$
+%\bigl(\Cup_{j\in\spanof \imapg i} 
+%[(\Cup_{\ell\in\spanof \imapf j} R_\ell) 
+%\Cup 
+%(\Cup_{\ell\in\spanof \imapf j\setminus \{j\}} \{x_\ell\})]\bigr) 
+%\Cup 
+%\bigl(\Cup_{j\in\spanof {\imapg\circ\imapf} i\setminus \{i\}} \{x_j\}\bigr)
+%$.
+%The last expression may be show to be uqual to\\
+%$(\Cup_{j\in\spanof {\imapg\circ\imapf} i} R_j) \Cup (\Cup_{j\in\spanof {\imapg\circ\imapf} i\setminus \{i\}} \{x_j\})$,\\
+%%
+%which proves that
+%$\proj \imapg {v'} = \proj {\imapg\circ\imapf} v$.
+%
+%\item
+%$\delta(v,i)$ is defined onnly if the iterating process as well as the first process in its checking range, if it exists, are in the range of $\imap$.
+%$\delta(v,i)$ then differs from $v$ only in one of those two elements of the base.
+%
+%
+%%Let $v' = R_1x_1\cdots x_k R_{k+1} = \proj \imap  v$ for some view $v$ of size $n$ where $\imap\in \imapsof n k$. Assume that $k<n$ and that $i\leq n$ is not in the range of $\imap$.
+%%%
+%%The view $\proj \imapf {v'} = R_1 x_1 \cdots x_{i-1} R_{i} \Cup \{i\} \Cup R_{i+1} x_{i+1} R_{i+1} \cdots x_k R_{k+1}$. This is the same as the view $\proj {\imapf\circ\imapg} v$.
+%%%
+%%$\proj h \view = R_1' x_{h(1)} R_2' x_{h(2)} \cdots x_{h(k)} R_{k+1}'$ where 
+%%for each $1\leq i \leq k+1$, $R_i' = (\Cup_{j\in\spanof h i} R_j) \Cup (\Cup_{j\in\spanof h i\setminus \{i\}} \{x_j\})$. 
+%
+%
+%\end{enumerate}
+
+\end{proof}
+
+\begin{lemma}
+$\abstractof k\circ\Delta\circ\concretizeof k X \sentailed \apost(X) \cup X$.
+\end{lemma}
+
+\begin{proof}
+By definition of $\alpha_k$, every view in $\abstractof k \circ \Delta \circ \concretizeof k X$ equals $\proj \imap {c'}$ for some configuration $c'\in \Delta \circ \gamma_k(X)$ with $|c'|=n$ and some $\imap\in \imapsof n {k}$.
+We will prove the lemma by showing that there is some $v'\in \apost (X)$ 
+such that $v'\sentails \proj \imap {c'}$. The case when $\proj \imap {c'}\sentailed X$ is trivia, we therefore further assume that $\proj \imap {c'}\not\sentailed X$.
+Since $c'\in\Delta\circ\gamma_k(X)$, there is a configuration $c\in\gamma_k(X)$,
+a transition $\delta\in\Delta$ and $i\in\range 1 {n}$ such that $c' = \delta(c,i)$.
+Since $c\in\gamma_k(X)$, there is some $v\in X$ such that $v\sentails \proj \imap c$. 
+We will extend $\imap$ into a $\imapplus\in \imapsof {n} {k+|X|}$ by extending its range by the minimal set $X$ of positions of $c$ so that $\delta(\proj \imapplus c, \imapplus^{-1}(i))$ is defined. 
+
+Notice that $|X|$ is at most $2$. Recall the definition of post on views. For local and terminal transition, to enable post, it is only neccessary to include in $X$ the position $i$ of the process performing the transition. For iteration and escape transition, post is enabled if the $i$th positiont together with the position $\ell$ of the first procecess to be checked by the $i$th one is present (the $\ell$th process is either ticked or it causes the $i$th process to escape). Hence $X$ indeed has to contain at most 2 positions.
+
+We show that $\proj \imapplus c \in \gamma_{k}^{k+|X|}$.
+By defitition of $\gamma_k^{k+|X|}$, this is true if every element of $\alpha_k(\proj \imapplus c)$ is entailed by an element of $X$.
+An element of $\alpha_k(\proj \imapplus c)$ equals $\proj \imapprime {\proj \imapplus c}$ for some $\imapprime \in \imapsof {k+|X|} k$. 
+%The mapping  $\imapprime\circ\imapplus$ is an element of $\imapsof n k$. 
+By Lemma~\ref{lemma:aux}.\ref{item:composition}, $\proj \imapprime {\proj \imapplus c} = \proj {\imapprime\circ\imapplus} c$. 
+Since 
+$\imapprime\circ\imapplus\in\imapsof n k$ and
+$c\in \gamma_k(X)$,
+$\proj {\imapprime\circ\imapplus} c$ must be entailed by an element of $X$ by definition of $\gamma_k$, which proves our point.
+
+Since $\proj \imapplus c \in \gamma_{k}^{k+|X|}$, there is $w\in\max(\gamma_{k}^{k+|X|})$ such that $w\sentails\proj \imapplus c$.
+We will show that $\apost(X)$ contains the wanted $v'$ which entails $\proj \imapminus {\delta(w,\imapplus^{-1}(i))}$. %Since $w\in \gamma_{k}^{k+|X|}$, $v\in \Delta$
+By Lemma~\ref{lemma:aux}.\ref{item:samepost}, we have that $\delta(\proj \imapplus c,\imapplus^{-1}(i)) = \proj \imapplus {\delta(c,i)}$. 
+Since $\imap= \imapminus\circ\imapplus$ and by Lemma~\ref{lemma:aux}.\ref{item:composition}, 
+we have that $\proj \imapminus {\proj \imapplus {\delta(c,i)}} = \proj {\imapminus\circ\imapplus} {\delta(c,i)} = \proj \imap {\delta(c,i)} =  \proj \imap {c'}$. 
+By Lemma~\ref{lemma:aux}.\ref{item:post} and due to $w\sentails \proj \imapplus c$, we have $\delta(w,\imapplus^{-1}(i))\sentails\delta(\proj \imapplus c,\imapplus^{-1}(i))$, and from here, by Lemma~\ref{lemma:aux}.\ref{item:projection},  
+we have
+$\proj {\imapminus} {\delta(w,\imapplus^{-1}(i))}\sentails\proj \imapminus {\delta(\proj \imapplus c,\imapplus^{-1}(i))} = \proj \imap {c'}$.
+Since $\imapminus\in\imapsof {k+|X|} k$ and $w\in \max(\gamma_k^{k+|X|}(X))$,
+$\delta(\proj \imapplus c,\imapplus^{-1}(i))\in\Delta\circ\max\circ\gamma_k^{k+|X|}(X)$,$\delta(\proj \imapplus c,\imapplus^{-1}(i))\in\Delta\circ\max\circ\gamma_k^{k+|X|}(X)$,  and hence $\apost(X)$ must contain some view $v'$ which entails $\imapminus {\delta(\proj \imapplus c,\imapplus^{-1}(i))}$ by the definition of $\alpha_k$.
+\qed
+\end{proof}
+
+
+
+
+
+%\begin{proof}
+%By definition of $\alpha_k$, every view in $\abstractof k \circ \Delta \circ \concretizeof k X$ equals $\proj h {c'}$ for some configuration $c'\in \Delta \circ \gamma_k(X)$ and some $h\in H_{|c|}^{k}$.
+%We will prove the lemma by showing that there is some $v'\in \abstractof k\circ\Delta\circ\concretizeoflim k {k+1} X$ such that $v'\sentails \proj h {c'}$.
+%Since $c'\in\Delta\circ\gamma_k(X)$, there is a configuration $c\in\gamma_k(X)$,
+%a transition $\delta\in\Delta$ and $i\in\range 1 {|c|}$ such that $c' = \delta(c,i)$.
+%Since $c\in\gamma_k(X)$, there is some $v\in X$ such that $v\sentails \proj c h$.
+%Let $\delta = \forrule \circ \witnesses s t e$.
+%Then the $i$th  position of $c$ must be $s$, otherwise $\delta(c,i)$ could not be defined.
+%If $\proj h c = \proj  h {c'}$ then we can let $v' = v'$ and conclude the proof, 
+%so we further assume that $\proj h c = \proj  h {c'}$.
+%We split the proof according to whether $c'$ is obtained from $c$ by an iteration, terminal, or escape.
+%
+%\begin{itemize}
+%\item {\it Iteration:}
+%Let $\ell$ be the first position in $c$ with $i\circ \ell$ which has not been yet checked by the $i$th process (such $\ell$ exists since $i$ since the move is an iteration).
+%Then $c'$ is the same as $c$ up to that $i\in\tick^\ell$ in $c'$ but not in $c$.
+%Since $\proj h c \neq \proj h {c'}$, the range of $h$ must contain both $i$ and $\ell$, from the following reasons:
+%Position $i$ is contained since the only difference between $c$ and $c'$ and hence between $\proj h c$ and $\proj h {c'}$ involves ticks of the $i$th process which are invisible in projection which do not contain the $i$th process.
+%If the position $\ell$ was not present, the state of the newly ticked $\ell$th process would appear only in some context of $\proj h {c'}$. Since the move is an iteration, the state of the $\ell$th process $x$ is in $S$, and hence contexts of $\proj h {c'}$ does not store any information about whether the $i$th process has or has not ticked a process in state $x$.  
+%
+%Notice that $\delta(\view,h(i))$ entails $\proj h c$ because 
+%$\view$ entails $\proj h c$ and $\delta(\view,h(i))$ differs from $\view$ in exactly the same way as $\proj h {c'}$ differs from $\proj h c$, that is, by that $\tick^{h(\ell)}$ contains $h(i)$.  
+%%
+%Since $v\in X$, $\Delta^\#(X)$ contains a view which entails $\delta(\view,h(i))$. 
+%We can hece let $v'$ be the view of $\Delta(X)$ which enaitls $\delta(\view,h(i))$ (such view is present by the definition of $\Delta^\#$). 
+%
+%\item {\it Terminal transition:}
+%In the case of terminal transition, $c'$ differs from $c$ in that the $i$th process changes its state to $t$ and all its ticks are erased. 
+%Let $h^{+1}\in H_n^k$ be the mapping with the range equal the range of $h$ united with $i$ ($h^{+1}$ can be possible equal to $h$). 
+%Since $\gamma_k(X)$ contains $c$, then $\gamma_k^{k+1}(X)$ contains some view $w$ which entails $\proj {h^{+1}} c$. Let $w' = \delta(w,g^{-1}(i))$ where $g\in H_{k+1}^k$ is the mapping such that $g\circ h^{+1} = h$. We have that $w'\sentails \proj g c'$.
+%
+%
+%
+%,  contains a view $w$ which entails $\proj {h^{+1}} c$ differs from $\proj {h^{+1}} {c'}$ in that $h(i)$ changes its state to $t$ and ticks of $t$ are reset in case $i$ is in the range of $h$, otherwise both projections are the same.
+%Since we assume that they are not the same, $i$ must be in the range of $h$. 
+%As before, we know that by definition, $\Delta^\#$ contains a view which entials $\delta(v,h(i))$, and we let this view be $v'$. Notice that the difference between $v$ and $\delta(v,h(i))$ is the change of the state of $h(i)$th process to $t$ and reset of all ticks of $h(i)$. The terminal transition is indeed perfored since $v$ contains the moving process $h(i)$ $v$ is a view of $c$ which could make the terminal transition, there can be no unticked process by $i$ to in the base of $v$ or in some its context which would prevent the transition.
+%\footnote{we could prove it for the different post where we require the right most process to be empty, using extension}
+%
+%\item {\it Escape:}
+%Last, let $\delta(c,i)$ be excape. As before, we can argue that range of $h$ contains $i$. Let $\ell$ be the index of the process which is to be ticked by the $i$th process in $c$. Its state is not in $S$ (because the transition is escape).
+%Let $h^\ell$ be the mapping from $H_n^k$ which is the same as $h$ except that its range includes also $\ell$. Let $h_1,\ldots,h_{k+1}$ be the views which arise from $h^+$ by excluding one position form its range. For every view $\proj {h_i} c$, there is (by definition of $\gamma_k$) a view $\view_i\in X$ which entails $\proj {h_i} c$. We have that $\proj {h^+} c \in \gamma_k^{k+1}\{v-1,\ldots,v_{k+1}\}$ (some lemma?). This or stronger (w.r.t. $\sentails$) view $w$ is constructed by $\gamma_k^{k+1}$.
+%We can thus take $\proj {h'} {\delta(w,i')}$ as $v$ where domain of $h'$ is $\range 1 {k+1}\setminus \{{h^+}(\ell)\}$ and $i'$ is ${h^+}(i)$.
+%Notice that $\delta(w,i')$ captures the change of the moving process since it is in its domain as well as the process outside $S$ which makes the post possible.
+%
+%\item
+%Local moves are simulated by forall moves.
+%\end{itemize}
+%
+%\end{proof}
+
+%\NOTE{End of Luk\'{a}\v{s}'s Part}

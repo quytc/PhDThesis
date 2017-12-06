@@ -1,0 +1,39 @@
+\begin{description}
+\item[Data Independence] is an argument used when verifying programs
+  that treat data equally. It allows us to rename the data and
+  typically handle the verification task using 3 key values.
+\item[Observers] are automata that allow us to capture concisely the
+  bad behaviours of the data-structures they are paired with.
+\item[Heap Abstraction] is necessary to bound the size of the
+  different shapes that the program can create, without introducing
+  too much imprecision. It uses a shape analysis based on the
+  transitive closure of the reachability relation. We showed that it
+  is enough to record pairwise the reachabilities of program
+  variables.
+\item[Joined Heaps] help combat the state-space explosion
+  problem % similarly to \ref{combat:state:space:explosion} on page \pageref{combat:state:space:explosion}.
+  (from page~\pageref{combat:state:space:explosion}).
+\item[Verification] is performed through a~simple forward analysis,
+  with a fixpoint computation. The task consists in checking that the
+  cross-product of the program and an observer never sends the latter
+  onto an accepting state.
+\item[Garbage Collection.] In the absence of garbage collection,
+  programs may suffer from the ABA problem. The method can handle that
+  case, which is one of the contribution of this thesis.
+\item[Linearizability] offers the illusion that methods happen at
+  once. The method does not prove linearizability per say, but it shows
+  directly the conformance of a~concurrent program to its sequential
+  specification.
+\item[Combined Challenges.] The method addresses several challenges.
+  \begin{itemize}[leftmargin=0pt]
+  \item The specification is infinite-state, because the data domain
+    is unbounded.
+  \item The program is infinite-state in several dimensions since it
+    consists of an unbounded numbers of current threads, it uses
+    unbounded dynamically allocated memory and the data domain is also
+    unbounded.
+  \item It handles the case of explicit memory management.
+  \end{itemize}
+  To the best of our knowledge, no other method can handle those
+  challenges at the same time.
+\end{description}

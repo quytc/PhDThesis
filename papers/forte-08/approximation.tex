@@ -1,0 +1,408 @@
+\section{Approximation}
+\label{sec:approx}
+%
+In this section, we introduce an over-approximation of the transition relation 
+of a parameterized tree system.
+%
+
+In Section~\ref{sec:ts}, we mentioned that each parameterized tree system $\parsys=
+\parsystuple$ induces a transition system $\tsof{\parsys}=\tstuple$.
+%
+A parameterized tree system $\parsys$ also induces an \emph{approximate} transition system
+$\atsof{\parsys}=\tuple{\confs,\atransrel{}}$, where the set $\confs$ of configurations 
+is identical to the one in $\tsof{\parsys}$ and the transition relation $\atransrel{}$ 
+is defined below.
+%
+
+First, we define a special operation on trees needed in order to describe the semantics of 
+$\atransrel{}$.
+%
+
+\paragraph{\bf Tree Subtraction}
+%
+In this paragraph, we fix two trees $\tree=(\nodes,\labeling),\tree'=(\nodes',\labeling')\in
+\trees{\alphabet}$ such that $\tree'\preceq_f\tree$ for some embedding $f$.
+%
+We define $\tree\sminus_f\tree'$ to be the tree $\tree''$ obtained from $\tree$ by performing
+a sequence of operations described below.
+%
+First, we enumerate the nodes of $\tree'$ in a bottom-up fashion.
+%
+Formally, let $\{\node_i\}_{1\le i\le\sizeof{\nodes'}}$ be an enumeration of the set $\nodes'$ of
+nodes in $\tree'$
+such that for any $i,j:1\le i\neq j\le \sizeof{\nodes'}$, $\node_i\spref\node_j$ implies that
+$j < i$.
+%
+In other words, if $\node_j$ is a descendant of $\node_i$ in $\tree'$, then
+$\node_j$ occurs earlier than $\node_i$ in the enumeration.
+%
+Based on the enumeration, we define a sequence of trees $\{\tree_i\}_{1\le i\le\sizeof{\nodes'}-1}$
+as follows.
+%
+We let $\tree_1:=\tree$.
+%
+For any $i:1\le i\le\sizeof{\nodes'}-2$, we denote by $\node^p_i$ the parent of $\node_i$, i.e.\ $\node^p_i\concat b=
+\node_i$ for some $b$; and we define
+%
+\[
+\tree_{i+1}:=\tree_i\append\left(f(\node_i^p)\concat b,\tree(f(\node_i))\right)\text{.}
+\]
+%
+Finally, we let $\tree'':=\tree_{\sizeof{\nodes'}-1}$.
+%
+In other words, we go through the nodes of $\tree'$ one by one in a bottom-up manner.
+%
+For each node $\node_i$ and its parent $\node^p_i$ in $\tree'$ (say $\node_i^p\concat b=\node_i$
+for some $b$), we consider their images $f(\node_i^p)$ and $f(\node_i)$ in $\tree$.
+%
+We replace the subtree rooted in the child of the image
+$f(\node_i^p)\concat b$ by the one rooted in the image $f(\node_i)$ (see Figure~\ref{fig:subtraction}).
+%
+Notice that the resulting tree $\tree''$ and the trees $\tree',\tree$ are related by
+$\tree'\includedin\tree''\preceq\tree$.
+%
+In the sequel, we denote by $\minusinc{f}$ the inclusion of $\tree'$ in $\tree''$ such that 
+$\minusinc{f}(\emptyword)=f(\emptyword)$ (such a function exists and is unique by 
+the definition above).
+%
+\begin{figure}
+\centering
+  \begin{tikzpicture}[show background rectangle]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \tikzstyle{level 4}=[sibling distance=1.4cm,level distance=0.9cm]
+    \begin{scope}[scale=0.4,yshift=-8mm]
+      \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree'$};
+      \node (rectangleD2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+      child {node(circleD2){}[fill] circle(2mm)}
+      child {
+        node(crossD2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child {
+          node(triangleD2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle
+        }
+        child{node {} edge from parent[draw=none]}
+      }
+      ;
+    \end{scope}
+    \begin{scope}[xshift=1.3cm,yshift=-13mm]
+      \node[draw=none,scale=2] {$\preceq_f$};
+    \end{scope}
+    \begin{scope}[scale=0.4,xshift=7cm]
+      \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree$};
+      \node (rectangleA2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+      child {node {.}
+        child
+        child {node(circleA2){}[fill] circle(2mm)}}
+      child {
+        node {.} child child {
+          node(crossA2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+          child {
+            node {.}
+            child {node {} edge from parent[draw=none]}
+            child { node(triangleA2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle}
+          }
+          child
+        }
+      }
+      ;
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \vspace{2mm}
+  
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.4]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree_1$};
+    \node (rectangleA2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node (A2){.}
+      child{node(A1) {}}
+      child {node(circleA2){}[fill] circle(2mm)}}
+    child {
+      node {.} child child {
+        node(crossA2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child {
+          node {.}
+          child {node {} edge from parent[draw=none]}
+          child { node(triangleA2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle}
+        }
+        child
+      }
+    }
+    ;
+    \draw (A1)--(A2) node[coordinate,midway] (midA){};
+    \draw[dashed,help lines,line width=1pt,rotate=55] (midA) ellipse (10mm and 4mm);
+    \draw[dotted,line width=1pt,->,shorten <=1pt, shorten >=1pt] (circleA2) .. controls +(70:15mm) .. (A2);
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.4]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree_2$};
+    \node (rectangleB2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circleB2){}[fill] circle(2mm)}
+    child {
+      node {.} child child {
+        node(crossB2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child {
+          node(midB) {.}
+          child {node {} edge from parent[draw=none]}
+          child { node(triangleB2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle}
+        }
+        child
+      }
+    }
+    ;
+    \draw[dashed,help lines,line width=1pt] (midB) ellipse (6mm and 3mm);
+    \draw[dotted,line width=1pt,->,shorten <=1pt, shorten >=1pt] (triangleB2) .. controls +(180:1.5cm) .. (midB);
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.4]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree_3$};
+    \node (rectangleC2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circleC2){}[fill] circle(2mm)}
+    child {
+      node (C1){.} child{node(C2){}} child {
+        node(crossC2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child {
+          node(triangleC2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle
+          child {node {}  edge from parent[draw=none]}
+        }
+        child
+      }
+    }
+    ;
+    \draw (C1)--(C2) node[coordinate,midway] (midC){};
+    \draw[dashed,help lines,line width=1pt,rotate=55] (midC) ellipse (11mm and 4mm);
+    \draw[dotted,line width=1pt,->,shorten <=1pt, shorten >=1pt] (crossC2) .. controls +(70:2cm) .. (C1);
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.4]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree_4$};
+    \node (rectangleD2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circleD2){}[fill] circle(2mm)}
+    child {
+      node(crossD2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child {
+        node(triangleD2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle
+        child {node {} edge from parent[draw=none] child { node{} edge from parent[draw=none]}}
+      }
+      child
+    }
+    ;
+    \end{scope}
+  \end{tikzpicture}
+  \caption{In the first row, we give an example of two trees $\tree,\tree'$ satisfying 
+$\tree'\preceq_f\tree$ for some embedding $f$.
+%
+In the second row, we give the sequence of trees used in the definition of $\tree\sminus_f\tree'$.
+%
+In each of the trees, the arrow shows where subtrees are re-rooted, while the nodes surrounded by 
+a dashed line are those which are removed.}
+  \label{fig:subtraction}
+\end{figure}
+%
+
+
+\paragraph{\bf The Approximate Transition Relation}
+%
+Consider two configurations $\conf_1,\conf_2$ and a rule $\rwrule\in\rwrules$.
+%
+We write $\conf_1\atransrel{\rwrule}\conf_2$ to denote that there is an $f$ such that 
+%
+%% Typo corrected
+%(i) $\tright{\rwrule}\preceq_f\conf_1$, and 
+(i) $\tleft{\rwrule}\preceq_f\conf_1$, and 
+%
+(ii) $\conf_2=(\conf_1\sminus_f\tleft{\rwrule})
+\rename_{\minusinc{f}}\tright{\rwrule}$.
+%
+Intuitively, starting from $\conf_1$ and an embedding $f$ of $\tleft{\rwrule}$ in $\conf_1$, we 
+first remove all nodes in $\conf_1$ such that $\tleft{\rwrule}$ is included in the resulting 
+configuration.
+%
+This is done by taking $\tleft{\rwrule}\sminus_f\conf_1$ and the inclusion $\minusinc{f}$.
+%
+Then we apply the rule $\rwrule$ and obtain $\conf_2$ from $\tleft{\rwrule}
+\sminus_f\conf_1$ in a similar manner to how it is described in the previous section, i.e.\ by 
+renaming the labels of the nodes in $\image{\minusinc{f}}$ according to $\tright{\rwrule}$ 
+(see Figure~\ref{fig:approximation}).
+%
+We use $\conf_1\atransrel{}_1\conf_2$ if $\conf_1\atransrel{\rwrule}\conf_2$ for some 
+$\rwrule\in\rwrules$.
+%
+
+\begin{figure}
+\centering
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=4mm]
+    \node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\tree_1$};
+    \node {$\state_u$}
+    child {
+      node[fill=white] {$\state_u$}
+      child {
+        node(r1) {$\state_u$}
+        child {node[fill=white] {$\state_1$}}
+        child {node(r2) {$\state_u$}}
+      }
+      child {node[fill=white] {$\state_1$}}
+    }
+    child {
+      node {$\state_u$}
+      child {edge from parent[draw=none]}
+      child {node {$\state_0$}}
+    }
+    ;
+%     \draw[dashed,help lines, line width=1pt,rounded corners] plot coordinates {%
+%       (r1.north west) (r1.north east) (r2.north east) (r2.south east) (r2.south west) (r1.south west) (r1.north west)%
+%     }; 
+    \draw[dashed,help lines, line width=1pt] 
+    ([xshift=-1mm]r1.south west) -- ([xshift=-1mm]r1.north west) -- %
+    ([yshift=1mm]r1.north west) -- ([yshift=1mm]r1.north east) -- %
+    ([xshift=1mm]r2.north east) -- ([xshift=1mm]r2.south east) -- %
+    ([yshift=-1mm]r2.south east) -- ([yshift=-1mm]r2.south west) -- cycle; 
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}
+    \node {$\atransrel{\rwrule_4}$};
+    \node[yshift=-15mm,draw=none]{};
+  \end{tikzpicture}
+  % 
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=4mm]
+    \node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\tree_2$};
+    \node[fill=white] {$\state_u$}
+    child {
+      node[fill=white] {$\state_1$}
+      child {
+        node {$\state_1$}
+        child {node[draw=none]{} edge from parent[draw=none]}
+        child {node[draw=none](bottom){} edge from parent[draw=none]}
+      }
+      child {node {$\state_1$}}
+    }
+    child {
+      node(r1) {$\state_u$}
+      child {edge from parent[draw=none]}
+      child {node[fill=white] {$\state_0$}}
+    }
+    ;
+    \draw[dashed,help lines, line width=1pt] 
+    ([xshift=-1mm]r1.south west) -- ([xshift=-1mm]r1.north west) -- %
+    ([yshift=1mm]r1.north west) -- ([yshift=1mm]r1.north east) -- %
+    ([xshift=1mm]r1.north east) -- ([xshift=1mm]r1.south east) -- %
+    ([yshift=-1mm]r1.south east) -- ([yshift=-1mm]r1.south west) -- cycle; 
+    % cheating for the size of the grey posit
+    \node[draw=none] at ([yshift=-1mm]bottom.south) {};
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}
+    \node {$\atransrel{\rwrule_2}$};
+    \node[yshift=-15mm,draw=none]{};
+  \end{tikzpicture}
+  %
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    \tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \tikzstyle{every node}=[draw,rounded corners,minimum width=4mm]
+    \node[xshift=-10mm,shape=circle,fill=white,draw=none] {$\tree_3$};
+    \node{$\state_1$}
+    child {
+      node {$\state_1$}
+      child {
+        node {$\state_1$}
+        child {node[draw=none]{} edge from parent[draw=none]}
+        child {node[draw=none](bottom){} edge from parent[draw=none]}
+      }
+      child {node {$\state_1$}}
+    }
+    child {
+      node {$\state_0$}
+      child {edge from parent[draw=none]}
+      child {node[draw=none]{} edge from parent[draw=none]}
+    }
+    ;
+    % cheating for the size of the grey postit
+    \node[draw=none] at ([yshift=-1mm]bottom.south) {};
+    \end{scope}
+  \end{tikzpicture}
+  %
+  \caption{A possible run of the approximate transition system induced by the percolate 
+protocol (see Example~\ref{exp:percolate}).
+%
+The nodes with a white background represent those where the rule will apply while the dashed lines 
+surround the nodes which are removed.
+}
+  \label{fig:approximation}
+\end{figure}
+%
+
+Observe that the relation $\atransrel{}$ is an over-approximation of the transition relation 
+defined in the previous section (i.e.\ $\atransrel{}\supseteq\transrel{}$) by the following 
+argument.
+%
+Consider two configurations $\conf_1,\conf_2\in\confs$ with $\conf_1\transrel{}\conf_2$.
+%
+By definition, this implies the existence of a rule $\rwrule\in\rwrules$ and an inclusion $f$ of 
+$\tleft{\rwrule}$ in $\conf_1$ such that $\conf_2=\conf_1\rename_f\tright{\rwrule}$.
+%
+Observe that, by definition of the $\sminus$ operation, since $f$ is an inclusion it follows that 
+$\conf_1\sminus_f\tleft{\rwrule}=\conf_1$ and $\minusinc{f}=f$.
+%
+Therefore, we obtain $\conf_2=\conf_1\rename_f\tright{\rwrule}=(\conf_1\sminus_f\tleft{\rwrule})
+\rename_{\minusinc{f}}\tright{\rwrule}$, and as a consequence, $\conf_1\atransrel{\rwrule}\conf_2$.
+%
+
+We are now ready to state a key property of the approximated transition system.
+%
+\begin{lemma}
+\label{lem:approx:monotonic}
+The approximate transition system $\tuple{\confs,\atransrel{}}$ is 
+monotonic with respect to $\preceq$.
+\end{lemma}
+%
+
+We define the coverability problem for the approximate system as follows.
+%
+
+\probbox{\acovproblem}
+{%
+  \item A parameterized tree system $\parsys=\parsystuple$
+  \item An upward closed set $\final$ of configurations.
+}{%
+$\init\atransrel{*}{}\final$ ?
+}
+
+%
+Since $\transrel{}\subseteq\atransrel{}$, a negative answer to \acovproblem{} implies
+a negative answer to \covproblem.
+%
+

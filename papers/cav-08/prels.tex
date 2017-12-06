@@ -1,0 +1,157 @@
+%
+\section{Preliminaries}
+\label{section:prels}
+%
+We consider programs that operate on data structures
+with one next-pointer such as traditional singly-linked lists and circular
+lists (possibly sharing their parts).
+%
+We represent the store as a graph, where the vertices represent the list cells,
+and the successor of a vertex represents the cell pointed to by the current one.
+%
+The graphs are of a special form in the sense that each vertex has at most one successor.
+%
+A program also uses a finite set of pointers which we call {\it variables}.
+%
+A cell is labeled by the (possibly empty) set of variables pointing to it.
+%
+%%
+\localnote{Fred: Include a picture here}
+%%
+
+For simplicity of presentation, we will treat the constant $\nil$ as a
+variable, with the special property that whenever a vertex is labeled by $\nil$,
+the successor of the cell is undefined.
+
+%We use $\nat$ to denote the set of natural numbers.
+%
+%For a set $A$, we use $A^*$ to denote the set of finite words over $A$.
+%
+For a partial function $f$, we write $f(a)=\undef$ to denote that $f(a)$ is undefined.
+%
+For a (partial) function $f$ , we use
+$f\updateby{a}{b}$ to denote the function $f'$ such that
+$f'(a)=b$ and $f'(x)=f(x)$ if $x\neq a$.
+%
+%We use
+%$f\restrict{a}$ to denote the restriction of $f$ to elements different from $a$, i.e.,
+%$f\restrict{a}$ is a function $f'$ such that
+% $f'(a)=\undef$ and $f'(b)=f(b)$ if $b\neq a$.
+%
+%We write $f(a)=f(b)$ to denote that both $f(a)$ and $f(b)$ are defined and they are equal.
+%
+%In other words, $f(a)=f(b)$ does not holds in case either $f(a)=\undef$ or $f(b)=\undef$ 
+%(or if both $f(a)=\undef$ and $f(b)=\undef$).
+%
+%Similar relations are interpreted analogously.
+%
+%For instance, $f(a)\neq f(b)$ holds iff $f(a)$ and $f(b)$ are defined and their values are different.
+
+Formally, we assume a finite set $\vars$ of variables including the element
+$\nil$.
+%
+A {\it program} $\prg$ is a pair $\prgtuple$
+where $\cstates$ is a finite set of {\it control states} and
+$\transitions$ is a finite set of {\it transitions}. 
+%
+A transition is a triple $\tuple{\cstate_1,\action,\cstate_2}$ where
+$\cstate_1,\cstate_2\in\cstates$ are control states and $\action$ is an {\it action}.
+%
+An {\it action} is of one of the following forms
+%$\pointer \xvar$
+$\xvar\equals\yvar$, $\xvar\nequals\yvar$,
+$\xvar\assigned\yvar$ where $\xvar\neq\nil$,
+$\nxt\xvar\equals\yvar$ where $\xvar\neq\nil$,
+or
+$\xvar\assigned\nxt\yvar$ where $\xvar,\yvar\neq\nil$.
+%
+The transition corresponds to the program changing control state from
+$\cstate_1$ to $\cstate_2$ while performing the operation described in $\action$ on the data structure.
+%
+We choose to work with the above minimal set of operations.
+%
+Other operations, e.g., $\xvar\equals\nxt\yvar$, $\xvar\nequals\nxt\yvar$, etc, can be expressed
+using the given set.
+
+
+A  {\it graph}
+$\graph$ is a triple $\tuple{\vertices,\suc,\labeling}$
+where $\vertices$ is a finite set of {\it vertices},
+$\suc$ is a partial function from $\vertices$ to $\vertices$, and
+$\labeling$ is a partial function from $\xvars$ to $\vertices$.
+%
+Furthermore, it is always the case that $\suc(\labeling(\nil))=\undef$.
+%
+Intuitively, the vertices correspond to the list cells.
+%
+The function $\succ$ defines the successors of the cells.
+%
+If $\succ(\vertex)=\undef$, %then
+the cell represented by $\vertex$ has currently no successor.
+%
+The function $\labeling$ defines the cell to which a given variable points.
+%
+If $\labeling(\xvar)=\undef$, %then
+the value of variable (pointer) $\xvar$ is undefined.
+%
+%We use $\varsof{\graph}$ to denote the set of variables which occur in 
+%$\graph$, i.e., $\varsof{\graph}=\setcomp{\xvar}{\labeling(\xvar)\neq\undef}$.
+% 
+
+A {\it configuration} $\conf$ is a pair $\tuple{\cstate,\graph}$ where
+$\cstate\in\cstates$ is a control state and $\graph$ is a graph.
+%
+We define a transition relation on configurations as follows.
+%
+Let $\transition=\tuple{\cstate_1,\action,\cstate_2}$ be a transition and let
+$\conf=\tuple{\cstate,\graph}$ and $\conf'=\tuple{\cstate',\graph'}$ be configurations.
+%
+We write $\conf\movesto{\transition}\conf'$ to denote that 
+$\cstate=\cstate_1$, $\cstate'=\cstate_2$, and $\graph\movesto{\action}\graph'$,
+where
+$\graph\movesto{\action}\graph'$ holds
+if one of the following conditions is satisfied:
+\begin{itemize}
+\item
+$\action$ is of the form $\xvar\equals\yvar$,
+$\labeling(\xvar)\neq\undef$,
+$\labeling(\yvar)\neq\undef$,
+$\labeling(\xvar)=\labeling(\yvar)$, and
+$\graph'=\graph$.
+\item
+$\action$ is of the form $\xvar\nequals\yvar$,
+$\labeling(\xvar)\neq\undef$,
+$\labeling(\yvar)\neq\undef$,
+$\labeling(\xvar)\neq\labeling(\yvar)$, and
+$\graph'=\graph$.
+\item
+$\action$ is of the form $\xvar\assigned\yvar$, 
+$\labeling(\yvar)\neq\undef$,
+$\suc'=\suc$,
+and $\labeling'=\labeling\updateby{\xvar}{\labeling(\yvar)}$.
+\item %\localnote{ahmed: removed condition $\labeling(\xvar)\neq\undef$}
+$\action$ is of the form $\xvar\assigned\nxt\yvar$,
+$\labeling(\yvar)\neq\undef$,
+$\succ(\labeling(\yvar))\neq\undef$,
+$\suc'=\suc$, and
+$\labeling'=\labeling\updateby{\xvar}{\suc(\labeling(\yvar))}$.
+\item % \localnote{ahmed: restored condition $\labeling(\xvar)\neq\labeling(\nil)$}
+$\action$ is of the form $\nxt\xvar\assigned\yvar$,
+$\labeling(\xvar)\neq\undef$,
+$\labeling(\yvar)\neq\undef$,
+$\labeling(\xvar)\neq\labeling(\nil)$,
+$\labeling'=\labeling$, and
+$\suc'=\suc\updateby{\labeling(\xvar)}{\labeling(\yvar)}$.
+\end{itemize}
+%
+We define $\movesto{}$ as $\bigcup_{\transition\in\transitions}\movesto{\transition}$ and 
+use $\movesto{*}$ to denote the reflexive transitive closure of $\movesto{}$.
+%
+For sets $\confs_1$ and $\confs_2$ of configurations, 
+we use $\confs_1\movesto{}\confs_2$ to denote that
+$\conf_1\movesto{}\conf_2$ for some $\conf_1\in\confs_1$ and $\conf_2\in\confs_2$.
+%
+By  $\conf_1\movesto{}\confs_2$ we mean 
+$\set{\conf_1}\movesto{}\confs_2$.
+%
+We define $\conf_1\movesto{*}\confs_2$, $\confs_1\movesto{*}\confs_2$, etc in a similar manner to above.

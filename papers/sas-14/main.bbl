@@ -1,0 +1,74 @@
+\def\Nst#1{$#1^{st}$}\def\Nnd#1{$#1^{nd}$}\def\Nrd#1{$#1^{rd}$}\def\Nth#1{$#1^{th}$}
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{abdulla:well}
+Abdulla, P.A.: Well (and better) quasi-ordered transition systems. Bulletin of
+  Symbolic Logic  16(4),  457--515 (2010)
+
+\bibitem{Parosh:Bengt:Karlis:Tsay:general}
+Abdulla, P.A., {\v C}er{\=a}ns, K., Jonsson, B., Tsay, Y.K.: General
+  decidability theorems for infinite-state systems. In: LICS'96. pp. 313--321
+  (1996)
+
+\bibitem{AbHaHo:view:abstraction}
+Abdulla, P.A., Haziza, F., s~Hol\'ik, L.: All for the price of few
+  (parameterized verification through view abstraction). In: {\Nth{14}
+  International Conference on Verification, Model Checking, and Abstract
+  Interpretation}. LNCS, vol. 7737, pp. 476--495 (2013)
+
+\bibitem{rmc:wo:transducers}
+Abdulla, P.A., Henda, N.B., Delzanno, G., Rezine, A.: Regular model checking
+  without transducers (on efficient verification of parameterized systems). In:
+  TACAS'07. LNCS, vol. 4424, pp. 721--736. Springer (2007)
+
+\bibitem{AJNO:simple}
+Abdulla, P.A., Jonsson, B., Nilsson, M., d'Orso, J.: Regular model checking
+  made simple and efficient. In: Proc.\ {CONCUR 2002}, \Nth{13} Int.\ Conf.\ on
+  Concurrency Theory. LNCS, vol. 2421, pp. 116--130 (2002)
+
+\bibitem{APRXZ01}
+Arons, T., Pnueli, A., Ruah, S., Xu, J., Zuck, L.: Parameterized verification
+  with automatically computed inductive assertions. In: Berry, Comon, Finkel
+  (eds.) Proc.\ \Nth{13} Int.\ Conf.\ on Computer Aided Verification. LNCS,
+  vol. 2102, pp. 221--234 (2001)
+
+\bibitem{BHV04}
+Bouajjani, A., Habermehl, P., Vojnar, T.: Abstract regular model checking. In:
+  CAV'04. LNCS, vol. 3114, pp. 372--386. Springer (2004)
+
+\bibitem{CTV06}
+Clarke, E., Talupur, M., Veith, H.: Environment abstraction for parameterized
+  verification. In: VMCAI'06. LNCS, vol. 3855, pp. 126--141. Springer (2006)
+
+\bibitem{Bakery}
+Lamport, L.: A new solution of dijkstra's concurrent programming problem.
+  Commun. ACM  17(8),  453--455 (Aug 1974),
+  \url{http://doi.acm.org/10.1145/361082.361093}
+
+\bibitem{Burns:protocol}
+Lynch, N.A., Shamir, B.P.: Distributed algorithms, lecture notes for 6.852,
+  fall 1992. Tech. Rep. MIT/LCS/RSS-20, MIT (1993)
+
+\bibitem{Namjoshi:VMCAI07}
+Namjoshi, K.S.: Symmetry and completeness in the analysis of parameterized
+  systems. In: VMCAI'07. LNCS, vol. 4349, pp. 299--313. Springer (2007)
+
+\bibitem{Marcus:thesis}
+Nilsson, M.: Regular Model Checking. Ph.D. thesis, Uppsala UniversityUppsala
+  University, Division of Computer Systems, Computer Systems (2005)
+
+\bibitem{PRZ-tacas01}
+Pnueli, A., Ruah, S., Zuck, L.: Automatic deductive verification with invisible
+  invariants. In: Proc.\ {TACAS '01}, \Nth{7} Int.\ Conf.\ on Tools and
+  Algorithms for the Construction and Analysis of Systems. vol. 2031, pp.
+  82--97 (2001)
+
+\bibitem{Szymanski:protocol}
+Szymanski, B.K.: A simple solution to lamport's concurrent programming problem
+  with linear wait. In: Proceedings of the 2nd international conference on
+  Supercomputing. pp. 621--626. ICS '88, ACM, New York, NY, USA (1988),
+  \url{http://doi.acm.org/10.1145/55364.55425}
+
+\end{thebibliography}

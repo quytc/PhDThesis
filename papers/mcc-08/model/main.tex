@@ -1,0 +1,34 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+%
+%\documentclass{llncs}
+\documentclass[a4,10pt]{article}
+
+\input{init}
+\input{comm}
+
+\begin{document}
+
+\maketitle
+
+\vfill%
+\begin{abstract}
+  % 
+  This document represents the notes following the discussions in the
+  research group, concerning the verification of multi-threaded
+  programs using pthreads, mutexes (simple locks) and condition
+  variables.
+  % 
+\end{abstract}
+
+\pagebreak
+\input introduction
+\input snapshot
+\input actions
+\input bad_states
+\input ordering
+\input pre
+
+\end{document}

@@ -1,0 +1,70 @@
+ %%% ====================================================================
+%\chapterwithtoc{Shape Analysis}
+%\label{chapter:shape:analysis}
+%%% ====================================================================
+%
+%In this chapter, we consider a difficult challenge \index{Challenge}
+%in software verification, namely to automate its application to
+%algorithms with an unbounded number of threads that concurrently
+%access a~dynamically allocated shared heap.
+%\index{Heap Analysis}%
+%%
+%Such algorithms are notoriously difficult to get correct and verify,
+%since they often employ fine-grained synchronization and avoid locking
+%wherever possible.
+%%
+%This chapter presents an efficient technique to verify that
+%a~concurrent implementation of a~common data type abstraction, such as
+%a~queue or a~stack, conforms to a~simple abstract specification of its
+%(sequential) functionality.
+%%
+%There are several combined challenges to be addressed.
+%%
+%\begin{challenges}
+%\item \label{unbounded:data:domain:specification}%
+%  \index{Challenge}%
+%  \index{Infinite-state}%
+%  The abstract specification is infinite-state, because the
+%  implemented data structure may contain an unbounded number of data
+%  values from an infinite domain.
+%\item The program is infinite-state in several dimensions:
+%  \index{Challenge}%
+%  \index{Unbounded}%
+%  \begin{subchallenges}
+%  \item \label{unbounded:threads}%
+%    it consists of an unbounded number of concurrent threads,
+%  \item \label{unbounded:heap:size}%
+%    it uses unbounded dynamically allocated memory, and
+%  \item \label{unbounded:data:domain}%
+%    the domain of data values is unbounded.
+%  \end{subchallenges}
+%\item \label{no:garbage:collection}%
+%  \index{Challenge}%
+%  \index{Non Garbage-Collection}%
+%  The program does not rely on automatic garbage collection.\\%
+%  It manages memory explicitly.
+%\end{challenges}
+%
+%%% -------------------------------------------
+%We present, in the first section of this chapter, the type of programs
+%we consider. In the following sections, we introduce in a stepwise
+%manner how we cope with each of the above challenges. In the last
+%section, we combine the different techniques and present the
+%verification method.
+%%
+%%All in a succint manner.
+%%
+%%Details can be found in Paper~\ref{paper:TACAS13}.
+
+\input{chapters/shape-analysis/programs}
+\input{chapters/shape-analysis/specs}
+%\input{chapters/shape-analysis/data-independence}
+\input{chapters/shape-analysis/observers}
+
+
+%\input{chapters/shape-analysis/unboundedness}
+%\input{chapters/shape-analysis/procedure}
+
+%% ====================================================================
+%\whatwelearned{shape-analysis}
+%% ====================================================================

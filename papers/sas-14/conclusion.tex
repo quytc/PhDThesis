@@ -1,0 +1,59 @@
+%-----------------------------------
+\section{Conclusion and Future Work}
+%\section{Conclusion}
+\label{section:conclusion}
+%-----------------------------------
+%
+We have presented a method for automatic verification of parameterized
+systems which extends the view abstraction
+from~\cite{AbHaHo:view:abstraction} but alleviates the lack of
+precision it exhibits on systems with almost upward-closed invariants.
+%
+This is a unique method that combines the feature of discovering non
+upward-closed invariant while allowing to model systems with
+fine-grained transitions.
+
+The method allows to perform parameterized verification by only
+analyzing a small set of instances of the system (rather than the
+whole family) and captures the reachability of bad configurations to
+imply safety.
+%
+Our algorithm relies on a very simple abstraction function, where a
+configuration of the system is approximated by breaking it down into
+smaller pieces. This give rise to a finite representation of infinite
+sets of configurations while retaining enough precision.
+%
+% Inspired by a strong empirical evidence, parameterized systems often
+% enjoy a {\it small model property}.
+% %
+% More precisely, analyzing only a small number of processes (rather
+% than the whole family) is sufficient to capture the reachability of
+% bad configurations and therefore imply safety.
+%
+We have proven that the presented algorithm is complete for systems
+with almost upward-closed invariants.
+%
+Based on the method, we have implemented a prototype which performs
+efficiently on a wide range of benchmarks.
+%
+
+We are currently working on extending the method to the case of
+multi-threaded programs running on machines with different memory
+models.
+%
+These systems have notoriously complicated behaviors.
+%
+Showing that verification can be carried out
+through the analysis of only a small number of threads
+would allow for more efficient algorithms for these systems.
+%
+%
+
+% Obviously, the bottleneck in the application of the method is when the
+% computation of $\reachof k$ is necessary for high values of~$k$ or if
+% the set of bad configurations is complex (in terms of size).
+% %
+% We plan therefore to integrate the method with advanced 
+% tools that can perform efficient forward reachability analysis, like
+% SPIN~\cite{SPINModelChecker}, and to use efficient
+% symbolic encodings for compact representations for the set of views.

@@ -1,0 +1,389 @@
+\section{Completeness for Well Quasi-Ordered Systems}\label{section:completeness}
+%
+In this section, will show that the scheme desribed by Algorithm~\ref{algorithm:basic}
+%
+is complete for a wide class of well-quasi ordered systems.
+%
+%
+%we show that Algorithm~\ref{algorithm:basic} is
+%guaranteed to terminate if the transition relation is monotonic w.r.t.\ a well quasi-ordering.  
+%The
+%completeness result may be actually stated for a much wider class of
+%transition systems than the one induced by the parameterized systems of
+%Section~\ref{section:parameterized_systems}. 
+%
+To state the result in general terms, we will first give some
+definitions from the theory of well quasi-ordered systems
+(c.f. \cite{abdulla:well}).
+
+A \emph{well quasi-ordering} (WQO) is a preorder $\preceq$ over a set
+$S$ such that for every infinite sequence $s_1,s_2,\ldots$ of elements
+of $S$, there exists $i$ and $j$ such that $i<j$ and $s_i\preceq s_j$. 
+%
+The \emph{upward-closure} $\ucl T$ of a set $T\subseteq S$ w.r.t. $\preceq$ is the
+set $\{s\in S\mid \exists t\in T:t\preceq s\}$ and its 
+\emph{downward-closure} is the set $\dcl T = \{s\in S\mid \exists t\in T:s\preceq t\}$.
+%
+A set is \emph{upward-closed} if it equals its upward-closure and it is \emph{downward-closed} if it equals its downward-closure.
+%
+If $T$ is upward closed, 
+%
+its complement $S\setminus T$ is downward closed and, conversely, 
+%
+if $T$ is downward closed, its complement is upward closed. 
+%
+For every upward closed set $T$, there exists a minimal (w.r.t $\subseteq$) set $\gen$ such that $\ucl\gen = T$, 
+%
+called \emph{generator} of $T$, 
+%
+which is finite.
+%
+If moreover $\preceq$ is a partial order, 
+%
+then $\gen$ is unique. 
+
+
+
+A relation $\rel\subseteq S\times S$ is \emph{monotonic} w.r.t. $\preceq$ if whenever
+$(s_1,s_2)\in\rel$ and $s_1\preceq s_1'$, then there is $s_2'$ with
+$(s_1',s_2')\in\rel$ and $s_2\preceq s_2'$.  
+%
+Given a relation $f\subseteq S\times S$ monotonic w.r.t. $\preceq$ 
+%
+and a set $T\subseteq S$, 
+%
+it holds that if $f(T)\subseteq T$, 
+%
+then $f(\dcl T)\subseteq \dcl T$, 
+%
+where $f(T)$ is the image of $T$ 
+%
+defined as $\{t'\mid\exists t\in T:(t,t')\in f\}$.
+
+
+
+
+The reasoning in Section~\ref{section:method} is based on the natural
+notion of a size of a configuration.  Its generalization is the notion
+of a \emph{discrete measure} over a set $S$, a function
+$|.|:S\trans\nat$ which fulfills the property that for every
+$k\in\nat$, $\{s\in S\mid|s| = k\}$ is finite.
+%
+A discrete measure is necessary to obtain the completeness result as
+it allows enumerating elements of $S$ of the same size.
+%
+In particular, this property guarantees termination of the fixpoint
+computation on Line~\ref{line:fixpoint} of
+Algorithm~\ref{algorithm:basic}.
+%
+We note that the existence of a discrete measure is implied by a
+stronger restriction of \cite{Bingham:empirically} to the so called
+discrete transition systems.
+%
+%\comment{Throw away the reference to \cite{Bingham:empirically}?}
+
+We say that a transition system $\transys = (\confs,{\trans})$ is
+\emph{well-quasi ordered} by a WQO ${\preceq}\subseteq\confs\times\confs$ if
+$\trans$ is monotonic w.r.t. ${\preceq}$.
+%
+Given a well-quasi ordered transition system and
+a measure $|.|:\confs\rightarrow\nat$,
+we define an abstraction function $\alpha_k,k\in\nat$ such that
+$\abstr k \conf = \{\conf'\in\confs\mid\conf'\preceq\conf\}$. The 
+corresponding concretization $\gammaof k$ and abstract post-image
+$\mathit{Apost}_k$ are then defined based on $\alpha_k$ and $|.|$ as in
+Section~\ref{section:abstraction}. 
+%
+
+Lemma~\ref{lemma:invariant} holds here in the same wording as in Section~\ref{section:method}.
+%
+%
+%We first state a generalized variant of
+%Lemma~\ref{lemma:invariant}. 
+%%
+%\begin{lemma}
+%\label{lemma:invariant:general}
+%Let $\transys$ be a TS well-quasi ordered by $\preceq$ with a discrete measure $|.|$.
+%Then for any $i\in\nat$ and $X\subseteq\viewsof i$, 
+%$\projof{\inits}{i}\subseteq{X} \; \land \; \apostof{X}{i}\subseteq X\implies\projof{\reach}{i}\subseteq X$.  
+%\end{lemma}
+%\comment{The assumptions of discreteness of $|.|$ and monotonicity w.r.t. a WQO are in fact not used in the proof. Or are they?}\\
+%
+%Let $S\subseteq \confs$ and let 
+%$\preceq$ be a WQO over $\confs$.
+%
+%Its upward closure is the set $\ucl(V) = \{w\in Q^*\mid \exists v\in V:v\subword w\}$ 
+%
+%Its downward closure is the set $\dcl(S) = \{\conf\in \confs\mid\exists \conf'\in S:\conf\preceq \conf'\}$.
+%
+%A set is downward closed iff it equals its downward closure.
+%
+%
+The main component of the completeness result is  the following theorem. 
+%
+\newcommand{\theoremtext}{
+Let $\transys = (\confs,{\trans})$ be a well-quasi ordered transition system with a measure $|.|$.
+Let $\inits$ be any subset of $\confs$ and let $\bad$ be upward-closed w.r.t. $\preceq$.
+Then, if $\transys$ is safe w.r.t. $\inits$ and $\bad$, then there is $k\in \nat$ such that for  $\Vk = \mu X. \projof \inits k \cup \apostof X k$, $\bad \cap \gammaof k (\Vk) =\emptyset$.
+}
+\begin{theorem} 
+\label{theorem:completeness}
+\theoremtext
+\end{theorem}
+
+\begin{proof}
+Recall first that $\gammaof k, \post, \apost k, \abstraction k$ are monotonic functions w.r.t. $\subseteq$ for all $k\in\nat$. 
+%
+Let $\gen$ be the minimal generator of the upward closed set $\confs\setminus\dcl\reach$.
+%
+We will prove that $k$ can be chosen as $k=\max\{|\conf|\mid\conf\in\gen\}$.
+%
+Such $k$ exists because $\gen$ is finite.
+
+
+
+We first show an auxiliary claim that $\gammaof k(\thing) \subseteq \dcl\reach$.
+%
+Let $s\in \gammaof k(\thing)$. 
+%
+For the sake of contradiction, suppose that $s\not\in \dcl\reach$.
+%
+%By the definition of $\gamma$, we know that if $|s|\leq k$ then $s\in \dcl\reach$, 
+%
+%which contradicts our assumption.
+%
+%Let us therefore supppose that $|s| > k$.
+%
+We have that $s\in \confs\setminus\dcl\reach  =\ucl\gen$
+%
+and there is a generator $t\in\gen$ with $t\preceq s$.
+%
+By the definition of $k$, $|t|\leq k$. 
+%
+Since $t\in\gen$, $t\not\in\dcl\reach$ and hence $t\not\in\alpha_k(\dcl\reach)$. %
+But due to this and since %$|t|\leq k$ and 
+$t\preceq s$,
+%Notice that $\thing = [\dcl\reach]_{\leq k}$ 
+%
+%(by the definition of $\alpha_k$) 
+%
+%and thus $t\not \in [\dcl\reach]_{\leq k}$.
+%
+%Since $t\preceq s$, 
+%
+we have that $s\not\in\gammaof k(\thing)$ (by the definition of $\gammaof k$)
+%
+which contradicts the initial assumption and the claim is proven.
+
+Next, we argue that ${\thing}$ is stable under abstract post, that is,
+%
+$\apostof {{\thing}} k \subseteq {\thing}$.
+%
+Since $\reach$ is stable under $\post$ and $\post$ is monotonic w.r.t. $\preceq$,
+%
+we know that $\dcl\reach$ is stable under $\post$ 
+%
+(that is, $\post(\dcl\reach)\subseteq \dcl\reach$).
+%
+%By the definition of $\abstraction k$,  
+%
+%$\abstr k {\dcl\reach} = \thing$.
+%
+Then,  by the definition of $\apost k$,
+%
+and by monotonicity of $\abstraction k$ w.r.t. $\subseteq$, 
+%
+we have
+$\apostof {\thing} k = 
+%
+\abstr k {\post(\gammaof k (\thing))} \subseteq 
+%
+\abstr k {\post(\dcl\reach)}\subseteq 
+%
+%\abstr k {\dcl\reach} = 
+%
+\thing$. 
+%
+%We have thus shown that $\abstr k {{{\dcl_k\reach}}}$ is closed under $\apost k$.
+
+Since $\dcl\reach$ contains $\inits$, $\abstr k \inits  \subseteq \thing$.
+%
+$\thing$ is thus a fixpoint of $\lambda X.\alpha_k(\inits)\cup\apost k (X)$.
+%
+Because $\Vk$ is the least fixpoint of $\lambda X.\alpha_k(\inits)\cup\apost k (X)$, 
+%
+$\Vk\subseteq \thing$.
+%
+From, $\reach\cap\bad = \emptyset$ and since $\bad$ is upward closed, 
+we know that $\dcl\reach\cap\bad = \emptyset$.
+%
+Because $\gammaof k (\Vk)\subseteq 
+%
+\gammaof k (\thing) \subseteq  
+%
+%\thing  \subseteq 
+%
+\dcl\reach$
+%
+and $\dcl\reach\cap \bad = \emptyset$,
+%
+$\gammaof k (\Vk)\cap\bad=\emptyset$.
+\qed
+\end{proof}
+
+%\paragraph{Sketch of the proof.}
+%The complement $\confs\setminus\dcl\reach$ of the downward-closed set
+%$\dcl\reach$ is upward-closed.
+%Since $\preceq$ is a WQO, there exists no infinite sequence of
+%unrelated elements.
+%%
+%The set
+%$\confs\setminus\dcl\reach$~{\tikz[scale=0.25]{\fill[zone=yellow!60]
+%    (-2ex,5.5ex) parabola[bend pos=0.5] bend (0,0) +(4ex,0) --
+%    cycle;}} is therefore generated by a finite number of
+%elements~{\tikz[scale=1.1]{\fill[black,draw=gray!20] +(-2pt,2pt) rectangle
+%    +(2pt,-2pt);}}.
+%%
+%Let $\gen$ be this finite set.
+%%
+%The proof of Theorem~\ref{theorem:completeness} is based on showing
+%that $k$ can be taken as the size of largest element in $\gen$.
+%Using the assumption of monotonicity of the
+%transition relation, it can be shown that the fixpoint $\Vk$ is a
+%subset of $\alpha_k(\dcl\reach)= (\dcl\reach)_{\leq k}$
+%%$\dcl\reach\cap\confs_{\leq k}$ 
+%(denoted by~%
+%{\tikz[scale=1.1]{\fill[black,draw=gray!20] circle (2pt);}}).
+%%
+%The definition of $\gammaof k$ gives that $\gammaof k(\alpha_k(\dcl\reach))
+%= \dcl\reach$ (i.e.\ the zone~%
+%%
+%{\tikz[scale=0.2,baseline=(n.base)]{
+%    \coordinate(n) at (10ex,2ex);
+%    \fill[zone=blue!20,draw=white] rectangle (20ex,10ex);
+%%    \pattern[pattern color=white,pattern=bricks] rectangle (20ex,10ex);
+%  }}%
+%%
+%) and thus $\gammaof k(\Vk) \subseteq \dcl\reach$.
+%%
+%Since $\bad$~%
+%{\tikz[scale=0.25]{
+%    \def\mypara{(-2ex,5ex) parabola[bend pos=0.5] bend (0,0) +(4ex,0) -- cycle}
+%    \fill[zone=red!80] \mypara;
+%    \pattern[pattern color=white,pattern=north west lines] \mypara;
+%    %\fill[red,draw=white] (0,-1ex) circle (4pt);
+%  }} %
+%%
+%is upward-closed and $\reach\cap\bad=\emptyset$, we know that $\dcl\reach\cap\bad = \emptyset$ and thus
+%$\gammaof k(\Vk)\cap\bad=\emptyset$.
+%%
+%%
+%The situation is illustrated in Figure~\ref{figure:completeness} and
+%the detailed proof may be found in Appendix~\ref{app:completeness}.
+%%(The full proof requires both monotonicity of $\trans$ w.r.t. $\preceq$ and discreteness of $|.|$).
+%\begin{figure}
+%\label{figure:completeness}
+%\input{completeness.pic.tex}
+%\caption{The different sets involved in the completeness proof.}
+%\end{figure}
+%\qed
+%\medskip
+%
+Theorem~\ref{theorem:completeness} guarantees that for a safe well
+quasi-ordered system, there exists $k$ for which the test on
+line~\ref{line:test} of Algorithm~\ref{algorithm:basic} succeeds.
+%
+Conversely, Lemma~\ref{lemma:invariant}, which, as mentioned above,
+still holds for the general class of well-quasi ordered systems, then
+assures than if the test on line~\ref{lemma:invariant} succeeds, the
+system is indeed safe.
+
+\paragraph{Complete algorithm.}
+The schema described by Algorithm~\ref{algorithm:basic} (or its
+variant from Section~\ref{section:nonsizepreserving} if the transition
+relation is not size-preserving) gives a complete verification procedure for a well quasi-ordered system provided that all the four steps of its for-loop can be effectively evaluated.
+This is guaranteed by the following requirements:
+%\vspace{-2mm}
+\begin{enumerate}[i.]
+\item \label{ii}
+$\alpha_k(I)$ can be computed,
+\item \label{iv}
+the measure $|.|$ is discrete, %
+\item \label{iii}
+for a configuration $c$, $\post(c)$ and $\alpha_k(c)$ can be computed, 
+\item \label{v}
+for a finite set of views $V$, $\gamma_k^{k+1}(V)$ can be computed, and
+\item \label{vi}
+a variant of Lemma~\ref{lemma:apost} holds.
+%\item \label{i}
+%the system is well quasi-ordered w.r.t.\ a WQO $\preceq$.
+\end{enumerate}
+%
+%
+%(iii) and the conditions 1-4 from Section~\ref{section:method} are
+%satisfied. 
+%
+Point (\ref{ii}) is point 1 of Section~\ref{section:method}.
+Points (\ref{iv})-(\ref{vi}) guarantee that we can compute abstract post-image (point 2 of Section~\ref{section:method}). 
+We can test $\gamma_k(V)\cap\bad = \emptyset$ (point 3 of Section~\ref{section:method}) since due to (\ref{iv}),
+%and also (\ref{iv}), 
+$V$ is always finite.
+Exact reachability analysis of configurations of a bounded size (point 4 of Section~\ref{section:method}) can be carried out since we can iterate $\post$ due to (\ref{iii}) and the iteration terminates after a finite number of steps  due to (\ref{iv}). 
+%
+Point (\ref{iv}) also assures termination of the computation of the fixpoint on line~\ref{line:fixpoint} ($V$ is always finite).
+%of Algorithm~\ref{algorithm:basic}, 
+%since it implies that $V$ is always finite. 
+
+%Theorem~\ref{theorem:completeness} together with (\ref{i}) guarantees that if the system is safe, there is indeed a cutoff point for which safety will be concluded on line~\ref{line:test}. This conclusion is always sound since, as mentioned above, Lemma~\ref{lemma:invariant} holds in the general setting too.
+
+Overall, Algorithm~\ref{algorithm:basic} is a complete verification procedure for 
+parameterized systems of
+Section~\ref{section:parameterized_systems} with local and existential
+transitions rules, broadcast and rendez-vous. %
+The induced transition relation is indeed monotonic w.r.t.\ the
+preorder $\subword$ which is a WQO and the length of a configuration
+is a discrete measure.
+%
+An important subclass of such systems are Petri nets, which, as
+mentioned in Section~\ref{section:extensions}, correspond to systems
+with multiset topology and generalized rendez-vous transition rules.
+%
+Systems of Section~\ref{section:parameterized_systems} with
+universally guarded transition rules do not satisfy the assumptions: 
+the induced transition relation is not monotonic.
+%
+%%\paragraph{Completeness for Petri nets.}
+%%Let us point out that Theorem~\ref{theorem:completeness} allows to
+%%turn Algorithm~\ref{algorithm:basic} into a complete procedure for the
+%%general class of Petri nets (where our verification problem
+%%corresponds to coverability). As mentioned in
+%%Section~\ref{section:extensions}, Petri nets may be seen as
+%%parameterized systems with a multiset topology. Transitions of Petri
+%%nets are however not size-preserving since they may change the
+%%number of tokens in the net. 
+%%%
+%%Recall that size-preserving is required by the definition of
+%%compatible transition systems.
+%%% , and it is needed in the proof of
+%%% Lemma~\ref{lemma:invariant:general} and
+%%% Theorem~\ref{theorem:completeness}.
+%%%
+%%Such transitions may be modelled in our
+%%framework using the technique of placeholders described in
+%%Section~\ref{section:extensions}.  The original Petri net is
+%%transformed into a size-preserving one by adding a special place
+%%$p$. Every transition of the original net which increases the number
+%%of tokens by $n$ will take $n$ tokens from $p$ and, conversely, every
+%%transition of the original net that decreases the number of tokens by
+%%$n$ will add $n$ tokens into $p$.  The transitions of the transformed
+%%Petri net then correspond precisely to the rendez-vous rules of
+%%Section~\ref{section:extensions}. 
+%%%
+%%In the transformed net, $p$ can initially have any number of
+%%processes.  It holds that a marking is coverable from an initial
+%%marking $M$ of the original net if, and only if, it is coverable from
+%%an initial marking $M'$ of the transformed net which is obtained from
+%%$M$ by adding an arbitrary number of tokens into $p$.
+%%%
+%%The WQO used for Petri nets is the standard sub-multiset relation on
+%%markings and the compatible measure is simply the size of a multiset.

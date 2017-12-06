@@ -1,0 +1,27 @@
+\section{Implementation Issues and Experimental Data}
+\label{implementation:section}
+
+Based on the techniques described above, we have implemented a prototype in Java. We have chosen to verify null-dereferencing, wellformedness of output and garbage creation for a collection of programs taken from the PALE website. The encouraging results, obtained on a 1.1 GHz Pentium M, are summarised in the table below.
+
+To check null dereferencing means to guarantee the abscence of executing statements of the form $\xvar\assigned\nxt\yvar$ or $\nxt\xvar\assigned\yvar$ if $\labeling(\xvar)=\labeling(\nil)$. This is checked by inspecting the program and look for all transitions $\transition=\tuple{\cstate_1,\action,\cstate_2}$ where there is an action $\action$ of the mentioned form. For all such $\transition$, we create the configuration $\conf_1=\tuple{\cstate_1,\graph}$ where $\graph$ = $\tuple{\vertices,\suc,\labeling}$ such that $\vertices=\{\vertex\}$, $\suc$ is undefined everywhere and $\labeling$ is undefined everywhere except for $\xvar$ and $\nil$, whose images are both $\vertex$. The set of these configurations are our $\finalconfs$.
+
+Wellformedness of output means that the result of the program is a well formed list, i.e. it is null terminated, so it does not contain a cycle, and there is no node with more than one predecessor. To check this property, we create the constraints shown in the image.
+
+Garbage means intuitively that when the program finishes, all cells are reachable from a given set of pointers. This means that the set $\finalconfs$ contains the four configurations shown in the picture.
+
+The experimental results are encouraging, and they can be seen in the table below:
+
+\begin{tabular}{l|c|c|c|c}
+Program & Property & Time & Number of & Iterations \\
+ & checked & & constraints & \\
+\hline
+\verb+Concatenate+ & Deref & 0.4& 7 & 3\\
+\verb+Delete+ & Deref & 0.4 & 8 & 4\\
+\verb+Fumble+ & Deref & 0.3 & 3 & 2\\
+\verb+Reverse+ & Deref & 0.3 & 2 & 1\\
+\verb+Walk+ & Deref & 0.4 & 9 & 3\\
+\verb+Zip+ & Deref & 1.9 & 206 & 12\\
+\verb+Fumble+ & Garbage & 0.7 & 38 & 14\\
+\verb+Reverse+ & Garbage & 0.8 & 55 & 24\\
+\verb+Reverse+ & Wellformedness & 1.7 & 48 & 20
+\end{tabular}

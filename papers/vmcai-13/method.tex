@@ -1,0 +1,326 @@
+
+\section{Verification Method}
+\label{section:verification_method}
+\label{section:method}
+%--------------------------------------------------------
+In this section, we describe our verification method 
+instantiated to the case
+of parameterized 
+systems described in Section~\ref{section:parameterized_systems}.
+%
+First, we describe the abstraction we use, then we present 
+%
+the procedure. 
+%
+
+%% -------------------------------------------------
+\subsection{View Abstraction}\label{section:abstraction}
+%% -------------------------------------------------
+We abstract a~configuration $\conf$ by a~set of \emph{views}
+each of which is a~subword of $\conf$.
+%
+%We will further use $\viewsof k$ to denote the set of \emph{views of the size up to $k$} (i.e.~$\viewsof k=\confs_{\leq k}$).
+%
+The {\it abstraction function} $\project_k:\confs\rightarrow 2^{\viewsof k}$ maps
+a~configuration $\conf$ into the set $\projof \conf k = \{\view\in\viewsof k\mid\view\subword \conf\}$ of all its views (subwords) of size up to $k$.
+%
+We lift $\project_k$ to sets of configurations as usual.
+%
+For every $k\in \nat$, the {\it concretization} function 
+$\gammaof k:2^{\viewsof k}\rightarrow2^\confs$ inputs
+a~set of views $\X\subseteq\viewsof k$, and  returns the set of configurations that can be reconstructed from the views in $\X$.
+%
+In other words, 
+$\gammaof k(V) = \{\conf\in\confs\mid\alpha_k(\conf)\subseteq V\}$.
+%
+
+%
+\paragraph{Abstract post-image.}
+As usual, the \emph{abstract post-image} 
+of a~set of views $\X\subseteq\viewsof k$ is defined as 
+$\apostof \X k = \projof {\postof {\gammaof k(\X)}} k$.
+%
+Computing $\apostof {\X} k$ is a~central component of our verification procedure.
+%
+It cannot be computed straightforwardly since the set $\gammaof k(V)$ is typically infinite.
+%
+As a~main contribution of the paper, we show that
+it is sufficient to consider only those configurations in 
+$\gammaof k(\X)$ whose sizes are up to $k+1$.
+%
+There are finitely many such configurations, and hence their post-image can be computed. 
+%
+Formally, for $\ell\geq 0$, we define $\gammaof k^\ell (\X):=
+\gammaof k(\X)\cap\confsof{\ell}$ 
+and show the following {\it small model} lemma for
+the class of systems of Section~\ref{section:parameterized_systems}.
+%
+We will show similar lemmas for the other classes of systems that we
+present in the later sections. 
+%
+\begin{lemma}
+\label{lemma:apost}
+For any $k\in\nat$ and $X\subseteq\viewsof k$,
+$\projof {\postof {\gammaof k(X)}} k\, \cup\, X\;  =\; \alpha_k(\post(\limgammaof k {k+1} (X)))\, \cup\, X.$
+\end{lemma}
+
+The property of the transition relation which allows us to prove the
+lemma is that, loosely speaking, the transitions have \emph{small
+  preconditions}. That is, there is a transition that can be fired
+from a configuration $c$ and generate a view $v\in\viewsof k$ only if
+$c$ contains a certain view $v'$ of some limited size, here up to $k+1$.
+
+\paragraph{Running Example.}
+Consider for instance the set $V = \{1,2,3,4,6,12,16,32,34,42\}\subseteq
+\viewsof 2$ of views of Burns' protocol.
+%
+We will illustrate that we need to reason only about configurations of
+$\gammaof 2(V)$, which are of size at most $3$, to decide which views
+belong to $\apostof V 2$.
+
+Take the existentially guarded transition $2\rightarrow 1$.
+It can be fired only from configurations that contain $2$ together
+with a witness from $\{4,5,6\}$ on the left.
+%
+$\apost 2(V)$ contains the view $31$ since $\limgammaof 2 {2+1}(V)$
+contains $342$ from where the existential transition $2\rightarrow 1$
+can be fired.  ($342$ belongs to $\gammaof 2(V)$ because all its views
+$2$, $3$, $4$, $32$, $34$, and $42$ are in $V$).
+%
+It does not contain the view $22$ since $12$ cannot be completed by
+the needed witness ($12$ cannot be extended by, e.g., $6$ since $V$
+does not contain $26$ and $62$).
+
+Consider now the universally guarded
+transition $2\rightarrow 3$. The transition can be fired only from
+configurations that contain $2$.
+%
+Since $2\rightarrow 3$ can be fired on $32\in\gammaof 2(V)$, $\apost 2(V)$
+contains $33$.  But it does not contain the view $43$ since the
+universal guard prevents firing $2\rightarrow 3$ on configurations
+containing $42$.
+
+
+
+\begin{proof}
+  We present the part of the proof of Lemma~\ref{lemma:apost} which
+  deals with existentially guarded transitions. The parts dealing with
+  local and universally guarded transitions are simpler and are moved
+  to the appendix.
+  %
+We will show that for any configuration $\conf\in\gammaof k (V)$ of size $m > k+1$
+%
+such that there is a transition $\conf\trans\conf'$ 
+%
+induced by an existentially guarded rule $r\in\rules$
+%
+with $\view'\in \projof {\conf'} k$,
+%
+the following holds:
+%
+Either $\view'\in V$
+%
+or there is a configuration $\confd\in\gammaof k(V)$ of size at most $k+1$
+%
+with a transition $\confd\trans\confd'$ induced by $r$ with $\view'\in \projof {\confd'} k$. 
+
+
+A subset of positions $\pos = \{i_1,\ldots, i_l\}\subseteq \{1,\ldots, n\},l\leq k,$ with $i_1<\ldots < i_l$ of a  configuration $\conf = \loc_1\ldots\loc_n$ 
+%
+defines the view 
+%
+$\viewof \conf \pos = \loc_{i_1}\ldots \loc_{i_l}$ of $\conf$.
+%
+By definition, 
+%
+$\view'$ equals $\viewof {\conf'} p$ for some $p\subseteq\{1,\ldots,m\}$.
+%
+Let $\view$ be $\viewof {\conf} p$.
+%
+Notice that since $c\in\gammaof k(V)$, 
+any view of $c$ of size at least $k$ belongs to $\gammaof k(V)$.
+%
+Therefore also $\view\in\gammaof k(V)$.
+%
+%
+Let $1\leq i\leq m$ be the index of the position in which $\conf'$ differs from $\conf$.
+%
+If $i\not\in p$, then $\view = \viewof {\conf} p = \viewof {\conf'} p = \view'$. 
+%
+In this case, we trivially have $\view'\in V$. 
+%
+We can take $\confd = \view$ and $\confd'=\view'$.
+%
+
+Assume now that $i\in p$.
+%
+Let $r$ be the rule $\quantrule{s}{t}{\exists}{\circ}{S}$ where $\circ\in\{<,>,\neq\}$.
+%Let $r = \qtrans \loc {\quantify \L} {\loc'}$ where $\quantify \in\{\lexists,\rexists,\lrexists\}$.
+%
+There are two cases:
+%
+1) there is a witness $w$ from $S$ at some position $j\in p$ enabling the transition $\conf\trans\conf'$. 
+%
+Then $\view$ still contains the witness on an appropriate position needed to fire $r$. 
+%
+Therefore $\view\trans\view'$ is a transition of the system induced by $r$,
+%
+and we can take $\confd = \view$ and $\confd'=\view'$.
+%
+2) no witness enabling the transition $\conf\trans\conf'$ is at a position $j\in p$. 
+%
+Then there is no guarantee that $\view\trans\view'$ is a transition of the system. 
+%
+However, the witness enabling the transition $\conf\trans\conf'$ 
+%
+is at some position $j\in\{1,\ldots,m\}$. 
+%
+We will create a configuration of size at most $k+1$ by including this position $j$ to $\view$, as illustrated in the figure.
+%
+Let $p'= p\cup\{j\}$. 
+%
+Then $\viewof {\conf} {p'} \trans \viewof {\conf'} {p'}$ is a transition of the system induced by $r$ 
+%
+since
+%
+$\viewof {\conf} {p'}$ contains both $s$ and a witness from $S$ at an appropriate position. 
+%
+We clearly have that $\view'\in\projof {\viewof {\conf'} {p'} } k$.
+%
+We also have that $\viewof {\conf} {p'} \in \gammaof k(V)$  
+%
+since $\viewof {\conf} {p'}\subword \conf$ and $\conf\in\gammaof k (V)$.
+%
+We may therefore take $\confd = \viewof {\conf} {p'}$ and $\confd' = \viewof {\conf'} {p'}$.
+%
+%The lemma is proven.
+%
+\input{lemma.one.pics.tex}
+%
+\qed
+\end{proof}
+
+%% -------------------------------------------------
+\vspace{-5mm}
+\subsection{Procedure}
+\label{section:verification_method:procedure}
+%% -------------------------------------------------
+%\comment{if we are not size preserving, then we cannot compute $\reach_k$. We could use Raskins underapproximation instead. But, doesn't it look like Raskin's approach too much then? Or, should we talk about it only when talking about transitions that do not preserve size? Or should we stic with size preserving and use the placeholders (which are equivalent to Raskins underapproximation)?}\\
+Our verification procedure for solving an instance of the verification problem defined in Section~\ref{section:parameterized_systems} is described in Algorithm~\ref{algorithm:basic}.
+It performs two search procedures in parallel. 
+Specifically, it searches for a~bad configuration reachable from initial configurations of size $k$; and it searches for a cut-off point $k$ where it derives a set of views $\Vk\subseteq \viewsof k$ such that 
+%\begin{itemize}
+\begin{itemize}%package enumitem
+\item [(i)] $\Vk$ %of some size $k$
+  is an invariant for the instances of the system
+%of size at least $k$ 
+%(that is, $\reach \subseteq \gammaof k(\Vk)$) which is inductive ($\apostof {\Vk} k \subseteq {\Vk}$), and
+(that is, $\reach \subseteq \gammaof k(\Vk)$ and \\$\apostof {\Vk} k \subseteq {\Vk}$), and
+%\\\comment{What does inductive mean? Isn't it $\post(\gammaof k(\Vk))\subseteq\gammaof k(\Vk)$?}
+\item [(ii)] which is sufficient to prove $\reach$ safe (that
+  is, $\gammaof k(\Vk) \cap\bad = \emptyset$).
+\end{itemize}
+%\begin{wrapfigure}{r}[0pt]{0.53\textwidth}
+%\vspace{-3mm}
+%\begin{minipage}{0.53\textwidth}
+\begin{algorithm}[h]
+\DontPrintSemicolon
+\caption{Verification Procedure}
+\label{algorithm:basic}
+\For{$k:=1$ \bf{to} $\infty$}{%
+	\lIf{$\reachof k\cap\bad\neq\emptyset$\nllabel{line:exact}}{%
+		\Return Unsafe\;
+	}
+	$\Vk := \mu X. \projof \inits k \cup \apostof X k$\nllabel{line:fixpoint}\;
+	\lIf {\nllabel{line:test}$\gammaof k (\Vk)\cap\bad = \emptyset$}{%
+			\Return Safe\;%
+		}
+}
+\end{algorithm}
+%\end{minipage}
+%\end{wrapfigure}
+For a~given $k$, an invariant $\Vk$ is computed on line~\ref{line:fixpoint}. 
+Notice that $\Vk$ is well-defined since $\gammaof k,\post,\abstraction k$ and hence also $\apost k$ are monotonic functions for all $k\in\nat$ (w.r.t. $\subseteq$).
+Lemma~\ref{lemma:invariant} guarantees that $\Vk$ is indeed an invariant:
+\begin{lemma}
+\label{lemma:invariant}
+For any $i\in\nat$ and $X\subseteq\viewsof i$, $\projof{\inits}{i}\subseteq{X} \; \land \; \apostof{X}{i}\subseteq X\implies\projof{\reach}{i}\subseteq X$.  
+\end{lemma}
+
+If the system is unsafe, the search on line~\ref{line:exact} will eventually discovers a~bad configuration.
+The cut-off condition is tested on line~\ref{line:test}.
+If the test does not pass, then we do not know whether the system is indeed unsafe or whether the analysis has hit a~spurious counterexample (due to a~too liberal abstraction). Therefore, the algorithm increases precision of the abstraction by increasing $k$ and reiterating the loop. 
+An effective implementation of the procedure requires carrying out the following steps:  
+\begin{enumerate}
+\item
+{\it Computing the abstraction $\abstr k \inits$ of initial configurations.}
+This step is usually easy. 
+For instance, in the case of Burns' protocol, all processes are initially in state~$1$, hence $\alpha_k(I)$ contains only the words $1^l, l\leq k$.
+Generally, $\inits$ is a~(very simple) regular set, and $\projof \inits k$ is computed using a~straightforward automata construction.  
+\item
+{\it Computing the abstract post-image.}
+Thanks to Lemma~\ref{lemma:apost}, the abstract post-image can be computed by applying $\limgammaof k {k+1}$ (which yields a~finite set), $\post$, and $\project_k$ (in that order).
+\item
+{\it Evaluating the test $\gammaof k (\Vk)\cap\bad = \emptyset$.}
+Since $\bad$ is the upward closure of a~finite set $\minbad$, the test can be carried out by testing whether there is $b\in\minbad$ such that  $\alpha_k(b)\subseteq \Vk$. 
+\item
+{\it Exact reachability analysis.}
+Line~\ref{line:exact} requires the computation of $\reachof k$.
+Since $\reachof k$ is finite, this can be done using any procedure for exact state space exploration. 
+\end{enumerate}
+%
+Since the problem is generally undecidable, existence of $k$ for which
+the test on line~\ref{line:test} succeeds for a~safe system cannot be
+guaranteed and the algorithm may not terminate. However, as discussed
+in Section~\ref{section:completeness}, such a guarantee can be given
+under the additional requirement of monotonicity of transition
+relation w.r.t. a well-quasi ordering.
+%
+The method terminates otherwise for all our examples discussed in
+Section~\ref{section:experiments}, many of which are \emph{not} well
+quasi-ordered.
+
+
+\paragraph{Running example.}
+When run on Burns' protocol, Algorithm~\ref{algorithm:basic} starts by
+computing $\reachof 1 = \{1,\ldots,6\}$.  Because $\reachof 1$ does
+not contain any bad configurations, the algorithm moves onto computing
+the fixpoint $V_1$ of line~\ref{line:fixpoint}. The iteration starts
+with $X = \alpha_1(\inits) = \{1\}$ and continues until $X = V_1 =
+\{1,\ldots,6\}$.  The test on line~\ref{line:test} subsequently fails
+since $\gammaof 1(V_1)$ contains $66$.  Since both tests fail, the first
+iteration does not allow us to conclude whether the protocol is safe
+or not, so the algorithm increases the precision of the abstraction by
+increasing $k$.
+
+In the second iteration with $k=2$, $\reachof 2$ is still safe.  The
+fixpoint computation starts with $X = \alpha_2(\inits) = \{1,11\}$.
+When $\apost 2$ is applied on $\{1,11\}$, we first construct the set 
+$\limgammaof 2 {2+1}(\{1,11\})$ which contains the extension $111$ of $11$, $11$ and $1$.
+Their successors are $2,12,21$, and $112,121,211$, which are abstracted into
+$\{1,2,11,12,21\}$.
+%
+The fixpoint computation continues with $X = \{1,2,11,12,21\}$ and
+constructs the concretization $\limgammaof 2 3 (X) = X\cup \{112,121,211\}$. Their successors are $2,3,12,21,22,31,13$, and $122$,
+$212$, $221$, $113$, $131$, $311$
+%
+which are abstracted into the views $1,2,3,11,12,21,22,31,13$.  
+%
+The next iteration will start with $X = \{1,2,3,11,12, 21,22, 13,31\}$.
+%
+The computation reaches, after 8 further iterations, the fixpoint
+$X=V_2$ which contains all words from $\{1,\ldots,6\}\cup\{1,\ldots,6\}^2$ except $65$
+and $66$.
+%
+This set satisfies the assumptions of Lemma~\ref{lemma:invariant}, and
+hence it is guaranteed to contain all views (of size at most 2) of all
+reachable configurations of the system.
+%
+Since the view $66$ is not present (recall $\alpha_2(\bad)=\{6,66\}$),
+no reachable configuration of the system is bad. The algorithm reached
+the cut-off point $k=2$ of Burns' protocol, and the system is proved
+safe.
+
+
+
+

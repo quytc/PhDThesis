@@ -1,0 +1,240 @@
+
+\newcommand{\forget}[1]{}
+\newcommand{\ignore}[1]{}
+
+%% Having a note in the margin. Notes are numbered.
+%% ---------------------------------------------
+\newcommand{\NoteComment}[2]{%
+  \stepcounter{NoteCounter#1}%
+  {\scriptsize\bf$^{(\arabic{NoteCounter#1})}$}%
+  \marginpar[\fbox{
+    \parbox{1.4cm}{\raggedleft
+      \scriptsize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \scriptsize #2}}]%
+  {\fbox{\parbox{1.4cm}{\raggedright 
+      \scriptsize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \scriptsize #2}}}
+}
+\newcounter{NoteCounter}
+\newcommand{\Note}[1]{\NoteComment{}{#1}}
+% \renewcommand{\Note}[1]{}
+\newcommand{\parosh}[1]{\Note{Parosh: #1}}
+\newcommand{\ahmed}[1]{\Note{Ahmed: #1}}
+\newcommand{\daz}[1]{\Note{Fred: #1}}
+\newcommand{\jonathan}[1]{\Note{Jonathan: #1}}
+
+%% Local note as footnotes.
+%% ---------------------------------------------
+\newcommand{\localnote}[1]{\footnote{#1}}
+\renewcommand{\localnote}[1]{}
+%% Uncomment to remove the comment footnote
+
+%% TikZ definitions
+%% ---------------------------------------------
+\colorlet{figbg}{gray!30!white}
+\tikzstyle{background rectangle}=[draw=none,fill=figbg,rounded corners=8pt]
+
+%% Color definitions
+%% ---------------------------------------------
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\black}[1]{\textcolor{black}{#1}}
+
+%% Other definitions
+%% ---------------------------------------------
+\newcommand{\ie}{i.e.\ }
+
+\newcommand{\tuple}[1]{\left(#1\right)}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setcomp}[2]{\left\{#1|\,#2\right\}}
+%\newcommand{\nat}{\mathbb{N}}
+\newcommand{\vars}{\ensuremath{X}}
+\newcommand{\xvars}{\ensuremath{X}}
+\newcommand{\yvars}{\ensuremath{Y}}
+\newcommand{\varsof}[1]{{\it Var}\!\left(#1\right)}
+\newcommand{\var}{\ensuremath{x}}
+\newcommand{\xvar}{\ensuremath{x}}
+\newcommand{\yvar}{\ensuremath{y}}
+\newcommand{\zvar}{\ensuremath{z}}
+\newcommand{\tvar}{\ensuremath{t}}
+\newcommand{\pointer}{{\it pointer}\;}
+\newcommand{\assigned}{:=}
+\newcommand{\equals}{=}
+\newcommand{\nequals}{\neq}
+\newcommand{\nil}{{\it null}}
+\newcommand{\nxt}[1]{#1.{\it next}}
+\newcommand{\emptystring}{\varepsilon}
+
+
+\newcommand{\labeling}{\lambda}
+\newcommand{\vertex}{\ensuremath{v}}
+\newcommand{\vertices}{\ensuremath{V}}
+\newcommand{\suc}{{\it succ}}
+\renewcommand{\succ}{\suc}
+\newcommand{\graph}{\ensuremath{g}}
+\newcommand{\graphs}{\ensuremath{G}}
+\newcommand{\vertexof}[1]{{\it vertex}\left(#1\right)}
+\newcommand{\transition}{t}
+\newcommand{\transitions}{T}
+\newcommand{\cstates}{Q}
+\newcommand{\cstate}{q}
+\newcommand{\action}{a}
+\newcommand{\prg}{P}
+\newcommand{\conf}{c}
+\newcommand{\confs}{C}
+\newcommand{\initconfs}{\confs_{\it Init}}
+\newcommand{\finalconfs}{\confs_F}
+\newcommand{\prgtuple}{\tuple{\cstates,\transitions}}
+\newcommand{\movesto}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\pmovesto}[1]{\stackrel{#1}{\leadsto}}
+\newcommand{\absmovesto}[1]{\stackrel{#1}{\longrightarrow}_A}
+\newcommand{\updateby}[2]{\ensuremath{\left[#1\leftarrow#2\right]}}
+\newcommand{\gupdate}[2]{\left(#1.#2\right)}
+\newcommand{\undef}{\bot}
+%\newcommand{\restrict}[1]{\backslash #1}
+\newcommand{\jlt}{\lhd}
+\newcommand{\jleq}{\unlhd}
+\newcommand{\lt}{\preceq}
+\newcommand{\sizeof}[1]{|#1|}
+\newcommand{\uc}[1]{#1\!\!\uparrow}
+\newcommand{\dc}[1]{#1\!\!\downarrow}
+% \newcommand{\uc}[1]{
+%   \begin{tikzpicture}[baseline=(n.base)]
+%     \node[draw=none,inner xsep=2pt,inner ysep=1pt](n){\ensuremath{#1}};
+%     \draw[line width=1pt]%
+%     ([yshift=2pt]n.north west)--(n.north west)--(n.north east)--([yshift=2pt]n.north east);
+% %     (n.west)-- %(n.north west)--
+% %     ([yshift=1ex]n.north)-- %(n.north east)--
+% %     (n.east);
+%   \end{tikzpicture}
+% }
+% \newcommand{\dc}[1]{
+%   \begin{tikzpicture}[baseline=(n.base)]
+%     \node[draw=none,inner xsep=2pt,inner ysep=1pt](n){\ensuremath{#1}};
+%     \draw[line width=1pt]%
+%     ([yshift=-2pt]n.north west)--(n.north west)--(n.north east)--([yshift=-2pt]n.north east);
+% %     (n.west)-- %(n.north west)--
+% %     ([yshift=1ex]n.north)-- %(n.north east)--
+% %     (n.east);
+%   \end{tikzpicture}
+% }
+\newcommand{\pre}{{\it Pre}}
+\newcommand{\rank}[2]{{\it Rank}(#1)(#2)}
+\newcommand{\toexplore}{{\tt ToExplore}}
+\newcommand{\explored}{{\tt Explored}}
+
+%% =======================================
+
+\newcommand{\addRound}{\ensuremath{\oplus}}
+\newcommand{\delRound}{\ensuremath{\ominus}}
+%\newcommand{\mybox}[1]{\ensuremath{\,{\tikz[baseline=(n.base)]\node(n)[draw,inner sep=1pt]{#1};}\,}}
+%\newcommand{\addBox}{\ensuremath{\mybox{{\small +}}}}
+%\newcommand{\delBox}{\ensuremath{\mybox{{\Large -}}}}
+% \setlength{\fboxsep}{0pt}
+\newcommand{\addBox}{\ensuremath{\boxplus}}
+\newcommand{\delBox}{\ensuremath{\boxminus}}
+
+\newcommand{\addVar}[1]{\ensuremath{\addRound{#1}}}
+\newcommand{\delVar}[1]{\ensuremath{\delRound{#1}}}
+
+\newcommand{\addVertex}[1]{\ensuremath{\addRound{#1}}}
+\newcommand{\delVertex}[1]{\ensuremath{\delRound{#1}}}
+
+\newcommand{\addEqVar}[2]{\ensuremath{\addRound_{={#1}}{#2}}}
+\newcommand{\addNotEqVar}[1]{\ensuremath{\addRound_{\neq{#1}}}}
+
+%\newcommand{\resaddvar}[1]{\odot_{{#1}}}
+\newcommand{\addVarAsSuccOf}[2]{\ensuremath{\addRound_{{#1}\rightarrow}{#2}}}
+\newcommand{\addVarAsPredOf}[2]{\ensuremath{\addRound_{{#1}\leftarrow}{#2}}}
+
+\newcommand{\delEdge}[1]{\ensuremath{\delBox({#1}\rightarrow)}}
+\newcommand{\addEdge}[1]{\ensuremath{\addBox({#1}\rightarrow)}}
+\newcommand{\addEdgeBetween}[2]{\ensuremath{\addBox({#1}\rightarrow{#2})}}
+
+%% Definition of the Graph Operation environment
+%% ---------------------------------------------
+\usepackage{ifthen}
+%% ===== For the graph operation section =====
+%\newcommand{\graphopsection}[1]{\paragraph{#1}}
+\newcommand{\graphopsection}[1]{\noindent{\bf #1}}
+%\newcommand{\graphopsection}[1]{\subsection{#1}}
+%\newcommand{\graphopsection}[1]{}
+
+
+%% ===== For the graph operation environment =====
+% \newcommand{\GrOp}[1]{\marginpar[\hfill#1]{\hfill #1}}
+% \newlength{\myparindent}
+% \setlength{\myparindent}{0pt}% or {\parindent}
+% \newboolean{noop}
+% \newenvironment{graphop}[1][]{%
+% \ifthenelse{\equal{#1}{}}{\setboolean{noop}{true}}{\setboolean{noop}{false}}
+% %\setboolean{noop}{true}
+% \ifthenelse{\boolean{noop}}{}{
+% \hfill\\
+% %\fbox{%
+% \begin{minipage}[t]{0.15\textwidth}%
+% {#1}%
+% \end{minipage}%
+% %}
+% \begin{minipage}[t]{0.85\textwidth}%
+% \setlength{\parindent}{\myparindent}%
+% }% end of if
+% }{%
+% \ifthenelse{\boolean{noop}}{}{
+% \end{minipage}\\%
+% }% End of graph op
+% }%
+% \newenvironment{graphop}[1][]{%
+% \ifthenelse{\equal{#1}{}}{\setboolean{noop}{true}}{\setboolean{noop}{false}}
+% %\setboolean{noop}{true}
+% \ifthenelse{\boolean{noop}}{}{\GrOp{#1}}%
+% }{}% End of graph op
+% %
+%
+%% Environment canceled
+\newenvironment{graphop}[1][]{}{}%
+
+
+\newcommand{\pintgrs}{{\mathbb N}^{>0}}
+\newcommand{\encoding}{e}
+\newcommand{\encodings}{E}
+\newcommand{\cnt}{\#}
+\newcommand{\sigof}[1]{{\it sig}\left(#1\right)}
+\newcommand{\encodingof}[1]{{\it enc}\left(#1\right)}
+\newcommand{\dist}{{\it dist}}
+\newcommand{\Between}{{\it between}}
+\newcommand{\degof}[1]{{\it deg}\left(#1\right)}
+\newcommand{\isencodingorder}{\sqsubseteq^2}
+\newcommand{\incencodingorder}{\sqsubseteq^1}
+\newcommand{\encodingorder}{\sqsubseteq}
+\newcommand{\similar}{\sim}
+\newcommand{\isomorphic}{\sim}
+\newcommand{\included}{\subseteq}
+%\newcommand{\graphsubtract}{\setminus}
+\newcommand{\zeroreduce}[1]{{#1}_{=0}}
+\newcommand{\posreduce}[1]{{#1}_{>0}}
+
+
+\newcommand{\probbox}[3]{%
+  \vspace{3mm}
+  \noindent
+  \framebox{
+    \begin{minipage}{0.95\hsize}
+      \noindent\underline{#1}
+
+      \noindent{\bf Instance}
+      \vspace{-2mm}
+      \begin{itemize}
+        #2
+      \end{itemize}
+      \vspace{-2mm}
+      \noindent{\bf Question}
+      #3
+    \end{minipage}
+  }
+  \vspace{2mm}
+}
+
+
+\renewcommand{\algname}[2]{\alg@margin}

@@ -1,0 +1,25 @@
+\begin{tikzpicture}[% show background rectangle,
+  group/.style={fill=black!10,draw=cyan!50,thin},
+  ]
+
+  \node[] (ua) at (1ex,0) {};
+  \node[inner xsep=2ex,text width=9ex, align=center, right=3ex of ua.east] (sys) {Concrete Model};
+  
+  \node[inner xsep=2ex,text width=13ex,  right=3ex of sys.east] (oa) {Abstract Model};
+  
+  \node[right] (bad) at (75mm,0) {Bad States};
+  
+  \begin{pgfonlayer}{my background}
+    \foreach \n/\m/\s in {oa/20mm/0, sys/15mm/0.1}{
+      \path[group] (\s,0) .. controls +(up:\m) and +(up:\m) .. (\n.east) .. controls +(down:\m) and +(down:\m) .. (\s,0); 
+    }
+
+    \path[group,fill=red!7]
+    ([xshift=-2ex]bad.west) .. controls +(up:12mm) and +(left:30mm) .. ++(0,15mm)
+    .. controls +(right:10mm) and +(up:10mm) .. ([xshift=2ex]bad.east)
+    ([xshift=-2ex]bad.west) .. controls +(down:12mm) and +(left:30mm) .. ++(0,-15mm)
+    .. controls +(right:10mm) and +(down:10mm) .. ([xshift=2ex]bad.east);
+
+  \end{pgfonlayer}
+
+\end{tikzpicture}

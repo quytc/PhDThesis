@@ -1,0 +1,49 @@
+%% ====================================================================
+\chapterwithtoc{Monotonic Abstraction}
+\label{chapter:monotonic:abstraction}
+\index{Abstraction}%
+%% ====================================================================
+
+We now present a technique to solve the reachability problem presented
+in the previous chapter. This technique has been introduced by Abdulla
+et al.~\cite{ACJT00} and is based on the Well-Quasi Ordering framework.
+
+We first introduce the notion of ordering and monotonicity and how we
+use them to derive an over-approximation. We then present the
+algorithm to prove the safety property. Finally, we discuss
+termination and show how we applied the method on a few protocols.
+%
+While the method has been applied to linear topologies~\cite{IJFCS09},
+one of the contributions of this thesis is to apply it to multiset
+topologies, to shape analysis and to extend it to tree topologies.
+
+\input{chapters/monotonic-abstraction/upward-closed-sets}
+\input{chapters/monotonic-abstraction/monotonicity}
+\input{chapters/monotonic-abstraction/backward-reachability}
+\input{chapters/monotonic-abstraction/procedure-termination}
+
+%% ====================================================================
+\section{Applications}
+\index{Experiments}%
+%% ====================================================================
+
+\index{Cache Coherence Protocols}%
+\index{Distributed Protocols}%
+The method has been applied on a variety of protocols such as cache
+coherence protocol or distributed protocols, presented in
+Chapter~\ref{chapter:experimentation}.
+%
+In~\cite{ParamVerif:global:conditions,Parosh:non-atomic}, Abdulla et
+al.\ apply the method to parameterized systems, in particular with
+linear topologies and atomic global conditions. We have applied the
+method to protocols modeled as a Petri Net (i.e.\ a multiset) and
+extended it to tree topologies.
+
+\input{chapters/monotonic-abstraction/applications-pn.tex}
+\input{chapters/monotonic-abstraction/applications-shapes.tex}
+\input{chapters/monotonic-abstraction/applications-trees.tex}
+
+
+%% ====================================================================
+\whatwelearned{monotonic-abstraction}
+%% ====================================================================

@@ -1,0 +1,67 @@
+=======================================================================================
+=============================            NOTES            =============================
+=======================================================================================
+
+
+
+=========================
+   === INTRODUCION ===
+=========================
+
+In the introduction: Sell better the difference with View Abstraction
+
+and be more agressive
+
+Introduce view abstraction shortly. It is an interesting and fast technique but...
+
+
+Methods: VMCAI, Raskin, Kumar and others...
+
+They compute some invariants of some form: for all (pairs of) processes, something must hold.
+
+Now: in Szymanski, this kind of invariants is not enough.
+For all pairs, it can be this or this... but if it is 5-6 then there is 8.
+
+So it is of the form: for all bla...there exists...
+
+Paper by Kumar: invisible invariant generation ?
+In VMCAI it's paper 29.
+
+Phrase the kind of invariants in the form of upward and downward closed sets, maybe?
+We get a complement of an upward closed set. We could phrase it like this.
+
+We can try to explain this difference.
+What is the property of the invariant that is needed there and that we kind solve nicely.
+
+=========================
+
+Show some C code to sell the for-loops.
+People simplify with atomic checks, and we first start with that.
+Then we talk about the real stuff.
+
+=========================
+
+For the Existing approaches:
+
+Mention the monotonic abstraction at CAV. and the paper from Ganty.
+
+=========================
+PROOFS:
+=========================
+* (alpha,gamma) is a galois connection
+* if you have over-approximation of abstract post
+==> then standard abstract interpretation business.
+
+
+
+=========================
+   === Non-Atomic ===
+=========================
+1) Explain why we tick in order.
+   That means gamma only reconstruct in-order ticks.
+
+2) Explain why we tick each context all at once.
+
+3) Naturally we ticked each element of the context one by one => state-explosion.
+   We tick now semi-atomically and it is still an over-approximation.
+

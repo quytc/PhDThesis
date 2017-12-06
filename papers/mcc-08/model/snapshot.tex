@@ -1,0 +1,165 @@
+\section{Snapshot}
+
+We describe in the section the information we require in order to
+depict a snapshot of the system at a given time.\daz{Define system?
+  Use \emph{model} instead?}
+
+\smallskip\noindent%
+\begin{minipage}{0.49\textwidth}
+  \setlength{\parindent}{1em}%
+  The system contains multiple separate threads of control and each
+  thread is assigned a particular task, so-called \emph{job type},
+  represented by a finite state automaton. We can assume, to start
+  with, that the system has a finite number of job types.
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}
+    \node[inner xsep=0pt,shade, top color=green!50!blue,text width=2cm, text centered, above, draw](jt1){Job type 1};
+    \node[inner xsep=0pt,text width=2cm, below=0mm of jt1, draw, text height=1.6cm](box1){};
+    \node[mystate](init1) at ([shift={(7mm,4mm)}]box1.south west){};
+    \node[mystate=red,above=5mm of init1](a1){};
+    \node[mystate=blue,right=5mm of a1](b1){};
+    \node[mystate=green,below=5mm of b1](c1){};
+    \draw[transition,->] (init1.120) to [out=120,in=-120] (a1.-120);
+    \draw[transition,->] (a1.60) to [out=60,in=120] (b1.120);
+    \draw[transition,->] (b1.-30) to [out=-30,in=60] (c1.60);
+    \draw[transition,->] (a1.west) .. controls +(left:5mm) and +(up:5mm) .. (a1.north);
+    %
+    \node(dots) at (15mm,0){...};
+    %
+    \node[inner xsep=0pt,shade, top color=green!50!blue,text width=2cm, text centered, above, draw](jt2) at (2.8cm,0){Job type 2};
+    \node[inner xsep=0pt,text width=2cm, below=0mm of jt2, draw, text height=1.6cm](box2){};
+    \node[mystate](init2) at ([shift={(7mm,4mm)}]box2.south west){};
+    \node[mystate=green,above=5mm of init2](a2){};
+    \node[mystate=yellow,right=5mm of a2](b2){};
+    \node[mystate=orange,below=5mm of b2](c2){};
+    \draw[transition,->] (init2.120) to [out=120,in=-120] (a2.-120);
+    \draw[transition,->] (a2.60) to [out=60,in=120] (b2.120);
+    \draw[transition,->] (b2.-30) to [out=-30,in=60] (c2.60);
+    \draw[transition,->] (init2.60) to [out=60,in=-150] (b2.-150);
+    % 
+\end{tikzpicture}
+\end{center}
+\end{minipage}
+
+\smallskip%
+The system (ie the whole program) is associated with a set of shared
+variables, so-called \emph{Globals}. The Globals might be read and
+written by any threads.
+%
+A thread has a unique id and is associated with a set of local
+variables, so-called \emph{Locals} (such as its stack).
+
+\bigskip%
+The communication between the threads is achieved by means of shared
+memory. Synchronization (i.e. constraining all possible thread
+inter-leavings to only the desirable ones) is achieved by means of
+mutexes and condition variables. A mutex is a simple lock with 2
+states: taken or free. Any thread requesting to take the lock when the
+lock is taken will wait until the lock is freed. Condition variables
+represent queues of all the sleeping threads on an associated
+predicate.
+
+\smallskip\noindent%
+\begin{minipage}{0.7\textwidth}
+  \setlength{\parindent}{1em}%
+  Each shared variable is associated with a set of pairs, so-called
+  \emph{access set}. A pair represents the thread id accessing that
+  variable and a token corresponding to the type of access: either
+  read (R) or write (W). If no thread is accessing the variable, the
+  access set is empty.
+\end{minipage}
+%
+% Right part
+%
+\hfill%
+\begin{minipage}{0.29\textwidth}
+\begin{center}
+  \begin{tikzpicture}
+    \node[fill=yellow,inner sep=1pt,circle](x){X};
+    \node[ellipse,fill=yellow,minimum width=25mm, minimum height=10mm](set) at +(10mm,-15mm){};
+    \filldraw[yellow] (x.-130) to[out=-50,in=20] (set.160) -- (set.90) to[out=180,in=-100] (x.-10) -- (x.-40) -- (x.-90);
+    
+    \node[pair,scale=0.7,left=3mm of set.center]{T$_i$\nodepart{lower}R};
+    \node[pair,scale=0.7,right=-1mm of set.center]{T$_j$\nodepart{lower}W};
+    \node[right=7mm of set.center]{...};
+  \end{tikzpicture}
+\end{center}
+\end{minipage}
+
+\smallskip%
+A thread can voluntarily stop its activity and resume it only when
+another thread terminates (either normally or abnormally).  An
+\emph{on-termination} association is set up and the sleeping thread
+gets notified and awaken when the awaited thread terminates.
+
+
+\bigskip%
+So, a snapshot of the system would be depicted as follows: the Globals
+and a collection of thread with a given job type, a current state and
+Locals, with eventual on-termination associations. The Globals
+contains %the thread ids,
+the mutexes, condition variables and all shared variables, with their
+respective access set.
+
+
+\bigskip%\noindent%
+\begin{tikzpicture}[font=\scriptsize]
+    \node[shade, top color=blue,text width=2cm, text centered, above, draw](jt1){Thread: Type 1};
+    \node[text width=2cm, below=0mm of jt1, draw](loc1){Locals};
+    \node[text width=2cm, below=0mm of loc1, draw, text height=2cm](box1){};
+    \node(init1) at ([shift={(7mm,7mm)}]box1.south west){};
+    \node[above=5mm of init1](a1){};
+    \node[mystate=blue,right=5mm of a1](b1){};
+    \node[below=5mm of b1](c1){};
+    %
+    %
+    \node[shade, top color=blue,text width=2cm, text centered, above, draw](jt2) at (4cm,-2cm){Thread: Type 2};
+    \node[text width=2cm, below=0mm of jt2, draw](loc2){Locals};
+    \node[text width=2cm, below=0mm of loc2, draw, text height=2cm](box2){};
+    \node(init2) at ([shift={(7mm,7mm)}]box2.south west){};
+    \node[above=5mm of init2](a2){};
+    \node[right=5mm of a2](b2){};
+    \node[mystate=orange,below=5mm of b2](c2){};
+    % 
+    % 
+    %\draw[dashed,->,shorten <=1mm,shorten >=1mm] (jt1.east) -- (jt2.west) node[midway,above,sloped]{child};
+    \draw[dotted,<-,shorten <=1mm,shorten >=1mm] (loc1.east) -- (loc2.west) node[sloped,below,pos=0.6]{on-termination};
+    %
+    % 
+    \node(dots) at (4cm,-1cm){...};
+
+    \begin{scope}
+      [xshift=7.2cm,
+      every text node part/.style={font=\tiny},
+      every second node part/.style={font=\tiny},
+      every third node part/.style={font=\tiny},
+      every fourth node part/.style={font=\tiny}
+      ]
+      \node[above,rounded corners, shade, top color=blue!50!red,inner sep=2mm]{Globals}; 
+      \node[below,rounded corners, rectangle split, rectangle split parts=3, draw, text width=3.2cm] 
+      {
+        Shared variables: X, Y, Z, ... 
+        \nodepart{second} 
+        Mutexes: L$_1$, L$_2$, L$_3$, ...
+        \nodepart{third}
+        Condition Variables:\\
+        Q$_1$, Q$_2$, Q$_3$, ... 
+      }; 
+    \end{scope}
+
+    \begin{scope}
+      [xshift=8.2cm,yshift=-0.2cm,
+      ] 
+      \node[fill=yellow,inner sep=1pt,circle](z){Z};
+      \node[ellipse,fill=yellow,minimum width=25mm, minimum height=15mm](set) at +(0,-25mm){};
+      \filldraw[yellow] (z.-110) to[out=-75,in=30] (set.160) -- (set.20) to[out=120,in=-90] (z.east) -- (z.south);
+
+      \node[pair,left=3mm of set.center]{T$_i$\nodepart{lower}R};
+      \node[pair,right=-1mm of set.center]{T$_j$\nodepart{lower}W};
+      \node[right=7mm of set.center]{...};
+    \end{scope}
+
+\end{tikzpicture}
+

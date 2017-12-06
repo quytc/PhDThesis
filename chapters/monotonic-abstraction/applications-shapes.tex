@@ -1,0 +1,74 @@
+% -------------------------
+\makeatletter
+\if@UU@margnum
+\subsection*{Shape analysis}
+\else
+\subsection{Shape analysis}
+\fi
+\makeatother
+% -------------------------
+
+This section focuses on the verification of sequential iterative
+programs manipulating dynamic memory heaps, only briefly since we
+dedicate a full chapter (Chapter~\ref{chapter:shape:analysis} on
+page~\pageref{chapter:shape:analysis}) to shape analysis, using yet
+another abstraction technique, which handles the concurrent case.
+%
+% The issue of verifying such programs automatically has received a
+% lot of attention in the last few years, and many approaches and
+% techniques have been developed including static-analysis and
+% abstraction-based frameworks (see, e.g., \cite{Sagiv02}),
+% logic-based frameworks (see, e.g., \cite{Reynolds02,OHearn06}),
+% automata-based frameworks (see, e.g., \cite{pale97,BHRV06}),
+% etc\ldots %
+%
+More precisely, heap structures are built using heap cells which
+contain \emph{one} next-selector, i.e.\ programs are manipulating
+(possibly circular and shared) singly-linked lists.
+
+% Here, we introduce a framework based on symbolic (backward)
+% reachability analysis using upward-closed sets of heap graphs
+% (w.r.t. some appropriate preorder).  As a first step toward this
+% framework
+%
+We model heaps by labeled graphs, where labels correspond to positions
+of program variables.
+%
+In fact, heap graphs are symbolic representations to characterize sets
+of heaps instead of a single one.
+%
+The main issue is to define a~preorder~$\subword$ on heap graphs. We
+introduce the following preorder: Given two graphs $g_1$ and $g_2$, we
+have $g_1 \subword g_2$ if $g_1$ can be obtained from $g_2$ by a
+sequence of transformations consisting of either deleting an edge, a
+variable, or an isolated vertex, or of contracting segments (i.e.,
+sequence of vertices) without sharing in the graph.
+%
+% Actually, the graphs can be used as symbolic representations in
+% general to characterize sets of heaps instead of a single one. 
+%
+% Those graphs can be seen as minimal elements of upward-closed sets of
+% heap graphs w.r.t.\ $\subword$.
+%
+The transition system, abstraction and the procedure to check the
+entailement relation~$\subword$ are described in details in
+paper~\ref{paper:CAV08}.
+
+The analysis allows to check properties such as absence of null
+dereferencing as well as absence of garbage creation. Moreover, it
+allows to check ``shape'' properties over heaps, such as
+``well-formedness'', where, for instance, the output is always a list
+without sharing. We show that these kinds of verification problems can
+be reduced to the problem of reaching sets of bad configurations
+corresponding to the existence in the heap graph of some \emph{minimal
+  bad patterns}.
+%
+For instance, the set of configuration with garbage can be
+represented by minimal graphs containing all programs variables plus
+one isolated vertex.
+
+We applied the monotonic abstraction method to verify such sequential
+programs fully-automatically (see Paper~\ref{paper:CAV08}).
+%
+Furthermore, the graph relation $\subword$ is proven to be a WQO so
+procedure~\ref{algo:backward:procedure} is guaranteed to terminate.

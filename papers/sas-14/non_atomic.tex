@@ -1,0 +1,526 @@
+%-----------------------------------
+\section{Non-atomically checked global conditions}
+\label{section:non-atomic}
+%-----------------------------------
+%
+We extend our model and method to handle parameterized systems where
+global conditions are \emph{not} checked atomically.
+%
+We replace both existentially and universally guarded transition rules
+by the following variant of a~for-loop rule:
+$$%
+\forrule \circ \witnesses s {s'} e%
+$$
+where $s\in\locs$ is a \emph{source} state, $s'\in\locs$ is a
+\emph{target} state and $e\in Q$ is an \emph{escape}
+state. $\circ\in\{<,>,\neq\}$ describes the \emph{range} of iterations
+and $\witnesses\subseteq Q$ is a \emph{condition}.
+%
+For instance, line 3 of Szymanski's protocol would be replaced by 
+\mbox{$\forrule \neq {\neg\set{1,2}} 3 7 4$}.
+
+We extend the semantics of a~system with for-loop rules from
+transition systems of Section~\ref{section:paramsys} in the following
+way:
+%
+A~configuration is now a~pair $(\conf,\tick)$ where $\conf$ is a~word
+over $Q$ and $\tick$ is a~partial boolean function over its (pairs of)
+positions, i.e.,
+$\tick:{\range{1}{\sizeof\conf}\times\range{1}{\sizeof\conf}}\rightarrow(\strue,\sfalse)$.
+%
+The boolean function $\tick$ is used to encode intermediate states of
+for-loops. Intuitively, a~process at position $i$ performing
+a~for-loop sets $\tickof{i}{j}$ to $\strue$ to mark that it
+processed\TODO{\emph{in-order}?} the position $j$. It is otherwise
+$\sfalse$.
+%
+Initially, $\tick$ is the false function: $\tickof i j = \sfalse$ for
+all $i,j\in\range 1 {\sizeof \conf}$. 
+
+Without loss of generality, we will assume that the for-loops iterate
+through process indices in increasing order.
+%
+For convenience, we define the following operators: for a
+(partial) %boolean
+function $f$, we use $f\oplus(i,j)$, to denote the function $f'$ such
+that $f'(x,y) = \strue$ if $x,y=i,j$ and $f'(x,y) = f(x,y)$
+otherwise. We use $f\ominus i$ to denote the function $f'$ such that,
+$f'(x,y) = \sfalse$ if $x=i$ and $f'(x,y) = f(x,y)$ otherwise (for all
+values of $y$).
+
+Formally, a~parameterized system $\parsys=(\locs,\rules)$ which
+includes for-loop rules induces a~transition system $\transys =
+(\confs,\trans)$ where $C \subseteq Q^+\times (\nat\times\nat)$. %
+For the sake of simplicity, we assume that a~source of a~for-loop rule
+in $\rules$ is not a~source of any other rule in $\rules$%
+%
+\footnote{This is a technicality, the state of a~process, without this
+  restriction, would have to contain additional information recording
+  which for-loop is the process currently performing. %
+  Note that the restriction does not limit the power of our model. %
+  Any potential branching may be moved to predecessors of the sources
+  of the for-loop.}. %
+%
+Then every for-loop rule $\forrule \circ \witnesses s {s'} e$ induces
+transitions $(\conf,\tick) \trans (\conf',\tick')$ with $\conf [i] =
+s$ for some $i\in\range 1 {\sizeof \conf}$ which may be of the
+following three forms: (illustrated using the aforementioned example
+rule from Szymanski's protocol).
+
+%\begin{description}
+%\item[{Iteration:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  %\vspace{-6mm}%
+  {\bf Iteration:} The $i^{th}$ process checks that the state of
+  the~\emph{first} unchecked process in the range is in the witness
+  set $\witnesses$ and marks it. %
+  That is, there is a lowest $j\in\range 1 {\sizeof \conf}$ with
+  $j\circ i$, such that %
+  $\tickof{i}{j}=\sfalse$, $\conf [j]\in\witnesses$, and the resulting
+  configuration has $\conf'=\conf$ and $\tick'=\tick\oplus(i,j)$.
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{6mm}
+  \inputtikz{\input{ticks/iteration.tex}}
+\end{minipage}
+
+%\vspace{-4mm}% Cheating
+%\item[{Escape:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  {\bf Escape:} If the state of the~\emph{first} unchecked process in
+  the range violates the loop condition, then the $i^{th}$ process may
+  escape to the state $e$. %
+  %
+  That is, there is a lowest $j\in\range 1 {\sizeof \conf}$ with
+  $j\circ i$ such that $\tickof{i}{j}=\sfalse$, and $\conf [j]\not\in
+  \witnesses$. %
+  The resulting configuration has $\conf' [i] = e$ and for all
+  $\ell\neq i$, $\conf' [\ell] = \conf [\ell]$. The execution of the
+  for-loop ends and the marks of process $i$ are reset, i.e.,
+  $\tick'=\tick\ominus i$.
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{-6mm}
+  \inputtikz{\input{ticks/escape.tex}}
+\end{minipage}
+
+%\item[{Terminal:}]
+\noindent\begin{minipage}[!t]{0.7\linewidth}%\vspace{0pt}
+  {\bf Terminal:} When the states of all processes from the range have
+  been successfully checked, the for-loop ends and the $i^{th}$
+  process moves to the terminal state $s'$. %
+  That is, if there is no $j\in\range 1 {\sizeof \conf}$ with $j\circ
+  i$ and $\tickof{i}{j}=\sfalse$, then $\conf' [i] = s'$ and for all
+  $\ell\neq i$, $\conf' [\ell] = \conf [\ell]$. %
+  Furthermore, the marks of the $i^{th}$ process are reset, i.e.,
+  $\tick' = \tick\ominus i$.
+\end{minipage}
+\hfill%
+\begin{minipage}[!t]{0.29\linewidth}%\vspace{0pt}
+  %\vspace{6mm}
+  \inputtikz{\input{ticks/terminal.tex}}
+\end{minipage}
+%\end{description}
+
+Other rules behave as before on the $\conf$ part of configurations and
+they do not influence the function $\tick$.  That is, a~local,
+broadcast, or rendez-vous rule%
+\TODO{introduce them?}%
+induces transitions $(\conf,\tick) \trans (\conf',\tick)$ where
+$\conf\trans \conf'$ is a~transition induced by the rule as described
+in Section~\ref{section:paramsys}.
+
+
+%% -----------------------------------------------------
+%\myparagraph{Abstraction.}
+\myparagraph{Extended view.}
+%% -----------------------------------------------------
+We extend the notion of view with a partial function over the indices
+of the basis elements. That is, a view of size $k$ is now a pair
+$(\view,\tick)$ where $\view = R_0b_1R_1\ldots b_kR_k$ is defined in
+Section~\ref{section:abstraction} and $\tick$ is a~three-valued
+function
+$\tick:\range{1}{k}\times\range{1}{k+1}\rightarrow\set{\strue,\sdunno,\sfalse}$.
+($k$ processes can keep track of $k+1$ contexts!).
+%
+% Intuitively, a view $w =(\view,\tick)$ is seen as a~graph, where the
+% vertices are the positions of $\view$ and the edges are defined by (i)
+% the ordering of the positions and (ii) the relation $\tick$. The
+% vertices are labeled by the state of processes at those
+% positions. $\project k w$ then returns the set of subgraphs of $w$
+% where every subgraph contains a~subset of at most $k$ vertices of
+% $\view$ (positions of $\view$) and the maximal subset of edges of $w$
+% adjacent with the chosen vertices.
+%
+%% -----------------------------------------------------
+\myparagraph{Operational semantics on views.}
+%% -----------------------------------------------------
+Rules others than the for-loops behave as before on the $\view$ part
+of views and they do not influence the $\tick$ part. %
+That is, a~local, broadcast, or rendez-vous\TODO{idem} rule induces
+transitions $(\view,\tick) \trans (\view',\tick)$ where $\view\trans
+\view'$ is a~transition induced by the rule as described in
+Section~\ref{section:paramsys}.
+
+We describe the symbolic post operator for the (in-order) for-loops. 
+%
+Consider a for-loop rule $\forrule \circ \witnesses s {s'} e $ and a
+view $(\view,\tick)$, of size $k$, where $\view = R_0b_1R_1\ldots
+b_kR_k$.
+%
+If there exists $i\in\range 1 k$ such that $b_i = s$, we define
+$\spostof {\view,\tick}$ to be the view $(\view',\tick')$ where
+$\view' = R_0b_1R_1\ldots R_{i-1}b'_iR_i\ldots b_kR_k$. A for-loop is
+size-preserving and doesn't not update the contexts, nor the elements
+of the basis other than $b_i$. We now only need to define $b'_i$ and
+$\tick'$.
+%
+The $i^{th}$ process selects the~\emph{first} unchecked position,
+depending on the range. %
+We define the set %
+$Pos(i,\tick) = \setcomp{j\in D}{\tick(i,j)=\sfalse}$ where
+$D=\range{1}{i},\range{i}{k+1},\range{1}{k+1}$ if $\circ$ is
+$<,>,\neq$ respectively. Note that we extend the range in order to
+capture the last context.
+%
+If this set is empty, that is, the whole view has been successfully
+scanned, process $i$ then moves to the target state $s'$.
+%
+If the set is not empty, its minimum exists, say $\ell$, and process
+$i$ checks if process $\ell$'s immediate left context $R_{\ell-1}$
+does not violate the condition and it does also so with $b_\ell$ (only
+if $b_\ell$ exists, that is, $\ell\neq i$ and $\ell\neq k+1$). If so,
+process $i$ only marks position $\ell$. If this is not the case, it
+moves to the escape state $e$.
+%
+This corresponds formally to the 3 following scenari:
+%
+(i) {\bf Iteration:} $Pos(i,\tick)\neq\emptyset$ and
+$\ell=min(Pos(i,\tick))$. %
+$R_{\ell-1}\subseteq\witnesses$%
+\TODO{Change that to $R_{\ell-1}=\emptyset$}%
+and %
+if $\ell$ is neither $i$ nor $k+1$, then $b_\ell\in\witnesses$.
+% 
+If those conditions hold, we then have $b'_i=b_i$ and
+$\tick'=\tick\oplus(i,\ell)$. %
+Notice that all the elements of the context $R_{\ell-1}$ are checked
+at once. We will show in the next section how/why this is an
+over-approximation of the system.
+%
+(ii) {\bf Escape:} $Pos(i,\tick)\neq\emptyset$ and
+$\ell=min(Pos(i,\tick))$. %
+$R_{\ell-1}\intersection\witnesses\neq\emptyset$ and %
+if $\ell$ is neither $i$ nor $k+1$, then $b_\ell\not\in\witnesses$.
+% 
+If those conditions hold, we then have $b'_i=e$ and
+$\tick'=\tick\ominus i$.
+% 
+(iii) {\bf Terminal:} if $Pos(i,\tick)=\emptyset$ then $b'_i=s'$ and
+$\tick'=\tick\ominus i$.
+%
+\begin{center}
+  \inputtikz{\input{ticks/na.tex}}
+\end{center}
+%
+
+%% -----------------------------------------------------
+\myparagraph{Abstraction, Entailment and Concretization.}
+%% -----------------------------------------------------
+We define an extension of the abstraction function from
+Section~\ref{section:abstraction}. %
+
+\noindent%
+\begin{wrapfigure}{r}{0.45\textwidth}
+  \vspace{-24pt}
+  \hfill
+  \inputtikz{\input{ticks/projection.tex}}
+  \vspace{-6pt}
+  \caption{$\tick$ markings projection}
+  \label{figure:projection}
+  \vspace{-12pt}
+\end{wrapfigure}
+%
+Let us consider $k\in\nat$, a view $w = (\view,\tick)$ with $\sizeof
+\view = n$ and a strictly increasing injection $h\in H_{n}^{k}$.
+% $h\in H_{n+1}^{k+1}$ (to account for the last context too!). %
+% %
+
+We define a projection function that redefines the (boolean) function
+for the positions of processes that are not in $h(\range{1}{k})$. %
+Informally, when we project away a process, we inspect the ``status''
+of the contexts at its immediate left and right position. If they are
+both marked or both not marked, they have the same status and keep it
+after merging. If they have a different status, we merge the contexts
+and mark the resulting context with $\sdunno$.
+%
+% That is, if $\tickof{h(i)}{h(j)}=\strue$, we check if it is also the
+% case that $\tickof{h(i)}{\ell}=\strue$ for all
+% $\ell\in\rangeopen{h(j-1)}{h(j)}$. %
+% Conversely, if $\tickof{h(i)}{h(j)}=\sfalse$, we check if it is also
+% the case that $\tickof{h(i)}{\ell}=\sfalse$ for all
+% $\ell\in\rangeopen{h(j-1)}{h(j)}$. %
+% Otherwise, the projection is not defined.
+%
+% Formally, we define $\tick'$ for
+% $i,j\in\range{1}{k}\times\range{1}{k+1}$ such that %
+% $\tick'(i,j) = \tickof{h(i)}{h(j)}$ if
+% $\forall\ell\in\spanof{h}{i},\tickof{h(i)}{\ell}=\tickof{h(i)}{h(j)}$
+% and $\tick'(i,j) = \sdunno$ otherwise.
+%
+% Formally, we define $\tick'$ for
+% $i\in\range{1}{k}$ such that %
+% \TODO{Make a picture?}%
+% $$
+% \tick'(i,j) = \left\{
+%   \begin{array}{l@{\hspace{2ex}}l}
+%     \tickof{h(i)}{h(j)} & \text{if } \forall\ell\in\spanof{h}{i},\tickof{h(i)}{\ell}=\tickof{h(i)}{h(j)} \\
+%     \sdunno & \text{otherwise} \\
+%   \end{array}\right.
+% $$
+
+We use $\spanof h i$ to denote the set $\range{1}{h(1)}$ if $i=1$, the
+set $\rangesopen{h(i-1)}{h(i)}$ if $1<i\leq k$, and the set
+$\rangesopen{h(k)}{n+1}$ if $i=k+1$.
+%
+For $i\in\range 1 n$ and a subset $D\subseteq\range 1 {n+1}$, we use
+$\status{i}{D}$ to denote the collective status of all markings in $D$,
+that is, $\status{i}{D} = \tick(i,max(D))$ if $\forall\ell\in{D},
+\tickof{i}{\ell}=\tickof{i}{max(D)}$ and $\status{i}{D} = \sdunno$ otherwise.
+%
+We can now define $\proj{h}{\tick}$ to be the function $\tick'$ such
+that, for $i,j\in\range{1}{k}\times\range{1}{k+1}$, %
+$\tick'(i,j) = \status{h(i)}{\spanof h j}$.
+%
+Intuitively, if the marking function is depicted as a matrix (cf
+Fig.~\ref{figure:projection}), the projection function removes rows
+and columns by collapsing columns if the cell values are consistent
+with each other, in the collapsed cells or by introducing an imperfect
+information with $\sdunno$.
+%
+Consequently, we do allow a view to encode partial marking information
+about a context.
+%
+Finally, we define the extended abstraction function as %
+$$
+\project k {w} = \setcomp{%
+  (\proj h {\view}, \proj h \tick)%
+}{%
+  h\in H_{n}^{k} %
+}%
+$$
+%
+
+%
+% Formally, we define $\tick'$ such that for $i\in\range{1}{k}$%
+% $$
+% \begin{array}{rcl}
+%   \tick'(i,1) & = & \left\{
+%     \begin{array}{l@{\hspace{2ex}}l}
+%       \tickof{h(i)}{h(1)} & \text{if }\forall\ell\leq h(1), \tickof{h(i)}{\ell}=\tickof{h(i)}{h(1)} \\
+%       \sdunno & \text{otherwise} \\
+%     \end{array}\right. \\[3ex]
+%   % 
+%   \forall j\in\range 2 k, \tick'(i,j) & = & \left\{
+%     \begin{array}{l@{\hspace{2ex}}l}
+%       \tickof{h(i)}{h(j)} & \text{if } \forall\ell\in\rangesopen{h(j-1)}{h(j)},\tickof{h(i)}{\ell}=\tickof{h(i)}{h(j)} \\
+%       \sdunno & \text{otherwise} \\
+%     \end{array}\right. \\[3ex]
+%   %
+%   \tick'(i,k+1) & = & \left\{
+%     \begin{array}{l@{\hspace{2ex}}l}
+%       \tickof{h(i)}{n+1} & \text{if }\forall\ell>h(k), \tickof{h(i)}{\ell}=\tickof{h(i)}{n+1} \\
+%       \sdunno & \text{otherwise} \\
+%     \end{array}\right. \\
+% \end{array}%
+%$$
+%
+% Finally, $\tproj{h}{\tick} = \tick'$ if and only if $\tick'$ is
+% well-defined on all values of its domain.
+%
+% Consequently, we do not allow a view to encode partial marking
+% information about a context.
+%
+% Consequently, we do allow a view to encode partial marking information
+% about a context. %
+% Finally, we denote $\tick'$ as $\proj{h}{\tick}$ and define the
+% extended abstraction function as %
+% $$
+% \project k {w} = \setcomp{%
+%   (\proj h {\view}, \proj h \tick)%
+% }{%
+%   h\in H_{n}^{k} %
+% }%
+% $$
+% %
+% Intuitively, if we the marking function is depicted as a matrix (cf Fig.~\ref{figure:projection}), the projection function
+% removes rows and columns by collapsing columns if the cell values are
+% consistent, in the collapsed cells or by introducing an imperfect information with $\sdunno$.
+
+
+The entailement is defined naturally as follows: %
+$(v,\tick)\entails(v',\tick')$ iff $v\entails v'$ and $\tick =
+\tick'$.
+%
+The notion of concretization is defined in
+the same manner as in Section~\ref{section:method} based on
+based on $\entails$ and $\abstr$.
+
+%\newpage
+%\NOTE{Luk\'{a}\v{s}'s Part}
+%%% -----------------------------------------------------
+%\myparagraph{Configurations, Views, Abstraction, Concretization, and Post, Sketch.}
+%%% -----------------------------------------------------
+%A configuration is a sequence $c = x_1\cdots x_n$ where each $x_i,1\leq i \leq n$, is a pair $b_i^{\tick^i}$, called ticked state, where $b_i$ is a state and $\tick^i$ is a subset of $\range 1 n$. 
+%A ticked state $x_i$ encodes that the state of the $i$th process of $c$ is $b_i$ and that the $i$th process has \emph{not} been ticked by states at positions in $\tick^i$.
+%A sequence $\view = R_1x_1R_2\ldots x_nR_{n+1}$ where $R_1,\ldots,R_{n+1}$ are sets of states ticked by subsets of $\range 1 n$ is a view of size $n$.
+%For a set of ticked states $R$, we define $R(i)$ as the set of states who are present in $R$ as not ticked by $i$, formally, $R(i) = \{q\mid \exists \tick:q^\tick\in R\land i\in\tick\}$.
+%We define the operation $\Cup$ of merging two sets $R,R'$ of ticked states by uniting ticks of their elements, 
+%formally, we let $R\Cup R' = \{q^{\tick\cup \tick'}\mid q^{\tick},q^{\tick'} \in R\cup R'\}$.
+%
+%Let us have a rule $\delta = \forrule \circ \witnesses {s} {t} {e}$, 
+%and $i\in\range 1 {n}$. 
+%Then the post image $\delta(c,i)$ of $c$ by a move of the $i$th process is defined if $b_i = s$ and then it is the configuration obtained from $c$ by one of the following three transformations:
+%If there is no $\ell\in \range 1 n$ s.t. $\ell\circ i$ and $i\in\tick^\ell$ then the $i$th process changes its state to $t$ and $i$ is removed from $\tick^j$ for all $j\in\range 1 n$.
+%In this case, we say that $\delta(c,i)$ was obtained from $c$ by terminal transition of the $i$th process. 
+%Otherwise, let an $\ell$ of the above properties exist and let it be the smallest such index. Then there are two possibilities: 
+%if $b_{\ell}\in S$ then $i$ is added to the set $\tick^{\ell}$ and we speak about iteration,
+%else if $b_{\ell}\not\in S$ then the state of the $i$th process changes to $e$, $i$ is again removed from $\tick^j$ for all $j\in\range 1 n$, and we speak about escape transition.
+%Let $\delta(c,i)$ be defined (that is, $b_i = s$) and let it equal $x'_1\ldots x'_n$.
+%The post image of the view $\view$ is then defined as the view $\delta(\view,i) =  R_1' x'_1 R_2' \cdots x'_n R_{n+1}'$ or possibly undefined depending on what type of transition $\delta(c,i)$ represents.
+%If $\delta(c,i)$ is terminal, then $\delta(v,i)$ is defined only if $R_{\ell+1}(i)=\emptyset$ (or only if $R_{\ell+1}=\emptyset$?),
+%and if $\delta(c,i)$ is escape or iteration, then $\delta(v,i)$ is defined only if $R_{\ell}(i)=\emptyset$. 
+%Last, for all $j\in\range 1 n$, $R_j' = R_j$ if $\delta(c,i)$ is iteration, otherwise (in the case of escape and terminal) $R_j'$ arises from $R_j$ by removing $i$ from ticks of all its elements.
+%
+%We define the entailment relation $\sentailed$ between two sets of ticked states such that $R \sentailed R'$ iff for each $q^{\tick}\in R$ there is $q^{\tick'}\in R'$ with $\tick\supseteq\tick'$,
+%and we define entailment between two views of the same size such as $R_1 x_1 \ldots x_n R_{n+1} \sentailed R_1' x_1 \ldots x_n R'_{n+1}$ iff $R_i\sentailed R_i'$ for all $i\in\range 1 n$. For a set of views $X$, $\max X$ is the set of the minimal elements of $X$ w.r.t. $\sentails$, that is, elements $x$ of $X$ for which there is no other element $y$ of $X$ with $x\sentails y$. Note that since $\sentails$ is antisymmetric,
+%every element $y$ of $X$ has a representant $x\in\max X$ such that $y\sentails x$.
+%
+%Let us consider a strictly increasing injection $h\in H_{n}^{k}$.
+%We use $\spanof h i$ to denote the set $\range{1}{h(1)}$ if $i=1$, the
+%set $\rangesopen{h(i-1)}{h(i)}$ if $1<i\leq k$, and the set
+%$\rangesopen{h(k)}{n+1}$ if $i=k+1$.
+%%
+%Then 
+%$\proj h \view = R_1' x_{h(1)} R_2' x_{h(2)} \cdots x_{h(k)} R_{k+1}'$ where 
+%for each $1\leq i \leq k+1$, $R_i' = (\Cup_{j\in\spanof h i} R_j) \Cup (\Cup_{j\in\spanof h i\setminus \{i\}} \{x_j\})$. 
+%\footnote{
+%A smarter version of projection remembers only relevant ticks. Particularly, if the set of witnesses of a forall rule with the source $q$ is $S$, then only ticks of states from $Q\setminus S$ may contain positions on which state $q$ appears (other states just ignore ticks of processes that are in state $q$). Ticks of states which are not starting points of forall rules are also ignored.}
+%Abstraction is then defined as the function $\alpha_k(c) = \max{\{\proj h c\mid h\in H_n^k\}}$. For a set $X$ of views or configurations, $\alpha_k(X) = \max \bigcup_{x\in X} \alpha_k{X}$.
+%Finally, we define concretization with a parameter $k$ of a set of views $X$ as $\gamma_k(X) = \{\view \mid X \sentailed \alpha_k(\view)\}$.
+%We define $\gamma_k^\ell(X)$. for $k < \ell$, as $\gamma_k(X) \cap \{v\mid |v|\leq \ell\}$,
+%and we define abstract post transformer $\Delta^{\#}_k = \alpha^k \Delta \gamma_k^\ell$.
+%
+%
+%
+%\note{for two views with $\view \sentailed \view'$ and any set $X$ of views, $\gamma(X\cup \view) \subseteq \gamma(X\cup\view')$ (prove)?}
+%
+%\newpage
+%
+%We first prove some auxiliary lemma:
+%\begin{lemma}
+%\begin{enumerate}
+%\item
+%Let $v,v'$ be views of some size $k$, let $i\leq k$ and $\delta\in \Delta$.
+%If $\delta(v',i)$ is defined then $\delta(v,i)$ is defined and $v\sentails v'$ then $\delta(v,i)\sentails \delta(v',i)$.
+%\item
+%Let $c$ be a configuration of size $n$.
+%Let $h_1\in H_{n}^{k}, h_2\in H_{k}^{\ell}$ for some $\ell \leq k \leq n$ such that $h_2\circ h_1 = h$. 
+%Then $\proj h c = \proj {h_2} {\proj {h_1} {c}}$.
+%\item
+%Let $\delta(c,i)$ be defined as well as $\delta(\proj h c,h^{-1}(i))$.
+%Then $\proj h {\delta (c,i)} = \delta (\proj h b, h^{-1}(i))$.
+%\end{enumerate}
+%\end{lemma}
+%
+%\begin{lemma}
+%$\abstractof k\circ\Delta\circ\concretizeof k X \sentailed \abstractof k\circ\Delta\circ\concretizeoflim k {k+2} X \cup X$.
+%\end{lemma}
+%
+%\begin{proof}
+%By definition of $\alpha_k$, every view in $\abstractof k \circ \Delta \circ \concretizeof k X$ equals $\proj h {c'}$ for some configuration $c'\in \Delta \circ \gamma_k(X)$ and some $h\in H_{|c|}^{k}$.
+%We will prove the lemma by showing that there is some $v'\in \abstractof k\circ\Delta\circ\concretizeoflim k {k+1} X$ such that $v'\sentails \proj h {c'}$.
+%Since $c'\in\Delta\circ\gamma_k(X)$, there is a configuration $c\in\gamma_k(X)$,
+%a transition $\delta\in\Delta$ and $i\in\range 1 {|c|}$ such that $c' = \delta(c,i)$.
+%Since $c\in\gamma_k(X)$, there is some $v\in X$ such that $v\sentails \proj c h$. 
+%We will extend $h$ into a $g\in H_{|c|^{k+x}}$ by extending its range by the minimal set $X$ of positions of $c$ so that $\delta(\proj g, g^{-1}(i))$ is defined. We will show that the size of $X$ is at most 2 by an analysis of possible transitions that the $i$th process of $c$ could make:
+%\begin{itemize}
+%\item {\it Iteration:}
+%For iteration to be enabled, it is only neccessary for the range of $g$ to contain $i$, hence the set of $X$ contains at most $i$.
+%\item {\it Terminal transition:}
+%Similarly as in the case of iteration, terminal transition is enabled if the range of $g$ contains $i$, hence $X$ contains at most $i$.
+%\item {\it Escape transition:}
+%For escape to be enabled, the range of $g$ must contain $i$ and the position $\ell$ of the first process of $c$ to be ticked by the $i$th process. Hence, the set $X$ can contain at most $i$ and $\ell$.
+%\end{itemize}
+%\end{proof}
+%
+%
+%
+%
+%
+%\begin{proof}
+%By definition of $\alpha_k$, every view in $\abstractof k \circ \Delta \circ \concretizeof k X$ equals $\proj h {c'}$ for some configuration $c'\in \Delta \circ \gamma_k(X)$ and some $h\in H_{|c|}^{k}$.
+%We will prove the lemma by showing that there is some $v'\in \abstractof k\circ\Delta\circ\concretizeoflim k {k+1} X$ such that $v'\sentails \proj h {c'}$.
+%Since $c'\in\Delta\circ\gamma_k(X)$, there is a configuration $c\in\gamma_k(X)$,
+%a transition $\delta\in\Delta$ and $i\in\range 1 {|c|}$ such that $c' = \delta(c,i)$.
+%Since $c\in\gamma_k(X)$, there is some $v\in X$ such that $v\sentails \proj c h$.
+%Let $\delta = \forrule \circ \witnesses s t e$.
+%Then the $i$th  position of $c$ must be $s$, otherwise $\delta(c,i)$ could not be defined.
+%If $\proj h c = \proj  h {c'}$ then we can let $v' = v'$ and conclude the proof, 
+%so we further assume that $\proj h c = \proj  h {c'}$.
+%We split the proof according to whether $c'$ is obtained from $c$ by an iteration, terminal, or escape.
+%
+%\begin{itemize}
+%\item {\it Iteration:}
+%Let $\ell$ be the first position in $c$ with $i\circ \ell$ which has not been yet checked by the $i$th process (such $\ell$ exists since $i$ since the move is an iteration).
+%Then $c'$ is the same as $c$ up to that $i\in\tick^\ell$ in $c'$ but not in $c$.
+%Since $\proj h c \neq \proj h {c'}$, the range of $h$ must contain both $i$ and $\ell$, from the following reasons:
+%Position $i$ is contained since the only difference between $c$ and $c'$ and hence between $\proj h c$ and $\proj h {c'}$ involves ticks of the $i$th process which are invisible in projection which do not contain the $i$th process.
+%If the position $\ell$ was not present, the state of the newly ticked $\ell$th process would appear only in some context of $\proj h {c'}$. Since the move is an iteration, the state of the $\ell$th process $x$ is in $S$, and hence contexts of $\proj h {c'}$ does not store any information about whether the $i$th process has or has not ticked a process in state $x$.  
+%
+%Notice that $\delta(\view,h(i))$ entails $\proj h c$ because 
+%$\view$ entails $\proj h c$ and $\delta(\view,h(i))$ differs from $\view$ in exactly the same way as $\proj h {c'}$ differs from $\proj h c$, that is, by that $\tick^{h(\ell)}$ contains $h(i)$.  
+%%
+%Since $v\in X$, $\Delta^\#(X)$ contains a view which entails $\delta(\view,h(i))$. 
+%We can hece let $v'$ be the view of $\Delta(X)$ which enaitls $\delta(\view,h(i))$ (such view is present by the definition of $\Delta^\#$). 
+%
+%\item {\it Terminal transition:}
+%In the case of terminal transition, $c'$ differs from $c$ in that the $i$th process changes its state to $t$ and all its ticks are erased. 
+%Let $h^{+1}\in H_n^k$ be the mapping with the range equal the range of $h$ united with $i$ ($h^{+1}$ can be possible equal to $h$). 
+%Since $\gamma_k(X)$ contains $c$, then $\gamma_k^{k+1}(X)$ contains some view $w$ which entails $\proj {h^{+1}} c$. Let $w' = \delta(w,g^{-1}(i))$ where $g\in H_{k+1}^k$ is the mapping such that $g\circ h^{+1} = h$. We have that $w'\sentails \proj g c'$.
+%
+%
+%
+%,  contains a view $w$ which entails $\proj {h^{+1}} c$ differs from $\proj {h^{+1}} {c'}$ in that $h(i)$ changes its state to $t$ and ticks of $t$ are reset in case $i$ is in the range of $h$, otherwise both projections are the same.
+%Since we assume that they are not the same, $i$ must be in the range of $h$. 
+%As before, we know that by definition, $\Delta^\#$ contains a view which entials $\delta(v,h(i))$, and we let this view be $v'$. Notice that the difference between $v$ and $\delta(v,h(i))$ is the change of the state of $h(i)$th process to $t$ and reset of all ticks of $h(i)$. The terminal transition is indeed perfored since $v$ contains the moving process $h(i)$ $v$ is a view of $c$ which could make the terminal transition, there can be no unticked process by $i$ to in the base of $v$ or in some its context which would prevent the transition.
+%\footnote{we could prove it for the different post where we require the right most process to be empty, using extension}
+%
+%\item {\it Escape:}
+%Last, let $\delta(c,i)$ be excape. As before, we can argue that range of $h$ contains $i$. Let $\ell$ be the index of the process which is to be ticked by the $i$th process in $c$. Its state is not in $S$ (because the transition is escape).
+%Let $h^\ell$ be the mapping from $H_n^k$ which is the same as $h$ except that its range includes also $\ell$. Let $h_1,\ldots,h_{k+1}$ be the views which arise from $h^+$ by excluding one position form its range. For every view $\proj {h_i} c$, there is (by definition of $\gamma_k$) a view $\view_i\in X$ which entails $\proj {h_i} c$. We have that $\proj {h^+} c \in \gamma_k^{k+1}\{v-1,\ldots,v_{k+1}\}$ (some lemma?). This or stronger (w.r.t. $\sentails$) view $w$ is constructed by $\gamma_k^{k+1}$.
+%We can thus take $\proj {h'} {\delta(w,i')}$ as $v$ where domain of $h'$ is $\range 1 {k+1}\setminus \{{h^+}(\ell)\}$ and $i'$ is ${h^+}(i)$.
+%Notice that $\delta(w,i')$ captures the change of the moving process since it is in its domain as well as the process outside $S$ which makes the post possible.
+%
+%\item
+%Local moves are simulated by forall moves.
+%\end{itemize}
+%
+%\end{proof}
+%
+%\NOTE{End of Luk\'{a}\v{s}'s Part}
+
+
+%% -----------------------------------------------------
+\myparagraph{Verification procedure.}
+%% -----------------------------------------------------
+Same as before, so it doesn't seem useful.
+
+%
+Lemma~\ref{lemma:apost} holds here in the same wording (as shown in
+the appendix).
+%
+Thus the verification method for systems with for-loops is analogous
+to the method of Section~\ref{section:method}.

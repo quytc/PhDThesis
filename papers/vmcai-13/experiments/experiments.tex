@@ -1,0 +1,82 @@
+%--------------------------------------------------------
+\section{Experimental results}
+\label{section:experiments}
+%--------------------------------------------------------
+%
+Based on our method, we have implemented a prototype in OCaml to check safety properties
+for a number of parameterized systems with different topologies. 
+%
+The examples cover cache coherence protocols, communication protocols
+through trees and rings and mutual exclusion protocols.
+% which can be
+% described with a simple C-like programing language.
+% for which we have implemented a tool that parses a simple C-like
+% programing language.
+% The complete descriptions of some of the experiments can be found in
+% Appendix~\ref{appendix:experiments}.
+%
+
+%\begin{wrapfigure}{r}[0pt]{0.68\textwidth}
+%\begin{minipage}{0.68\textwidth}
+\begin{table}[ht]%[!b]
+%\vspace{-6mm}
+\caption{Experimental Results}
+\label{experiments:results}
+\centering
+\begin{tabular}{|c|l||c||c|c|c|}\hhline{*{6}{=}}
+ & {\bf Protocol}           &  {\bf Time}  & {\bf $k$}  & {\bf $|\X|$}& {$\limgammaof k {k+\ell} (\X) $}\\\hhline{*{6}{=}}
+                                                                                                                                                 
+ \multirow{4}{*}{Array}                                                                                                                          
+ & Demo (toy example)       & 0.01s      & 2          & 17             		  & 53                         \\  
+ & Burns                    & 0.01s      & 2          & 34             		  & 186                         \\  
+ & Dijkstra                 & 0.07s      & 2          & 93             		  & 695                         \\    
+ & Szymanski                & 0.02s      & 2          & 48             		  & 264                         \\\hhline{*{6}{=}}  
+                                                                                                                              		                               
+ \multirow{2}{*}{Multiset}                                                                                                    		                               
+ & MOSI Coherency           & 0.01s      & 1          & 10             		  & 23                          \\  
+ & German's Coherency       & 15.3s      & 6          & 1890           		  & 15567                        \\\hhline{*{6}{=}}   
+                                                                                                                              		                               
+ \multirow{5}{*}{Petri Net}                                                                                                   		                               
+ & German (simplified)      & 0.03s      & 2          & 43             		  & 96                          \\
+ & BH250                    & 2.85s      & 2          & 503            		  & 503                         \\
+ & MOESI Coherency          & 0.01s      & 1          & 13             		  & 20                          \\
+ & Critical Section         & 0.01s      & 5          & 27             		  & 46                          \\ 
+ & Kanban                   & ?          & $\ge 20$   & ?              		  & ?                           \\\hhline{*{6}{=}} 
+                                                                                                                              		                               
+ \multirow{3}{*}{Tree}                                                                                                        		                               
+ & Percolate                & 0.05s      & 2          & 34             		  & 933                          \\
+ & Tree Arbiter             & 0.7s       & 2          & 88             		  & 7680                          \\
+ & Leader Election          & 0.1s       & 2          & 74             		  & 362                          \\\hhline{*{6}{=}}
+
+ \multirow{1}{*}{Ring}                                                                                                        		                               
+ & Token Passing            & 0.01s      & 2          & 2              		  & 2                           \\\hhline{*{6}{=}}
+\end{tabular}
+%\vspace{-6mm}
+\end{table}
+%\end{minipage}
+%\end{wrapfigure}
+%
+We report the results in Table~\ref{experiments:results}, running on a
+2.4~GHz laptop with 4GB~memory.
+%
+We have categorized the experiments per topology.
+We display the running times (in seconds), the value of $k$ and the final number of views generated ($|\X|$). 
+%
+In most cases, the method
+terminates almost immediately illustrating the \emph{small model property}: 
+all patterns occur for small instances of the
+system. Observe that the sizes of the views are small as well,
+confirming the intuition that interactions between processes are of
+limited scope.
+%
+
+The bulk of the algorithm lies in the computation of the set $\limgammaof k {k+\ell} (\X) $ and also the set $\reachof k$.
+%
+An example on which the algorithm fails is the {\it Kanban} system from~\cite{cutoff}.
+%
+This is a typical case where the cut-off condition is satisfied at high values of $k$.
+%
+\cite{cutoff} refers to the computation of, at least, the set
+$\reachof {20}$. $\reachof {20}$ is large and so is the concretization
+of its views.
+%, which indeed over-approximates $\reachof {20}$.

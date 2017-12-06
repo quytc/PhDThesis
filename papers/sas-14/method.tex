@@ -1,0 +1,346 @@
+%-----------------------------------
+\section{Verification method}
+\label{section:method}
+%-----------------------------------
+We present our verification method for the parameterized systems
+described in Section~\ref{section:paramsys}, in the case of
+\emph{atomically} checked global conditions.
+%
+Given a parameterized system $\parsys=(\locs,\rules)$ where $\locs$ is
+a finite set of process states, we first describe the abstraction we
+use in order to finitely represent configurations of arbitrary size.
+%
+
+%\input abstraction.tex
+%% -------------------------------------------------
+\subsection{View Abstraction}
+\label{section:abstraction}
+%% -------------------------------------------------
+
+A \emph{context-sensitive view} (henceforth only \emph{view}) is a
+pair $(b_1\ldots b_k,R_0\ldots R_k)$, often denoted as
+$R_0b_1R_1\ldots b_kR_k$, where $b_1\ldots b_k$ is a configuration and
+$R_0\ldots R_k$ is a \emph{context}, such that $R_i\subseteq \locs$
+for all $i\in\range 0 k$. %a sequence of subsets of $\locs$.
+We call the configuration $b_1\ldots b_k$ the \emph{base} of the view
+where $k$ is its \emph{size} and we call each set $R_i$ the $i^{th}$
+\emph{context}. %
+ %
+% We use $\viewsof k$ (resp.\ $\viewsofupto k$) to denote the set of
+% views of size $k$ (resp.\ up to $k$).
+We use $\viewsof k$ to denote the set of views of size up to $k$.
+
+\begin{wrapfigure}{r}{0.38\textwidth}
+  \vspace{-20pt}%
+  \hfill%
+  \inputtikz{\input projection}
+  \vspace{-20pt}%
+\end{wrapfigure}
+
+For $k,n\in\nat, k\leq n$, let $H_n^k$ be the set of strictly
+increasing injections of $\range 0 {k+1}$ to $\range 0 {n+1}$ such
+that $1\leq i<j\leq k \implies 1\leq h(i)<h(j)\leq n$, $h(0) = 0$ and
+$h(k+1) = n+1$. %
+
+For $h\in H_n^k$ and a configuration $\conf =q_1\ldots q_n$, 
+we define $\proj{h}{\conf}$ to
+be %the projection function that maps the view $v_n$ \conf to
+the view $\view = R_0b_1R_1\ldots b_kR_k$, obtained in the
+following way: % (as depicted in the figure on the right):
+%
+(i) $b_i=q_{h(i)}$ for $i\in\range 1 k$, %
+(ii) $R_i=\setcomp{q_j}{h(i)<j<h(i+1)}$ for $i\in\range{0}{k}$. %
+Informally, while respecting the order, $k$ elements of $c$
+are retained as the base of $\view$, while all other
+elements are projected away into an (appropriate) context.
+%
+For a view $\view = R_0b_1R_1\ldots b_nR_n$, we define the projection
+$\proj h v$ as follows. %
+We first define the set $\conc{v}=\setcomp{(c,g)}{\proj{g}{c}=v}$. It
+represents the set of configurations that can somehow be projected to
+$v$. %
+% Finally, we define $\proj{h}{v} =
+% \bigcup_{(c,g)\in\conc{v}}{\proj{h\circ g}{c}}$ (as depicted in the
+% above figure).
+Then, we craftily define $\proj{h}{v} =\proj{h\circ g}{c}$ for some
+$(c,g)\in\conc{v}$ (as depicted in the above figure).
+
+%% ----------------------------------
+%
+The {\it abstraction function} $\abstr_k$ maps $x$, a~view or a configuration, 
+%$\conf\in\confsof n$
+into the set of \emph{all} its sub-views of size at most $k$:
+%
+%if $k\leq\sizeof\conf$, 
+$\project k x = %
+\setcomp{\proj h {x}}{h\in H_{\sizeof x}^\ell,\ell\leq min(k,\sizeof x)}$.
+%; %
+%if $\sizeof\conf<k$, $\project k \conf = \emptyset$.
+%
+We lift $\abstr_k$ to sets of views/configurations as usual.
+%
+Intuitively, we abstract configurations with a \emph{set} of views:
+the abstraction function extracts \emph{all} subwords from a
+configuration, while retaining the rest in appropriate contexts. %
+%
+
+%% -----------------------------------------------------
+\myparagraph{Entailment.}
+%% -----------------------------------------------------
+We define the entailement relation on views. Intuitivelly, it compares
+the restrictions that views impose on the configurations they
+represent. %(which will be made precise later by definition of concretization). %
+Let us consider the views $u = R_0b_1R_1,\ldots,b_kR_k$ and $v =
+R'_0b'_1R'_1,\ldots,b'_kR'_k$ of the same size $k$. We say that $u$
+\emph{entails} $v$, denoted $u\entails v$, if $b_i=b'_i$ for all
+$i\in\range 1 k$ and $R_i\subseteq R'_i$ for all $i\in\range 0 k$. %
+%
+%We let $u$ entail a view $w$ of a larger size if there is $w'\in \abstr_k(w)$ with $u\entails w'$. Notice that $\entails$ is a partial order.
+For two sets $V$ and $W$ of views, we use $V\entails W$ if every $w\in
+W$ is entailed by some $v\in V$.
+% The entailement relation is defined on sets of views as follows: For
+% $X\subseteq\viewsof k$ and $Y\subseteq\viewsof{k'}$, where $k\leq k'$,
+% we say that $X\entails Y$ iff for all $y\in Y$, there exists $x\in X$
+% such that $x\entails y$.
+
+%% -----------------------------------------------------
+\myparagraph{Concretization.}
+%% -----------------------------------------------------
+For every $k\in \nat$, the {\it concretization} function
+$\concretize_k: 2^{\viewsof k}\rightarrow2^\confs$ maps a~set of views
+$V\subseteq\viewsof k$ into the set of configurations 
+%that can be
+%reconstructed from the views in $V$.
+%
+%Formally, 
+$\concretizeof k V = \setcomp{\conf\in\confs}{V\entails\project{k}{\conf}}$.
+%$\concretizeof k V = \setcomp{\conf}{V\entails\project{k}{\conf}}$.
+It is not hard to show that for any $k$, ($\abstrof k$,$\concrof k$)
+forms a Galois connection, as stated by the following lemma, and can
+be thus used to instantiate an abstract domain.
+\begin{lemma}\label{lemma:galois}
+For any $k$, $V\subseteq \views$ and $C\subseteq \confs$, $C\subseteq \concrof k (V) \iff V \entailedby \abstrof k (C)$.
+\end{lemma}
+\begin{proof}
+\todo{Should be easy. In fact, we do not need both directions of the implication, but Lukas wants us to have our own Galois connection.}
+\end{proof}
+%
+
+%% -----------------------------------------------------
+\myparagraph{Precision.}
+%% -----------------------------------------------------
+For any set $X\in\confs$, it is clear that for any~$k$,
+$\concretizeof{k}{\project{k}{X}}\supseteq X$. %
+Let us illustrate with the example from
+Section~\ref{section:introduction} that the precision of the
+abstraction increases with~$k$.
+%
+Consider the set $X=\set{\sP\sB\sB\sW,\sP\sB\sW\sW}$ of only two configurations.
+%
+Ignoring the contexts, we get $\project 2 X =
+\set{\sP\sB,\sB\sB,\sB\sW,\sW\sW}$ and $\project 3 X =
+\set{\sP\sB\sB,\sP\sB\sW,\sB\sB\sW,\sB\sW\sW,\sP\sW\sW}$. %
+We can then observe that $\concretizeof{2}{\project{2}{X}}$ contains
+$\sW\sW\sW$, while $\concretizeof{3}{\project{3}{X}}$ does not.
+%
+In fact,
+$\concretizeof{1}{\project{1}{X}}\supseteq\concretizeof{2}{\project{2}{X}}\supseteq\concretizeof{3}{\project{3}{X}}\supseteq\ldots\supseteq{X}$. %
+%
+Furthermore, if we now consider the abstraction \emph{with} contexts
+(in between brackets), we get $\project 2 X =
+\set{\sP\sB[\sW],\sB\sB[\sP\sW],\sB\sW[\sP\sB],\sB\sW[\sP\sW],\sW\sW[\sP\sB]}$. %
+%
+In this case, $\concretizeof{2}{\project{2}{X}}$ does not contain
+$\sW\sW\sW$ since the view~$\sW\sW[\sW]$ is not entailed by any view
+from~$X$.
+
+\NOTE{Lukas: Let us give an intuitive explanation of how do sets of views encode intersections of upward closed sets of configurations, as claimed in Section~\ref{section:introduction}. ... do this with the same example.}
+
+%Consider a set of views $V$, we argue that the complement of $\overline{\gamma_k(V)}$ is an intersection of upward closed sets.
+%Let $B$ be the set of bases $V$ (in other words, $B$ contains elements of $V$ with all contexts emtpy). Then $\gamma_k(B)$ contains all configurations except those contain a subword in $\overline B$, hence $\overline \gamma_k(B)$ is an upward closed defined by the set of minimal elements $\overline B$.
+%Let us consider the original views ov $V$ again. The semantics of a $\view = R_0b_1R_1,\ldots,b_kR_k$ with the base $b$ is, informally, whenever there is $b$ within a configuration, it must appear in a context specified by $R_0\ldots R_k$. Let $\{v_1,\ldots,v_k\}$ be the shortest words which satisfy this constraint (for instance ....).  Then the part of the complement of $\overline{\gamma_k(V)}$ specified by $v$ is the set $\ucl \{b\} \cap \ucl\{v_1,\ldots,v_k\}$
+%
+
+%-----------------------------------
+\subsection{Procedure}
+\label{section:procedure}
+%-----------------------------------
+%
+Our verification procedure consists of computing a fixpoint of the
+standard abstract post-image of the set of initial configurations and
+checking its intersection with the set of bad configurations.
+%
+Formally, we compute $\mu X.\, \abstrof k(I) \cup \abstrof k\circ
+\post \circ \concretizeof{k}{X}$ and check that it does not intersect with
+$\bad$.
+%
+Since the precision of the abstraction increases with~$k$ and as
+described in~\cite{AbHaHo:view:abstraction}, we start with $k = 1$ and
+iterate the fixpoint computation with larger values of~$k$, until the
+intersection with $\bad$ is empty.
+%
+% For a view $v$, we first define its minimal concretizations
+% $mc(v)\subseteq\conc{v}$ where the configurations are of shortest
+% size.
+% %
+
+%% -----------------------------------------------------
+\myparagraph{Symbolic post operator.}
+%% -----------------------------------------------------
+%
+Since $\concretizeof{k}{X}$ is typically infinite, the abstract post
+cannot be computed directly and we need a way of computing it
+symbolically. %
+We show %, as in~\cite{AbHaHo:view:abstraction},
+that this can be done by computing the \emph{symbolic} post $\abstrof k\circ
+\spost \circ \concretizeoflim{k}{k+1}{X}$ where %
+$\concretizeoflim{k}{k+1}{X} = \setcomp{v\in \viewsof {k+1}}{\abstrof
+  k(v)\entailedby X}$ is a partial concretization of $X$ to views of
+size up to $k+1$ and where the post-image $\spost$ is
+defined as follows.
+
+For a view $v=(base,ctx)$ and $i\leq\sizeof{base}$, we first define a
+symbolic $\delta$-move by the $i^{th}$ process from $base$ as %
+$\sdelta(v,i) = (\delta(base,i),ctx)$ if the $\delta$-transition of
+that process would not be blocked in case the processes from $ctx$
+were present in the base too. %
+It is otherwise undefined. %
+%
+Formally, $\sdelta(v,i) = \proj{h}{\delta(\conf,h(i))}$ for some
+$(c,h)\in\conc{v}$.
+%
+Intuitivelly, the context $ctx$ is first ``materialized'' to create
+a~configuration~$c$, then one of the processes from~$base$ performs
+a~transition, and finally the processes that were originally in~$ctx$
+return back. %
+(Note that the latters are inert and do not perform any transition).
+%
+Finally, for a set of views~$X$, we define $\spostof X =
+\setcomp{\sdelta(\view,i)}{\view\in X,i\leq\sizeof\view}$.
+
+%MORE ALGORITHMIC VERSION
+%to define $\spost$ (symbolic post image), 
+%let us first define the minimal concretizations of a view $v$ as te set $mc(v)$ of pairs $(c,h)$ where $c$ is a shortest configuration which can be projected to $v$ and $h$ is such that $\proj h c = v$.   
+%Intuitively, $mc(v)$ contains configurations which ca be obtained from $v$ by ``materializing'' all contexts).
+%$\spost(v)$ is then defined as $\{\proj h {\delta(i,c)}\mid (c,h)\in mc(v),i\in \img(h),\delta\in\Delta\}$. Intuitivelly, contexts of $v$ are first materialised to create a configuration, then one of the processes from the base of $v$ performs a transition, and then the processes that originate form the contexts of $v$  return back.
+%
+%LESS ALGORITHMIC VERSION
+%Symbolic post-image is for a set of views $X$ defined as
+%$\spostof X := \bigcup_{\view\in X,i\leq|\view|}\delta^S(\view,i)$ where
+%for a view $v$ and $i\leq |v|$, $\delta^S(v,i)$ is defined as follows. 
+%If $\delta$ is an existential or local transition and $v$ has a base $b$ and a context $x$, then
+%$\delta^S(v,i)$ equals $(\delta(b,i),x)$, that is, the transition is performed on the base only, it is not influenced by the context and does not change it. 
+%On the contrary, if $\delta$ is a universal transition, $\delta^S(v,i)$ contains all $\proj h {\delta(c,h(i))}$ where $\proj h {\delta(c,h(i))}$ for some $c$ and $h$ with $\proj h c  = v$. Intuitivelly, contexts of $v$ are first materialised to become a part of configuration (and hence they can now block the universal guard), then a process from the base of $v$ performs a universal transition (if it is still enabled), and the processes that came form contexts return back.
+%
+%INGENIOUS VERSION
+% Symbolic post-image is for a set of views $X$ defined as
+% $\spostof X := \{\delta^S(\view,i)\mid \view\in X,i\leq|\view|\}$ where
+% for a view $v$ with a base $c$ and context $x$ and $i\leq |c|$, $\delta^S(v,i) = (\delta(c,i),x)$ if transition of the $\delta$-transition of the $i$th process would not be blocked if the context $x$ was materialised. That is, formally, $\delta^S(v,i)$ is defined only if there is a configuration $d$ and an increasing injection $h$ such that $\proj h d = v$ and $\delta(d,h(i))$ is defined, otherwise $\delta^S(v,i)$ is undefined.
+
+%If $\delta$ is an existential or local transition and $v$ has a base $b$ and a context $x$, then
+%$\delta^S(v,i)$ equals $(\delta(b,i),x)$, that is, the transition is performed on the base only, it is not influenced by the context and does not change it. 
+%On the contrary, if $\delta$ is a universal transition, $\delta^S(v,i)$ contains all $\proj h {\delta(c,h(i))}$ where $\proj h {\delta(c,h(i))}$ for some $c$ and $h$ with $\proj h c  = v$. Intuitivelly, contexts of $v$ are first materialised to become a part of configuration (and hence they can now block the universal guard), then a process from the base of $v$ performs a universal transition (if it is still enabled), and the processes that came form contexts return back.
+%%For $\delta\in\Delta$, a view $v$
+
+%% -----------------------------------------------------
+\myparagraph{Soundness and precision.}
+%% -----------------------------------------------------
+It is important to understand why we limit the symbolic post-operator
+only to views of size $k+1$.
+%
+Considering the transition system from Section~\ref{section:paramsys},
+a process needs \emph{at most one} other process as a witness in order
+to perform its transition (cf existentially-guarded transitions).
+%
+Therefore, concretizing a view with \emph{several} witnesses will play
+no role except to be redundant information for the post operation. It
+is indeed only necessary to ``extend'' a view with one more process to
+compute the symbolic successors.
+%
+The role played by a context is to retain enough information about
+configurations when they are abstracted into views, such that, when we
+compute the views in $\concretizeoflim{k}{k+1}{X}$, they also retain
+some information that will \emph{block} some post operation,
+effectively reducing the risk of running a too coarse
+over-approximation.
+
+For example, consider again the set
+$X=\set{\sP\sB\sB\sW,\sP\sB\sW\sW}$ of only two configurations and the
+transition system from Figure~\ref{figure:demo}.
+%
+We can compute $\post(X) = \set{\sP\sW\sW\sW}$.
+%
+Ignoring the contexts, we recall that
+$V=\project{2}{X}=\set{\sP\sB,\sB\sB,\sB\sW,\sW\sW}$.
+%
+The set $\concretizeoflim{2}{3}{V}$ is rather large but contains
+surely $\sB\sB\sW$.
+%
+The symbolic post-operator leads to the view $\sB\sB\sA$, since $\sW$
+\emph{can} move to $\sA$ when there is no $\sP$. After abstraction, we
+notice that the view $\sB\sA$ has been computed, but it violates the
+safety property.
+%
+However, in case we retain contexts,
+$V=\project{2}{X}=\set{\sP\sB[\sW],\sB\sB[\sP\sW],\sB\sW[\sP\sB],\sB\sW[\sP\sW],\sW\sW[\sP\sB]}$ %
+and $\concretizeoflim{2}{3}{V}$ now contains the view $\sB\sB\sW[\sP]$.
+%
+The symbolic post-operator did not compute the view $\sB\sA$ and $\sW$
+is still blocked.
+%
+We can hence observe that it is more precise in the presence of
+contexts, because they in fact limit the effect of transitions too
+loosely enabled.
+
+%%----------------------
+We show with the following lemma that the symbolic abstract post
+implements precisely the abstract post:
+%
+\TODO{for completeness, we might need equivalence, which I don't know
+  whether it holds}
+%We write $\minsetof V$ to denote the set of minimal elements of a set of views $V$ w.r.t. $\entails$.
+%It follows from the definition of $\concrof k$ that $\concretizeof k V = \concretizeof k {\minsetof V}$ for any set of views, hence
+%sets of configurations can be represent concisely as sets of their
+%$\entails$-minimal views. We can therefore use entailment to prune sets of views during the symbolic fixpoint computation and instead of  
+%$\mu X.\, \abstrof k(I)\cup \abstrof k\circ \spost \circ \gamma_k^{k+1} (X)$ 
+%compute the $\entails$-equivalent fixpoint
+%$\mu X. \minsetof{\abstrof k(I)\cup \abstrof k\circ \spost \circ \gamma_k^{k+1} (X)}$.
+%\ \ \\
+%\todo{
+%The intuition for the abstract post operator may be explained as follows:
+%...
+%\begin{itemize}
+%\item
+%why gamma plus one, - because of contexts and existential
+%\item
+%emphasize the role played by contexts
+%\item
+%do this as a continuation of the example from the previous paragraphs
+%\end{itemize}
+%}
+%\ \ \\
+%\todo{
+%Acceleration goes to the section with experiments, which will be maybe called something like Implementation and Experiements ... ?}
+\begin{lemma}
+\label{lemma:apost}
+For $k\in\nat$ and $X\subseteq\viewsof k$, $\abstrof k \circ \spost
+\circ \concretizeoflim{k}{k+1}{X}\entails \abstrof k\circ \post \circ
+\concretizeof{k}{X}$.\TODO{I remove the $\setminus X$}
+\end{lemma} 
+%
+We use $\minsetof V$ to denote the set of minimal elements of a set of
+views $V$ w.r.t. the entailement $\entails$. %
+It follows from the definition of $\concrof k$ that $\concretizeof k V
+= \concretizeof k {\minsetof V}$ for any set of views, hence sets of
+configurations can be represented concisely as sets of their
+$\entails$-minimal views. %
+We can therefore use entailment to prune sets of views during the
+symbolic fixpoint computation. %
+Indeed, instead of $\mu X.\, \abstrof k(I)\cup \abstrof k\circ \spost
+\circ \concretizeoflim{k}{k+1}{X}$, we compute the
+$\entails$-equivalent fixpoint $\mu X. \minsetof{\abstrof k(I)\cup
+  \abstrof k\circ \spost \circ \concretizeoflim{k}{k+1}{X}}$.
+% 
+We describe some accelerations leveraging the power of the entailement
+in Section~\ref{section:experiments}.
+%

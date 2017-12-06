@@ -1,0 +1,36 @@
+
+\documentclass[times, 10pt,twocolumn]{article} 
+\usepackage{latex8}
+\usepackage{times}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc} %\usepackage[latin1]{inputenc}
+
+\input init
+\input comm
+
+%------------------------------------------------------------------------- 
+\pagestyle{empty} %% For the camera-ready version
+
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\input abstract
+\input introduction
+\pagebreak
+\input language
+\pagebreak
+\input model
+\input races
+\input backwardreachability
+\input experiments
+\input conclusion
+
+%------------------------------------------------------------------------- 
+\bibliographystyle{abbrv}
+\bibliography{bibdatabase}
+
+\end{document}

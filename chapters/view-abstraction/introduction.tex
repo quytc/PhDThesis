@@ -1,0 +1,168 @@
+%% ------------
+\KW{Parameterized systems}%
+\index{Parameterized Systems}%
+%% ------------
+We recall the definitions introduced in
+Chapter~\ref{chapter:parameterized:systems}: a~parameterized system
+$\parsys=(\locs,\rules)$ represents the parallel composition of
+several processes, whose local states are in \locs,
+%, where \locs\ is a set of local states and \rules\ is a set of rules,
+and gives rise to a transition system $(\confs,\trans)$, where \confs\ is
+a set of configurations and \trans\ is the post-operator which
+transforms a configuration into another.
+%
+The configurations have different sizes and are organized according to
+some predefined topology, such as arrays, trees, rings and multisets.
+%
+%% ------------
+\KW{Reachability}%
+\index{Reachability}%
+%% ------------
+The reachability problem is to determine, for each size of
+configurations, whether the set \Bad\ of bad configurations is
+reachable from the set \Inits\ of initial configurations.
+%
+We use $\Reach$ to denote the set of all reachable configurations
+from~$\Inits$ (and $\Reach_i$ for the set of configurations in \Reach\
+of size~$i$). %, i.e.\ $\cup_{i\in\nat}\Reach_i = \Reach$.
+%
+The system is hence characterized by an infinite family of reachable
+configurations and is proven safe when $\Reach\cap\Bad = \emptyset$.
+%
+Here, the parameter of the verification problem is the size of the
+configurations.
+
+%% ------------
+\KW{Forward Analysis}%
+\index{Reachability!Forward Analysis}%
+%% ------------
+We present, in this chapter, another technique to solve the
+reachability problem.
+%
+The technique is a forward reachability analysis using yet another
+abstraction.
+%
+It has been introduced originally to solve the problem of Shape
+Analysis (presented in Chapter~\ref{chapter:shape:analysis}), but it
+applies surprisingly well to the settings of parameterized systems.
+%
+%
+%% ------------
+\KW{Simplification}%
+\index{Size-preserving transitions}%
+%% ------------
+To simplify the presentation, we focus, in this chapter only, on
+parameterized systems with a linear topology. The set of states \locs\
+is finite and the transitions from \rules\ are size-preserving.
+%
+Extensions and other topologies can be found in
+Paper~\ref{paper:VMCAI13}.
+
+%% ------------
+\KW{Key insight}%
+%% ------------
+%
+\begin{wrapfigure}{r}[0pt]{0.5\linewidth}
+  \vspace{-\baselineskip}
+  %\centering
+  \hfill
+  \tikzinput[\linewidth]{img/small-model-property}
+  \caption{Repeated patterns.}
+  \label{figure:view:abstraction:intuition}
+\end{wrapfigure}
+%
+The key insight of the method is to take advantage of the fact that
+the first instances of the system (i.e.\ for configurations of small
+sizes) give enough information to derive the behaviour of the system
+in general.
+%
+We can see the small configurations as \emph{patterns} that will only
+be repeated and intertwined in configurations of larger sizes, as
+illustrated in Figure~\ref{figure:view:abstraction:intuition}.
+%
+Moreover, bad patterns, if existing, are often detected already when
+only a few processes are involved.
+%
+Consider, for example, the configurations with six processes, where
+one process is passive in, say, its initial state. The remaining five
+processes of such configurations often (but not necessarily) ``cover''
+the configurations based only on five processes.
+%
+
+
+%% ------------
+\KW{Main Idea}%
+\index{Small Model Property}%
+%% ------------
+The main idea of our method is to exploit this %
+\emph{small model property} and perform parameterized verification by
+only exploring a small number of \emph{fixed} instances %of the system
+to prove the system safe -- for all sizes of configurations. In
+practice, it is often the case that we only need to compute the finite
+sets $\Reach_1$,$\Reach_2$ and $\Reach_3$ to determine whether the
+whole set \Reach\ contains a bad configuration.
+
+\index{Cut-off}%
+The method \emph{automatically} detects a \emph{\mbox{cut-off}} point
+beyond which the verification procedure need not continue.
+%
+Intuitively, it means that the information already collected during
+the exploration of the state-space until the \mbox{cut-off} point
+allows us to conclude safely that no bad configuration will occur in
+the larger instances.
+%
+The cut-off detection is performed on-the-fly during the verification
+procedure itself (and illustrated in
+Figure~\ref{figure:small:model:property}).
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  \centering
+  \tikzinput[0.9\linewidth]{img/cut-off}
+  \caption{Small Model Property: The method detects a cut-off point
+    beyond which the verification procedure need not continue.}
+  \label{figure:small:model:property}
+\end{figure}
+\endgroup
+
+\index{Over-approximation}%
+The configurations from the first instances of the system are
+abstracted but retain enough information to ``reconstruct'' the sets
+of reachable configurations of larger sizes, as we create larger
+configurations by combining small patterns. In fact, the collected
+patterns allow to characterize an \emph{over-approximation} of the
+reachable configurations. It is possible that a recombination of
+patterns creates a configuration that the original system would not
+have computed.
+%
+% The key is to find a balance between the information to be potentially
+% discarded and the information to be necessarily retained in order to
+% avoid a too coarse over-approximation.
+The key is to abstract the small configurations while retaining enough
+information in order to not over-approximate the set of reachable
+configurations too much.
+%
+Nevertheless, inspecting only small (and finite) instances of the
+system allows for an efficient method.
+%
+As usual, if the over-approximation does not contain any bad
+configuration, we can safely conclude that the system is safe.
+% as a whole.
+
+% ------------------------
+The chapter is structured as follows. 
+%
+We first introduce the abstraction at the heart of the method,
+focusing solely on \emph{atomically} checked global conditions.
+% in Section~\ref{section:view:abstraction}.
+%
+We then show the method, its soundness, and discuss its
+completeness.
+% in Section~\ref{section:view:method}.
+%
+Finally, we %further
+present how the method can be extended to cope with non-atomic global
+conditions and how to handle Szymanski's mutual exclusion protocol
+(i.e.\ the challenging problem of
+Section~\ref{section:paramsys:example}).

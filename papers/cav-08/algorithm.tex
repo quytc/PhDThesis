@@ -1,0 +1,93 @@
+\section{Algorithm}
+\label{section:algorithm}
+%
+
+In this section, we present the reachability algorithm
+and show its partial correctness.
+%
+
+The algorithm inputs two sets $\initconfs$ and $\finalconfs$ of configurations
+and  checks whether $\initconfs\absmovesto{*}\uc{\finalconfs}$.
+%
+The algorithm maintains two sets of configurations: a set
+$\toexplore$, initialized to $\finalconfs$, of configurations that
+have not yet been analyzed; and a set $\explored$, initialized to the
+empty set, of configurations that contains information about the 
+configurations that have already been analyzed.
+%
+The algorithm preserves the following two invariants:
+(i)
+  $\initconfs\absmovesto{*}\uc{\left(\toexplore\;\bigcup\;\explored\right)}$
+  implies $\initconfs\absmovesto{*}\uc{\finalconfs}$; and
+(ii)
+  If $\initconfs \absmovesto{*}\uc{\finalconfs}$, then there is
+  $\conf\in\toexplore$ such that both
+  $\rank{\initconfs}{\conf}<\infty$ and $\forall\conf'\in\explored.\;
+  \rank{\initconfs}{\conf}<\rank{\initconfs}{\conf'}$.
+%
+
+%\vspace{5mm}
+%\framebox{
+\fbox{
+\hspace{-1.3cm}
+%\begin{minipage}{0.97\hsize}
+\noindent%
+\begin{minipage}{0.95\textwidth}
+\begin{algorithm}
+\vspace{-7mm}
+%\caption{Reachability Algorithm}
+%\label{reachability:algorithm}
+\alginout{Two sets $\initconfs$ and $\finalconfs$ of configurations.}{$\initconfs\absmovesto{*}\uc{\finalconfs}$?}
+%\algname{Univ}{$\zone$}
+\begin{algtab}
+\algnonumber $\toexplore:=\;\finalconfs$\\
+\algnonumber $\explored:=\;\emptyset$\\
+\algnonumber \algwhile{$\toexplore\neq\emptyset$}
+\algnonumber      remove some $\conf$ from $\toexplore$\\
+\algnonumber      \algifthen{$\exists\conf'\in\initconfs.\,\conf\lt\conf'$}{}
+\algnonumber           \algbegin 
+\algnonumber           \algreturn{({\tt true})}\\
+\algnonumber           \algend
+\algnonumber       \textbf{else if} $\;\exists\conf'\in\explored.\,\conf'\lt\conf\;$ {\bf then}\\
+\algnonumber           \algbegin
+\algnonumber           discard $\conf$\\
+\algnonumber           \algend
+\algnonumber       \textbf{else}\\
+\algnonumber           \algbegin
+\algnonumber           $\toexplore:=\;\toexplore\bigcup\setcomp{\conf'}{\conf\pmovesto{}\conf'}$\\
+\algnonumber           $\explored:=\;\set{\conf}\;\bigcup\;
+                        \setcomp{\conf'}{\conf'\in\explored \land (\conf\not\lt\conf')}$\\
+\algnonumber           \algend
+\algend
+\algnonumber  
+\algreturn{({\tt false})}
+\\
+\algnonumber  
+\textbf{end}
+\end{algtab}
+\end{algorithm}
+\end{minipage}
+}
+%\vspace{5mm}
+
+Due to the invariants, the following two conditions can be checked
+during each step of the algorithm:
+(i)
+  From the second invariant, if $\toexplore$ becomes empty then the
+  algorithm terminates with a negative answer; and
+(ii)
+  From the first invariant and the definition of $\absmovesto{}$, if a
+  configuration in $\dc{\initconfs}$ is detected then the algorithm
+  terminates with a positive answer.
+
+%
+The following theorem follows immediately from the invariants together
+with Lemmas \ref{pre:js:monotonic:lemma} and \ref{backwards:iff:forwards:lemma}.
+%
+\begin{theorem}
+\label{partial:correctness:algorithm}
+The reachability algorithm is partially correct.
+\end{theorem}
+
+
+

@@ -1,0 +1,111 @@
+\begin{figure}[h]
+\vspace{1cm}
+	\center
+\begin{tikzpicture}
+
+\node[name=cell1]{};
+
+\node[draw,rounded corners = 0.09cm, fill = red!30, draw = red, name = n1, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,0pt)$){{$\tt 1$}};
+\node[draw, rounded corners = 0.09cm, fill = red!30, draw = red, name = n2, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(40pt,0pt)$){{$\tt 3$}};
+\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = n3, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,-25pt)$){{$\tt 4$}};
+\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = n4, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(40pt,-25pt)$){{$\tt 2$}};
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = n5, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(80pt,-25pt)$){{$\tt 8$}};
+\node[draw, rounded corners = 0.09cm, fill = orange!30, draw = orange, name = n6, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,-50pt)$){{$\tt 6$}};
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = n7, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(120pt,-25pt)$){{$\tt 7$}};
+
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,0pt)$){{$\tt x$}};
+\node[name = y, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,-25pt)$){{$\tt y$}};
+
+\node[name = y, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(80pt,-11pt)$){{$\tt g$}};
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,-50pt)$){{$\tt z$}};
+
+\node[name = label, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(50pt,-80pt)$){{(a) A graph}};
+\node[name = label, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(215pt,-80pt)$){{(b) Forest Presentation}};
+
+\draw[->, color = black, line width=0.2mm] (n1) to  (n2);
+\draw[->,color = black,line width=0.2mm] (n2) to  (n5);
+\draw[->, color = black,line width=0.2mm] (n3) to  (n4);
+%
+\draw[->, color = black, line width=0.2mm] (n4) to  (n5);     
+\draw[->,color = black,line width=0.2mm] (n6) to  (n4);
+\draw[->, color = black,line width=0.2mm] (n5) to  (n7);
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(164pt,12pt)$){{$\tt x$}};
+\node[draw, rounded corners = 0.09cm, fill = red!30, draw = red, name = nt1, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(160pt,0pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = red!30, draw = red, name = nt2, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(160pt,-25pt)$){{$$}};
+\node[name = nt3, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = cyan] at ($(cell1.north east)+(160pt,-50pt)$){{$\tt \overline{5}$}};
+%\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(180pt,30pt)$){{$\tt 1$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(168pt,-11pt)$){{$\tt \prec$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(168pt,-37pt)$){{$\tt \prec$}};
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(200pt,12pt)$){{$\tt y$}};
+
+
+\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = nt4, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(200pt,0pt)$){{$$}};
+%\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = nt5, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(200pt,-25pt)$){{$$}};
+\node[ name = nt6, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = blue] at ($(cell1.north east)+(200pt,-25pt)$){{$\tt \overline{3}$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(210pt,-11pt)$){{$\tt \succ$}};
+%\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(210pt,-37pt)$){{$\tt \succ$}};
+
+
+\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = nt400, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(240pt,0pt)$){{$$}};
+%\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = nt500, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(240pt,-25pt)$){{$$}};
+\node[ name = nt600, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = cyan] at ($(cell1.north east)+(240pt,-25pt)$){{$\tt \overline{5}$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(250pt,-11pt)$){{$\tt \prec$}};
+%\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(250pt,-37pt)$){{$\tt \succ$}};
+
+
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(280pt,12pt)$){{$\tt z$}};
+\node[draw, rounded corners = 0.09cm, fill = orange!30, draw = orange, name = nt7, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(280pt,0pt)$){{$$}};
+\node[name = nt8, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8, color = blue] at ($(cell1.north east)+(280pt,-25pt)$){{$\tt \overline{3}$}};
+\node[minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(290pt,-11pt)$){{$\tt \prec$}};
+
+
+
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = nt9, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(320pt,0pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = nt10, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(320pt,-25pt)$){{$$}};
+\node[minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(310pt,-11pt)$){{$\tt \succ$}};
+
+\draw[->, color = black, line width=0.2mm] (nt1) to  (nt2);
+\draw[->,color = black,line width=0.2mm] (nt2) to  (nt3);
+\draw[->, color = black,line width=0.2mm] (nt4) to  (nt6);
+%
+%\draw[->, color = black, line width=0.2mm] (nt5) to  (nt6);
+
+\draw[->, color = black,line width=0.2mm] (nt400) to  (nt600);
+%
+%\draw[->, color = black, line width=0.2mm] (nt500) to  (nt600);
+
+\draw[->,color = black,line width=0.2mm] (nt7) to  (nt8);
+\draw[->, color = black,line width=0.2mm] (nt9) to  (nt10);
+
+
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -100] (nt1) to  (nt9);
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (nt4) to  (nt9);
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (nt400) to  (nt9);
+
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -40] (nt7) to  (nt9);
+
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(235pt,48pt)$){{$\tt \prec_{aa}$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(250pt,35pt)$){{$\tt \prec_{aa}$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(300pt,17pt)$){{$\tt \prec_{aa}$}};
+\node[minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(270pt,20pt)$){{$\tt \prec_{aa}$}};
+
+\node[name = x, circle, color = red, draw = red, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(164pt,63pt)$){{$\tt 1$}};
+\node[name = x, circle, color = blue, draw = blue, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(204pt,63pt)$){{$\tt 2$}};
+\node[name = x, circle, color = blue, draw = blue, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(244pt,63pt)$){{$\tt 3$}};
+\node[name = x, circle, color = orange, draw = orange, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(284pt,63pt)$){{$\tt 4$}};
+
+\node[name = x, circle, color = cyan, draw = cyan, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(324pt,63pt)$){{$\tt 5$}};
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(330pt,12pt)$){{$\tt g$}};
+
+
+\end{tikzpicture}
+\vspace{0.7cm}
+\caption{A graph and its forest representation}
+\label{figure:forest}
+\end{figure}
+

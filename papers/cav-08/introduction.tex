@@ -1,0 +1,107 @@
+\section{Introduction}
+ \label{sect-intro}
+
+\looseness-1% 
+Software verification needs the use of efficient algorithmic techniques  for the analysis of infinite-state models.
+The sources of infiniteness are multiple and can be related to complex control such as (potentially recursive) procedure calls and dynamic creation of processes, or to the manipulation of  (unbounded-size) dynamic data-structures and variables ranging over infinite data domains.
+%
+A lot of work has been devoted in the last decade to the design of automatic verification techniques for infinite-state models, and several general approaches and formal frameworks have emerged allowing either to establish decidability results and derive verification algorithms (e.g., \cite{ACJT00,FS01}), or to define generic exact/abstract analysis procedures (e.g., \cite{WB98,KMMPS01,Bou01,AJNS04}).
+
+\looseness-1% 
+One of the widely adopted frameworks in this context of infinite-state verification is based on the concept of {\em monotonic systems w.r.t. a well-quasi ordering} \cite{ACJT00,FS01}. This framework provides a scheme for proving the termination of the (backward) reachability analysis, and it has been used for the design of verification algorithms for various models including Petri nets, lossy channel systems, timed Petri nets, broadcast protocols, etc. (see, e.g., \cite{AJ96,EN98,EFM99,AJ03}).
+%
+The idea is, given a class of models, to define a preorder $\preceq$ on the configuration space such that (1) $\preceq$ is a simulation relation on the considered models, and (2) $\preceq$ is a well-quasi ordering (WQO for short). If such a preorder can be defined, then it can be proved that the reachability problem of an upward-closed set of configurations (w.r.t. $\preceq$) is decidable. Indeed, (1) monotonicity implies that for any upward-closed set, the set of its predecessors is an upward-closed set, and (2) the fact that $\preceq$ is a WQO implies that every upward-closed set can be characterized by its {\em finite} set of minimal elements. Therefore, starting from an upward-closed set of configurations $U$, the iterative computation of the backward reachable configurations from $U$ necessarily terminates since only a finite number of steps are needed to capture all minimal elements of the set of predecessors of $U$.
+Obviously, this  requires that upward-closed sets can be effectively represented and manipulated (i.e., there are procedures for, e.g., computing  immediate predecessors and unions, and for checking entailment).
+%
+This general scheme can be applied for the verification of safety properties since this problem can be reduced to checking the reachability of a set of bad configurations which is typically an upward-closed set w.r.t. the considered preorder. (For instance, mutual exclusion is violated as soon as there are (at least) two processes in the critical section.)
+
+\looseness-1% 
+Unfortunately, many systems do not fit into this framework, 
+in the sense that there is no nontrivial (useful) WQO for which these systems are monotonic. 
+Nevertheless, a natural approach to overcome this problem is, given a preorder $\preceq$, to define an abstract semantics of the considered systems which forces their monotonicity. Basically, the idea is to consider that a transition is possible from a configuration $c_1$ to $c_2$ if it is possible from any smaller configuration $c_1' \preceq c_1$ to $c_2$.
+%This means that we consider an abstract successor function $post^\sharp$ which is the composition of the operation of downward-closure w.r.t. $\preceq$ and the precise $post$ function in the considered models.
+%If we reason backward, this is equivalent to define an abstract predecessor function $pre^\sharp$ which is the composition of the precise $pre$ function with the operation of upward-closure (i.e., given an upward-closed set $U$, we compute first the set $pre(U)$, which is not upward-closed in general, and then we consider its upward-closure). 
+%
+This simple idea has been used recently in works concerning the verification of parametrized networks of (finite/infinite-state) processes, and surprisingly, it leads to quite efficient abstract analysis techniques which allow to handle {\em fully automatically} several non-trivial examples of such systems \cite{ADHR07,ADR07}. This encourages us to investigate its application to other classes of complex systems.
+
+\looseness-1% 
+In this paper, our aim is to develop a framework based on the approach introduced above for the verification of sequential iterative programs manipulating dynamic memory heaps. The issue of verifying automatically such programs has received a lot of attention in the last few years, and many approaches and techniques have been developed including static-analysis and abstraction-based frameworks (see, e.g., \cite{Sagiv02}), 
+logic-based frameworks(see, e.g.,  \cite{Reynolds02,OHearn06}), automata-based frameworks (see, e.g., \cite{pale97,BHRV06}), etc.
+Here, we introduce a framework based on symbolic (backward) reachability analysis using upward-closed sets of  heap graphs (w.r.t. some appropriate preorder).
+As a first step toward this framework, we present in this paper the results of our investigations concerning the case of programs manipulating heap structures with {\em one} next-selector, i.e., heaps of programs manipulating lists with possibility of sharing and  circularity. 
+%Our framework can in principle be extended to more general heap structures.
+
+\looseness-1% 
+More precisely, we consider that heaps are represented as labeled graphs, where labels correspond to positions of program variables. 
+%Then, the main issue is to define a preorder on these graphs heap encodings, and to provide representations of upward-closed sets of heaps as well as procedures for manipulating these representations. 
+% although the framework we are defining can be extended in principle to more general structures.
+%
+We propose a preorder $\preceq$ between heap graphs which corresponds basically to the following:
+Given two graphs $g_1$ and $g_2$, we have $g_1 \preceq g_2$ if $g_1$ can be obtained from $g_2$ by a sequence of transformations consisting of either deleting an edge, a variable, or an isolated vertex, or of contracting segments (i.e., sequence of vertices) without sharing in the graph.
+
+\looseness-1% 
+Actually, our graph representations correspond in general to sets of heaps instead of a single one.
+They can be seen as minimal patterns (w.r.t. $\preceq$), and they represent all the heaps that subsume (w.r.t. $\preceq$) these patterns. Therefore, our graph representations define upward-closed sets of heap graphs.
+%and any upward-closed set of heap graphs can be effectively represented by a finite set of minimal graph representations.
+
+\looseness-1% 
+Then,  we provide procedures for computing sets of predecessors w.r.t. the abstract semantics we consider (introduced above), and for checking entailment. 
+These procedures allow to define a {\em simple algorithm} which computes an over-approximation of the set of backward reachable configurations starting from an upward-closed set of heap graphs (effectively given as a finite set of minimal elements). We show that this algorithm {\em always terminates} by proving that the preorder we have defined on heap graphs is a WQO.
+
+\looseness-1% 
+Our analysis allows to check properties such as absence of null dereferencing as well as absence of garbage creation. Moreover, it allows to check shape (well-formedness) properties of the heaps (for instance the fact that the output is always a list without sharing). We show indeed that these kinds of verification problems can be reduced to the problem of reaching sets of bad configurations corresponding to the existence in the heap graph of some {\em minimal bad patterns}. 
+%For instance, the set of configuration with garbage can be represented by minimal graphs  containing all programs variables plus one isolated vertex. 
+We also provide experimental results showing the effectiveness of our approach.
+%
+%\medskip
+
+\looseness-1% 
+\noindent
+\paragraph{\bf Related work.}
+As mentioned before, several approaches to the automatic analysis of programs with dynamic linked data structures have been proposed (see, e.g., \cite{Sagiv02,dino06a,pale97,BHRV06}). Shape analysis as introduced in \cite{Sagiv02} is based on the computation of abstract shape graphs using the so-called instrumentation predicates. 
+An automata-based approach using abstract regular model checking (ARMC) \cite{BHV04}
+%which is based abstraction techniques on automata with automatic refinement guided by counter-examples  
+has been proposed in \cite{BHMV05,BHRV06}.
+In \cite{dino06a,composite07}, an automatized analysis approach based on separation logic combined with abstraction techniques (close to widening techniques) has been proposed. 
+With respect to these approaches, the one we present in this paper is conceptually and technically different and simpler. In particular, the ARMC-based approach needs the manipulation of quite complex encodings of 
+the heap graphs into words or trees (in order to represent sets of heap encodings using finite-state automata), and use a sophisticated machinery for manipulating these encodings based on representing program statements as (word/tree) transducers. In contrast, the approach presented here uses a natural representation of heaps as graphs and employs direct procedures for computing operations on these graphs. This direct approach has already shown its advantages w.r.t. the approach using transducers in the context of regular model checking for parametrized networks of processes \cite{ADHR07}.
+Also, the approach we present uses a built-in abstraction principle which is different from the ones used in the existing approaches, and which makes the analysis fully automatic.
+
+\looseness-1% 
+The existing approaches mentioned above (shape analysis, abstract regular model checking, separation logic) can handle some classes of general heap structures (including doubly linked lists, lists of lists, trees, etc.). Although the  techniques presented in this paper concern the case of heap structures with 1-next selector, our approach (based on upward-closed abstractions w.r.t. preorders on graphs) can in principle be extended to more general classes of heaps. 
+
+\looseness-1% 
+Concerning the particular class of programs manipulating heaps with 1-next selector, there are many other verification approaches which have been developed recently (see, e.g., \cite{myrs05,BHMV05,LQ06,cav06,dino06b,BPZ07}). Almost all these works use the fact that in this case (1) the heap graphs are collections of reversed trees potentially having their roots connected to a loop, and moreover (2) the number of leaves and shared vertices in these graphs is bounded linearly in terms of the number of program variables. For instance, in \cite{myrs05}, these properties are used to define an abstraction  which consists of contracting all segments without sharing.
+In our case, we use these properties in order to prove that the preorder we propose on graph representations is a WQO. However, our abstraction is different from the one proposed for instance in  \cite{myrs05} since we can have graphs which are not minimal w.r.t. to contraction (e.g., we can express the fact that the length of a segment is at least some given natural number), and we can also have graphs corresponding to a partial description of the heap where only a {\em part} of the reachable heap from {\em some} of the program variables is constrained.
+
+\looseness-1% 
+In \cite{cav06,BFLS-avis06}, translations from programs with lists to counter automata have been defined based on the representation of heap graph as its contracted version supplied with the information about the length of each contracted sharing-free segments. These translations allow to use various existing techniques for the analysis of counter systems in order to check safety properties involving constraints relating the lengths of different lists, or to check termination. Such analysis involving quantitative reasoning cannot be done with the techniques presented in this paper.
+As said above,  these techniques can handle some reasoning about the sizes of the lists, but only concerning constraints on minimal lengths. However, extensions of our techniques to more general constraints (e.g., gap-order constraints \cite{Revesz93})  are possible.
+%
+%\medskip
+
+\looseness-1%
+\noindent%
+%\paragraph{\bf Outline.}
+{\bf Outline.}
+In the next section, we introduce the class of programs we consider together
+with their graph representations.
+%
+In Section~\ref{section:graphops} we describe a set of  graph operations which we
+use in the subsequent sections.
+%
+Section~\ref{section:orderings} introduces the ordering on configurations.
+%
+In Section~\ref{section:pre}, we introduce a relation which we use as the basic step in
+the reachability algorithm.
+%
+Section~\ref{section:algorithm} introduces the backward reachability algorithm, and
+proves its partial correctness.
+%
+The termination of the algorithm is shown in Section~\ref{termination:section}.
+%
+Section~\ref{section:experiments} reports the results of applying a prototype, based on the method,
+to a number of simple programs.
+%
+Finally, in Section~\ref{conclusion:section} we give some conclusions.
+%

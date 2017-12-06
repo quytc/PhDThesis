@@ -1,0 +1,129 @@
+\newcommand{\block}{b}
+\section{Termination}
+\label{termination:section}
+
+In this section, we give an overview of the termination proof for
+the reachability algorithm.
+%
+The full details can be found in~\cite{it:2008-015}.
+%
+Let $\pintgrs$ denote the set of positive integers.
+%
+For a set $A$ and a preorder on $A$, we say that $\preceq$ is 
+a {\it well quasi-ordering (WQO)} on $A$ if the following property is
+satisfied:
+for any infinite sequence $a_0,a_1,a_2,\ldots$ of elements in $A$, there are 
+$i,j$  such that $i<j$ and $a_i\preceq a_j$.
+%
+A simple example of a WQO is the standard ordering on natural numbers.
+%
+We extend the ordering $\preceq$ to an ordering $\preceq^*$ on
+the set $A^*$ of finite words over $A$ as follows:
+$w_1 \preceq^* w_2$ if there is an order-preserving injection
+from $w_1$ to $w_2$ such that each element in $w_1$ is mapped to an element
+in $w_2$ which is larger wrt $\preceq$.
+%
+It is well-known that $\preceq^*$ is a WQO (see e.g.\cite{ACJT00}).
+%
+Since multisets and vectors are special cases of words it follows,
+for instance, that vectors of multisets of vectors of natural numbers are WQO
+(this particular property will be used later in the proof).
+
+%
+
+Consider a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+A graph $\block$ is said to be a {\it block}
+of $\graph$ if $\block$ is a maximal part of $\graph$ which is connected.
+%
+A vertex is said to be {\it unguarded} if it is a leaf and there is no
+variable $\xvar\in\xvars$ with $\labeling(\xvar)=\vertex$.
+%
+For a graph $\graph$,
+we define the {\it degree} of $\graph$, denoted $\degof{\graph}$, to be
+the number of unguarded vertices in $\graph$.
+%
+A graph is said to be {\it compact} if it does not contain simple vertices.
+%
+Intuitively, a graph is {\it compact} if it cannot be reduced
+due to contraction.
+%
+An {\it encoding} is a tuple $\encoding=\tuple{\vertices,\succ,\labeling,\cnt}$ where
+$\graph=\tuple{\vertices,\succ,\labeling}$ is a compact graph, and
+$\cnt:\vertices\times\vertices\rightarrow\pintgrs$ is a partial mapping such that
+$\cnt(\vertex_1,\vertex_2)\neq\undef$ iff $\vertex_2=\succ(\vertex_1)$.
+%
+In other words, $\cnt$ associates a positive integer to each edge in $\graph$.
+%
+%We call $\graph$ the {\it signature} of $\encoding$ and denote it by $\sigof{\encoding}$.
+%
+
+Fix a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+We define $\encodingof{\graph}$ to be the encoding we get from $\graph$ 
+by applying contraction as much as possible (until the resulting
+graph cannot be reduced any more using contraction).
+%
+Furthermore, for vertices $\vertex$ and $\vertex'$, the value
+of $\cnt(\vertex,\vertex')$ gives the number of edges between $\vertex$ and $\vertex'$
+in $\graph$.
+%
+We will define an ordering $\encodingorder$ on graphs 
+(the formal definition of the relation is in~\cite{it:2008-015}). %the appendix).
+%
+Consider graphs $\graph,\graph'$ with encodings 
+$\encodingof{\graph}=\tuple{\vertices,\succ,\labeling,\cnt}$
+and $\encodingof{\graph'}=\tuple{\vertices',\succ',\labeling',\cnt'}$.
+%
+Roughly speaking,  $\graph\encodingorder\graph'$ means that for each
+block $\block$ in $\encodingof{\graph}$ there is an corresponding
+isomorphic block $\block'$ in $\encodingof{\graph'}$ such that
+such that $\cnt(\vertex_1,\vertex_2)\leq\cnt'(\vertex'_1,\vertex'_2)$ %$\cnt(\vertex_1,\vertex_2)\leq\cnt'(h(\vertex'_1),h(\vertex'_2))$
+for all vertices $\vertex_1,\vertex_2$ in $\block$ and their images $\vertex'_1,\vertex'_2$
+in $\block'$.
+%
+The ordering  $\encodingorder$ is a WQO on the set of compact graphs whose degrees are bounded by some
+$k\in\pintgrs$.
+%
+The reason is that in any such a graph, there number of leaves is bounded by
+$\sizeof{\vars}+k$, and hence there are only finitely many types of blocks which may
+occur in any such graph.
+%
+This means that an encoding of such a graph can be represented by vectors of multisets of vectors of natural numbers
+as follows.
+%
+Suppose that there are $\ell$ types of blocks.
+%
+Then, an element of the representation will be of the form $\tuple{m_1,\ldots,m_\ell}$,
+where each $m_i$ is a multiset of vectors of natural numbers corresponding to one type of block:
+an entry of the vector corresponds to an edge in the block; the natural numbers correspond to
+the ones which appear on the edges.  
+%
+We need multisets since there is no bound on the number
+of blocks (of a certain type) which may appear in the graph.
+%
+This means that $\encodingorder$ is a WQO.
+%
+Also, $\graph\encodingorder\graph'$ implies $\graph\lt\graph'$,
+since  if $\graph\encodingorder\graph'$ then we can derive $\graph$ from $\graph'$
+through the application of a finite sequence of variable deletion, vertex deletion, 
+edge deletion, and contraction operations.
+%
+Finally, we observe that in the definition $\pmovesto{}$ no unguarded vertices are introduced.
+%
+This means that all the configurations which are generated in the reachability algorithm are bounded
+by some $k$, and are therefore WQO.
+%
+This gives the following theorem.
+%
+\begin{theorem}
+\label{termination:theorem}
+The reachability algorithm is guaranteed to terminate.
+\end{theorem}
+
+
+
+
+
+
+%

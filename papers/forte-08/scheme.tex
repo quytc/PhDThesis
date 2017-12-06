@@ -1,0 +1,87 @@
+\section{Scheme}
+\label{sec:scheme}
+%
+In this section, we recall a generic scheme from~\cite{Parosh:Bengt:Karlis:Tsay:general}
+for performing symbolic backward reachability analysis.
+%
+The scheme in question is based on symbolic representations of infinite sets of 
+configurations called \emph{constraints}.
+%
+Throughout this section, we fix a transition system $\tssystem=\gtstuple$ and a set 
+$\init\subseteq\confs$ of initial configurations.
+%
+
+\paragraph{\bf Constraint Systems}
+%
+A \emph{constraint system} $\constrsys$ relative to the transition system $\tssystem$ is
+a set whose elements are called constraints and can be finitely encoded, such that there 
+is a function $\denotationof{\cdot}:\constrsys\to 2^\confs$.
+%
+For a finite set $\constrs$ of constraints, we let $\denotationof{\constrs}=\Union_{
+\constr\in\constrs}\denotationof{\constr}$.
+%
+We say that a set $D\subseteq\confs$ is \emph{computable} or \emph{representable} 
+(in the constraint system $\constrsys$) if it is possible to compute a finite set 
+of constraints $\constrs\subseteq\constrsys$ such that $D=\denotationof{\constrs}$.
+%
+
+We define an \emph{entailment relation $\entailed$} on constraints, where $\constr_1
+\entailed\constr_2$ iff $\denotationof{\constr_2}\subseteq \denotationof{\constr_1}$.
+%
+For sets $\constrs_1,\constrs_2$ of constraints, abusing notation, we let $\constrs_1
+\entailed\constrs_2$ denote that for each $\constr_2\in\constrs_2$ there is a $\constr_1
+\in\constrs_1$ with $\constr_1\entailed\constr_2$.
+%
+Notice that $\constrs_1\entailed\constrs_2$ implies that $\denotationof{\constrs_2}
+\subseteq\denotationof{\constrs_1}$.
+%
+
+For a constraint $\constr$, we let $\pre{\constr}$ be the set of constraints, 
+such that $\denotationof{\pre{\constr}}=\setcomp{\conf}{\exists\conf'\in\denotationof{
+\constr}.\;\conf\gtransrel{}\conf'}$.
+%
+In other words, $\pre{\constr}$ characterizes the set of configurations from
+which we can reach a configuration in $\constr$ through the application of a 
+single rewrite rule.
+%
+Such a set does not necessarily exist, nevertheless, for our class of systems, we will 
+show that such a set always exists and is in fact computable.
+%
+For a set $\constrs$ of constraints, we let $\pre{\constrs}=\Union_{\constr\in
+\constrs}\pre{\constr}$.
+%
+
+\paragraph{\bf Symbolic Backward Reachability}
+%
+We present a scheme for a symbolic algorithm which, given a finite set $\constrs_\fconfs$ 
+of constraints, checks whether $\init\gtransrel{*}\denotationof{\constrs_\fconfs}$.
+%
+
+In the scheme, we perform a backward reachability analysis, generating a sequence 
+$\sequence{\constrs}{i}:\constrs_0\sqsupseteq\constrs_1\sqsupseteq\constrs_2\sqsupseteq
+\cdots$ of finite sets of constraints such that $\constrs_0=\constrs_F$, and $\constrs_{i+1}=
+\constrs_i\union\pre{\constrs_i}$.
+%
+Since $\denotationof{\constrs_0}\subseteq\denotationof{\constrs_1}\subseteq
+\denotationof{\constrs_2}\subseteq\cdots$, the procedure terminates when we reach a 
+point $j$ where $\constrs_j\entailed\constrs_{j+1}$.
+%
+Consequently, $\constrs_j$ characterizes the set of all predecessors of $\denotationof{
+\constrs_\fconfs}$.
+%
+This means that $\init\gtransrel{*}\denotationof{\constrs_F}$ iff $\init\intersect
+\denotationof{\constrs_j}\neq\emptyset$.
+%
+
+Observe that, in order to implement the scheme (i.e.\ transform it into an algorithm), we 
+need to be able to (i) compute Pre; (ii) check for entailment between constraints; and 
+(iii) check for emptiness of $\init\intersect\denotationof{\constr}$ for any constraint 
+$\constr$.
+%
+A constraint system satisfying these three conditions is said to be \emph{effective}.
+%
+Moreover, in~\cite{Parosh:Bengt:Karlis:Tsay:general}, it is shown that termination is 
+guaranteed in case the constraint system is \emph{well quasi-ordered (WQO)} with respect 
+to $\entailed$, i.e.\ for each infinite sequence $\constr_0,\constr_1,\constr_2,\ldots$ 
+of constraints, there are $i<j$ with $\constr_i\entailed\constr_j$.
+%

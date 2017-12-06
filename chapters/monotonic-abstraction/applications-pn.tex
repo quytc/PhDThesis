@@ -1,0 +1,168 @@
+% -------------------------
+\makeatletter
+\if@UU@margnum
+\subsection*{Multisets \ldots and in particular Petri Nets}
+\else
+\subsection{Multisets \ldots and in particular Petri Nets}
+\fi
+\makeatother
+\label{section:monotonic:abstraction:applications:pn}
+% -------------------------
+%
+In this section, we apply the technique of monotonic abstraction and
+symbolic backward reachability to the problem of \emph{Race
+  Detection}.
+%
+In particular, we focus on \emph{race-freeness}, that is, the absence
+of race conditions (also known as data races) in shared-variable
+pthreaded programs.
+%
+Such programs can be modelled as parameterized systems that consist of
+an arbitrary number of identical finite-state processes, competing for
+a global resource and communicating through a finite set of variables.
+%
+The systems must satisfy mutual exclusion, that is, the safety
+property stating that at most one process may hold the global resource
+at a~time.
+
+% -------------------------
+\KW{Difficult bugs}%
+% -------------------------
+Race conditions can lead to devious bugs that are hard to track, due
+to non-determinism and limited reproducibility. Errors caused by race
+conditions are very subtle and often manifest themselves in the form
+of corrupted or incorrect variable data. Unfortunately, this often
+means that the error will not harm the system immediately, but only
+when some other code is executed, which relies on the data to be
+correct. This makes the process of locating the original race
+condition even more difficult.%
+
+% -------------------------
+\KW{read/write}%
+\KW{write/write}%
+% -------------------------
+Detecting a race condition, for a particular shared variable in the
+code, is akin to finding places where two threads (or more) are
+accessing the variable and one of them is performing a~write
+operation. The timing of the read/write or write/write operations is
+critical to determining the value of the variable that the threads read.
+A program cannot depend on such imprecision as it could compute wrong
+results only due to ``unfortunate'' interleavings of the different
+thread operations.
+
+\noindent%
+\begin{wrapfigure}{r}{0.6\linewidth}
+  %\centering
+  \tikzinput[\linewidth]{img/pn-example}
+  %\caption{Modeling the critical section problem with Petri Nets.}
+  \caption{Critical section as Petri Net.}
+  \label{figure:pn:example}
+\end{wrapfigure}
+%
+% -------------------------
+\KW{locking}%
+% -------------------------
+Most programmers guard themselves against such situations by
+synchronizing the threads, which should allow only some interleavings
+to happen, in a controlled manner.
+%
+They introduce locks around the shared resource they want to protect
+and make sure that all threads follow the locking discipline they
+impose.
+%
+Many race detection tools (e.g.~\cite{Eraser}) investigate therefore,
+in a dynamic fashion, program executions to detect violations of the
+locking discipline. They however do not guarantee a full coverage (see
+Chapter~\ref{chapter:verification}).
+%
+% -------------------------
+\KW{annotations}%
+% -------------------------
+Moreover, some programs require extra annotations along the code, to
+state some form of specification (or contract) that code should follow
+in order to behave as the programmer intended.
+%
+Given that industrial-size concurrent programs is becoming
+increasingly important, this approach reaches its limit and the
+analysis should, as much as possible, be automatic.
+
+% -------------------------
+The technique presented in the section detects the race conditions
+themselves for a particular class of pthreaded C~programs. There is no
+need for annotations and works also in the absence of explicit locking
+mechanisms.
+%
+% -------------------------
+\KW{model}%
+% -------------------------
+We first extract a model from the code in the form of a Petri Net
+(see, e.g.\ Figure~\ref{figure:pn:example}).
+%
+The extraction is already a challenge and an over-approximation is
+introduced to cope with many C~intricacies.
+%
+We do not cover it in this section, but the details of the model and
+how it is extracted are presented in paper~\ref{paper:MCC08}.
+%
+%See an example in Figure~\ref{figure:pn:example}.
+
+% -------------------------
+\KW{verification}%
+% -------------------------
+%\noindent%
+\begin{wrapfigure}{r}[0pt]{0.55\linewidth}
+  \hfill%
+  \tikzinput{img/pn-entailement}
+  \caption{Multiset ordering.}
+  \label{figure:multiset:ordering}
+  \smallskip
+\end{wrapfigure}
+%
+We then verify the Petri Net model.
+%
+Transition rules are characterized by the usual Petri Net flow
+relation, with \emph{input} and \emph{output places}.
+%
+Informally, each place in the Petri Net (or a set of places)
+represents an instruction from the program code and the number of
+\emph{tokens} in a place represent the number of threads currently
+executing that instruction.
+%
+Firing transitions moves tokens from the input places to the output
+places of the transition only if there were ``enough'' tokens in the
+input places.
+
+The key aspect of the model is that a shared variable~$v$ is
+associated with two places, $\LD{v}$ and $\ST{v}$, in the Petri Net
+(in green in the figures). A process places a token in $\LD{v}$
+(resp.\ $\ST{v}$) if it is currently accessing $v$ for reading (resp.\
+writing).
+%
+That way, we can distinguish situations where a \emph{read} and a
+\emph{write} assignment on some shared variable can happen
+simultaneously, effectively detecting a race condition.
+
+A configuration in the system is a multiset, i.e\ a valuation of the
+tokens in each place of the Petri Net, often called a~\emph{marking}.
+%
+The subword relation is replaced by a relation on multisets such that,
+for a Petri Net with markings $PN_1$ and $PN_2$, we write $PN_1
+\subword PN_2$ if and only if, intuitively, tokens can be removed from
+$PN_2$ to obtain $PN_1$ (see Figure~\ref{figure:multiset:ordering}).
+% In particular, $PN_1$ doesn't have more tokens than $PN_2$ in each
+% corresponding places.
+%
+
+\noindent%
+\begin{wrapfigure}{r}{0.4\linewidth}
+  \hfill%
+  \tikzinput{img/pn-bad}
+\end{wrapfigure}
+%
+The set of bad configurations is characterized by the upward-closure
+of the (minimal) elements depicted on the right.
+%
+The multiset ordering is a WQO, so
+procedure~\ref{algo:backward:procedure} is guaranteed to terminate and
+proves the race-freeness of the system.
+

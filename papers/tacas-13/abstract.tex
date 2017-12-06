@@ -1,0 +1,35 @@
+
+\begin{abstract}
+We present a technique for automatically verifying
+safety properties of concurrent programs, in particular
+programs which rely on subtle dependencies of local states of different threads, such as lock-free implementations of stacks and queues in an environment without garbage collection.
+Our technique addresses the joint challenges of
+infinite-state specifications, an unbounded number of threads, and
+an unbounded heap managed by explicit memory allocation.
+Our technique builds on the automata-theoretic approach to
+model checking, in which a specification is given by an
+automaton that observes the execution
+of a program and accepts executions that violate the
+intended specification.
+We extend this approach by allowing specifications to be given by
+a class of infinite-state automata. 
+We show how such automata can be used to
+specify queues, stacks, and other data structures, by extending
+a data-independence argument. %\TODO{Ahmed: remove other data strucutures}
+For verification, we develop a shape analysis, which tracks correlations between
+pairs of threads, and a novel abstraction to make the analysis practical.
+We have implemented our method and used it to verify programs, some of which have not been verified by any other automatic method before.
+\end{abstract}
+
+
+%A LONG ABSTRACT:
+%We present a technique for automatically verifying
+%safety properties of concurrent programs with an unbounded
+%number of threads that access a shared heap.
+%Unlike other approaches, we do not assume garbage collection.
+%Dropping this assumption renders the verification problem surprisingly much harder.
+%Particularly, we demonstrate that the widely used technique of thread modular (assume/guarantee) reasoning is in this setting not sufficiently precise.   
+%To remedy this, we present an alternative approach based on our recent technique for verifying parameterized systems which provides more precision, the so called view abstraction. 
+%Secondly, we present an extension of 
+%a data-independence argument which allows to use simple finite automata observers to specify and verify higher level properties, for instance, that a program properly implements a stack or a queue. 
+%We have implemented our method and evaluated it on classical implementations of a lock free queue and stack. To the best of our knowledge, our method is the first one capable of automatically verifying versions of these algorithms designed for an environment without garbage collector. 

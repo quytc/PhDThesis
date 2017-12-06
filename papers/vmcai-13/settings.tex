@@ -1,0 +1,107 @@
+%% to change page color
+\usepackage[usenames]{color}
+%\usepackage{url}
+\usepackage{pslatex}
+%\usepackage{times}
+%\usepackage{MnSymbol}
+\usepackage{amssymb}
+\usepackage{marvosym}
+\usepackage{stmaryrd}
+\usepackage{amsxtra}
+\usepackage{amsmath}
+\usepackage{latexsym}
+%\usepackage{epsfig}
+\usepackage{paralist}
+\usepackage{wrapfig}
+%\usepackage{proof}
+%\usepackage[a]{esvect}
+\usepackage[nofillcomment,noend,linesnumbered,noline,ruled]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{xspace}
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{skull}
+%\usepackage{paralist}
+%\usepackage{enumitem}
+\usepackage{enumerate}
+%\usepackage[bookmarks=false]{hyperref}%\hypersetup{bookmarks={false}}
+
+%% TikZ
+%------------------------------------------
+\usepackage[version=latest]{pgf}
+\usepackage{tikz}
+\usetikzlibrary{%
+  arrows,% 
+  calc,% 
+  %calendar,%
+  fit,% 
+  patterns,% 
+  %plotmarks,% 
+  shapes.geometric,% 
+  shapes.misc,% 
+  shapes.symbols,% 
+  shapes.arrows,% 
+  %shapes.gates.logic.US,%
+  %shapes.callouts,% 
+  shapes.multipart,% 
+  % automata,% 
+  backgrounds,% 
+  %chains,% 
+  %topaths,% 
+  trees,% 
+  petri,% 
+  %mindmap,% 
+  %matrix,% 
+  % calendar,% 
+  %folding,% 
+  %fadings,% 
+  %through,% 
+  positioning,% 
+  %scopes,% 
+  %decorations.pathreplacing,% 
+  %decorations.footprints,% 
+  %%decorations.markings,% 
+  decorations.fractals,% 
+  decorations.shapes,% 
+  decorations.text,% 
+  decorations.pathmorphing% for snakes
+  %shadows
+}
+% for the checkmarks
+%\usepackage{pifont}
+
+\pgfdeclarelayer{my background} 
+\pgfsetlayers{background,my background,main}
+\tikzset{dottedrectangle/.style={rounded corners,draw,dotted,inner sep=0pt}}
+
+%\usepackage[noend]{algorithmic}
+
+\definecolor{BlueComment}{RGB}{133,128,238}
+%\renewcommand{\algorithmiccomment}[1]{\ {\tiny{$\triangleright$\emph{#1}}}}
+\renewcommand{\algorithmiccomment}[1]{\ {\color{BlueComment} \small{$\triangleright$\emph{#1}}}}
+\algsetup{
+  indent=2em,
+  linenosize=\tiny,
+  linenodelimiter=:\hspace{5mm}
+}
+
+%------------------------------------------
+\tikzset{state/.style={circle,inner sep=2pt,draw=blue!50,very thick,fill=blue!20}}
+\tikzset{mylabel/.style={scale=0.5,midway,below}}
+\tikzset{message/.style={scale=0.5,midway,draw,rounded corners,rectangle split, rectangle split parts=2, rectangle split part fill={yellow!10!white, pink!10!white}}}
+\tikzset{myedge/.style={draw,shorten >=1pt,>=stealth',semithick}}
+\tikzset{background rectangle/.style={rounded corners=1ex,draw=gray!5,thick,fill=gray!10}}
+\tikzset{caption/.style={fill=red!10,rounded corners=1ex,inner xsep=2ex,scale=0.5,anchor=north}}%shading=axis,top color=red!10,bottom color=gray!10}}
+\tikzset{zone/.style={shade,bottom color=#1,top color=blue!10}}
+%
+% Place and transition for the petri nets
+\tikzset{place/.style={circle,inner sep=2pt,draw=blue!50,very thick,fill=blue!20,minimum width=2ex,minimum height=2ex}}
+\tikzset{resource/.style={draw=green,fill=green!30!gray,thick}}
+\tikzset{every transition/.style={draw=red,fill=red!20,thick,minimum width=10mm,minimum height=1mm}}
+\tikzset{vertical/.style={minimum width=1mm,minimum height=10mm}}
+\tikzset{snake/.style={decorate,decoration={snake,amplitude=0.2mm,segment length=1mm,pre length=1mm,post length=1mm}}}
+%------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{arabic}

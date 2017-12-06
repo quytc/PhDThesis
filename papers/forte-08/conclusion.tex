@@ -1,0 +1,30 @@
+\section{Conclusions and Future Work}
+\label{sec:conc}
+
+We have presented a method for verification of tree parameterized systems
+where the components are organized in  a tree.
+%
+We derive an over-approximation of the transition
+relation which allows the use of symbolic reachability
+analysis defined on upward closed sets of trees
+(configurations).
+%
+This technique has been implemented and successfully tested on a number of
+tree-based protocols.
+%
+
+
+It would be interesting to see if
+one can extend our method to other classes of 
+architectures such as unordered trees, DAGs, and more general classes of graphs.
+%
+In a similar manner to the case of words \cite{rmc:wo:transducers:infinite}
+we intend  to consider tree systems where
+the individual processes may contain unbounded variables.
+%
+This would allow to analyze algorithms for manipulation of heaps,
+(balanced) binary trees, etc.
+%
+Finally, we intend to extend our framework to check for liveness
+properties on tree-like architecture systems (as done for
+words in \cite{AJNOS04}).

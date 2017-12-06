@@ -1,0 +1,304 @@
+%
+\section{Computing Predecessors}
+\label{section:pre}
+%\newpage
+%
+The main idea behind our algorithm to solve the coverability problem,
+is to perform backward reachability analysis.
+%
+The basic step of the algorithm uses a relation $\pmovesto{}$ 
+defined on the set of configurations.
+%
+Intuitively, $\conf\pmovesto{}\conf'$ means that, from $\conf'$,
+we can perform a transition and reach a configuration in the upward closure of
+$\conf$.
+%
+First, we give the formal definition of $\pmovesto{}$,
+and then describe some of its properties, and in particular how it relates
+to the transition relation $\movesto{}$.
+
+
+For a graph $\graph=\tuple{\vertices,\suc,\labeling}$, a graph
+$\graph'$, and an action $\action$, we write
+$\graph\pmovesto{\action}\graph'$ to denote that one of the following
+conditions is satisfied:
+%
+%
+\begin{enumerate}
+\item
+\label{pre:case:equals}%
+  %% Test of x == y
+  %% ----------------------------------
+  $\action$ is of the form $\xvar\equals\yvar$ and one of the
+  following conditions is satisfied:
+  % 
+  \begin{enumerate}
+  \item
+    \label{pre:case:equalsA}%
+    $\labeling(\xvar)\nequals\undef$, %
+    $\labeling(\yvar)\nequals\undef$, %
+    $\labeling(\xvar)=\labeling(\yvar)$ and $\graph'=\graph$.
+  \item
+    \label{pre:case:equalsB}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)=\undef$ and
+    $\graph'=\graph\addEqVar{\xvar}{\yvar}$.
+  \item
+    \label{pre:case:equalsC}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\neq\undef$ and
+    $\graph'=\graph\addEqVar{\yvar}{\xvar}$.
+  \item
+    \label{pre:case:equalsD}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)=\undef$ and
+    $\graph'=\graph_1\addEqVar{\xvar}\yvar$ for some
+    $\graph_1\in\left(\graph\addVar{\xvar}\right)$.
+  \end{enumerate}
+In order to be able to perform the action, the variables
+$\xvar$ and $\yvar$ should point to the same vertex.
+%
+If one (or both) of them are missing, then we add them to the graph
+(with the restriction that they point to the same vertex).
+\item
+  %% Test of x =/= y
+  %% ----------------------------------
+  $\action$ is of the form $\xvar\nequals\yvar$ and one of the
+  following conditions is satisfied:
+  \begin{enumerate}
+  \item \label{pre:case:notEqualsA}%
+    $\labeling(\xvar)\nequals\undef$, %
+    $\labeling(\yvar)\nequals\undef$, %
+    $\labeling(\xvar)\neq\labeling(\yvar)$ and $\graph'=\graph$.
+    % 
+  \item \label{pre:case:notEqualsB}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)=\undef$ and %
+    $\graph'\in\graph\addNotEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:notEqualsC}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\neq\undef$ and %
+    $\graph'\in\graph\addNotEqVar{\yvar}{\xvar}$.
+    % 
+  \item \label{pre:case:notEqualsD}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)=\undef$ and %
+    $\graph'\in\graph_1\addNotEqVar{\xvar}{\yvar}$ for some
+    $\graph_1\in\left(\graph\addVar{\xvar}\right)$.
+    % 
+  \end{enumerate}
+We proceed as in case~\ref{pre:case:equals}, but now under the restriction that
+$\xvar$ and $\yvar$ point to different vertices (rather than to the same vertex).
+\item
+\label{pre:case:aasigned}
+  %% Assignment x:=y
+  %% ----------------------------------
+  $\action$ is of the form $\xvar\assigned\yvar$ and
+  one of the following conditions is satisfied:
+  \begin{enumerate}
+  \item \label{pre:case:assignedA}%
+    $\labeling(\xvar)\nequals\undef$, %
+    $\labeling(\yvar)\nequals\undef$, %
+    $\labeling(\xvar)=\labeling(\yvar)$ and
+    $\graph'=\graph\delVar{\xvar}$.
+    % 
+  \item \label{pre:case:assignedB}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)=\undef$ and
+%    $\graph'=\left(\graph\addEqVar{\xvar}{\yvar}\right)\delVar\xvar$.
+    $\graph'=\graph_1\delVar\xvar$ where $\graph_1=\graph\addEqVar{\xvar}{\yvar}$.
+    % 
+  \item \label{pre:case:assignedC}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\nequals\undef$ and %
+    $\graph'=\graph$.
+    % 
+  \item \label{pre:case:assignedD}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\equals\undef$ and %
+    $\graph'\in(\graph\addVar{\yvar})$.
+    % 
+  \end{enumerate}
+The difference compared to case~\ref{pre:case:equals} is that
+the variable
+$\xvar$ may have had any value before performing the assignment.
+%
+Therefore, we remove $\xvar$ from the graph.
+\item \label{pre:case:assignedDotNext}%
+  %% Assignment x:=y.next
+  %% ----------------------------------
+  $\action$ is of the form $\xvar\assigned\nxt\yvar$ and
+  one of the following conditions is satisfied:
+  \begin{enumerate}
+  \item \label{pre:case:assignedDotNextA}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\suc(\labeling(\yvar))\neq\undef$, %
+    $\suc(\labeling(\yvar))=\labeling(\xvar)$ and
+    $\graph'=\graph\delVar{\xvar}$.
+    %
+  \item \label{pre:case:assignedDotNextB}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\labeling(\yvar)\neq\labeling(\nil)$, %
+    $\suc(\labeling(\yvar))=\undef$ and
+    $\graph'=\graph_1\delVar{\xvar}$, where
+    $\graph_1=\graph\addEdgeBetween{\yvar}{\xvar}$.
+  \item \label{pre:case:assignedDotNextC}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\labeling(\yvar)=\undef$ %
+    and there are graphs $\graph_1,\graph_2$ such that
+    $\graph'=\graph_2\delVar{\xvar}$, %
+    $\graph_2=\graph_1\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph_1\in\graph\addVarAsPredOf{\xvar}{\yvar}$.
+  \item \label{pre:case:assignedDotNextD}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\suc(\labeling(\yvar))\neq\undef$ and %
+    $\graph'=\graph$.
+  \item \label{pre:case:assignedDotNextE}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\labeling(\yvar)\neq\labeling(\nil)$, %
+    $\suc(\labeling(\yvar))=\undef$ and %
+    $\graph'\in\graph\addEdge{\yvar}$.
+  \item \label{pre:case:assignedDotNextF}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)=\undef$ %
+ and   there are graphs $\graph_1,\graph_2,\graph_3$ such that
+    $\graph_1\in\graph\addVar{\xvar}$, %
+    $\graph_2\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$, %
+    $\graph_3\equals\graph_2\addEdgeBetween{\yvar}{\xvar}$ and %
+    $\graph'=\graph_3\delVar{\xvar}$.
+%     and %
+%     $\graph'\in \graph_1\addVarAsPredOf{\xvar}{\yvar}$ for some
+%     $\graph_1\in \graph\addVar{\xvar}$.
+%    Observe that \xvar\ just serves here as a temporary variable.
+  \end{enumerate}
+Similarly to case~\ref{pre:case:aasigned} we remove $\xvar$ from the graph.
+%
+The successor of $\yvar$ should be defined and point to the same vertex as $\xvar$.
+%
+In case the successor is missing, we add an edge explicitly from the vertex
+labeled by $\yvar$ to the vertex labeled by $\xvar$.
+%
+Furthermore, if $\xvar$ is missing then the successor of $\yvar$ may point
+anywhere inside the graph.
+\item
+  %% Assignment x.next:=y
+  %% ----------------------------------
+  $\action$ is of the form $\nxt\xvar\assigned\yvar$ and
+  one of the following conditions is satisfied:
+  \begin{enumerate}
+  \item \label{pre:case:dotNextAssignedA}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\suc(\labeling(\xvar))\neq\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\suc(\labeling(\xvar))=\labeling(\yvar)$ and
+    $\graph'=\graph\delEdge{\xvar}$.
+  \item \label{pre:case:dotNextAssignedB}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\suc(\labeling(\xvar))\neq\undef$, %
+    $\labeling(\yvar)=\undef$ and %
+    $\graph'=\graph_1\delEdge{\xvar}$, %
+    where $\graph_1=\graph\addVarAsSuccOf{\xvar}{\yvar}$.
+  \item \label{pre:case:dotNextAssignedC}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\suc(\labeling(\xvar))=\undef$, %
+    $\labeling(\yvar)\neq\undef$, %
+    $\labeling(\xvar)\neq\labeling(\nil)$ %
+    and %
+    $\graph'=\graph$.
+  \item \label{pre:case:dotNextAssignedD}%
+    $\labeling(\xvar)\neq\undef$, %
+    $\suc(\labeling(\xvar))=\undef$, %
+    $\labeling(\yvar)=\undef$, %
+    $\labeling(\xvar)\neq\labeling(\nil)$ and %
+    $\graph'\in\graph\addVar{\yvar}$.
+  \item \label{pre:case:dotNextAssignedE}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)\neq\undef$ and %
+    $\graph'=\graph_1\delEdge{\xvar}$, where %
+    $\graph_1\in\graph\addVarAsPredOf{\yvar}{\xvar}$.
+  \item \label{pre:case:dotNextAssignedF}%
+    $\labeling(\xvar)=\undef$, %
+    $\labeling(\yvar)=\undef$ and %
+    there are graphs $\graph_1,\graph_2$ such that
+    $\graph_1\in\graph\addVar{\yvar}$, %
+    $\graph_2\in\graph_1\addVarAsPredOf{\yvar}{\xvar}$ and %
+    $\graph'=\graph_2\delEdge{\xvar}$.
+  \end{enumerate}
+After performing the action, the successor of the vertex labeled by
+$\xvar$ should be the same vertex as the one labeled by $\yvar$.
+%
+Before performing the action, the successor could have been anywhere inside the graph,
+and the corresponding edge is therefore removed.
+\end{enumerate}
+%
+{\bf Remark}
+In the above definition, we assume that $\xvar$ and $\yvar$ are different variables.
+%
+It is straightforward to handle the case where they are the same variable.
+
+%
+For a transition $\transition=\tuple{\cstate_1,\action,\cstate_2}$ and
+configurations $\conf=\tuple{\cstate,\graph}$ and
+$\conf'=\tuple{\cstate',\graph'}$, we write
+$\conf\pmovesto{\transition}\conf'$ to denote that
+$\cstate=\cstate_1$, $\cstate'=\cstate_2$ and
+$\graph\pmovesto{\action}\graph'$.
+%
+We use $\conf\pmovesto{}\conf'$ to denote that
+$\conf\pmovesto{\transition}\conf'$ for some $\transition\in\transitions$.
+%
+For a set $\confs$ of configurations and a configuration $\conf$, we
+define $\rank{\confs}{\conf}$ to be the smallest $n$ such that there
+is a sequence
+$\conf_0\pmovesto{}\conf_1\pmovesto{}\cdots\pmovesto{}\conf_n$ where
+$\conf_0=\conf$ and there is a $\conf'\in\confs$ such that
+$\conf_n\lt\conf'$.
+
+The following lemma states that small configurations simulate larger ones
+with respect to the backward relation.
+
+\begin{lemma}
+\label{pre:js:monotonic:lemma}
+For configurations $\conf_1$, $\conf_2$ and $\conf_3$, if
+$\conf_1\pmovesto{}\conf_2$ and $\conf_3\lt\conf_1$ then there
+is a configuration $\conf_4$ such that $\conf_3\pmovesto{}\conf_4$ and
+$\conf_4\lt\conf_2$.
+\end{lemma}
+
+The following lemma relates the backward and forward transition
+relations.
+
+\begin{lemma}
+\label{backwards:iff:forwards:lemma}
+Consider configurations $\conf_1$ and $\conf_2$.
+%
+If $\conf_1\pmovesto{}\conf_2$ then $\conf_2\movesto{}\uc{\conf_1}$.
+%
+If $\conf_1\movesto{}\uc{\conf_2}$
+then $\conf_2\pmovesto{}\dc{\conf_1}$.
+\end{lemma}
+%
+\ignore{
+\begin{tikzpicture}[show background rectangle,>=stealth]
+  \begin{scope}[xscale=2]
+    \draw[fill=white] (0.6,1.2) parabola[bend pos=0.5] bend +(0,-1.5) +(0.8,0);
+  \end{scope}
+  \begin{scope}[blue,xscale=2]
+    \draw (0.2,0) node(c2){$\conf_2$};
+    \draw(0.55,0) node[rotate=180,scale=1.5](b){$\pmovesto{}$};
+    \draw (1,0) node (c1){$\conf_1$};
+  \end{scope}
+  \begin{scope}[red,xscale=2]
+    \draw (1,0.5) node[rotate=90]{$\lt$};
+    \draw (1,1) node(c3){$\conf_3$};
+    \draw (c3) node[left](e){$\exists$};
+    \draw[->] (c2) -- (e.west);
+  \end{scope}
+\end{tikzpicture}
+}
+%

@@ -1,0 +1,126 @@
+%
+%--------------------------------------------------------
+\section{Parameterized Systems}
+\label{section:parameterized_systems}
+%--------------------------------------------------------
+
+We introduce a standard notion of a parameterized system operating on
+a linear topology, where processes may perform local transitions or
+universally/existentially guarded transitions (this is the standard
+model used e.g. in
+\cite{PRZ-tacas01,CTV06,rmc:wo:transducers,Namjoshi:VMCAI07}).
+
+A parameterized system is a pair $\parsys=(\locs,\rules)$ where
+$\locs$ is a finite set of \emph{local states} of a process and
+$\rules$ is a set of \emph{transition rules} over $\locs$.  A
+transition rule is either {\it local} or {\it global}.
+%
+A local rule is of the form $\loc\trans\loc'$, where the process
+changes its local state from $\loc$ to $\loc'$ independently of the
+local states of the other processes.
+%
+A global rule is of the form $\quantrule\loc{\loc'}{\quantify}\circ
+S$, where $\quantify\in\{\exists,\forall\}$, $\circ\in\{<,>,\neq\}$
+and $S\subseteq\locs$.
+%
+Here, the $i$th process checks also the local states of the other
+processes when it makes the move.
+%
+For instance, the condition $\forall j< i: \pstates$ means that ``for
+every $j$ such that $j< i$, the $j$th process should be in a local
+state that belongs to the set $\pstates$''; the condition $\forall
+j\neq i: \pstates$ means that ``all processes except the $i$th one
+should be in local states that belong to the set $\pstates$''; etc.
+
+A parameterized system $\parsys =(\locs,\rules)$ induces a
+\emph{transition system} (TS) $\transys = (\confs,\trans)$ where $\confs =
+\locs^*$ is the set of its \emph{configurations} and ${\trans}
+\subseteq\confs\times\confs$ is the \emph{transition relation}. We use
+$\conf[i]$ to denote the state of the $i$th process within the
+configuration $\conf$.
+%
+The transition relation $\trans$ contains a transition
+$\conf\trans\conf'$ with $\conf[i] = \loc$, $\conf'[i] = \loc'$,
+$\conf[j]=\conf'[j]$ for all $j:j\neq i$ iff either (i) $\rules$
+contains a local rule $\loc\trans\loc'$, or (ii) $\rules$ contains a
+global rule $\quantrule\loc{\loc'}{\quantify}\circ S$, and one of the
+following conditions is satisfied:
+%\begin{compactitem}
+\begin{itemize}%[topsep=0pt]%package enumitem
+\item 
+$\quantify=\forall$ and for all $j:1\leq j\leq |\conf|$ such that $j\circ i$, it holds that $\conf[j]\in \pstates$.
+\item 
+$\quantify=\exists$ and there exists $j:1\leq j\leq |\conf|$ such that $j\circ i$ and $\conf[j]\in \pstates$.
+%\end{compactitem}
+\end{itemize}
+
+\vspace{1ex}%
+An instance of the \emph{reachability problem} is defined by a
+parameterized system $\parsys = (\locs,\rules)$, a regular set
+$\inits\subseteq\locs^+$ of \emph{initial configurations}, and a set
+$\bad\subseteq \locs^+$ of \emph{bad configurations}.  Let $\subword$
+be the usual \emph{subword relation}, i.e.,
+$u\subword\loc_1\ldots\loc_n$ iff $u=\loc_{i_1}\ldots\loc_{i_k},1\leq
+i_1{\ldots}i_k\leq n$ and $i_j<i_{j+1}$ for all $j:1\leq j < k$.  We assume
+that $\bad$ is the upward closure $\{\conf\mid\exists b
+\in\minbad:b\subword \conf\}$ of a given \emph{finite} set
+$\minbad\subseteq\locs^+$ of \emph{minimal bad configurations}.  This
+is a common way of specifying bad configurations which often appears
+in practice, see e.g. the running example of Burn's mutual exclusion
+protocol below.  We say that $\conf\in \confs$ is \emph{reachable} iff
+there are $\conf_0,\ldots, \conf_l\in\confs$ such that $\conf_0\in
+\inits$, $\conf_l = \conf$, and $\conf_i\rightarrow \conf_{i+1}$ for
+all $0\leq i < l$.  We use $\reach$ to denote the set of all reachable
+configurations.  We say that the system $\parsys$ is \emph{safe} w.r.t.\
+$\inits$~and~$\bad$ if no bad configuration is reachable, i.e.\
+$\reach\cap\bad = \emptyset$.
+
+We define the \emph{post-image} of a set $\C\subseteq\confs$ to be the
+set $\postof \C := \{\conf'\mid \conf\trans\conf'\wedge\conf\in\C\}$.
+%
+For $n\in\nat$ and a set of configurations $S \subseteq \confs$, we
+use $S_n$ to denote its subset $\{c\in S\mid |c|{\leq}n\}$ of
+configurations of size up to $n$.
+%
+% For $\circ\in\{<,\leq,\geq,>\}$, we write $S_{\circ n}$ to denote the
+% union $\cup_{i\in\nat:i\circ n}S_i$.
+%
+%and 
+%configurations of length $n$ and $\reachof n$ to denote the set of
+%reachable configurations of length $n$.  For
+%$\circ\in\{<,\leq,\geq,>\}$, we write $\reachof {\circ n}$ to denote
+%the union $\cup_{i\in\nat:i\circ n}\reachof i$.
+%
+
+\paragraph{Running example.}
+\newcommand{\bubblestate}[2]{\tikz[baseline=(n.base)]\node[state,fill=#2,scale=0.7](n){#1};}
+\begin{figure}[!b]
+  \input{Burns.tex}
+  \label{figure:Burns}
+\end{figure}
+We illustrate the notion of a parameterized systems with the example
+of Burns' mutual exclusion protocol~\cite{burnsinside}.
+%
+The protocol ensures exclusive access to a shared resource in a system
+consisting of an unbounded number of processes organized in an array.
+%
+The pseudocode of the process at the $i$th position of the array and
+the transition rules of the parameterized system are given in
+Figure~\ref{figure:Burns}.
+%
+A state of the $i$th process consists of a program location and a
+value of the local variable $\mathit{flag}[i]$. Since the value of
+$\mathit{flag}[i]$ is invariant at each location, states correspond to
+locations.
+
+A configuration of the induced transition system is a word over the
+alphabet $\{1,\ldots,6\}$ of local process states.
+%
+The task is to check that the protocol guarantees exclusive access to
+the shared resource (line~6) regardless of the number of processes. A
+configuration is considered to be bad if it contains two occurrences
+of state \bubblestate{6}{red!50}, i.e., the set of minimal bad
+configurations $\minbad$ is
+$\{\bubblestate{6}{red!50}\bubblestate{6}{red!50}\}$. Initially, all
+processes are in state {\bubblestate{1}{green!20}}, i.e.\ $\inits =
+{\bubblestate{1}{green!20}}^+$.

@@ -1,0 +1,25 @@
+\section{Conclusions}
+\label{conclusion:section}
+ 
+We have presented a new approach for automatic verification of
+programs with dynamic heaps.  The proposed approach is based on a
+simple algorithmic principle, and is fully automatic.  The main idea
+is to perform an abstract (over-approximate) reachability analysis
+using upward-closed sets w.r.t. a suitable preorder on heap
+graphs. This preorder is shown to be a well-quasi ordering, which
+guarantees the termination of the
+analysis. %Intuitively, the considered preorder corresponds to a notion of graph embedding modulo contraction of paths of simple vertices (i.e., vertices having both out- and in-degree equal to 1).
+
+The results of this paper concern the case of heap structures with
+1-next selector. Our approach can however be generalized to heap
+structures with multiple next selectors. Several extensions of our
+framework can be done by refining the considered preorder (and the
+abstraction it induces). For instance, it could be possible (1) to
+take into account data values attached to objects in the heap, (2) to
+consider constraints on (and relating) the lengths of (contracted)
+paths, and (3) to consider in integer program variables whose values
+are related to the lengths of paths in the heap. Such extensions with
+arithmetical reasoning can be done in our framework by considering
+preorders involving for instance
+%(approximations of the constraints by)
+ gap-order constraints.

@@ -1,0 +1,75 @@
+% \def\existentialtransition{\begin{tikzpicture}[state/.append style={semithick}]%baseline=(source.base)]
+%     \node[state,fill=black!50!blue](source){};
+%     \node[state,fill=green!50!blue](target) at (1,0){};
+%     \draw[myedge,->] (source) -- (target) node[scale=0.5,pos=0.3,above](exists){$\exists$} node[scale=0.5,state,fill=green!20!orange] at ([xshift=0.5ex]exists.east){};
+%   \end{tikzpicture}}
+% %
+% \def\goldstate{\tikz%[baseline=(x.base)]
+% \node[state,semithick,fill=green!20!orange](x){};}
+% %
+\begin{figure}[!h]
+%   \caption{Consider the following constraint. The view is surrounded
+%     in white. The transition {\protect\existentialtransition} cannot
+%     be fired on the view directly, but it is possible if that latter
+%     view is extended with the state {\protect\goldstate}}
+  \label{figure:where:the:magic:is}
+
+  \begin{center}
+  \begin{tikzpicture}[scale=0.5,state/.append style={semithick}]
+
+    \foreach \n in {0,1,2,4,5,6,7,8,9}{\node[state](n\n) at (\n,0){ {\hspace{1ex}} };}
+    \node[state,fill=green!20!orange,scale=0.8](n10) at (10,0){$w$};
+    \node[state,fill=green!50!blue,scale=0.9](n3) at (3,0){$s$};
+
+    \foreach \p/\s in {%
+      -1/0.8,-1.5/0.6,-2/0.4,-2.5/0.2,-3/0.1,%
+      11/0.8,11.5/0.6,12/0.4,12.5/0.2,13/0.1%
+    }{\node[state,scale=\s] at (\p,0){};}
+
+    \foreach \n in {2,6,7,8}{\node[state](m\n) at (\n,-2){ {\hspace{1ex}} };}
+    \node[state,fill=green!50!blue,scale=0.9](m3) at (3,-2){$t$};
+
+    \coordinate(a) at (-3,-0.6);
+    \coordinate(b) at (13,0.7);
+    
+    \draw[myedge,->] (n3) -- (m3) node[scale=0.5,pos=0.45,right](exists){$\exists$} node[scale=0.5,state,fill=green!20!orange] at ([xshift=1.5ex]exists.east){$w$};
+
+
+    \node[scale=0.8] at ([shift={(60:6mm)}]n3){$i$};
+    \node[scale=0.8] at ([shift={(60:6mm)}]n10){$j$};
+
+%     \node[scale=0.8,above,shape=ellipse,rotate=30,double=white,fill=blue!5!white,draw=gray!30,minimum width=6ex] at ([shift={(0,2mm)}]n2.north west){$v$};
+%     \node[scale=0.8,above,shape=ellipse,rotate=30,double=white,fill=blue!5!white,draw=gray!30,minimum width=6ex] at ([shift={(0,2mm)}]m2.north west){$v'$};
+    \node[scale=0.9] at ([shift={(-2mm,2mm)}]n2.north west){$v$};
+    \node[scale=0.9] at ([shift={(-2mm,2mm)}]m2.north west){$v'$};
+
+    \begin{pgfonlayer}{my background}
+      %\node [fit=(n0)(n10),shading=axis,top color=white,bottom color=white,middle color=gray!50,shading angle=90]{};
+      \path[shading=axis,top color=white,bottom color=white,middle color=gray!50,shading angle=90] (a) rectangle (b);
+
+      %% the extra witness to be included
+      \path[fill=blue!5!white,rounded corners=2pt,draw=gray!50]%,densely dotted]%double=white,draw=gray!30]%
+      ([shift={(0,2mm)}]n8.north east) -- ([shift={(2mm,2mm)}]n10.north east) -- %
+      ([shift={(2mm,-2mm)}]n10.south east) -- ([shift={(-2mm,-2mm)}]n10.south west) -- %
+      ([shift={(-2mm,1mm)}]n10.north west) -- ([shift={(0,1mm)}]n8.north west) -- cycle;
+
+      %% the top view
+      \path[double=white,fill=blue!5!white,rounded corners=2pt,draw=gray!30]%
+      ([shift={(-2mm,2mm)}]n2.north west) -- ([shift={(2mm,3mm)}]n3.north east) -- %
+      ([shift={(-2mm,3mm)}]n6.north west) -- ([shift={(2mm,2mm)}]n8.north east) -- %
+      ([shift={(2mm,-2mm)}]n8.south east) -- ([shift={(-2mm,-2mm)}]n6.south west) -- %
+      ([shift={(-2mm,2mm)}]n6.north west) -- ([shift={(2mm,2mm)}]n3.north east) -- %
+      ([shift={(2mm,-2mm)}]n3.south east) -- ([shift={(-2mm,-2mm)}]n2.south west) -- cycle;
+
+      %% the bottom view
+      \path[double=white,fill=blue!5!white,rounded corners=2pt,draw=gray!30]%
+      ([shift={(-2mm,2mm)}]m2.north west) -- ([shift={(2mm,3mm)}]m3.north east) -- %
+      ([shift={(-2mm,3mm)}]m6.north west) -- ([shift={(2mm,2mm)}]m8.north east) -- %
+      ([shift={(2mm,-2mm)}]m8.south east) -- ([shift={(-2mm,-2mm)}]m6.south west) -- %
+      ([shift={(-2mm,2mm)}]m6.north west) -- ([shift={(2mm,2mm)}]m3.north east) -- %
+      ([shift={(2mm,-2mm)}]m3.south east) -- ([shift={(-2mm,-2mm)}]m2.south west) -- cycle;
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+\end{center}
+\end{figure}

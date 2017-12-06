@@ -1,0 +1,452 @@
+\section{Proofs of Lemmas - Section \ref{termination:section}}
+\label{encoding:section}
+We show termination of the reachability algorithm
+in several steps.
+%
+First, we recall basic concepts from the theory of well quasi-orderings.
+%
+Then, we identify particular properties of our graphs which are implied by
+the fact that each node has at most one successor.
+%
+More precisely, we will define a certain measure on graphs,
+which we call the {\it degree} of the graph, and show that
+the graphs which are generated during the reachability algorithm 
+have degrees which are bounded by some natural number.
+%
+This will lead to a new entailment ordering on graphs, defined in terms
+of particular encodings of the graph structures.
+%
+We show that the new ordering is a WQO, and that it is stronger than the ordering $\lt$
+used in the reachability algorithm; leading to the termination proof.
+%
+Let $\pintgrs$ denote the set of positive integers.
+
+\paragraph{\bf Well Quasi-Orderings}
+For a set $A$ and a preorder on $A$, we say that $\preceq$ is 
+a {\it well quasi-ordering (WQO)} on $A$ if the following property is
+satisfied:
+for any infinite sequence $a_0,a_1,a_2,\ldots$ of elements in $A$, there are 
+$i,j$  such that $i<j$ and $a_i\preceq a_j$.
+%
+A simple example of a WQO is the standard ordering on natural numbers.
+%
+We extend the ordering $\preceq$ to an ordering $\preceq^*$ on
+the set $A^*$ of finite words over $A$ as follows:
+$a_1 a_2\cdots a_m\preceq^* b_1 b_2\cdots b_n$ if there is an injection $h$
+from the set
+from $\set{1,2,\ldots,m}$ to the set $\set{1,2,\ldots,n}$ such that
+$i<j$ implies $h(i)<h(j)$ and $a_i\preceq b_{h(i)}$ for all $i,j:1\leq i,j\leq m$.
+%
+In our proofs, we will use the following property of WQOs (see e.g.\cite{ACJT00}).
+%
+\begin{lemma}
+\label{WQO:properties:lemma}
+If $\preceq$ is a WQO on $A$ then $\preceq^*$ is a WQO on $A^*$.
+\end{lemma}
+In other words, WQOs extend to finite words under the mentioned ordering.
+%
+As special cases, WQOs also extend to multisets, vectors of length $k$ for a given
+$k\in\pintgrs$, etc.
+%
+For instance, the lemma implies that vectors of multisets of natural numbers are WQO.
+%
+
+
+\paragraph{\bf Blocks}
+In this paragraph, we identify some particular patterns in the class of
+graphs we consider in this paper.
+%
+Consider a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+A vertex $\vertex$ is said to be a {\it leaf} if $\succ^{-1}(\vertex)=\emptyset$;
+and a {\it root} if $\succ(\vertex)=\undef$.
+%
+A graph is said to be a {\it tree} if it contains exactly one root, and it
+is called a {\it star} if it contains no root.
+
+%
+A graph $\graph'=\tuple{\vertices',\succ',\labeling'}$ is said to be a {\it block}
+in $\graph$ if $\vertices'$ is a maximal subset of $\vertices$
+containing a vertex $\vertex$  such that, for all $\vertex'\in\vertices'$, it is the
+case that $\tuple{\vertex',\vertex}\in\succ^*$.
+%
+In other words, there is path along the edges of $\graph$ from $\vertex'$ to $\vertex$.
+%
+Furthermore,
+$\succ'$ and $\labeling'$ are the restrictions of $\succ$ and $\labeling$ to
+$\vertices'$, respectively.
+%
+In other words, $\succ'(\vertex)=\vertex'$ iff $\vertex'\in\vertices'$
+and $\succ(\vertex)=\vertex'$; and
+$\labeling(\xvar)=\vertex$ iff
+$\vertex\in\vertices'$ and
+$\labeling(\xvar)=\vertex$.
+%
+Each graph can obviously be uniquely partitioned into a finite set
+of blocks.
+%
+Furthermore, in our graphs, since each vertex has at most one successor, it follows that 
+each block in $\graph$ is either a tree or a star.
+%
+
+%
+A vertex is said to be {\it unguarded} if it is a leaf and there is no
+variable $\xvar\in\xvars$ with $\labeling(\xvar)=\vertex$.
+%
+For a graph $\graph$,
+we define the {\it degree} of $\graph$ as
+$\degof{\vertex}:=d_2-d_1$ where $d_2$ is the number of unguarded vertices and
+$d_1$ is the number of roots in $\graph$.
+%
+
+A graph is said to be {\it compact} if it does not contain simple vertices.
+%
+Intuitively, a graph is {\it compact} if it cannot be reduced
+due to contraction.
+
+
+%
+The proof of the following 
+lemma exploits the fact that each block is either a tree or a star.
+%
+\begin{lemma}
+\label{finite:deg:lemma}
+For any $k\in\pintgrs$, there are only finitely many compact graphs $\graph$ 
+such that $\degof{\graph}\leq k$ and such that $\graph$ does not contain
+any blocks with degree $0$.
+\end{lemma}
+%
+\begin{proof}
+Suppose that there is a $k\in\pintgrs$ such that $\degof{\graph}\leq k$ for 
+each $\graph\in\graphs$.
+%
+First we show the claim for graphs which consist of a single block.
+%
+Consider such a graph $\graph$.
+%
+Since there is at most one root in $\graph$,
+the number of leafs is bounded by $\degof{\graph}+\sizeof{\xvars}$.
+%
+Furthermore, there is at most $\sizeof{\xvars}$ internal nodes (non-leafs) which have only 
+one child (the nodes labeled by some variable).
+%
+The claim follows immediately.
+
+Now, suppose that $\graph$ contains several blocks.
+%
+Since each block has a positive degree, it follows that the number of blocks 
+is bounded by $k$, and
+each of them has a degree which is less than $k$.
+%
+This means that the size of the set is bounded by at most $k$ multiplied by the number
+of blocks of degree at most $k$ (which is bounded as explained above).
+\end{proof}
+
+In particular, Lemma~\ref{finite:deg:lemma} implies that if we take any 
+(infinite) set of compact graphs
+and delete from each graph the blocks which are of degree $0$, then we will be left
+with only finitely many graphs.
+%
+This will be reflected in our termination proof, where we will distinguish
+between blocks of degree $0$ and blocks with positive degrees.
+%
+We define $\zeroreduce{\graph}$ to be the graph
+we get from $\graph$ by keeping only the blocks
+with degree $0$.
+%
+Analogously, we define $\posreduce{\graph}$ to be the graph
+we get from $\graph$ by keeping only the blocks
+with positive degrees.
+
+
+\paragraph{\bf Encodings and Signatures}
+%
+
+%
+An {\it encoding} is a tuple $\encoding=\tuple{\vertices,\succ,\labeling,\cnt}$ where
+$\graph=\tuple{\vertices,\succ,\labeling}$ is a compact graph, and
+$\cnt:\vertices\times\vertices\rightarrow\pintgrs$ is a partial mapping such that
+$\cnt(\vertex_1,\vertex_2)\neq\undef$ iff $\vertex_2=\succ(\vertex_1)$.
+%
+In other words, $\cnt$ associates a positive integer to each edge in $\graph$.
+%
+We call $\graph$ the {\it signature} of $\encoding$ and denote it by $\sigof{\encoding}$.
+
+Fix a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+For non-simple vertices $\vertex,\vertex'\in\vertices$, we say that
+$\vertex'$ is the {\it target} of $\vertex$ if there are
+vertices $\vertex_0,\vertex_1,\ldots,\vertex_{n}$ with $n\geq 1$ such that
+$\vertex_0=\vertex$, $\vertex_{n}=\vertex'$, $\vertex_i$ is simple for all $i:1\leq i< n$, and
+$\vertex_i=\succ(\vertex_{i-1})$ for all $i:1\leq i\leq n$.
+%
+In other words, there is a path of simple nodes leading from $\vertex$ to $\vertex'$.
+%
+In such a case we define the {\it distance} between $\vertex$ and $\vertex'$ by
+$\dist(\vertex,\vertex'):=n$.
+%
+Notice that the target $\vertex'$ of vertex $\vertex$ is unique if it exists.
+%
+We define $\encodingof{\graph}$ to be the encoding
+$\tuple{\vertices',\succ',\labeling',\cnt}$, where
+$\vertices'$ is the set of non-simple nodes in $\vertices$,
+$\succ(\vertex)=\vertex'$ if $\vertex'$ is the target of $\vertex$ in $\graph$,
+$\labeling'=\labeling$, and
+$\cnt(\vertex,\vertex')=\dist(\vertex,\vertex')$.
+%
+We define $\sigof{\graph}:=\sigof{\encodingof{\graph}}$.
+%
+We will extend graph concepts to encodings by 
+interpreting them on their signature.
+%
+For instance, when we say that encoding $\encoding$ has degree $k$ then
+we mean that $\graph$ (i.e., $\sigof{\encoding}$) has degree $k$;
+and write $\zeroreduce{\encoding}$ to denote $\encodingof{\zeroreduce{\graph}}$, etc.
+
+
+%
+We will define a WQO $\encodingorder$ on encodings.
+%
+The definition of $\encodingorder$ will be derived from two relations, namely
+$\incencodingorder$ and $\isencodingorder$.
+%
+The relation  $\incencodingorder$ is
+based on graph inclusion and will be applied on blocks with degree $0$;
+while the relation  $\isencodingorder$ is
+based on graph isomorphism and will be applied to blocks with positive degrees.
+
+Consider compact graphs $\graph=\tuple{\vertices,\succ,\labeling}$ and 
+$\graph'=\tuple{\vertices',\succ',\labeling'}$.
+%
+For an injection $h:\vertices\rightarrow\vertices'$, 
+we say that $\graph$ is {\it included} in $\graph'$
+with respect to $h$, denoted $\graph\included_h\graph'$
+if, for all vertices $\vertex,\vertex'\in\vertices$ and variables $\xvar\in\xvars$,
+it is the case that
+(i) if $\vertex'=\succ(\vertex)$ then $h(\vertex')=\succ'(h(\vertex))$; and
+(ii) if $\labeling(\xvar)=\vertex$ then $\labeling'(\xvar)=h(\vertex)$.
+%
+%
+For encodings $\encoding,\encoding'$, we write $\encoding\incencodingorder_h\encoding'$ if 
+$\sigof{\encoding}\included_h\sigof{\encoding'}$ and for all vertices $\vertex,\vertex'$,
+if $\cnt(\vertex,\vertex')\neq\undef$ then  $\cnt(\vertex,\vertex')\leq\cnt(h(\vertex),h(\vertex'))$.
+%
+%We write $\encoding\incencodingorder\encoding'$ to denote that
+%$\encoding\incencodingorder_h\encoding'$ for some $h$.
+%
+
+
+For a bijection
+$h:\vertices\rightarrow\vertices'$, we say that $\graph_1$ and $\graph_2$ are {\it isomorphic}
+with respect to $h$, denoted $\graph\sim_h\graph'$
+if, for all vertices $\vertex,\vertex'\in\vertices$ and variables $\xvar\in\xvars$,
+it is the case that
+(i) $\vertex'=\succ(\vertex)$ iff $h(\vertex')=\succ'(h(\vertex))$; and
+(ii) $\labeling(\xvar)=\vertex$ iff $\labeling'(\xvar)=h(\vertex)$.
+%
+We say that $\graph$ and $\graph'$ are isomorphic, denoted $\graph\isomorphic\graph'$
+if $\graph\isomorphic_h\graph'$ for some $h$; and
+%
+For encodings $\encoding,\encoding'$, we write $\encoding\isencodingorder_h\encoding'$ if 
+$\sigof{\encoding}\isomorphic_h\sigof{\encoding'}$ and for all vertices $\vertex,\vertex'$,
+if $\cnt(\vertex,\vertex')\neq\undef$ then  $\cnt(\vertex,\vertex')\leq\cnt(h(\vertex),h(\vertex'))$.
+%
+%We write $\encoding\isencodingorder\encoding'$ to denote that
+%$\encoding\isencodingorder_h\encoding'$ for some $h$.
+
+
+
+We use $\encoding\encodingorder_h\encoding'$ to denote that both
+$\zeroreduce{\encoding}\incencodingorder_{h_1}\zeroreduce{\encoding'}$,
+and
+$\posreduce{\encoding}\isencodingorder_{h_2}\posreduce{\encoding'}$
+where $h_1$ and $h_2$ are the restrictions of $h$ to the sets of vertices in
+$\zeroreduce{\encoding}$ and $\posreduce{\encoding}$ respectively.
+%
+We write $\encoding\encodingorder\encoding'$ to denote that
+$\encoding\encodingorder_h\encoding'$ for some $h$.
+%
+For graphs $\graph,\graph'$, we write $\graph\encodingorder\graph'$
+to denote that $\encodingof{\graph}\encodingorder\encodingof{\graph'}$.
+
+
+\begin{lemma}
+\label{encoding:WQO:lemma}
+The ordering $\encodingorder$ is a WQO on any set $\graphs$ of graphs with degrees bounded
+by some $k\in\pintgrs$.
+\end{lemma}
+%
+\begin{proof}
+First, we show that $\incencodingorder$ is a WQO on encodings of degree $0$.
+%
+A block in a compact graph $\graph$ (underlying such an encoding)
+with degree $0$ is of one of four forms (in the first three cases, the block
+does not contain any vertex labeled by a variable):
+(i) a single isolated vertex; or (ii) a single vertex with a self-loop (an edge
+starting from and ending at the vertex); or
+(iii) two vertices with an edge between them; or
+(iv) the block contains at least one vertex labeled by a variable.
+%
+Since we have only finitely many variables, the set of possible blocks which can occur
+in $\graph$ is finite
+(although there is no bound on the number of blocks which may occur in $\graph$).
+%
+This means that each encoding with degree $0$ can be considered as a vector of multisets
+of natural numbers: 
+each entry of the vector corresponds to the natural numbers which appear
+on the edges of blocks of a certain type.
+%
+For instance, if we consider blocks which are self-loops and without variables,
+then the corresponding entry will record the natural numbers which appear on the loop.
+%
+Furthermore, we need multisets since there is no bound on the number
+of blocks of that particular type which may occur in $\graph$, and therefore there is no bound
+either on the number of times the same natural number may occur in the different blocks
+of that type.
+%
+The well quasi-ordering of $\incencodingorder$ on encodings of degree $0$, then follows
+from Lemma~\ref{WQO:properties:lemma}.
+
+
+Next, we show that $\isencodingorder$ is a WQO on encodings of positive degrees
+which are bounded by some $k$.
+%
+Consider such a set of encodings, and the corresponding set of underlying compact graphs.
+%
+From Lemma~\ref{finite:deg:lemma}, we know that there are only finitely many such compact
+graphs.
+%
+Therefore, the set of encodings can be viewed as vectors of natural numbers:
+each entry of a vector is indexed by one edge in one of the (finitely many) compact graphs.
+%
+The value of an entry is given by the natural number on the corresponding edge.
+%
+The WQO of $\isencodingorder$ then follows from Lemma~\ref{WQO:properties:lemma}.
+
+Finally, we show that $\encodingorder$ is a WQO on
+the set of encodings with degrees bounded by $k$.
+%
+Each underlying compact graph can be considered as consisting of two parts; namely the blocks
+with degree $0$, and those with positive degrees (but with degrees which
+are bounded by $k$).
+%
+The encoding of such a graph can be described a pair, where the first element
+is a vector of multisets of natural numbers, and the second part is a multiset of natural numbers
+(as described above).
+%
+Since both parts are WQOs, it follows by  Lemma~\ref{WQO:properties:lemma}
+that the set of pairs of such elements is also a WQO.
+\end{proof}
+
+The next lemma shows the relation between the orderings $\encodingorder$  and
+$\lt$.
+%
+For graphs $\graph,\graph'$,
+suppose that $\graph\encodingorder\graph'$.
+%
+Then, we can derive $\graph$ from $\graph'$ by
+applying a finite sequence of variable, vertex, and edge deletions
+on blocks with degree $0$, and
+applying a finite sequence of contraction
+operations on blocks with positive degrees.
+%
+%More precisely, for each pair of vertices $\vertex,\vertex'$ with
+%$m=\cnt(\vertex,\vertex')\leq\cnt'(\vertex,\vertex')=n$, we contract
+% $n-m$ edges between $\vertex$ and $\vertex'$.
+%
+This gives the following lemma.
+%
+\begin{lemma}
+\label{encoding:implication:lemma}
+For graphs $\graph_1,\graph_2$, if 
+$\graph_1\encodingorder\graph_1$ then
+$\graph_1\lt\graph_2$.
+\end{lemma}
+
+The following lemma implies that the degree of the configurations generated during the reachability
+algorithm is bounded by the degree of the configurations in the set $\finalconfs$.
+%
+The proof of the lemma can be carried out by the fact that no unguarded vertices
+are introduced in the computation of $\pmovesto{}$.
+%
+\begin{lemma}
+\label{backward:bounded:degree:lemma}
+For graphs $\graph_1,\graph_2$, if $\graph_1\pmovesto{}\graph_2$
+then $\degof{\graph_2}\leq\degof{\graph_1}$.
+\end{lemma}
+\begin{proof}
+Suppose that $\graph_1\pmovesto{\action}\graph_2$.
+%
+We inspect the cases in the definition of $\pmovesto{}$ one by one, and 
+verify that no unguarded vertices are introduced in the derivation 
+of $\graph_2$ from $\graph_1$.
+%
+We observe that the degree can be increased by removing a variable from a leaf 
+(which is not pointed by any other variable),
+or by adding an edge leading to a node which is not unguarded.
+%
+\begin{enumerate}
+\item
+$\action$ is of the form $\xvar\equals\yvar$.
+%
+In all cases, no variables or edges are deleted.
+\item
+$\action$ is of the form $\xvar\assigned\yvar$.
+%
+We inspect the different subcases:
+\begin{enumerate}
+\item $\xvar$ is removed; however $\yvar$ still points to the vertex.
+\item $\xvar$ is removed; however $\yvar$ is made to point to the vertex.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\end{enumerate}
+\item $\action$ is of the form  $\xvar\nequals\yvar$.
+In all the case, no variables or edges are deleted.
+%
+\item $\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+We inspect the different subcases:
+\begin{enumerate}
+\item $\xvar$ is removed; however the vertex is still the successor of the vertex pointed to by $\yvar$.
+\item $\xvar$ is removed; however the vertex is now pointed to by the successor of vertex pointed to by $\yvar$.
+\item $\xvar$ is removed; however the vertex is now pointed to by the successor of vertex pointed to by $\yvar$.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\end{enumerate}
+\item $\action$ is of the form $\nxt\xvar\assigned\yvar$
+%
+We inspect the different subcases:
+\begin{enumerate}
+\item The edge from the vertex pointed by \xvar to the vertex pointed by \yvar is removed; 
+  however both vertices are still pointed to by \xvar and \yvar.
+\item The edge from the vertex pointed by \xvar to its successor is removed; 
+however, the successor is now pointed to by \yvar.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\item No variables or edges are removed.
+\end{enumerate}
+\end{enumerate}
+\end{proof}
+
+
+Now, we are ready to prove Theorem~\ref{termination:theorem}.
+%
+Suppose that that algorithm does not terminate.
+%
+Then, during the course of the algorithm, we add to the set
+$\toexplore$ an infinite sequence $\conf_0,\conf_1,\conf_2,\ldots$ of configurations,
+where $\conf_i$ is of the form $\tuple{\cstate,\graph_i}$, and
+and where $\conf_i\not\lt\conf_j$ for all $i,j$ with $i<j$.
+%
+From Lemma~\ref{backward:bounded:degree:lemma}, we know that that 
+the set $\set{\graph_0,\graph_1,\graph_2,\ldots}$ has bounded degree, and therefore
+by Lemma~\ref{encoding:WQO:lemma}, it follows that there
+are $i,j$ such that $i<j$ $\encoding(\graph_i)\isencodingorder\encoding(\graph_j)$.
+%
+From Lemma~\ref{encoding:implication:lemma} it follows that
+$\graph_i\lt\graph_j$, and hence $\conf_i\lt\conf_j$ which is a contradiction.
+%
+This gives Theorem~\ref{termination:theorem}.
+%

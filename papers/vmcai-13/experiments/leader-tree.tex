@@ -1,0 +1,92 @@
+A set of processes reside in the leaves of a tree. They want to elect
+a leader. Each of them decides to be candidate or not. The election
+works in two phases. The first phase consists in the internal nodes
+polling their children nodes to see if at least one of them is
+candidate. In such case, the internal node becomes candidate as
+well. The second phase is the proper election. The root chooses
+(elects) one candidate non-deterministically among its children. An
+internal node that became elected can in turn elect one of its
+candidate children.
+
+Initially all nodes are \emph{idle} ($i$). They can turn
+\emph{candidate} ($c$) at any time and propagate the request ($r$)
+upward up to the root. After election of a leader ($L$), the request
+propagates downwards up to the leaves. A bad configuration is detected
+if the tree contains 2 or more leaders in its leaves. In order to stop
+the upward propagation in case a request comes from a late child, we
+introduce the state \emph{done} ($d$) which will hold the up-coming
+request. The rules are depicted as follows:
+
+\begin{center}
+\begin{tikzpicture}[
+  myedge/.append style={shorten <=5mm},
+  show background rectangle,
+  ]
+
+  %% (R.apply_I (I,R) (LR,LR));
+  \begin{scope}[xshift=-4cm,yshift=2cm]
+    \node[state](parentFrom){$i$};
+    \node[state,label={[scale=0.5]below:$leaf~or~not$}](childFrom) at (-0.5,-1){$r$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state](parentTo){$r$};
+      \node[state,label={[scale=0.5]below:$leaf~or~not$}](childTo) at (-0.5,-1){$r$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {Upward propagation};
+  \end{scope}
+
+  %%(R.apply_I (RI,T) (R,R)); (* Note that if too slow, the request on the other side dies *)
+  \begin{scope}[xshift=1cm,yshift=2cm]
+    \node[state,label={[scale=0.5]80:$root$}](parentFrom){$i$};
+    \node[state](childFrom) at (-0.5,-1){$r$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state,label={[scale=0.5]80:$root$}](parentTo){$t$};
+      \node[state](childTo) at (-0.5,-1){$r$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {The root initiates the downward propagation};
+  \end{scope}
+
+
+  %% (R.apply_I (T,D) (R,T));   (* Choosing a child *)
+  %% (R.apply_I (T,D) (LR,LL)); (* Until the leaves *)
+  \begin{scope}[xshift=-4cm,yshift=-0.5cm]
+    \node[state](parentFrom){$t$};
+    \node[state](childFrom) at (-0.5,-1){$r$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state](parentTo){$d$};
+      \node[state](childTo) at (-0.5,-1){$t$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {Downward propagation: Election of a candidate};
+  \end{scope}
+
+  %% (R.apply LI LR);
+  \begin{scope}[xshift=1cm,yshift=-1cm,label distance=1pt]
+    \node[state,label={[scale=0.5]-80:$leaf$}](parentFrom){$i$};
+    \node[state](parentTo) at (3cm,0) {$r$};
+    \draw[->,myedge,shorten <=1pt] (parentFrom) -- (parentTo);
+    \path ++(1.5,-1) node[caption] {A process candidates};
+  \end{scope}
+
+  \draw[white,thick] (0,-2) -- +(0,4) (-4,0) -- +(8,0);
+\end{tikzpicture}
+\end{center}

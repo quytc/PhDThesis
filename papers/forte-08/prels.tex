@@ -1,0 +1,332 @@
+\section{Preliminaries}
+\label{sec:prels}
+%
+In this section, we give some basic definitions and notations needed in 
+the rest of the paper.
+%
+To simplify the presentation, we will only consider binary trees in this paper.
+%
+However, all the concepts and algorithms can be extended in a straightforward manner in order to deal
+with trees of higher ranks.
+%
+
+For a set $\xset$, we use $\starset{\xset}$ to denote the set of words over $\xset$.
+%
+We let $\emptyword$ denote the empty word and use $x\concat x'$ to denote 
+the concatenation of two words $x,x'\in\starset{\xset}$.
+%
+We extend the concatenation operation to sets of words $D\subseteq\starset{
+\xset}$ by $x\concat D:=\setcomp{x\concat x'}{x'\in D}$.
+%
+Given two words $x,x'\in\starset{\xset}$, we use $x\pref x'$ to denote that $x$ 
+is a prefix of $x'$; and use $x\spref x'$ to denote that $x\pref x'$ and $x\neq x'$.
+%
+In case $x\pref x'$, we use $x'-x$ to denote the word $x''$ where $x\concat x''=x'$.
+%
+
+\paragraph{\bf Binary Trees}
+%
+\emph{A (binary) tree structure} $\nodes$ is a finite set of words over $\set{0,1}$ 
+which is closed under the prefix relation, i.e.\ $\node\in\nodes$ and $\node'\pref
+\node$ imply $\node'\in\nodes$.
+%
+In the rest of the paper, we fix a finite set of symbols $\alphabet$ and we use $b$ 
+as a variable ranging over $\set{0,1}$.
+%
+
+\emph{A binary tree} (\emph{tree} for short) $\tree$ over the alphabet $\alphabet$ 
+is a tuple $\treetuple$ where $\nodes$ is a tree structure and $\labeling$ 
+is a mapping from $\nodes$ to $\alphabet$.
+%
+Each element of $\nodes$ is called \emph{a node} of $\tree$.
+%
+We say that a node $\node'$ is \emph{the parent} of the node $\node$ iff $\node'\concat b=
+\node$ for some $b$.
+%
+In such a case, $\node$ is said to be \emph{a child} of $\node'$.
+%
+\emph{A leaf} in $\tree$ is a node which does not have any children; and \emph{the root} 
+of $\tree$ is the node $\emptyword$.
+%
+Given a node $\node$, we define \emph{the descendants of $\node$} by $\desc{\node}:=\setcomp{\node'
+\in\nodes}{\node\spref\node'}$.
+%
+We use $\trees{\alphabet}$ to denote the set of all trees over $\alphabet$. 
+%
+
+\paragraph{\bf Inclusions and Embeddings}
+%
+Consider two trees $\tree=\tuple{\nodes,\labeling}$ and $\tree'=\tuple{\nodes',\labeling'}$ 
+in $\trees{\alphabet}$.
+%
+
+An \emph{inclusion} of $\tree$ in $\tree'$ is an injection $f:\nodes\to
+\nodes'$ such that for any $\node\in\nodes$: 
+%
+\begin{itemize}
+\item $\node\concat b\in\nodes\implies f(\node)\concat b=f(\node\concat b)$, and
+%
+\item $\labeling(\node)=\labeling'(f(\node))$.
+%
+\end{itemize}
+%
+We write $\tree\includedin_f\tree'$ to denote that $f$ is an inclusion
+of $\tree$ in $\tree'$, and write $\tree\includedin\tree'$ if
+$\tree\includedin_f\tree'$ for some inclusion $f$.
+%
+Informally, if $\tree\includedin\tree'$ then $\tree'$ contains a copy of $\tree$.
+%
+
+An \emph{embedding} of $\tree$ in $\tree'$ is an injection $f:\nodes\to\nodes'$ such that 
+for any $\node\in\nodes$: 
+%
+\begin{itemize}
+\item $\node\concat b\in\nodes\implies f(\node)\concat b\pref f(\node\concat b)$, and
+%
+\item $\labeling(\node)=\labeling'(f(\node))$.
+\end{itemize}
+%
+We use $\tree\preceq_f\tree'$ to denote that $f$ is an embedding of $\tree$ in $\tree'$, and 
+write $\tree\preceq\tree'$ if $\tree\preceq_f\tree'$ for some embedding $f$.
+%
+Observe that $\preceq$ is a weaker relation than $\includedin$.
+%
+The difference between the two relations is that an inclusion
+preserves the parent/child relation between nodes, while an embedding preserves a weaker 
+relation, namely that of ascendant/descendant.
+%
+
+
+\paragraph{\bf Operations on Trees}
+%
+In this paragraph, we fix a tree $\tree=(\nodes,\labeling)\in\trees{\alphabet}$.
+
+\noindent
+\begin{minipage}{0.55\textwidth}
+For a node $\node\in\nodes$, we use $\tree(\node)$ to denote the subtree of $\tree$ 
+rooted at $\node$.
+%
+Formally, we let $\tree(\node)=(\nodes',\labeling')$ where $\nodes':=\setcomp{\node''-\node}{\node''\in\nodes
+\band\node\pref\node''}$; and for any $\node'\in\nodes'$, $\labeling'(\node'):=\labeling(\node\concat\node')$.
+%
+\end{minipage}
+%
+% Right part
+%
+%\framebox{%
+\begin{minipage}{0.45\textwidth}
+\hfill%
+\begin{tikzpicture}[show background rectangle]
+  \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    %%\tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree$};
+    \draw[fill=white,rounded corners,draw=none] (0mm,-12mm) rectangle (25mm,-35mm);
+    \node (rectangle){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circle){}[fill] circle(2mm)}
+    child {
+      node(cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child { node(triangle){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle }
+      child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle }
+    }
+    ;
+    \draw ([shift={(2mm,7mm)}]circle) node[scale=0.8]{0} ([shift={(-2mm,7mm)}]cross) node[scale=0.8]{1};
+  \end{scope}
+  \begin{scope}[scale=0.5,xshift=5cm]
+    \tikzstyle{level 1}=[sibling distance=1.8cm,level distance=1.3cm]
+    \node[scale=0.8,xshift=10mm,shape=circle,fill=white,draw=none] {$\tree(1)$};
+    \node(cross2){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child { node(triangle2){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle }
+      child { node(diamond2){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle }
+    ;
+  \end{scope}
+\end{tikzpicture}
+%\caption{Subtree}
+%\label{fig:prel:subtree}
+\end{minipage}
+%}%
+
+
+\ignore{
+\smallskip
+\noindent
+%\framebox{%
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[show background rectangle]
+  \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    %%\tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree$};
+    \draw[fill=white,rounded corners,draw=none] (0mm,-12mm) rectangle (25mm,-35mm);
+    \node (rectangle){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circle){}[fill] circle(2mm)}
+    child {
+      node(cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child { node(triangle){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle }
+      child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle }
+    }
+    ;
+    \draw ([shift={(2mm,7mm)}]circle) node[scale=0.8]{0} ([shift={(-2mm,7mm)}]cross) node[scale=0.8]{1};
+  \end{scope}
+  \begin{scope}[scale=0.5,xshift=5cm]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    %%\tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=10mm,rounded corners,fill=white,draw=none] {$\tree-\tree(1)$};
+    \node (rectangle){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(circle){}[fill] circle(2mm)}
+    child { node{} edge from parent[draw=none]}
+    ;
+  \end{scope}
+\end{tikzpicture}
+%\caption{Deletion}
+%\label{fig:prel:deletion}
+%
+\end{minipage}
+%}%
+%
+% Right part
+%
+\hfill%
+\begin{minipage}{0.5\textwidth}
+We define the \emph{deletion} operation of subtrees as follows: 
+%
+For a node $\node\in\nodes$, we denote by $\tree-\tree(\node)$ the 
+tree $\tree'=(\nodes',\labeling')$ obtained from $\tree$ by removing the subtree 
+$\tree(\node)$.
+%
+More precisely, we define $\nodes':=\nodes-\setcomp{\node'\in\nodes}{\node\pref\node'}$, 
+and for any $\node'\in\nodes'$ we let $\labeling'(\node'):=\labeling(\node')$.
+%
+\end{minipage}
+%
+}
+
+\smallskip
+\noindent
+%\framebox{%
+%\framebox{%
+\begin{minipage}{0.4\textwidth}
+\begin{tikzpicture}[show background rectangle]
+  \begin{scope}[scale=0.5]
+    \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    %%\tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree$};
+    %\draw[fill=white,rounded corners,draw=none] (0mm,-12mm) rectangle (25mm,-35mm);
+    \node (rectangle){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {node(n0){} [fill=white] circle(2mm)}
+    child {
+      node(n1){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+      child { node(triangle){}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle }
+      child { node{} edge from parent[draw=none] }
+    }
+    ;
+    \draw ([shift={(2mm,7mm)}]n0) node[scale=0.8]{0} ([shift={(-2mm,7mm)}]n1) node[scale=0.8]{1};
+  \end{scope}
+  \begin{scope}[scale=0.5,xshift=5cm]
+    \tikzstyle{level 1}=[sibling distance=1.8cm,level distance=1.3cm]
+    \node[xshift=-7mm,shape=circle,fill=white,draw=none] {$\tree'$};
+    %\draw[fill=white,rounded corners,draw=none] (0mm,-12mm) rectangle (25mm,-35mm);
+    \node (cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+    child { node(triangle){} [fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle}
+    child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle}
+    ;
+  \end{scope}
+  \begin{scope}[scale=0.5,xshift=2.5cm,yshift=-3cm]
+    \tikzstyle{level 1}=[sibling distance=3cm,level distance=1.5cm]
+    \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+    %%\tikzstyle{level 3}=[sibling distance=1.6cm,level distance=1.1cm]
+    \node[xshift=13mm,rounded corners,fill=white,draw=none] {$\tree\append(0,\tree')$};%$\tree\otimes(0,\tree')$};
+    \draw[fill=white,rounded corners,draw=none] (-30mm,-10mm) rectangle (0mm,-34mm);
+    \node {}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+    child {
+      node (cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child { node(triangle){} [fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle}
+      child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle}
+    }
+    child {
+      node{}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+      child { node{}[fill] ++(-2mm,-2mm)--++(2mm,4mm)--++(2mm,-4mm)--cycle }
+      child { node{} edge from parent[draw=none] }
+    }
+    ;
+  \end{scope}
+\end{tikzpicture}
+\end{minipage}
+%
+% Right part
+%
+\hfill
+\begin{minipage}{0.55\textwidth}
+Now we fix a tree $\tree'=(\nodes',\labeling')\in\trees{\alphabet}$ and define the 
+the following operation: 
+%
+Given a node $\node\in\nodes$, we denote by $\tree\append(\node,\tree')$ the tree $\tree''=(\nodes'',
+\labeling'')$ where $\nodes'':=(\nodes-\desc{\node})\Union(\node\concat\nodes')$ and for any
+$\node''\in\nodes''$, $\labeling''(\node''):=\labeling(\node'')$ if $\node\not\pref\node''$, 
+and $\labeling''(\node''):=\labeling'(\node''-\node)$ otherwise.
+%
+Intuitively, we obtain $\tree''$ by replacing in $\tree$ the subtree rooted at $\node$ by 
+$\tree'$.
+%
+\end{minipage}
+%}%
+%
+
+\smallskip
+\noindent
+Consider a (partial) function $f:\nodes\partialto\nodes'$.
+%
+We define the \emph{renaming of $\tree'$ with respect to $f$ and $\tree$}, denoted by 
+$\tree'\rename_f\tree$, to be the tree $\tree''=(\nodes',\labeling'')$ where for any $\node'
+\in\nodes'$, $\labeling''(\node')=\labeling'(\node')$ if $\node'\not\in\image{f}$, and 
+$\labeling''(\node')=\labeling(f^{-1}(\node'))$ otherwise.
+%
+\begin{center}
+  \begin{tikzpicture}[show background rectangle]
+    \begin{scope}[scale=0.5]
+      \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+      \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+      \node[xshift=-7mm,circle,fill=white,draw=none] {$\tree'$};
+      \node(n1) {}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)
+      child { node{} [fill] circle(2mm) }
+      child {
+        node (cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child { node(n2){}[fill] (-2mm,-2mm)rectangle +(4mm,4mm)}
+        child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle} 
+      }
+      ;
+    \end{scope}
+    \begin{scope}[scale=0.5,xshift=5cm]
+      \tikzstyle{level 1}=[sibling distance=1.8cm,level distance=1.3cm]
+      \node[xshift=7mm,shape=circle,fill=white,draw=none] {$\tree$};
+      \node (r1){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child {edge from parent[draw=none]}
+      child {node(r2){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle} 
+      ;
+    \end{scope}
+    \begin{scope}[scale=0.5,dashed,help lines,<-,line width=1pt]
+      \draw (n1) .. controls +(-10:2cm) and +(-170:2cm) .. (r1) node [below,midway]{f};
+      \draw (n2) .. controls +(-30:20mm) and +(-120:2cm) .. (r2) node [above,midway]{f};
+    \end{scope}
+    %\begin{scope}[scale=0.5,xshift=2.5cm,yshift=-4.5cm]
+    \begin{scope}[scale=0.5,xshift=10cm]
+      \tikzstyle{level 1}=[sibling distance=2.5cm,level distance=1.5cm]
+      \tikzstyle{level 2}=[sibling distance=1.8cm,level distance=1.3cm]
+      \node[xshift=10mm,rounded corners,fill=white,draw=none] {$\tree'\rename_f\tree$};
+      \node {}[fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+      child { node{} [fill] circle(2mm) }
+      child {
+        node (cross){} [fill] ++(-2mm,2mm)--++(4mm,-4mm)--++(0mm,4mm)--++(-4mm,-4mm)--cycle
+        child { node{}[fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle}
+        child { node(diamond){} [fill] ++(-2mm,0mm)--++(2mm,3mm)--++(2mm,-3mm)--++(-2mm,-3mm)--cycle} 
+      }
+      ;
+    \end{scope}
+
+  \end{tikzpicture}
+\end{center}
+

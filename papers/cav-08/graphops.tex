@@ -1,0 +1,454 @@
+%
+\section{Operations on Graphs}
+\label{section:graphops}
+In this section, we define a number of operations on graphs which we
+use in the subsequent sections.
+%
+In the rest of the section, we assume a graph
+$\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+
+%% Notation (g.succ)[v1<-v2]
+%% ----------------------------------------
+For $\vertex_1,\vertex_2\in\vertices$, we use
+$\gupdate{\graph}{\succ}\updateby{\vertex_1}{\vertex_2}$ to denote the
+graph $\graph'=\tuple{\vertices',\succ',\labeling'}$ where
+$\vertices'=\vertices$, $\labeling'=\labeling$, and
+$\succ'=\succ\updateby{\vertex_1}{\vertex_2}$.
+%
+Intuitively, we only modify $\graph$ so that $\vertex_2$ becomes the
+successor of $\vertex_1$.
+%
+%% Notation (g.lambda)[x<-v2]
+%% ----------------------------------------
+We define $\gupdate{\graph}{\labeling}\updateby{\xvar}{\vertex}$
+analogously. That is, we make \xvar\ point to \vertex.
+%
+
+%% Definition of a simple vertex
+%% ----------------------------------------
+%\paragraph{\bf Simple vertex.}
+%
+For a vertex $\vertex\in\vertices$, we say that $\vertex$ is {\it simple} if
+$\sizeof{\succ^{-1}(\vertex)}=1$, $\succ(\vertex)\neq\undef$, and
+there is no $\xvar\in\xvars$ with $\labeling(\xvar)=\vertex$.
+%
+In other words, $\vertex$ has exactly one predecessor, one successor 
+and no label.
+%
+%
+\ignore{%
+  % For a graph $\graph$, we abuse notation and introduce the
+  % following notations.
+  % %
+  % $\vertices(\graph)$, $\succ(\graph)$, and $\labeling(\graph)$ to
+  % denote the set of vertices, the successor function, and the
+  % labeling function respectively in $\graph$.
+  % %
+  % For instance, if
+  % $\graph_1=\tuple{\vertices_1,\succ_1,\labeling_1}$, then
+  % $\vertices(\graph_1)=\vertices_1$, $\succ(\graph_1)=\succ_1$, and
+  % $\labeling(\graph_1)=\labeling_1$.
+  % %
+  % If $\labeling(\graph)(\xvar)\neq\undef$ then we sometimes write
+  % $\succ(\graph)(\xvar)$ instead of
+  % $\succ(\graph)(\labeling(\graph)(\xvar))$.
+  % %
+} % end of ignore
+%
+%% Definition of an isolated vertex
+%% ----------------------------------------
+%\paragraph{\bf Isolated vertex.}
+%
+We say that $\vertex$ is %
+{\it isolated} in $\graph$ if $\succ(\vertex)=\undef$,
+$\succ^{-1}(\vertex)=\emptyset$, and there is no $\xvar\in\xvars$ with
+$\labeling(\xvar)=\vertex$.
+%
+In other words, $\vertex$ has no successors or predecessors and it is
+not labeled by any variable.
+%
+
+\graphopsection{\bf Operations on vertices.}
+%% Definition of adding a vertex
+%% ----------------------------------------
+%\graphopsection{\bf Vertex addition.}
+%
+\begin{graphop}[$\graph\addVertex{\vertex}$]
+  For $\vertex\not\in\vertices$, we use $\graph\addVertex{\vertex}$ to
+  denote the graph $\graph'=\tuple{\vertices',\succ',\labeling'}$ such
+  that $\vertices'=\vertices\cup\set{\vertex}$, $\succ'=\succ$, and
+  $\labeling'=\labeling$, i.e.\ we add a new vertex to $\graph$.
+  Observe that the added vertex is then isolated.
+\end{graphop}
+%
+
+
+%% Definition of deleting a vertex
+%% ----------------------------------------
+%\graphopsection{\bf Vertex deletion.}
+%
+\begin{graphop}[$\graph\delVertex{\vertex}$]
+  For an {\it isolated} vertex $\vertex\in\vertices$, we use
+  $\graph\delVertex{\vertex}$ to denote the graph
+  $\graph'=\tuple{\vertices',\succ',\labeling'}$ such that
+  $\vertices'=\vertices-\set{\vertex}$, $\succ'=\succ$, and
+  $\labeling'=\labeling$.
+\end{graphop}
+%
+
+\graphopsection{\bf Operations on variables.}
+%% Definition of deleting a variable
+%% ----------------------------------------
+%\graphopsection{\bf Variable addition.}
+%
+\begin{graphop}[$\graph\addVar{\xvar}$]
+  % If  $\labeling(\xvar)=\undef$,
+  We define $\graph\addVar{\xvar}$ to be the set of graphs we get from
+  $\graph$ by letting $\xvar$ point %to
+  anywhere inside $\graph$.
+  % 
+  Formally, we define $\graph\addVar{\xvar}$ to be the smallest set
+  containing each graph
+  $\graph'$ %$\tuple{\vertices',\succ',\labeling'}$%
+  such that one of the following conditions is satisfied:
+  \ignore{%
+  \begin{enumerate}
+  \item \label{addVar1}%
+    There is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex{\vertex})}{\labeling}\updateby{\xvar}{\vertex}$,
+    $\ie$ we add a vertex to $\graph$ and make $\xvar$ point to it.
+    % 
+  \item \label{addVar2}%
+    There is a $\vertex\in\vertices$ such that
+    $\graph'=\gupdate{\graph}{\labeling}\updateby{\xvar}{\vertex}$,
+    % 
+    $\ie$ we make \xvar\ point to some vertex %node
+    in $\graph$.
+    % 
+  \item \label{addVar3}%
+    \ignore{%
+      \localnote{ahmed: modified from: There are
+        $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$, and
+        graphs $\graph_1,\graph_2,\graph_3,\graph_4$, such that
+        $\succ(\vertex_1)\neq\undef$,
+        $\graph_1=\graph\addVertex\vertex_2$,
+        $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+        $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_2}{\succ(\vertex_1)}$,
+        and
+        $\graph'=\gupdate{\graph_4}{\labeling}\updateby{\xvar}{\vertex_2}$.}
+    } % end of ignore
+    % 
+    There are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=(\vertices_i,\succ_i,\labeling_i)$ for
+    $i=1,2,3$, such that $\succ(\vertex_1)\neq\undef$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\labeling}\updateby{\xvar}{\vertex_2}$,
+    % 
+    $\ie$ we add a new vertex %node
+    $\vertex_2$ in between $\vertex_1$ and its successor and make
+    \xvar\ point to $\vertex_2$.
+    % 
+  \end{enumerate}
+  }%end of ignore
+(i) \label{addVar1}%
+    there is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex{\vertex})}{\labeling}\updateby{\xvar}{\vertex}$,
+    $\ie$ we add a vertex to $\graph$ and make $\xvar$ point to it.
+    % 
+(ii) \label{addVar2}%
+    there is a $\vertex\in\vertices$ such that
+    $\graph'=\gupdate{\graph}{\labeling}\updateby{\xvar}{\vertex}$,
+    % 
+    $\ie$ we make \xvar\ point to some vertex %node
+    in $\graph$.
+    % 
+(iii) \label{addVar3}%
+    \ignore{%
+      \localnote{ahmed: modified from: There are
+        $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$, and
+        graphs $\graph_1,\graph_2,\graph_3,\graph_4$, such that
+        $\succ(\vertex_1)\neq\undef$,
+        $\graph_1=\graph\addVertex\vertex_2$,
+        $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+        $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_2}{\succ(\vertex_1)}$,
+        and
+        $\graph'=\gupdate{\graph_4}{\labeling}\updateby{\xvar}{\vertex_2}$.}
+    } % end of ignore
+    % 
+    there are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=(\vertices_i,\succ_i,\labeling_i)$ for
+    $i=1,2,3$, such that $\succ(\vertex_1)\neq\undef$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\labeling}\updateby{\xvar}{\vertex_2}$,
+    % 
+    $\ie$ we add a new vertex %node
+    $\vertex_2$ in between $\vertex_1$ and its successor and make
+    \xvar\ point to $\vertex_2$.
+    % 
+\end{graphop}
+%
+
+%% Definition of add y at place =x
+%% ----------------------------------------
+\begin{graphop}[$\graph\addEqVar{\xvar}{\yvar}$]
+  For variables \xvar\ and \yvar\ with $\labeling(\xvar)\neq\undef$, 
+  we define $\graph\addEqVar{\xvar}{\yvar}$ to be the graph
+  $\graph'=\gupdate{\graph}{\labeling}\updateby{\yvar}{\labeling(\xvar)}$,
+  % 
+  $\ie$ we make \yvar\ point to the same vertex %node
+  as $\xvar$.
+\end{graphop}
+%
+%% Definition of add y but not at place x
+%% ----------------------------------------
+%If $\labeling(\xvar)\neq\undef$
+\begin{graphop}[$\graph\addNotEqVar{\xvar}{\yvar}$]
+  Furthermore, we define $\graph\addNotEqVar{\xvar}{\yvar}$ to be the
+  smallest set containing each
+  graph %$\graph'=\tuple{\vertices',\succ',\labeling'}$
+  $\graph'$ %=\tuple{\vertices,\succ,\labeling'}$%
+  such that $\graph'\in(\graph\addVar{\yvar})$ and
+  $\labeling'(\yvar)\neq\labeling'(\xvar)$, $\ie$ we make $\yvar$
+  point anywhere inside $\graph$ except to the vertex %node
+  pointed to by $\xvar$.
+\end{graphop}
+%
+
+%% Definition of add y such that succ(x)=y
+%% ----------------------------------------
+\begin{graphop}[$\graph\addVarAsSuccOf{\xvar}{\yvar}$]
+  For variables \xvar\ and \yvar\ with $\labeling(\xvar)\neq\undef$
+  and $\succ(\labeling(\xvar))\nequals\undef$,
+  % If $\labeling(\xvar)\nequals\undef$ and
+  % $\labeling(\yvar)\equals\undef$, %
+  % we define $\graph\addVarAsSuccOf{\xvar}{\yvar}$ to be the graph
+  % $\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$.
+  we use $\graph\addVarAsSuccOf{\xvar}{\yvar}$ to denote the graph
+  $\gupdate{\graph}{\labeling}\updateby{\yvar}{\succ(\labeling(\xvar))}$,
+  % $\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$.
+  % 
+  $\ie$ we make $\yvar$ point to the successor of the vertex %node
+  pointed to by $\xvar$.
+  % 
+  % Observe that it eventually adds an arrow if there was none.
+  % \localnote{ahmed: To do : add
+  %   $\succ(\labeling(\xvar))\nequals\undef$, change
+  %   $\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$
+  %   into
+  %   $\gupdate{\graph}{\labeling}\updateby{\yvar}{\succ(\labeling(\xvar))}$,
+  %   and remove"eventually adds an arrow".
+  %   
+  %   If the arrow that is to be added is the one between
+  %   $\labeling(\xvar)$ and its not yet defined successor, then we
+  %   need to concretize the successor at each possible position.}
+\end{graphop}
+%
+%% Definition of add y such that succ(y)=x
+%% ----------------------------------------
+\begin{graphop}[$\graph\addVarAsPredOf{\xvar}{\yvar}$]
+  For variables $\xvar$ and $\yvar$ with $\labeling(\xvar)\neq\undef$,
+  we define $\graph\addVarAsPredOf{\xvar}{\yvar}$ to be the set of
+  graphs we get from $\graph$ by letting $\yvar$ point to any
+  vertex %node
+  where the successor %of the node
+  is either undefined or pointed to by $\xvar$.
+  % 
+  Formally, we define $\graph\addVarAsPredOf{\xvar}{\yvar}$ to be the
+  smallest set containing each graph $\graph'$ such that one of the
+  following conditions is satisfied:
+  \ignore{%
+  \begin{enumerate}
+  \item \label{addVarAsPred1}%
+    There is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex\vertex)}{\labeling}\updateby{\yvar}{\vertex}$.
+    % 
+  \item \label{addVarAsPred2}%
+    There is a $\vertex\in\vertices$ such that
+    $\vertex\neq\labeling(\nil)$, either $\succ(\vertex)=\undef$ or
+    $\succ(\vertex)=\labeling(\xvar)$, and
+    $\graph'=\gupdate{\graph}{\labeling}\updateby{\yvar}{\vertex}$.
+    % 
+    That is, we place \yvar\ on the vertices without a successor
+    or the ones whose successor is pointed to by \xvar.
+    % 
+  \item \label{addVarAsPred3}%
+    There are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=\left(\vertices_i,\suc_i,\labeling_i\right)$
+    for $i=1,2,3$, % $\graph_1$, $\graph_2$, $\graph_3$ %
+    such that $\succ(\vertex_1)=\labeling(\xvar)$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\labeling(\xvar)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\labeling_3}\updateby{\yvar}{\vertex_2}$.
+    % 
+    Intuitively, we add a new vertex %node
+    $\vertex_2$ in between the vertex %node
+    pointed by $\xvar$ and its predecessors and make \yvar\ point to
+    $\vertex_2$.
+    % 
+  \end{enumerate}
+  }% end of ignore
+(i) \label{addVarAsPred1}%
+    there is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex\vertex)}{\labeling}\updateby{\yvar}{\vertex}$.
+    % 
+(ii) \label{addVarAsPred2}%
+    there is a $\vertex\in\vertices$ such that
+    $\vertex\neq\labeling(\nil)$, either $\succ(\vertex)=\undef$ or
+    $\succ(\vertex)=\labeling(\xvar)$, and
+    $\graph'=\gupdate{\graph}{\labeling}\updateby{\yvar}{\vertex}$.
+    % 
+    That is, we place \yvar\ on the vertices without a successor
+    or the ones whose successor is pointed to by \xvar.
+    % 
+(iii) \label{addVarAsPred3}%
+    there are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=\left(\vertices_i,\suc_i,\labeling_i\right)$
+    for $i=1,2,3$, % $\graph_1$, $\graph_2$, $\graph_3$ %
+    such that $\succ(\vertex_1)=\labeling(\xvar)$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\labeling(\xvar)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\labeling_3}\updateby{\yvar}{\vertex_2}$.
+    % 
+    Intuitively, we add a new vertex %node
+    $\vertex_2$ in between the vertex %node
+    pointed by $\xvar$ and its predecessors and make \yvar\ point to
+    $\vertex_2$.
+    % 
+\end{graphop}
+%
+
+%% Definition of deleting a variable
+%% ----------------------------------------
+%\graphopsection{\bf Variable deletion.}
+%
+\begin{graphop}[$\graph\delVar{\xvar}$]
+  \ignore{%
+    For a variable $\xvar$, we define $\graph\delVar{\xvar}$ to be the
+    graph $\graph'$ where
+    $\graph'=\gupdate{\graph}{\labeling}\updateby{\xvar}{\undef}$.%
+  }
+  % 
+  For a variable $\xvar$, we use $\graph\delVar{\xvar}$ to denote
+  $\gupdate{\graph}{\labeling}\updateby{\xvar}{\undef}$.
+\end{graphop}
+%
+
+\graphopsection{\bf Operations on edges.}
+%\graphopsection{\bf Edge addition.}
+%% Definition of edge addition from x to y
+%% ------------------------------------------
+\begin{graphop}[$\graph\addEdgeBetween{\xvar}{\yvar}$]
+  If $\labeling(\xvar)\neq\undef$, $\labeling(\yvar)\neq\undef$ and
+  $\labeling(\xvar)\neq\labeling(\nil)$, we use
+  $\graph\addEdgeBetween{\xvar}{\yvar}$ to denote
+  %$\graph'= %
+  $\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$,
+  % 
+  $\ie$ we delete the edge between the vertex
+  $\labeling(\xvar)$ and its successor (if any) and add %then 
+  an edge
+  from $\labeling(\xvar)$ to $\labeling(\yvar)$.
+\end{graphop}
+%
+
+%% Definition of edge addition from x to anything
+%% ----------------------------------------------
+\begin{graphop}[$\graph\addEdge{\xvar}$]
+  If $\labeling(\xvar)\nequals\undef$ and
+  $\labeling(\xvar)\nequals\labeling(\nil)$, we define
+  %% That the intuition
+  $\graph\addEdge{\xvar}$ to be the set of graphs we
+  get from $\graph$ by letting $\nxt\xvar$ point %to
+  anywhere inside $\graph$.
+  % 
+  Formally, we define $\graph\addEdge{\xvar}$ to be the smallest set
+  containing each graph $\graph'$ such that one of the following
+  conditions is satisfied:
+  \ignore{%
+  \begin{enumerate}
+  \item \label{addEdge1}%
+    There is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex{\vertex})}{\succ}\updateby{\labeling(\xvar)}{\vertex}$.
+    % 
+  \item \label{addEdge2}%
+    There is a $\vertex\in\vertices$ such that
+    $\graph'=\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\vertex}$.
+    % 
+  \item \label{addEdge3}%
+    There are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=\left(\vertices_i,\suc_i,\labeling_i\right)$
+    for $i=1,2,3$, such that $\succ(\vertex_1)\neq\undef$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\succ}\updateby{\labeling_3(\xvar)}{\vertex_2}$.
+    % 
+  \end{enumerate}
+  %
+  } %end of ignore
+(i) \label{addEdge1}%
+    there is a $\vertex\not\in\vertices$ such that
+    $\graph'=\gupdate{(\graph\addVertex{\vertex})}{\succ}\updateby{\labeling(\xvar)}{\vertex}$.
+    % 
+(ii) \label{addEdge2}%
+    there is a $\vertex\in\vertices$ such that
+    $\graph'=\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\vertex}$.
+    % 
+(iii) \label{addEdge3}%
+    there are $\vertex_1\in\vertices$, $\vertex_2\not\in\vertices$,
+    and graphs $\graph_i=\left(\vertices_i,\suc_i,\labeling_i\right)$
+    for $i=1,2,3$, such that $\succ(\vertex_1)\neq\undef$,
+    $\graph_1=\graph\addVertex\vertex_2$,
+    $\graph_2=\gupdate{\graph_1}{\succ}\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+    $\graph_3=\gupdate{\graph_2}{\succ}\updateby{\vertex_1}{\vertex_2}$,
+    and
+    $\graph'=\gupdate{\graph_3}{\succ}\updateby{\labeling_3(\xvar)}{\vertex_2}$.
+    % 
+\end{graphop}
+%
+
+%% Definition of edge deletion
+%% ------------------------------------------
+%\graphopsection{\bf Edge deletion.}
+%
+\begin{graphop}[$\graph\delEdge{\xvar}$]
+  If $\labeling(\xvar)\neq\undef$, we denote $\graph\delEdge{\xvar}$
+  as
+  $\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\undef}$,
+  % 
+  $\ie$ we remove the edge from the vertex %node
+  pointed to by $\xvar$ and its successor (if any).
+  % 
+  \forget{%
+    If $\labeling(\xvar)\neq\undef$, $\labeling(\yvar)\neq\undef$ and
+    $\labeling(\xvar)\nequals\labeling(\nil)$ then we define
+    $\graph\addedge{\xvar}\yvar$ to be the graph
+    $\graph'=\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$.
+    % 
+    % $\graph'=\gupdate{\graph}{\labeling}
+    % \updateby{\yvar}{\succ(\labeling(\xvar))}$\localnote{ahmed:
+    %   changed from:
+    %   $\graph'=\gupdate{\graph}{\succ}\updateby{\labeling(\xvar)}{\labeling(\yvar)}$}.
+    % 
+    In other words, we make the vertex pointed to by $\yvar$ the
+    successor of the vertex pointed to by $\xvar$.
+    % 
+    % In other words, we make $\yvar$ point to the successor of the
+    % vertex pointed to by $\xvar$\localnote{ahmed: changed from: In
+    %   other words, we make the vertex pointed to by $\yvar$ the
+    %   successor of the vertex pointed to by $\xvar$.}.
+  }%
+\end{graphop}
+%

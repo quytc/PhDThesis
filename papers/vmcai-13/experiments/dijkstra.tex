@@ -1,0 +1,98 @@
+\label{app:dijkstra}
+Dijsktra's algorithm %\cite{mutex:dijsktra}
+ implements a mutual
+exclusion protocol and can be modeled as a parameterized system where
+the processes are arranged in a linear topology. Each process can
+communicate with its neighbors and check their status.
+
+%
+The algorithm is described in Figure~\ref{algo:dijkstra}.
+%
+It makes use of a pointer, i.e. a variable ranging over
+process indices. We model this pointer by a local boolean variable $p$
+for each process state, as described in Section~\ref{section:extensions}.
+%  $p$ is $\strue$ iff the pointer points to
+% this current process. When the pointer changes, this information must
+% be passed onto all other processes, which we model as a broadcast
+% transition. Concretely, upon pointer assignment, the current process
+% sets its local variable $p$ to $\strue$ and simultaneously sets $p$
+% to $\sfalse$ in all other processes.
+
+\newcommand{\flagof}[1]{\mathit{flag}[#1]}
+\LinesNotNumbered
+\begin{algorithm}
+\caption{Dijkstra's mutual exclusion algorithm}
+\label{algo:dijkstra}
+  \SetKw{Then}{then}
+  \SetKw{Await}{await}
+  \SetKw{Goto}{goto}
+  \SetKwIF{MyAwait}{MyThen}{MyElse}{await}{then}{else}{elseif}{endif}
+  \DontPrintSemicolon
+  \SetAlgoNoLine
+$\flagof i:=1$\;
+\If{$p\neq i$}{
+\MyAwait{$\flagof p = 0$}{$p:=i$}
+}
+\lIf{$\exists j\neq i:\flagof j$}{\Goto 1}\;
+$\flagof i := 0$\;
+\Goto 1
+\end{algorithm}
+
+We denote the state of process as $St$ (resp. $Sf$) when the process
+is in state $S$ and the pointer $p$ is $\strue$ (resp. $\sfalse$). The
+state $S$ of a process ranges over $\set{1,\ldots,6}$ where $6$
+represents the critical section.
+%
+Initially, one process is in state $1t$ and all other processes are in
+state $1f$. A bad configuration is detected when 2 or more processes
+are in the critical section, ie when their state is either $6t$ or
+$6f$.
+
+\begin{figure}[h]
+  \centering
+%\vspace{-10mm}
+\begin{tikzpicture}[node distance=15mm]
+
+  \node[state] (n1t) {1f};
+  \node[state] (n2t) [right=of n1t] {2f};
+  \node[state] (n3t) [right=of n2t] {3f};
+  \node[state] (n4t) [right=of n3t] {4f};
+  \node[state] (n5t) [right=of n4t] {5f};
+  \node[state] (n6t) [right=of n5t] {6f};
+
+  \node[state] (n1f) [below=of n1t] {1t};
+  \node[state] (n2f) [right=of n1f] {2t};
+  \node[state] (n3f) [right=of n2f] {3t};
+  \node[state] (n4f) [right=of n3f] {4t};
+  \node[state] (n5f) [right=of n4f] {5t};
+  \node[state] (n6f) [right=of n5f] {6t};
+
+  \draw [->,myedge] (n1t) -- (n2t);
+  \draw [->,myedge] (n2t) -- (n3t) node[mylabel]{\begin{tabular}{c}$\forall j\neq i :$\\$\set{1t,2t,3t,4t,5t,6t,1f}$\end{tabular}};
+  \draw [->,myedge] (n4t) -- (n5t);
+  \draw [->,myedge] (n5t) -- (n6t) node[mylabel]{\begin{tabular}{c}$\forall j\neq i :$\\$\set{1t,1f,2t,2f,3t,3f,4t,4f}$\end{tabular}};
+  \draw [->,myedge] (n5t) .. controls +(-1,1) and +(1,1) .. (n1t) node[mylabel,above]{$\exists j\neq i :\set{5t,6t,5f,6f}$};
+  \draw [->,myedge] (n6t) .. controls +(0,2) and +(0,2) .. (n1t);
+
+
+  \draw [->,myedge] (n3t) -- (n4f) node[mylabel,sloped,above]{\emph{Broadcast}};
+
+  \draw [->,myedge] (n1f) -- (n2f);
+  \draw [->,myedge] (n2f) to[out=-30,in=-150] (n4f);
+
+  \draw [->,myedge] (n4f) -- (n5f);
+  \draw [->,myedge] (n5f) -- (n6f) node[mylabel]{\begin{tabular}{c}$\forall  j\neq i : $\\$\set{1t,1f,2t,2f,3t,3f,4t,4f}$\end{tabular}};
+  \draw [->,myedge] (n5f) .. controls +(-1,-1) and +(1,-1) .. (n1f) node[mylabel]{$\exists j\neq i : \set{5t,6t,5f,6f}$};
+
+  \draw [->,myedge] (n6f) .. controls +(0,-2) and +(0,-2) .. (n1f);
+
+  \foreach \x in {1,2,3,4,5,6}{ \draw [<->,myedge,draw=gray] (n\x t) -- (n\x f) node[rotate=45,scale=0.5,midway]{\color{gray}Global change}; }     
+
+  %% Uncomment to see the limits of the bounding box
+  % \fill[red] (current bounding box.north west) circle (2pt);
+  % \fill[red] (current bounding box.south east) circle (2pt);
+\end{tikzpicture}
+%\vspace{-10mm}
+  \caption{The transitions of Dijkstra's protocol}
+  \label{figure:dijkstra:transitions}
+\end{figure}

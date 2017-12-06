@@ -1,0 +1,188 @@
+\section{Operational Semantics}
+\label{sec:ts}
+%
+The operational semantics of a parameterized tree system can be captured 
+by a transition system.
+%
+In this section, we first describe the induced transition system.
+%
+Then we introduce the \emph{coverability problem}.
+%
+
+\paragraph{\bf Transition System}
+%
+A \emph{transition system} $\tssystem$ is a pair $\gtstuple$, where $\confs$ 
+is an (infinite) set of \emph{configurations} and $\gtransrel{}$ is a binary 
+relation on $\confs$.
+%
+We use $\gtransrel{*}$ to denote the reflexive transitive closure of $\gtransrel{}$.
+%
+Given an ordering $\order$ on $\confs$, we say that $\tssystem$ is \emph{monotonic with respect 
+to $\order$} if the following holds:
+%
+For any configurations $\conf_1,\conf_2,\conf_3\in\confs$ with $\conf_1\gtransrel{}\conf_3$ 
+and $\conf_1\order\conf_2$, there is a configuration $\conf_4\in\confs$ such that $\conf_2
+\gtransrel{}\conf_4$ and $\conf_3\order\conf_4$.
+%
+We will consider several transition systems in this paper.
+%
+
+First, a parameterized system $\parsys=\parsystuple$ induces a transition system
+$\tsof{\parsys}=\tuple{\confs,\transrel{}}$ where $\confs=\trees{\states}$.
+%
+Intuitively, a configuration $\conf=(\nodes,\labeling)\in\confs$ represents an instance 
+of the system with $\sizeof{\nodes}$ processes.
+%
+These processes are arranged according to the tree structure $\nodes$ 
+and their current local states are given by $\labeling$.
+%
+More precisely, each node $\node\in\nodes$ represents a process in the state $\labeling(
+\node)$.
+%
+
+Next, we define the transition relation $\transrel{}$ on the set of configurations
+as follows.
+%
+Let $\rwrule\in\rwrules$ be a rewrite rule.
+%
+Consider two configurations $\conf_1$ and $\conf_2$.
+%
+We write $\conf_1\transrel{\rwrule}\conf_2$ to denote that there is an $f$ such that 
+the following conditions hold:
+%
+(i) $\tleft{\rwrule}\includedin_f\conf_1$, and
+(ii) $\conf_2=\conf_1\rename_f\tright{\rwrule}$.
+%
+Intuitively, $\conf_2$ can be derived from $\conf_1$ by changing the labels of all the nodes in 
+$\image{f}$ according to the labeling function of $\tright{\rwrule}$.
+%
+Below, we give informal explanations of the conditions.
+%
+First, in condition (i), we identify the ``active processes'' (those which participate
+in the transition) by the inclusion $f$ ($\image{f}$).
+%
+Implicitly, we interpret $\tleft{\rwrule}$ as a guard and therefore require, through condition (i),
+that the configuration $\conf_1$ contains a tree which is a copy of the left hand side
+of the rule. 
+%
+Then, in condition (ii), we interpret $\tright{\rwrule}$ as an operation and require that,
+in $\conf_2$, the processes in $\image{f}$ (the active ones) should all change state according to 
+$\tright{\rwrule}$.
+%
+Observe that the local states of the ``passive processes'', i.e.\ those not participating in the transition, 
+should remain unchanged through the transition, and also that the transition does not change the structure 
+of the tree
+%
+\footnote{In fact, our method can also cope with non-structure preserving rules, such dynamic
+creation and deletion of processes. However, for simplicity of presentation, we choose not 
+to do so.} (see Figure~\ref{fig:percolate:execution}).
+%
+
+We use $\conf\transrel{}\conf'$ to denote that $\conf\transrel{\rwrule}\conf'$ 
+for some rule $\rwrule\in\rwrules$.
+%
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=0.9,show background rectangle]
+  \tikzstyle{level 1}=[level distance=0.8cm,sibling distance=10mm]
+  \tikzstyle{level 2}=[level distance=0.8cm,sibling distance=6mm]
+  \draw[fill=white,rounded corners,draw=none] (-10mm,-18mm) rectangle +(10mm,12mm);
+  \node {$\state_u$}
+  child {node{$\state_u$} child {node{$\state_0$}} child {node{$\state_0$}}}
+  child {node{$\state_u$} child {node{$\state_1$}} child {node(bottom){$\state_1$}}}
+  ;
+  % cheating for the size of the grey postit
+  \node[draw=none] at ([yshift=-1pt]bottom.south) {};
+\end{tikzpicture}
+\begin{tikzpicture}[scale=0.75]
+\node {$\transrel{\rwrule_1}$} child{edge from parent[draw=none]};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[scale=0.9,show background rectangle]
+  \tikzstyle{level 1}=[level distance=0.8cm,sibling distance=10mm]
+  \tikzstyle{level 2}=[level distance=0.8cm,sibling distance=6mm]
+  \draw[fill=white,rounded corners,draw=none] (0mm,-18mm) rectangle +(10mm,12mm);
+  \node {$\state_u$}
+  child {node{$\state_0$} child {node{$\state_0$}} child {node{$\state_0$}}}
+  child {node{$\state_u$} child {node{$\state_1$}} child {node(bottom){$\state_1$}}}
+  ;
+  % cheating for the size of the grey postit
+  \node[draw=none] at ([yshift=-1pt]bottom.south) {};
+\end{tikzpicture}
+\begin{tikzpicture}[scale=0.75]
+\node {$\transrel{\rwrule_4}$} child{edge from parent[draw=none]};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[scale=0.9,show background rectangle]
+  \tikzstyle{level 1}=[level distance=0.8cm,sibling distance=10mm]
+  \tikzstyle{level 2}=[level distance=0.8cm,sibling distance=6mm]
+  \draw[fill=white,rounded corners,draw=none] (-8mm,-10mm) rectangle +(16mm,12mm);
+  \node {$\state_u$}
+  child {node{$\state_0$} child {node{$\state_0$}} child {node{$\state_0$}}}
+  child {node{$\state_1$} child {node{$\state_1$}} child {node(bottom){$\state_1$}}}
+  ;
+  % cheating for the size of the grey postit
+  \node[draw=none] at ([yshift=-1pt]bottom.south) {};
+\end{tikzpicture}
+\begin{tikzpicture}[scale=0.75]
+\node {$\transrel{\rwrule_3}$} child{edge from parent[draw=none]};
+\end{tikzpicture}
+%
+\begin{tikzpicture}[scale=0.9,show background rectangle]
+  \tikzstyle{level 1}=[level distance=0.8cm,sibling distance=10mm]
+  \tikzstyle{level 2}=[level distance=0.8cm,sibling distance=6mm]
+  \node {$\state_1$}
+  child {node{$\state_0$} child {node{$\state_0$}} child {node{$\state_0$}}}
+  child {node{$\state_1$} child {node{$\state_1$}} child {node(bottom){$\state_1$}}}
+  ;
+  % cheating for the size of the grey postit
+  \node[draw=none] at ([yshift=-1pt]bottom.south) {};
+\end{tikzpicture}
+%
+\caption{A possible run of the percolate protocol. 
+%
+We highlight in white the zone where the rule applies 
+%
+(see Example~\ref{exp:percolate}).}
+\label{fig:percolate:execution}
+\end{figure}
+%
+
+\paragraph{\bf Safety Properties}
+%
+In order to analyze safety properties, we study the \emph{coverability problem} defined 
+below.
+%
+For a parameterized tree system $\parsys=\parsystuple$, we assume that we are given a set 
+of initial configurations $\init$, each of which characterizes a possible state of the system 
+prior to starting the execution.
+%
+
+We recall the definition of the relation $\preceq$ defined in Section~\ref{sec:prels}.
+%
+A set of configurations $D\subseteq\confs$ is said to be \emph{upward closed} 
+(with respect to $\preceq$) if $\conf\in D$ and $\conf\preceq\conf'$ implies $\conf'\in D$.
+%
+For sets of configurations $D,D'\subseteq\confs$ we use $D\transrel{} D'$ to denote that 
+there are $\conf\in D$ and $\conf'\in D'$ with $\conf\transrel{}\conf'$.
+%
+The \emph{coverability problem} for parameterized tree systems is defined as follows:
+%
+
+\probbox{\covproblem}
+{%
+  \item A parameterized tree system $\parsys=\parsystuple$.
+  \item An upward closed set $\final$ of configurations.
+}{%
+$\init\transrel{*}{}\final$ ?
+}
+%
+
+It can be shown, using standard techniques (see ~\cite{VW:modelchecking,GoWo:safety}),
+that checking safety properties (expressed as regular languages) can be translated into instances 
+of the coverability problem.
+%
+Therefore, checking safety properties amounts to solving \covproblem{} (i.e.\ to the reachability 
+of upward closed sets).
+%

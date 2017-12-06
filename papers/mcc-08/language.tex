@@ -1,0 +1,154 @@
+%------------------------------------------------------------------------- 
+\Section{Language}
+\label{section:language}
+
+We analyze concurrent programs written in a stripped version of the C
+language and using POSIX threads.
+%
+% Figure~\ref{fig:SMLsyntax} describes
+% this SML language (Simple Multithreaded Language).
+We call it here the SML language (Simple Multithreaded Language).
+%
+We use a relatively small set of operations which follows closely
+those of an instruction set architecture (ISA). Intuitively, we filter
+out the C language and Pthreads constructs. An ISA includes arithmetic
+(e.g.\ \emph{add} and \emph{sub}) and logic instructions (e.g.\
+\emph{and}, \emph{or}, \emph{not}), data instructions (e.g.\
+\emph{load}, \emph{store}) and control flow instructions (e.g.\
+\emph{goto}, \emph{branch}).
+%
+Arithmetic and logic instructions are simply pure CPU operations. We
+are interested in instructions touching the main memory and
+instructions controlling the flow. Hence, the language we allow
+abstracts away the CPU operations and narrows down the operations to a
+set of \emph{movers}, i.e.\ loading from and storing to the main
+memory and operations related to controlling the flow, thread
+synchronization and thread bookkeeping.
+
+% \begin{figure}
+%   \begin{tikzpicture}
+%     \node[text width=0.95\linewidth,rounded corners,inner ysep=1pt,inner xsep=1pt,bottom color=blue!20,top color=gray!10!white]
+%     {\lstinputlisting{examples/grammar.txt}};
+%   \end{tikzpicture}
+% \caption{Simple Multithreaded Language}
+% \label{fig:SMLsyntax}
+% \end{figure}
+
+%% ---------------
+We do not define formally the semantics of SML programs. They allow
+multiple threads to execute concurrently and manipulate two kinds of
+variables: local and global. A global variable is
+shared %and can be accessed
+by all threads. A local variable is local to a given thread and cannot
+be accessed by other threads.
+%
+%% ---------------
+%% Read and write
+A shared variable $x$ is a global variable that can be read and
+written by any thread. We abstract away the data and extract the mover
+instructions as \emph{Read x} or \emph{Write x} accordingly. Local
+variables are useful for the control flow only and therefore
+abstracted away.
+%% ---------------
+%% Branching
+The \emph{if}, \emph{if-then-else} and \emph{while} statements are
+allowed in the form of \emph{branch} and \emph{goto}
+combinations. \emph{for}-loops can be unrolled and equivalently
+implemented with \emph{while} and \emph{goto}.
+
+%% ---------------
+%% Locks
+Threads can use locks for synchronization purposes through
+\emph{acquire} and \emph{release} primitives. A lock (also called
+\emph{mutex}) is a special shared variable that has two values: it is
+either \emph{free} or \emph{busy}. A thread trying to acquire a lock
+will block if the lock is busy. It will acquire the lock (i.e.\
+atomically set it to busy) if the lock was free and continue
+execution. Releasing the lock resets it to free.
+
+%% ---------------
+%% Condition variable
+Threads can use condition variables for synchronization purposes
+through \emph{wait} and \emph{signal} primitives.
+%
+According to the POSIX semantics, wait shall be called while holding a
+lock or undefined behavior results.  If a thread waits on a condition
+variable, it releases the lock and blocks its execution. A thread will
+try to re-acquire the lock (leading to eventual delay) and resume
+execution if the condition variable is signaled by another thread.
+%
+We do not allow at the moment to broadcast a wake up signal (i.e.\
+wake up all threads waiting on the condition variable). Signaling a
+condition variable, while no thread is waiting on that condition
+variable, has no effect.
+%
+The wait instruction suffers from spurious wakeups as it may return
+when no thread specifically signalled that condition variable. We do
+not disallow this behaviour and will handle it in our model. It simply
+forces the programmer to check a predicate invariant %(in a loop)
+upon return and it is not orthogonal to our analysis.
+
+%% ---------------
+%% Thread creation
+Finally, a thread can create another thread and continue its
+execution.
+%
+% A thread can \emph{join} another thread, in which case it suspends
+% execution and resumes it when the other thread terminates (normally)
+% or when explicitely calling \emph{exit}. We do not allow at the
+% moment to wait for termination of multiple threads.
+%
+We do not allow at the moment to wait for termination of newly created
+threads.
+
+%% ---------------
+%% Examples
+
+Figure~\ref{fig:languageExampleCS} and
+Figure~\ref{fig:languageExampleProdsCons} show examples written in C
+using Pthreads and its equivalent using the SML language. We do not
+show the whole code but just the part of interest.
+%
+Figure~\ref{fig:languageExampleCS} shows a critical section problem
+where multiple threads try to update a counter. Only one thread is
+allowed to update the counter at a time, to avoid a data race.
+%
+Figure~\ref{fig:languageExampleProdsCons} is a producers/consumers
+example. The producers update a shared buffer, if the buffer is empty
+and the consumer reads the buffer if the buffer is full.
+
+
+\begin{figure}
+  \begin{tikzpicture}
+    [every node/.append style={rounded corners,inner sep=1pt,bottom color=blue!20,top color=gray!10!white}]
+    \node[text width=0.45\linewidth,below left] (cs) {\lstinputlisting{examples/cs-pth.c}};
+    \node[text width=0.45\linewidth,below right] (cs2) at(0.5,0){\lstinputlisting{examples/cs.c}};
+  \end{tikzpicture}
+  \caption{Critical section problem in pthreaded code (left) and its SML counterpart (right).}
+  \label{fig:languageExampleCS}
+\end{figure}
+
+\begin{figure}
+  \begin{tikzpicture}[every node/.append style={inner sep=0pt}]
+    \begin{scope}
+      \node[text width=0.55\linewidth,above,font=\scriptsize] (conds) {pthread\_cond\_t cvEmpty, cvFull; };
+      \node[text width=0.55\linewidth,above,font=\scriptsize] (shared) at (conds.north){int buffer; pthread\_mutex\_t L; };
+      \node[text width=0.55\linewidth,below] (prods) {\lstinputlisting{examples/prods-pth.c}};
+      \node[text width=0.55\linewidth,below] (cons) at (prods.south){\lstinputlisting{examples/cons-pth.c}};
+    \end{scope}
+    
+    \begin{scope}[xshift=0.52\linewidth]
+      \node[text width=0.44\linewidth,above,font=\scriptsize] (shared2) {shared buffer, L, cvEmpty, cvFull; };
+      \node[text width=0.44\linewidth,below] (prods2) {\lstinputlisting{examples/prods.c}};
+      \node[text width=0.44\linewidth,below] (cons2) at (prods2.south) {\lstinputlisting{examples/cons.c}};
+    \end{scope}
+
+    \begin{pgfonlayer}{my background}
+      \node[fit=(conds) (shared) (prods) (cons),rounded corners,inner ysep=1pt,inner xsep=1pt,bottom color=blue!20,top color=gray!10!white] (r){};
+      \node[fit= (shared2) (prods2) (cons2),rounded corners,inner ysep=1pt,inner xsep=1pt,bottom color=blue!20,top color=gray!10!white] (r2){};
+    \end{pgfonlayer}
+    
+  \end{tikzpicture}
+  \caption{Producers/Consumers in pthreaded code (left) and its SML counterpart (right).}
+  \label{fig:languageExampleProdsCons}
+\end{figure}

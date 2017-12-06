@@ -1,0 +1,42 @@
+\begin{description}
+\item[Bugs] make computers crash and some of them are vital to fix.
+\item[Testing] is a classical method to ensure software quality and
+  requires to run the program. However, it does not cover all possible
+  executions and therefore might leave errors undetected.
+\item[Formal Verification] uses, on the other hand, mathematical
+  proofs to derive the absence of errors.
+\item[Properties] that are interesting to verify, usually fall into
+  two categories: safety or liveness properties. We focus on safety
+  properties, which state that the program never encounters a bad
+  situation.
+\item[Model-Checking] is a fully automatic method where a model of the
+  program is extracted and checked against a property.
+  %
+  States and transitions characterize how every step of the program
+  takes place in the model.
+  % 
+  The number of states can be finite or infinite depending on the
+  complexity of the program and its input parameters.
+  % 
+  This approach has the advantage that it does not require us to run
+  the program but can suffer from state-space explosion.
+  % 
+\item[State-space explosion] is handled by grouping states together
+  using compact representations and by using approximations.
+\item[Over-approximations] aim %help
+  to derive an abstract model in which it is easier %to handle
+  to determine whether the original program is correct.
+\item[Parameterized systems] consist in an arbitrary number of
+  processes in parallel, communicating with each other at any
+  time. The number of processes is the parameter of the verification
+  problem. Parameterized systems are therefore considered
+  infinite-state --- and are the focus of this thesis.
+\item[Parameterized verification.] Many systems can be characterized
+  by a collection of finite-state systems with one (unbounded)
+  parameter. The task is to prove correctness, regardless of the value
+  of the parameter.
+\item[Practical algorithms.] This thesis focuses on making the
+  algorithms practical and not suffer too much from state-space
+  explosion, rather than theoretical results on the decidability of
+  classes of systems.
+\end{description}

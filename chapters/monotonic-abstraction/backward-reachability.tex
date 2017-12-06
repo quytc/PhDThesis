@@ -1,0 +1,155 @@
+%% ====================================================================
+\section{Backward Reachability}
+\index{Reachability!Backward Analysis}%
+%% ====================================================================
+
+
+The procedure that will explore the state-space needs to work on
+symbolic representations, rather than the configurations themselves,
+in the spirit of Section~\ref{section:model:checking}. %
+%
+As we saw in Section~\ref{section:bad:states}, it is simple, using
+upward-closure, to represent the set of all bad configurations.
+%
+Since we also know that a monotonic transition preserves the
+upward-closedness when computing predecessors, the interesting idea is
+then to use upward-closed sets as symbolic representations, define
+their pre-image and run a backward analysis from the bad set (using
+the abstract rules~$\abstrans\rules$). %
+
+%\noindent%
+\begin{wrapfigure}{r}[0pt]{0.35\textwidth}
+  \hfill%
+  \tikzinput{img/pre-image}
+  %\caption{Pre-image}
+  %\label{figure:pre:image}
+\end{wrapfigure}
+%
+% There is a very important mathematical detail to catch here first. The
+% computations regarding the pre-image of a configuration and the
+% pre-image of an upward-closed set of configurations are different.
+\index{Predecessors}%
+\index{Pre-image operator}%
+When computing predecessors, there is an important mathematical detail
+to catch first: The pre-image of an upward-closed set is not
+necessarily the same as taking the upward-closure of the pre-image of
+its minimal elements.
+%
+For a configuration $c\in\confs$ and a transition
+$\delta\in\abstrans\rules$, %
+the set $\setcomp{u\in\confs}{u \atransof{\delta} c}$ of
+configurations that can reach $c$ in one \mbox{$\delta$-step}, might
+be empty (i.e.\ the pre-image of a given configuration does not
+exist).
+%
+The configuration $c$ is potentially not attainable, but its
+upward-closure could be.
+%
+Therefore the pre-image must be a computation over sets of
+configurations as a whole rather than individual configurations only.
+%
+So we compute a slightly different set: the configurations that can
+reach the \emph{upward-closure} of $c$ in one \mbox{$\delta$-step}
+(not forcibly $c$ itself), that is, the set %
+$\setcomp{u\in\confs}{\exists v\in\ucl c : u
+  \atransof{\delta}v}$.
+
+% For an upward-closed set $X\subseteq\confs$, we define its pre-image
+% $\pre(X) = \union_{\delta\in\abstrans\rules}\inverse\delta (X)$ where
+% %
+% $$\inverse\delta (X)=\setcomp{u\in\confs}{\exists v\in X :
+%   u\atransof\delta v}$$
+More generally, for an upward-closed set $U\subseteq\confs$, we define
+its $\delta$-pre-image as the set
+$\inverse{\delta}(U)=\setcomp{u\in\confs}{\exists v\in U :
+  u\atransof{\delta}v}$ and its pre-image as
+$$\pre(U) = \union_{\delta\in\abstrans\rules}\inverse{\delta} (U)=\setcomp{u\in\confs}{\exists v\in U : u\atrans v}$$
+
+By monotonicity, it follows that the pre-image of an upward-closed set
+$U$ is also upward-closed. Notice though, that the minimal elements of
+the pre-image ($\gen{\pre(U)}$) are not necessarily the inverse-image
+of its minimal elements
+($\union_{c\in\gen{U}}\setcomp{u\in\confs}{u\atransof{\delta}c}$).
+
+%% ====================================================================
+\subsection*{Scheme}
+%\noindent\textbf{[Scheme]} %
+%% ====================================================================
+Given a upward-closed set of (bad) configurations, the procedure is
+constructed to compute the fixpoint of the function $X\mapsto
+X\cup\pre(X)$. %
+%
+Intuitively, the analysis computes the configurations that could reach
+the bad set, by applying successively any rule from
+$\abstrans\rules$. %
+
+More precisely, the procedure computes a sequence of sets $U_0, U_1,
+U_2, \ldots$ such that $U_0=\Bad=\ucl\minbad$ and for all $i\geq 0$,
+$U_{i+1}= U_i \cup \pre(U_i)$. %
+Every~$U_i$ represents the set of configurations that can reach \Bad\
+in at most $i$ steps. By monotonicity, every~$U_i$ is upward-closed.
+
+Observe that the sequence $(U_i)_{i\in\nat}$ is increasing, i.e.\ $U_i
+\subseteq U_{i+1}$ for all $i\geq 0$. %
+If the backward procedure reaches a point $n$ such that $U_n\supseteq
+U_{n+1}$, it follows that $\forall m\ge n, U_m = U_n$ and the sequence
+converges.
+%
+Consequently, %
+$$\setcomp{c\in\confs}{\exists b\in \Bad :c\atransof{*} b}=U_n=\cup_{i\in\nat}U_i=\prestar(\ucl\minbad)$$
+
+\index{Verification Scheme}%
+\noindent%
+\begin{wrapfigure}{r}[0pt]{0.53\linewidth}
+\hfill%
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Backward Scheme}
+\label{algo:backward:scheme}
+$\worklist := \set{\Bad}$\;%
+$\visited := \emptyset$\;%
+\While{$\worklist \neq \emptyset$}{%
+  remove some set $U$ from $\worklist$\;%
+  \lIf{$U \cap \Inits \neq \emptyset$ \nllabel{scheme:backward:isinit}}{\Return Unsafe}%\;%
+  \eIf{$U\subseteq\visited$\nllabel{scheme:backward:discard}}{%
+    discard $U$ %
+  }{%
+    % $\worklist := \worklist \;\union\; \pre(U)$\nllabel{scheme:backward:pre}\;%
+    % $\visited := U \union \visited$\nllabel{scheme:backward:minset}\;%
+    add $\pre(U)$ to the worklist $\worklist$\nllabel{scheme:backward:pre}\;%
+    add $U$ to the visited set $\visited$\nllabel{scheme:backward:minset}\;%
+  }%
+}%
+\Return Safe%
+\end{algorithm}
+\end{wrapfigure}
+%
+Furthermore, if $U_n\cap\Inits=\emptyset$ holds, %
+% the final result from
+% the analysis does not contain any configuration that belongs to the
+% set of initial configurations {\Inits}. %
+% It is then obvious that 
+the initial configurations cannot reach the set of bad configurations
+\Bad\ and since $\abstrans\parsys$ is an over-approximation of
+$\parsys$, the system $\parsys$ is safe.%
+\footnote{%
+  In the opposite case, it is necessary to examine whether it is a
+  real error or if it is an artifact of the abstraction, and therefore
+  a spurious example. %
+  For spurious examples, it is possible to \emph{automatically} refine
+  the abstraction and \mbox{re-run} the procedure, until it finds a
+  suitable abstraction, that proves the system safe, or escapes with a
+  real error~\cite{CEGAR}.%
+}
+%
+
+The procedure is designed as a worklist algorithm, described in
+Algorithm~\ref{algo:backward:scheme}, which manipulates upward-closed
+sets. %
+It takes as input an upward-closed set of bad configurations $\Bad$
+and maintains two lists of %upward-closed sets: %
+sets: %
+(i) a list~$\worklist$ of sets of configurations that have not yet
+been analyzed, initialized to $\set{\Bad}$ and %
+(ii) a list~$\visited$, initially empty, that contains information
+about the sets of configurations that have already been analyzed.

@@ -1,0 +1,131 @@
+%% -----------------------------------------
+\Section{Backward Reachability Analysis}
+\label{section:backwardreachability}
+
+\myparagraph{Computing predecessors.}
+For a configuration $\conf$ and a transition $\pntransition$, we
+define $\pre_t(\conf)=\setcomp{\conf'}{\exists\conf''\in\uc{\conf},
+  s.t.\ \ \conf'\movesto{t}\conf''}$.  
+
+\noindent%
+\begin{minipage}{0.4\linewidth}
+  \begin{tikzpicture}[show background rectangle,>=stealth]
+    \begin{scope}[xscale=2]
+      \draw[fill=white] (0.6,1.2) parabola[bend pos=0.5] bend +(0,-1.5) +(0.8,0);
+    \end{scope}
+    \begin{scope}[blue,xscale=2]
+      \draw (0.2,0) node(c2){$\conf'$};
+      \draw (1,0) node (c1){$\conf$};
+    \end{scope}
+    \begin{scope}[red,xscale=2]
+      \draw (1,0.5) node[rotate=90]{$\preceq$};
+      \draw (1,1) node[right,inner sep=0pt](c3){$\conf''$};
+      \draw (c3.west) node[left,inner sep=0pt](e){$\exists$};
+      \draw[->] (c2) -- (e.west);
+    \end{scope}
+  \end{tikzpicture}
+\end{minipage}
+\hfill%
+\begin{minipage}{0.59\linewidth}
+  $\pre_t(\conf)$ represents the set of configurations that could
+  reach $\uc{\conf}$ by firing $\pntransition$.
+  %
+  Notice that the transition system induced by the petri net is
+  monotonic with respect to $\preceq$.
+\end{minipage}
+
+\noindent%
+Indeed, consider the configurations $\conf_1$, $\conf_2$ and
+$\conf_3$, such that $\conf_1\movesto{t}\conf_2$ and
+$\conf_1\preceq\conf_3$, then there exists a configuration $\conf_4$
+where $\conf_3\movesto{t}\conf_4$ and $\conf_2\preceq\conf_4$. That is
+to say, if we can fire a transition on a configuration, we can also
+fire it on a configuration with more tokens in the same places, and
+the results are also ordered accordingly.
+
+It follows from the anti-symmetry property of $\preceq$ that each
+upward closed set has a unique generator.
+%
+Consequently, $\pre_t(c)$ is upward closed and it has a generator.
+The generator is computed by adding a token to each place in
+$\inputof{t}$ and by removing a token from each place in
+$\outputof{t}$ that contained a token (or equivalently removing a
+token from each output place and resetting to zero the negative
+values).
+
+
+%% --------------------------
+We define the backward transition system on configurations, with
+respect to the pre-order $\preceq$, as follows. For configurations
+$\conf_1$ and $\conf_2$, we say that
+$\conf_1\bmovesto{\pntransition}\conf_2$ iff
+$\pre_t(\conf_1)=\uc{\conf_2}$ and we say that
+$\conf_1\bmovesto{}\conf_2$ if
+$\conf_1\bmovesto{\pntransition}\conf_2$ for some
+$\pntransition\in\pntransitions$. Note that it makes all transitions
+always backwards enabled.
+%
+We define $\pre(\conf) =
+\Union_{\pntransition\in\pntransitions}\pre_t(\conf)=\setcomp{\conf'}{\conf\bmovesto{}\conf'}$
+and $\pre(\confs)$ as
+$\Union_{\conf\in\confs}\pre(\conf)$. $\pre(\confs)$ represents the
+set of all configurations that could reach $\confs$ by firing a
+transition in the petri net. Note that, for a finite set $\confs$,
+$\pre(\confs)$ is an infinite set that can be represented by a finite
+set of minimal configurations (w.r.t.\ $\preceq$).
+
+\myparagraph{Algorithm.}  Starting from the finite set $\finalconfs$,
+we define the sequence $I_0,I_1,I_2,\ldots$ of sets by $I_0=\uc{\finalconfs}$
+and $I_{j+1}=I\union\pre(I_j)$. Intuitively $I_j$ denotes the set of
+configurations from which $\finalconfs$ is reachable in at most $j$
+steps. Thus if we defined $\pre^*(\finalconfs)$ to be
+$\Union_{j\geq0}I_j$, then $\finalconfs$ is reachable if and only if
+$\initconfs\intersect\pre^*(\finalconfs)\neq\emptyset$.
+
+For a set $A$, we say that the pre-order $\sqsubseteq$ is a \emph{well
+  quasi-ordering (WQO)} on $A$ if the following property is satisfied:
+for any infinite sequence $a_0,a_1,a_2,\ldots$ of elements in $A$,
+there are $i,j$ such that $i<j$ and $a_i\sqsubseteq a_j$.
+%
+Since we have $I_0\subseteq I_1\subseteq I_2\subseteq \ldots$, and the
+pre-order $\preceq$ is WQO by Dickson's lemma, it follows by
+\cite{Parosh:Bengt:Karlis:Tsay:general:IC} that there is a $k$ such
+that $I_k=I_{k+1}$ and hence $I_l=I_{k}$ for all $l\geq k$, implying
+that $\pre^*(\finalconfs)=I_k$. Each $I_j$ is an infinite set, but we
+know that we can represent it by a finite set of (minimal)
+configurations.
+
+\begin{figure}
+  \begin{tikzpicture}
+
+    \node[text width=0.95\linewidth,rounded corners,inner ysep=2mm,inner xsep=1pt,bottom color=blue!20,top color=gray!10!white]
+    {
+
+      \algsetup{indent=2em}
+      \begin{algorithmic}
+      \STATE \textbf{Input:} Two sets $\initconfs$ and $\finalconfs$ of configurations.
+      \STATE \textbf{Output:} $\initconfs\movesto{*}\uc{\finalconfs}$ ?
+      \vspace{4mm}
+      \STATE $\worklist:=\;\finalconfs$
+      \STATE $\explored:=\;\emptyset$
+      \WHILE{$\worklist\neq\emptyset$}
+      \STATE remove some $\conf$ from $\worklist$
+      \IF{$\exists\conf'\in\initconfs,\,\conf\preceq\conf'$}
+      \RETURN true
+      \ELSIF{$\exists\conf'\in\explored,\,\conf'\preceq\conf$}
+      \STATE discard $\conf$
+      \ELSE
+      \STATE $\worklist:=\;\worklist\Union\pre(\conf)$
+      \STATE $\explored:=\;\set{\conf}\;\Union\;\setcomp{\conf'}{\conf'\in\explored \land (\conf\not\preceq\conf')}$
+      \ENDIF
+      \ENDWHILE
+      \RETURN false
+    \end{algorithmic}
+
+  };
+  \end{tikzpicture}
+\caption{Algorithm outline}
+\label{fig:algo}
+\end{figure}
+
+The algorithm is guaranteed to terminate.

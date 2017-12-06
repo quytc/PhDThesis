@@ -1,0 +1,157 @@
+%% ====================================================================
+\section{Non-Atomic Global Conditions}
+\label{section:non:atomic:global:conditions}
+\label{section:paramsys:non:atomic}
+\index{Global Conditions!non-atomic}%
+%% ====================================================================
+We extend our model to handle parameterized systems where global
+conditions are \emph{not} checked atomically.
+%
+We replace both existentially and universally guarded transitions by
+the following variant of a~for-loop rule%
+% \\\parbox{\linewidth}{\centering
+%   $\forrule{\sim}{\witnesses}{\src}{\dst}{e}$}\\%
+$$
+\forrule{\sim}{\witnesses}{\src}{\dst}{e}
+$$
+%
+where $e\in Q$ is an \emph{escape} state and the other labels $\src$,
+$\dst$, $\sim$ and $\witnesses$ are as in the previous section.
+%~\ref{section:paramsys:definition}.
+%
+% For instance, line 3 of Szymanski's protocol is be replaced by
+% $\forrule \neq {\neg\set{1,2}} 3 7 4$. 
+%
+Essentially, for a configuration with linear topology, a~process at
+position~$i$ inspects the state of another process at position~$j$,
+\emph{in-order}.
+%
+Without loss of generality, we will assume that the for-loops iterate
+through process indices in increasing order.
+%
+If the state of the process at position~$j$ does not belong to
+$\witnesses$, process~$i$ escapes to state~$e$. Otherwise, process~$i$
+moves on to inspect the process at position~$j+1$, unless there is no
+more process to inspect in which case process~$i$ completes its
+transition.
+%
+This construction allows us to emulate both existential and universal
+transitions by adjusting the set~$\witnesses$ and choosing the right
+combination of $\src/\dst/e$ states.
+%
+% For universal transitions, the inspected process at position $j$ must
+% all belong to the set~$\witnesses$. For existential transitions, we
+% use the complement of~$\witnesses$.
+
+%% -------------------------------------------------
+%\myparagraph{Concrete semantics.}
+%% -------------------------------------------------
+%
+% We extend the semantics of a~system with for-loop rules from
+% transition systems of the previous section %~\ref{section:paramsys}
+% in the following way: %
+The transition systems of the previous
+section %~\ref{section:paramsys}
+are extended with for-loop rules in the following way: %
+%
+A configuration is now a pair $c = (q_1\cdots q_n,\tick)$ where
+$q_1\cdots q_n\in Q^+$ is a~word as before and where $\tick:\range 1 n
+\rightarrow \range 0 n$ is a total map which assigns to every
+position~$i$ of~$c$ the last position which has been inspected by the
+process~$i$.
+%
+Initially, $\tick(i)$ is assigned~$0$.
+
+% --------------------------------
+We fix a rule $\delta = \forrule \sim \witnesses {s} {t} {e}$ from
+$\rules$, a configuration~$c$ with $\sizeof{c}=n$, and
+$i\in\range{1}{n}$.
+% 
+We first define the position $\next(c,i)$ which the process at
+position~$i$ is expected to inspect next. Formally, $\next(c,i) =
+min\setcomp{j\in\range{1}{n}}{j>\tick(i), j\sim i}$ is the smallest
+position larger than~$\tick(i)$ which satisfies $\next(c,i)\sim i$.
+% 
+Notice that if process~$i$ has already inspected the right-most
+position~$j$ which satisfies $j\sim i$, then (and only then)
+$\next(c,i)$ is undefined.
+
+We distinguish three types of $\delta$-move on~$c$ by the process at
+position~$i$:
+(i)~$\delta^{it}(c,i)$ for a~loop iteration, %
+(ii)~$\delta^{e}(c,i)$ for escaping and %
+(iii)~$\delta^{t}(c,i)$ for termination. 
+% 
+Each type of move is defined only if $q_i = s$.
+%
+% The illustrations in Figure~\ref{figure:non:atomic} correspond to the
+% transition \\%
+% \parbox{\textwidth}{\centering $\forrule \neq {\neg\set{1,2}} 3 7 4$.}
+
+\begingroup%
+%\setlength\intextsep{\dazintextsep}
+\setlength\intextsep{\the\medskipamount}
+\begin{figure}[!b]%hb
+  \centering
+  \tikzinput{img/ticks-iteration}\hfill%
+  \tikzinput{img/ticks-escape}\hfill%
+  \tikzinput{img/ticks-terminal}
+  %\caption{Consider for example the transition $\forrule \neq {\neg\set{1,2}} 3 7 4$.}
+  \caption{$\forrule \neq {\neg\set{1,2}} 3 7 4$}
+  \label{figure:non:atomic}
+\end{figure}
+\endgroup
+
+\newpage
+\begin{enumerate}[label={(\roman{*})}]%leftmargin=0cm,itemsep=0pt
+\item %
+  $\delta^{it}(c,i)$ is defined if $\next(c,i)$ is defined and
+  $q_{\next(c,i)}\in\witnesses$. It is obtained from~$c$ by updating
+  $\tick(i)$ to~$\next(c,i)$. Intuitively, process~$i$ is only
+  \emph{ticking} position~$\next(c,i)$.
+\item %
+  $\delta^{e}(c,i)$ is defined if $\next(c,i)$ is defined and
+  $q_{\next(c,i)}\not\in S$. It is obtained from~$c$ by changing the
+  state of the process~$i$ to~$e$ and resetting $\tick(i)$
+  to~$0$. Intuitively, process~$i$ has found a~reason to escape.
+\item %
+  $\delta^{t}(c,i)$ is defined if $\next(c,i)$ is undefined, and it is
+  obtained from~$c$ by changing the state of the process~$i$ to~$t$
+  and resetting $\tick(i)$ to~$0$. Intuitively, process~$i$ has
+  reached the end of the iteration and terminates its transition
+  (i.e.\ moves to its target state).
+\end{enumerate}
+
+% \begin{enumerate}[leftmargin=0cm,label={},itemsep=0pt]
+% \item %
+%   %\parbox{\linewidth}{
+%   \marginpar{\raggedleft (i)}%
+%   \parbox[c]{.7\linewidth}{\vspace{-1.2em}%
+%     $\delta^{it}(c,i)$ is defined if $\next(i)$ is defined and
+%     $q_{\next(i)}\in\witnesses$. It is obtained from~$c$ by only
+%     updating $\tick(i)$ to~$\next(i)$. Intuitively, process~$i$ is
+%     only \emph{ticking} position~$\next(i)$.
+%   }\hfill\parbox{.29\linewidth}{\hfill\tikzinput{img/ticks-iteration}}
+%   %}
+% \item %
+%   % \parbox{\linewidth}{
+%   \marginpar{\raggedleft (ii)}%
+%   \parbox{.29\linewidth}{\hfill\tikzinput{img/ticks-escape}}\hfill%
+%     \parbox[c]{.7\linewidth}{\vspace{-.7em}$\delta^{e}(c,i)$ is defined if $\next(i)$
+%       is defined and $q_{\next(i)}\not\in S$. It is obtained from~$c$
+%       by changing the state of the process~$i$ to~$e$ and resetting
+%       $\tick(i)$ to~$0$. Intuitively, process~$i$ has found a~reason
+%       to escape.}
+%   %}
+% \item %
+%   % \parbox{\linewidth}{
+%   \marginpar{\raggedleft (iii)}%
+%   \parbox[c]{.68\linewidth}{\vspace{-.1em}%
+%     $\delta^{t}(c,i)$ is defined if $\next(i)$ is undefined, and it is
+%     obtained from~$c$ by changing the state of the process~$i$ to~$t$
+%     and resetting $\tick(i)$ to~$0$. Intuitively, process~$i$ has
+%     reached the end of the iteration and terminates its transition
+%     (i.e.\ moves to its target state).
+%   }\hfill\parbox{.31\linewidth}{\hfill\tikzinput{img/ticks-terminal}}
+%   %}
+% \end{enumerate}

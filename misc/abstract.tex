@@ -1,0 +1,42 @@
+%%
+%This doctoral thesis considers the automatic verification of
+%\emph{parameterized systems}, i.e.\ systems with an arbitrary number
+%of communicating components, such as mutual exclusion protocols, cache
+%coherence protocols or heap manipulating programs. %
+%%
+%The components may be organized in various topologies such as words,
+%multisets, rings, or trees.
+%
+%The task is to show correctness regardless of the size of the system
+%and we consider two methods to prove safety:
+%%
+%(i) a backward reachability analysis, using the well-quasi ordered
+%framework and monotonic abstraction, and
+%%
+%(ii) a forward analysis which only needs to inspect a small number of
+%components in order to show correctness of the whole system. The
+%latter relies on an abstraction function that views the system from
+%the perspective of a fixed number of components. The abstraction is
+%used during the verification procedure in order to dynamically detect
+%cut-off points beyond which the search of the state-space need not
+%continue.
+% 
+%Our experimentation on a variety of benchmarks demonstrate that the
+%method is highly efficient and that it works well even for classes of
+%systems with undecidable property.
+%%
+%It has been, for example, successfully applied to verify a
+%fine-grained model of Szymanski's mutual exclusion protocol.
+%%
+%Finally, we applied the methods to solve the complex problem of
+%verifying highly concurrent data-structures, in a challenging setting:
+%We do not a priori bound the number of threads, the size of the
+%data-structure, the domain of the data to store nor do we require the
+%presence of a garbage collector.
+%%
+%We successfully verified the concurrent Treiber's stack and
+%Michael\&Scott's queue, in the aforementioned setting.
+%
+%To the best of our knowledge, these verification problems have been
+%considered challenging in the parameterized verification community and
+%could not be carried out automatically by other existing methods.

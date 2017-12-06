@@ -1,0 +1,106 @@
+%
+The tree-arbiter protocol supervises the access to a shared resource
+of a set of processes arranged in a tree topology.
+%
+We model the protocol with a parameterized system as an instance of
+the framework with tree topology. The processes competing for the
+resource reside in the leaves.
+
+A process in the protocol can be in state \emph{idle} ($i$),
+\emph{requesting} ($r$), \emph{token} ($t$) or \emph{below} ($b$). All
+the processes (ie the leaves) are initially in state $i$.  A node is in state $b$
+whenever it has a descendant in state $t$.  When a leaf is in state
+$r$, the request is propagated upwards until it encounters a node
+which is aware of the presence of the token (i.e. a node in state $t$
+or $b$).  A node that has the token (in state $t$) can choose to pass
+it upwards or pass it downwards to a requesting child (node in state
+$r$).
+%
+We subscript the nature (leaf, inner or root) of the nodes, and omit
+them whenever there is no ambiguity (e.g. it can take any value). We
+use $*$ if the state of the process can take any value.
+
+An initial configuration contains a tree where the leaves are either
+idle or requesting, inner nodes are idle, and the root has the
+token. A bad constraint is detected if its tree contains at least two
+processes (i.e. two leaves) with a token (i.e. in state $t_{leaf}$).
+
+The rules to model this protocol are as follows: 
+%
+2 rules to propagate the request upwards, 
+%
+2 rules to propagate the token downwards, 
+%
+2 rules to propagate the token upwards and one rule to initiate a request from a leaf. 
+%
+Without loss of generality, we will simply represent some of them, the
+other can be recovered by permutations, or by considering the left or
+right child of a node.
+
+\begin{center}
+\begin{tikzpicture}[
+  myedge/.append style={shorten <=5mm},
+  show background rectangle,
+  ]
+
+  \begin{scope}[xshift=-4cm,yshift=2cm]
+    \node[state](parentFrom){$i$};
+    \node[state](childFrom) at (-0.5,-1){$r$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state](parentTo){$r$};
+      \node[state](childTo) at (-0.5,-1){$r$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {Propagating the request upwards};
+  \end{scope}
+
+  \begin{scope}[xshift=1cm,yshift=2cm]
+    \node[state](parentFrom){$t$};
+    \node[state](childFrom) at (-0.5,-1){$r$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state](parentTo){$b$};
+      \node[state](childTo) at (-0.5,-1){$t$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {Propagating the token downwards};
+  \end{scope}
+
+  \begin{scope}[xshift=-4cm,yshift=-0.5cm]
+    \node[state](parentFrom){$b$};
+    \node[state](childFrom) at (-0.5,-1){$t$};
+    \draw (parentFrom) -- (childFrom);
+    \draw[dashed] (parentFrom) -- +(0.5,-1);
+    \begin{scope}[xshift=3cm]
+      \node[state](parentTo){$t$};
+      \node[state](childTo) at (-0.5,-1){$i$};
+      \draw (parentTo) -- (childTo);
+      \draw[dashed] (parentTo) -- +(0.5,-1);
+    \end{scope}
+    \node[fit=(parentFrom)(childFrom)](bgFrom){};
+    \node[fit=(parentTo)(childTo)](bgTo){};
+    \draw[->,myedge] (bgFrom) -- (bgTo);
+    \path ++(1.5,-1.5) node[caption] {Propagating the token upwards};
+  \end{scope}
+
+  \begin{scope}[xshift=1cm,yshift=-1cm,label distance=1pt]
+    \node[state,label={[scale=0.5]-80:$leaf$}](parentFrom){$i$};
+    \node[state](parentTo) at (3cm,0) {$r$};
+    \draw[->,myedge,shorten <=1pt] (parentFrom) -- (parentTo);
+    \path ++(1.5,-1) node[caption] {The leaves initiate the requests};
+  \end{scope}
+
+  \draw[white,thick] (0,-2) -- +(0,4) (-4,0) -- +(8,0);
+\end{tikzpicture}
+\end{center}

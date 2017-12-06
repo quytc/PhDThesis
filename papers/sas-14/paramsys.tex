@@ -1,0 +1,182 @@
+%-----------------------------------
+%\section{Parametrized Systems on Arrays}
+\section{Coverability in Parameterized Systems on Arrays}
+\label{section:paramsys}
+%-----------------------------------
+%
+We introduce a standard notion of parameterized systems operating on a
+linear topology, where processes may perform local transitions or
+universally/existentially guarded transitions --- standard model used
+e.g. in \cite{PRZ-tacas01,CTV06,rmc:wo:transducers,Namjoshi:VMCAI07}.
+
+A parameterized system is a pair $\parsys=(\locs,\rules)$ where
+$\locs$ is a finite set of \emph{local states} of a process and
+$\rules$ is a set of \emph{transition rules} over $\locs$.  A
+transition rule is either {\it local} or {\it global}.
+%
+A local rule is of the form $\loc\trans\loc'$, where the process
+changes its local state from $\loc$ to $\loc'$ independently of the
+local states of the other processes.
+%
+A global rule is of the form: 
+$\quantrule{\loc}{\loc'}{\quantify}{\circ}{S}$, where
+$\quantify\in\set{\exists,\forall}$, $\circ\in\set{<,>,\neq}$ and
+$S\subseteq\locs$.
+%
+Here, the $i^{th}$ process checks also the local states of the other
+processes when it makes the move\footnote{For the sake of
+presentation, we only consider here a version where a process checks
+atomically the other processes. The non-atomic case will be
+introduced in Section~\ref{section:non-atomic}.}.
+%
+For instance, the condition $\forall\,j<i:\,\witnesses$ means that
+“every process $j$, with a lower index than $i$, should be in a local
+state that belongs to the set $\witnesses$”; the condition
+$\forall\,j{\neq}i:\,\witnesses$ means that “the local state of all
+processes, except the $i^{th}$ one, should be one from the set
+$\witnesses$”; etc...
+%
+
+%A parameterized system $\parsys =(\locs,\rules)$ induces a
+%\emph{transition system} (TS) $\transys = (\confs,\trans)$ where $\confs =
+%\locs^*$ is the set of its \emph{configurations} and ${\trans}$,  \emph{transition relation}, is the union $\bigcup_{i\in\nat} {\trans_i}$ of \emph{indexed transition relations} ${\trans_i}\subseteq\confs\times\confs$. 
+We use $\conf[i]$ to denote the state of the $i^{th}$ process within the
+configuration~$\conf$.
+%
+For a configuration~$c$, $i\leq |c|$, and $\delta\in\Delta$, we define
+the immediate successor $\delta(c,i)$ of $c$ under a $\delta$-move of
+the $i^{th}$ process such that $\delta(c,i) = c'$ iff $\conf[i] =
+\loc$, $\conf'[i] = \loc'$, $\conf[j]=\conf'[j]$ for all $j:j\neq i$
+and either (i) $\delta$ is a local rule $\loc\trans\loc'$, or (ii)
+$\delta$ is a global rule of the form
+$\quantrule\loc{\loc'}{\quantify}\circ S$, where one of the following
+conditions is satisfied:
+%\begin{compactitem}
+\begin{itemize}%[topsep=0pt]%package enumitem
+\item 
+$\quantify=\forall$ and for all $j:1\leq j\leq |\conf|$ such that $j\circ i$, it holds that $\conf[j]\in \witnesses$.
+\item 
+$\quantify=\exists$ and there exists $j:1\leq j\leq |\conf|$ such that $j\circ i$ and $\conf[j]\in \witnesses$.
+%\end{compactitem}
+\end{itemize}
+%
+
+%\myparagraph{Coverability problem}
+%The verification problem of our concern is the problem of coverability of a given bad configuration. Formally, the verification problem is given by a system $\paramsys$ and a finite set of bad configurations. The answer to the problem is yes (safe) if no bad configuration is coverable, that is, there is no reachable configuration which contains a bad configuration as a subword.
+
+\begin{figure}[!t]
+  \centering
+  \inputtikz{\lstinputlisting[style=custom]{experiments/szymanski-implementation.txt}}
+  \vspace{-3mm}
+  \caption{Szymanski's protocol implementation (for process $i$)}
+  \label{figure:SzymanskiImplementation}
+\end{figure}
+
+
+%% -------------------------------------------------------
+%% REACHABILITY PROBLEM
+%% -------------------------------------------------------
+An instance of the \emph{reachability problem} is defined by a
+parameterized system $\parsys = (\locs,\rules)$, a regular set
+$\inits\subseteq\locs^+$ of \emph{initial configurations}, and a set
+$\bad\subseteq \locs^+$ of \emph{bad configurations}. 
+%
+Let $\subword$ be the usual \emph{subword relation}, i.e.,
+$u\subword\loc_1\ldots\loc_n$ iff $u=\loc_{i_1}\ldots\loc_{i_k},1\leq
+i_1,{\ldots},i_k\leq n$ and $i_j<i_{j+1}$ for all $j:1\leq j < k$.
+%
+We assume that $\bad$ is the upward closure $\{\conf\mid\exists b
+\in\minbad:b\subword \conf\}$ of a given \emph{finite} set
+$\minbad\subseteq\locs^+$ of \emph{minimal bad configurations}. 
+%
+This is a common way of specifying bad configurations which often
+appears in practice, see e.g. the running example of Szymanski's
+mutual exclusion protocol below.
+%
+We say that $\conf\in \confs$ is \emph{reachable} iff there are
+$\conf_0,\ldots, \conf_l\in\confs$ such that $\conf_0\in \inits$,
+$\conf_l = \conf$, and for all $0\leq
+i < l$, there are $\delta\in\Delta$ and $j\leq |\conf_i|$ such that $\conf_{i+1} = \delta(\conf_{i},j)$. 
+%
+%We use $\reach$ to denote the set of all reachable configurations. 
+%
+We say that the system $\parsys$ is \emph{safe} w.r.t.\
+$\inits$~and~$\bad$ if no bad configuration is reachable, i.e.\
+$\reach\cap\bad = \emptyset$, where $\reach$ is the set of all
+reachable configurations.
+\todo{a note about that we can have more general bad specified as an intersection of upward closed sets?}
+
+
+We define the \emph{post-image} of a set $X\subseteq\confs$
+ as the set $\postof{X} = \{\delta(\conf,i)\mid \conf\in X,i\leq|\conf|,\delta\in\Delta\}$.
+%
+For $n\in\nat$ and a set of configurations $X \subseteq \confs$, we
+use $X_n$ to denote its subset $\setcomp{c\in X}{|c|{\leq}n}$ of
+configurations of size up to $n$.
+%
+% For $\circ\in\{<,\leq,\geq,>\}$, we write $S_{\circ n}$ to denote the
+% union $\cup_{i\in\nat:i\circ n}S_i$.
+%
+%and 
+%configurations of length $n$ and $\reachof n$ to denote the set of
+%reachable configurations of length $n$.  For
+%$\circ\in\{<,\leq,\geq,>\}$, we write $\reachof {\circ n}$ to denote
+%the union $\cup_{i\in\nat:i\circ n}\reachof i$.
+%
+
+%% -----------------------------------------------------
+\myparagraph{Example: Szymanski's mutual exclusion protocol.}
+%% -----------------------------------------------------
+We illustrate the notion of a parameterized systems with the example
+of Szymanski's mutual exclusion protocol~\cite{Szymanski:protocol}.
+%
+The protocol ensures exclusive access to a shared resource in a system
+consisting of an unbounded number of processes organized in an array.
+%
+\begin{wrapfigure}{r}{0.6\linewidth}
+  \vspace{-24pt}
+  \begin{center}
+    \inputtikz{\input{Szymanski.tex}}
+  \end{center}
+  \vspace{-6mm}
+  \caption{Szymanski's protocol transition system}
+  \label{figure:SzymanskiTS}
+  \vspace{-12pt}
+\end{wrapfigure}
+%
+% The pseudocode of the process at the $i^{th}$ position of the array is
+% given in Fig.~\ref{figure:SzymanskiCode} and the transition rules of
+% the parameterized system in Fig.~\ref{figure:SzymanskiTS}.
+The transition rules of the parameterized system are given in
+Fig.~\ref{figure:SzymanskiTS}.
+%
+A state of the $i^{th}$ process consists of a program location and a
+value of the local variable $\mathit{flag}[i]$. Since the value of
+$\mathit{flag}[i]$ is invariant at each location, states correspond to
+locations.
+
+A configuration of the induced transition system is a word over the
+alphabet $\{\w{0},\ldots,\w{11}\}$ of local process
+states.
+%
+The task is to check that the protocol guarantees exclusive access to
+the shared resource regardless of the number of processes. A
+configuration is considered to be bad if it contains two occurrences
+of state\,\w[b]{9} or \w[b]{10}, i.e., the set of minimal bad
+configurations $\minbad$ is
+$\set{\w[b]{9,9},\w[b]{9,10},\w[b]{10,9},\w[b]{10,10}}$. %
+Initially, all processes are in state\,\w[i]{0}, i.e.\
+$\inits~=~{\w[i]{0}}^+$.
+
+% \begin{center}
+% %\begin{minipage}{0.58\linewidth}
+%   %\makebox[\textwidth][c]{\framebox[1.8\width][c]{For Process $i$}}%
+%   %\makebox[\textwidth][c]{For Process $i$}%
+%   % \lstinputlisting[caption={Szymanski's mutual exclusion protocol.}, style=custom, label=figure:SzymanskiCode]{szy-code.txt}
+%   \inputtikz{\lstinputlisting[style=custom]{experiments/szymanski-implementation.txt}}
+%   \vspace{-3mm}
+%   %\noindent\hrulefill%
+%   \captionof{figure}{Szymanski's protocol implementation.}
+%   \label{figure:SzymanskiImplementation}
+% %\end{minipage}%
+% \end{center}

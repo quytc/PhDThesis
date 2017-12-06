@@ -1,0 +1,186 @@
+%% ====================================================================
+\section{Procedure and Termination}
+\label{section:backward:procedure}
+\label{section:backward:termination}
+%% ====================================================================
+
+We are facing several issues to implement
+Algorithm~\ref{algo:backward:scheme}.
+%
+The latter is only a scheme as it manipulates potentially infinite
+upward-closed sets of configurations.
+%
+Even though upward-closed sets can be fully characterized using their
+minimal elements, why would it guarantee that there are
+\emph{finitely} many minimal elements for each upward-closed set?
+
+%% ********************************************************************
+\KW{WQO}%
+\index{Ordering}%
+\index{Well-Quasi Ordering (WQO)}%
+%% ********************************************************************
+The answer lies in a property of the subword relation: it is a
+\emph{well-quasi ordering} (WQO for short). %
+An ordering $\preorder$ over a set $A$ is said to be a WQO if for any
+infinite sequence $a_0, a_1, a_2, \ldots$ of elements of $A$, there
+exists $i$ and $j$ such that $i<j$ and $a_i\preorder a_j$. 
+%
+The definition implies that there is no infinite strictly decreasing
+sequence of elements of $A$.
+%
+The subword relation $\subword$ is in fact a WQO %
+(by Higman's lemma) % citation?
+and in particular, every set of minimal elements is finite. (Recall
+indeed that minimal elements are incomparable).
+%
+% Observe that, for two upward-closed sets $A$ and $B$, $\gen{A\union B}
+% \subseteq \gen{A}\ \union\ \gen{B}$ (with equality if the minimal
+% elements of both $A$ and $B$ are incomparable) and %
+% and recall that for two configurations $u$ and $v$, $u\subword v$
+% implies $\ucl{u} \supseteq \ucl{v}$ (and reciprocally).
+
+
+% %% ********************************************************************
+% \KW{Entailement}%
+% %% ********************************************************************
+% We define an \emph{entailement relation} $\entails$ over upward-closed
+% sets of configurations such that $A\entails B$ if and only if $\forall
+% b\in \gen{B} : \exists a\in \gen{A} : a\subword b$. Intuitively, all
+% the configurations represented in the set $B$ are already represented
+% in the (more ``general'') set $A$.
+
+\index{Symbolic Representations}%
+Since every upward-closed set is characterized by a finite number of
+minimal elements, the scheme in algorithm~\ref{algo:backward:scheme}
+can be adapted to manipulate individual configurations, that are used
+as symbolic representations for upward-closed sets.
+%
+% The pre-image of an upward-closed set $U$ is now defined as: %
+% $$
+% \pre(U) =
+% \gen{\union_{\delta\in\abstrans\rules}\inverse{\delta}(U)} =
+% \gen{\setcomp{u\in\confs}{\exists v\in U : u\atrans v}}
+% $$
+%
+\index{Pre-image operator}%
+The pre-image of such a minimal configuration $m$ is now defined as:%
+\footnote{Defining the pre-image as $\pre(m) =
+  \gen{\union_{\delta\in\abstrans\rules}\inverse{\delta}(\ucl{m})}$,
+  is only slightly more efficient theoretically since it avoids in the
+  union to carry around comparable elements, but we have yet to see
+  any real difference using the benchmarks from
+  Chapter~\ref{chapter:experimentation}.} %
+$$
+\pre(m) = \union_{\delta\in\abstrans\rules}\gen{\inverse{\delta}(\ucl{m})}%
+$$
+%\gen{\setcomp{u\in\confs}{\exists v\in\confs: m\subword v \wedge u\atrans v}}
+
+%
+\index{Verification Algorithm}%
+%\noindent%
+\begin{wrapfigure}{r}[0pt]{0.55\textwidth}
+\hfill%
+\begin{minipage}{0.56\textwidth}
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Backward Procedure}
+\label{algo:backward:procedure}
+$\worklist := \minbad$\;%
+$\visited := \emptyset$\;%
+\While{$\worklist \neq \emptyset$}{%
+  remove some $m$ from $\worklist$\;%
+  \lIf{$\ucl{m} \cap \Inits \neq \emptyset$\nllabel{implementation:backward:isinit}}{\Return Unsafe}%\;%
+  \eIf{$\exists s\in\visited: s\subword m$\nllabel{implementation:backward:discard}}{%
+    discard $m$ %
+  }{%
+    $\worklist := \worklist \;\union\; \pre(m)$\;%
+    $\visited := m \union \setcomp{s\in\visited}{m\not\subword s}$\nllabel{implementation:backward:minset}\;%
+  }%
+}%
+\Return Safe%
+\end{algorithm}
+\end{minipage}%
+\end{wrapfigure}
+%
+The implementation is presented in
+Algorithm~\ref{algo:backward:procedure}.
+%
+It initializes the worklist to be the set of minimal bad
+configurations~{\minbad}.
+%
+The list $\visited$~and~$\worklist$ now only contain configurations,
+as symbolic representations of upward-closed sets.
+%
+Line~\ref{implementation:backward:minset} ensures that the
+\emph{visited} configurations are incomparable with each other, i.e.\
+$\visited$ is a set of minimal elements, while the configurations from
+$\worklist$ are potentially comparable.
+%
+Line~\ref{implementation:backward:discard} tests whether a
+configuration should be discarded, because the set it represents
+already belongs to the visited set.\footnote{Recall that for two
+  configurations $u$ and $v$, $u\subword v$ implies
+  $\ucl{u}\supseteq\ucl{v}$ (and reciprocally).} %
+%
+The test on line~\ref{implementation:backward:isinit} is usually
+carried out using automata theoretic constructs, but it is usually
+simple and not a bottleneck.
+%
+An illustration of a backward run is depicted in
+Figure~\ref{figure:backward:reachability}.
+
+% Finally, we can sum up the few requirements in order to implement the
+% procedure. 
+% %
+% \begin{strategy}
+% \item The test $U \cap \Inits \neq \emptyset$ (line~\ref{line:isinit})
+%   is decidable for any upward-closed set $U$.
+% \item The computation of $\pre(U)$ (line~\ref{line:pre}) is decidable
+%   for any upward-closed set~$U$. This allows us to derive the elements
+%   of the sequence.
+% % \item $U_i \subseteq U_j$ is decidable for any upward-closed set~$U_i$
+% %   and $U_j$ (line~\ref{line:discard} and~\ref{line:minset}). %
+% %   Using $\subword$ on the generators.
+% \item The set of bad configurations is the upward-closure of a
+%   \emph{finite} set of minimal configurations.
+% \item \label{implementation:backward:termination} Is the algorithm guaranteed to terminate?
+% \end{strategy}
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[htb]
+  \centering
+  \tikzinput{img/sbr}
+  \caption{Backward Reachability}
+  \label{figure:backward:reachability}
+\end{figure}
+\endgroup
+
+%% ********************************************************************
+\KW{Termination}%
+\index{Verification Algorithm!Termination}%
+%% ********************************************************************
+The procedure computes a sequence $V_0, V_1, V_2, \ldots$ of (visited)
+sets of minimal configurations such that $V_0=\minbad$ and for all
+$i\geq 0$, $\ucl{V_{i+1}}\supseteq \ucl{V_i}$.
+%
+Assume that the increasing sequence $(\ucl{V_i})_{i\in\nat}$ is not
+converging. There is then no such point $m$ for which $\ucl{V_{m}} =
+\ucl{V_{m+1}}$, and the sequence is \emph{strictly} increasing. We can
+pick an element $c_{m+1}$ in $V_{m+1}$ that is not in $V_{m}$, and
+therefore, extract an infinite sequence of configurations
+$(c_i)_{i\in\nat}$ such that those configurations are all incomparable
+with each other, with respect to the subword relation~$\subword$.
+%
+This is a contradiction with the fact that $\subword$ is a WQO.
+% 
+Consequently, the sequence $(\ucl{V_i})_{i\in\nat}$ must converge, say
+at point $n$, and then %we then have, %
+$$
+\setcomp{c\in\confs}{\exists b\in \Bad : c \atransof{*} b} =
+\ucl{V_n} = \union_{i\in\nat}\ucl{V_i}
+$$
+The procedure is then guaranteed to terminate if the ordering in use
+is a WQO. If it furthermore holds that
+$\ucl{V_n}\cap\Inits=\emptyset$, then the bad configurations are not
+reachable from the inital ones and the safety property is proven.

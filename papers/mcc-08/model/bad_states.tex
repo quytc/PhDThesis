@@ -1,0 +1,29 @@
+\section{Bad states}
+
+\smallskip\noindent%
+\begin{minipage}{0.7\textwidth}
+  \setlength{\parindent}{1em}%
+  A data race occurs when multiple threads access a shared variable
+  and at least one has the intention of changing it, without any
+  synchronization (i.e. event ordering) constraints. Consequently, a
+  bad state is one configuration that contains a variable where its
+  access set has more than 2 pairs and one of the pairs contains a
+  write token.
+\end{minipage}
+%
+% Right part
+%
+\hfill%
+\begin{minipage}{0.29\textwidth}
+\begin{center}
+  \begin{tikzpicture}
+    \node[fill=yellow,inner sep=1pt,circle](x){X};
+    \node[ellipse,fill=yellow,minimum width=25mm, minimum height=10mm](set) at +(10mm,-15mm){};
+    \filldraw[yellow] (x.-130) to[out=-50,in=20] (set.160) -- (set.90) to[out=180,in=-100] (x.-10) -- (x.-40) -- (x.-90);
+    
+    \node[pair,scale=0.7,left=3mm of set.center]{T$_i$\nodepart{lower}R};
+    \node[pair,scale=0.7,right=-1mm of set.center]{T$_j$\nodepart{lower}W};
+    \node[right=7mm of set.center]{...};
+  \end{tikzpicture}
+\end{center}
+\end{minipage}

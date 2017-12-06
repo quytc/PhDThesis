@@ -1,0 +1,775 @@
+\section{Programs}
+\label{sec:concdata}
+
+We consider systems consisting of an arbitrary number of
+concurrently executing threads. Each thread may at any time invoke one of a
+finite set of methods.
+%% We assume that the global variables and the shared heap have been initialized
+%% before threads are created.
+%% Each thread can access the
+%% shared state concurrently, using a finite set of methods.
+Each method declares local variables (including
+the input parameters of the method) and a method body.
+In this paper, we assume that variables are either pointer variables (to heap cells), 
+or data variables (assuming values from an unbounded or infinite domain,
+which will be denoted by $\dset$).
+The body is built in the standard way
+from atomic commands using standard control
+flow constructs (sequential composition, selection, and loop constructs).
+Method execution is terminated by executing a {\tt return} command,
+which may return a value.
+%% When representing the behavior of a concurrent object in our program model,
+%% global variables are used to maintain the persistent state of the object.
+%% Methods can be invoked by concurrently executing threads at arbitrary
+%% points in time.
+The global variables can be
+accessed by all threads, whereas local variables can be accessed only
+by the thread which is invoking the corresponding method.
+We assume that the global variables and the heap are initialized by
+an initialization method, which is executed once at the beginning
+of program execution.
+
+%% In this paper, we assume that (global and local) variables
+%% are either {\em data variables}, which
+%% assume values from an infinite domain, denoted by $\dset$, or
+%% {\em pointer variables}, whose values are heap cells. We specialize the
+%% presentation for the later examples, and assume that
+%% each heap cell has two fields: a {\it data} field which contains a data
+%% value in $\dset$, and a {\it next} field which contains a pointer
+%% to a heap cell or $\nil$. In addition, fields can also contain the value
+%% $\bot$ (undefined): this is their initial value.
+
+Atomic commands include assignments between data variables, 
+pointer variables, or fields of cells pointed to by a pointer variable.
+The command {\tt {\bf new} node()} allocates a new structure of type
+{\tt node} on the heap, and returns a
+reference to it. The cell is deallocated by the command {\tt \bf free}.
+%% We assume a memory management mechanism, which automatically collects
+%% garbage, and also ensures that a new cell is fresh, i.e., has
+%% not been used before by the program; this avoids the so-called
+%% ABA problem (e.g.,~\cite{MS:QueueAlgorithms}).
+%% The assume command $\assume{\gvar}$ blocks execution of the thread when the
+%% guard $\gvar$ (a boolean expression) evaluates to false, and is
+%% executed without any effect when $\gvar$ evaluates to true.
+%% The command $\assert{\gvar}$ causes an error when the
+%% guard $\gvar$ (a boolean expression) evaluates to false, and is
+%% equivalent to a {\tt skip} statement when $\gvar$ evaluates to true.
+The compare-and-swap command {\tt CAS(\&a,b,c)} atomically
+compares the values of {\tt a} and {\tt b}.
+If  equal, it assigns the value of
+{\tt a} to {\tt c}  and returns {\tt TRUE}, 
+otherwise, it leaves {\tt a} unchanged and returns {\tt FALSE}. 
+
+
+As an example, Figure~\ref{fig:MS} shows %by Michael and Scott \cite{MS:QueueAlgorithms} (described in Fig.\ref{fig:MS}) 
+%
+%
+a version of the concurrent queue by Michael and
+Scott~\cite{MS:QueueAlgorithms}.
+The program represents a queue as a linked list from the node
+pointed to by {\tt Head} to a node that is either pointed by {\tt Tail} or by {\tt Tail}'s successor. 
+%
+The global variable {\tt Head} always points to a dummy cell whose successor, if any, stores the head of the queue. 
+%
+In the absence of garbage collection, the program must handle the ABA
+problem where a thread mistakenly assumes that a globally accessible
+pointer has not been changed since it previously accessed that
+pointer. Each pointer is therefore equipped with an additional {\tt
+  age} field, which is incremented whenever the pointer is assigned a
+new value.
+
+% Since the algorithm manages memory explicitly, each pointer has an additional
+% {\tt age} field, which is incremented whenever the pointer
+% is assigned a new value. In the absence of automatic garbage collection, the
+% {\tt age} field avoids the ABA problem, i.e., that a thread mistakenly assumes
+% that a globally accessible pointer has not been changed
+% since the the previous access to that pointer by the thread.
+
+%% It manipulates heap cells of type {\tt node}, each consisting of  
+%% a field {\tt val}, which carries a data value, and an extended pointer field
+%% {\tt next}. An extended pointer field (of type {\tt pointer\_t}) consists of
+%% a pointer {\tt ptr} to a {\tt node} and an integer counter {\tt age}.
+%% %
+%% The {\tt age} field is necessary in order to avoid the ABA problem in the absence
+%% of automated garbage collection.
+%% We say that an extended pointer points to a node {\tt n} to mean that its {\tt ptr} field points to {\tt n}.
+
+The queue can be accessed by an arbitrary number of threads, either by
+an enqueue method $\enqueue{d}$, which inserts a cell containing the data value {\tt d} at the tail, 
+or by a dequeue method $\dequeue{d}$ which returns  {\tt empty}
+if the queue is empty, and otherwise advances {\tt Head},
+deallocates the previous dummy cell
+and returns the data value stored in the new dummy cell. 
+The algorithm uses the atomic compare-and-swap (CAS) operation.
+For example,
+the command {\tt CAS(\&Head, head, $\langle$next.ptr,head.age+1$\rangle$)}
+at line~\ref{ms:code:line:deq} of the {\tt deq}
+method checks whether the extended pointer {\tt Head} equals the extended pointer {\tt head} (meaning that both fields must agree).
+If not, it returns {\tt FALSE}. Otherwise it returns {\tt TRUE} after assigning
+{\tt $\langle$next.ptr,head.age+1$\rangle$} to {\tt Head}.
+
+%Initially, the stack is empty, i.e., the pointer field of variable {\tt S} points 
+%to {\tt null}.
+% In order for a {\tt dequeue} method executed by a thread 
+% to remove an element from the queue, it needs to make
+% local copies of {\tt Head}, the variable field of the cell pointed by it,
+% and of {\tt Tail} and to perform a successful compare-and-swap
+% opertation 
+% %It returns {\tt empty}
+% %if {\tt Head} and {\tt Tai} turned out to point to the same cell with 
+% %{\tt null} successor.
+
+%  and creates a new cell, pointed to
+% by {\tt x}, to hold the new value. It copies the global variable
+% {\tt S} to its local variable {\tt t}, and lets the {\tt next} field of
+% the cell point to the top of the stack. It finally inserts the
+% cell into the stack by an atomic 
+% compare-and-swap operation.
+% The atomic {\tt cas(\&Head,h,[nxt.ptr,(t.age)+1])} operation
+% compares the values of {\tt S} and {\tt t} (both the {\tt ptr} and the {\tt age} fields).
+% If they are equal, it performs the following three actions: i) assigns the value of
+% {\tt x} to {\tt S.ptr}, ii) assigns the value of {\tt (t.age)+1} to {\tt S.age}, and iii)
+% returns {\tt true}, 
+% otherwise, it leaves {\tt S} unchanged and returns {\tt false}. 
+% %% %
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[%
+  codeblock/.style={text width=0.4\linewidth,rounded corners,inner xsep=12pt, inner ysep=4pt, below right,fill=blue!5!white,draw=gray!3!white,fill=gray!6!white,double}%
+  ]
+  \node[codeblock] (init) at (current bounding box.north west) {\begingroup\scriptsize\VerbatimInput[numbers=none]{ms/init}\endgroup};
+  \node[codeblock] (enq) at (init.south west) {\begingroup\scriptsize\VerbatimInput{ms/enq}\endgroup};
+  \node[codeblock] (struct) at (init.north east) {\begingroup\scriptsize\VerbatimInput[numbers=none]{ms/struct}\endgroup};
+  \node[codeblock] (deq) at (struct.south west) {\begingroup\scriptsize\VerbatimInput[firstnumber=17]{ms/deq}\endgroup};
+
+  \node[property,rotate=-10,scale=0.7] at ([shift={(-0.5,-0.2)}]init.north east) {\sc Init};
+  \node[property,rotate=-10,scale=0.7] at ([shift={(-0.5,-0.2)}]enq.north east) {\sc Enq};
+  \node[property,rotate=-10,scale=0.7] at ([shift={(-0.5,-0.2)}]deq.north east) {\sc Deq};
+
+%  \node[codeblock] (init) at (current bounding box.north west) {\lstinputlisting[style=code,escapechar=\%,numbers=none]{ms/init}};
+%   \node[codeblock] (enq) at (init.south west) {\lstinputlisting[style=code,escapechar=\%,firstnumber=0]{ms/enq}};
+%   \node[codeblock] (struct) at (init.north east) {\lstinputlisting[style=code,numbers=none]{ms/struct}};
+%   \node[codeblock] (deq) at (struct.south west) {\lstinputlisting[style=code,escapechar=\%,firstnumber=14]{ms/deq}};
+\end{tikzpicture}%
+\caption{Michael \& Scott's non-blocking queue~\protect\cite{MS:QueueAlgorithms}.}
+%% implementation. Integer counters (here  {\tt ages}) 
+%%are associated to variables to avoid ABA-like problems; {\tt older(x)} returns
+%% an integer that is strictly larger than {\tt x}.}
+\label{fig:MS}
+\end{figure}
+%
+%% Note that the values of two pointer variables are equal only if they point
+%% to the same cell (i.e., contain the same ``address'').
+%% $\xvar \assigned \yvar$,
+%% $\nxt\xvar \assigned \yvar$, {\em {\em
+%% $\xvar \assigned \nxt\yvar$, 
+%% $\dvar \assigned \dvar'$, 
+%% $\datafield\xvar \assigned \dvar$,
+%% or $\dvar \assigned \datafield\yvar$ where $\xvar$ and $\yvar$ are pointer 
+%% variables and $\dvar$ is a data variable), 
+%
+%% The  atomic construct $\atomic{\stmt}$ lets the compound statement 
+%% $\stmt$ (which must be known to terminate)
+%% %\TODO{$\stmt$ can contain loops}
+%% be executed atomically.
+%% $\xvar \assigned \yvar$,
+%% $\nxt\xvar \assigned \yvar$, {\em {\em
+%% $\xvar \assigned \nxt\yvar$, 
+%% $\dvar \assigned \dvar'$, 
+%% $\datafield\xvar \assigned \dvar$,
+%% or $\dvar \assigned \datafield\yvar$ where $\xvar$ and $\yvar$ are pointer 
+%% variables and $\dvar$ is a data variable), 
+%
+%% We represent the execution of a $\keyword{return}$
+%% command by assigning the return value to the local variable
+%% $\retval$, which is assumed to be an implicit local variable of each
+%% method. In the initial local state, the value of $\retval$ is undefined.
+
+%% {\bf (* Explain memory management? *)}
+
+%% We concisely describe program
+%% syntax by a set of control locations $\cstates$ and by
+%% representing the method body by a set of
+%% transitions $\loctrans{\cstate}{\stmt}{\cstate'}$, 
+%% which denote that a thread can move from control location $\cstate$
+%% to $\cstate'$ by executing the command or atomic statement $\stmt$.
+
+%% We here briefly sketch how an operational semantics for programs can
+%% be described in a natural way.
+%% Define a {\em heap} as a triple $\tuple{M,Next,Val}$,
+%% where $M$ is a finite set of {\em cells},
+%% where $Next : M \mapsto (M \cup \set{\nil,\bot})$
+%% maps each cell to either a cell in $M$, the value
+%% $\nil$, or $\bot$ (undefined), and where
+%% $Val : M \mapsto (\dset \cup \set{\bot})$
+%% maps each memory cell to a data value in $\dset$ or to $\bot$.
+%% Since we aim at programs without garbage collector,
+%% memory cells are partitioned into \emph{allocated} and \emph{free} cells.
+
+%% A {\em valuation}
+%% maps each data variable to a data value in $\dset$ or to $\bot$,
+%% and each pointer variable to either a cell in $M$, the value $\nil$, or $\bot$.
+%% Define a {\em local configuration} as a pair 
+%% $\tuple{\localcstate,\localval}$, where $\localcstate$ is a control location
+%% in some method, and $\localval$ is a valuation of the local variables of that
+%% method (including the input parameters and the variable $\retval$).
+%% Define a {\em thread configuration} $\threadstate$ as a
+%% mapping from a set $\domof\threadstate$ of thread identifiers (which represent
+%% the currently active method invocations) to local configurations.
+%% Define a {\em global configuration} as a triple
+%% $\globconf = \tuple{\heap,\globalval,\threadstate}$, where $\heap$ is a heap,
+%% $\globalval$ is a valuation of the global variables, and
+%% $\threadstate$ is a thread configuration.
+%% The {\em initial global configuration} $\initglobconfig$
+%% is the configuration that results after
+%% execution of the $\initmeth$ method from a configuration consisting
+%% of an empty heap with
+%% no cells, undefined initial values of global variables,
+%% and an empty set of active threads.
+
+%% The dynamic behavior of a program is represented by a set of
+%% {\em labeled transitions}.
+%% An {\em observable label} is a term of form $\invoke{\tid}{\mname}{d}$ or
+%% $\respond{\tid}{\mname}{d}$,
+%% where $\tid$ is a thread identifier,
+%% where $\mname$ is a method name, and $d$ is the value of the input or return
+%% parameter associated with the invocation or response.
+%% We omit the obvious modifications to allow for constant or missing return values
+%% (such as $\emptyconst$) and methods without input parameters.
+
+%% Program behavior is formalized by a labeled transition
+%% relation on the set of configurations.
+%% We omit a detailed account of each command, and just
+%% assume that the meaning of commands and atomic statements is given in terms
+%% of a labeled transition relation. Each element in the
+%% transition relation represents the
+%% execution of a command or atomic statement, which changes
+%% the local configuration of the thread, possibly updating
+%% the heap and global variables.
+%%  Elements of the transition
+%% relation are either of form
+%% $\transrel{\globconfig}{\observable{\location}{d}}{\globconfig'}$, denoting that
+%% the configuration can change from $\globconfig$ to $\globconfig'$ while
+%% emitting the abstract symbol $\observable{\location}{d}$, or of form
+%% $\transrel{\globconfig}{\tau}{\globconfig'}$ in case no abstract symbol
+%% is emitted.
+%% %% An initial global configuration is of form
+%% %% $\tuple{\heap,\globenv, \locconfig}$, where $\heap$ and $\globenv$ have
+%% %% been initialized, and $\locconfig$ maps each thread identifier to an
+%% %% initial control location and its local variables are undefined.
+%% An {\em execution} of a program is a sequence of transitions
+%% \(
+%% \initglobconfig 
+%% {\stackrel{l_1}{\rightarrow}}
+%% \globconfig_1
+%% {\stackrel{l_2}{\rightarrow}}
+%% \cdots
+%% {\stackrel{l_n}{\rightarrow}}
+%% \globconfig_n
+%% \).
+%% A {\em trace} of a program is the sequence of non-$\tau$ labels on transitions in some
+%% execution of the program.
+%% Traces capture an abstract view of program executions. 
+%% A program is specified in terms of properties of its
+%% traces. We now present how to use observers, i.e., automata equipped
+%% with variables that can take values from infinite domains, for
+%% specifying safety properties of programs.
+
+\section{Specification by Observers}
+\label{sec:observers}
+To specify a correctness property,
+we  instrument each method to generate abstract events. 
+An {\em abstract event} is a term of the form $\location(d_1, \ldots , d_n)$
+where $\location$ is an event type, taken from a finite set of event types,
+and  $d_1, \ldots , d_n$ are data values in $\dset$.
+To specify linearizability, the abstract event $\location(d_1, \ldots , d_n)$
+generated by a method should be such that $\location$ is the name of the
+method, and $d_1, \ldots , d_n$ is the sequence of actual parameters and
+return values in the current invocation of the method.
+This can be established using standard sequential verification techniques.
+\TODO{AR: removed ``This relationship between the behavior of the method, and the generated abstract events should be verified: it can be done by standard sequential verification techniques.''}
+%% should To specify this correctness condition,
+%% we instrument each method to generate an abstract event whenever a
+%% linearization point is passed. 
+%% The abstract event is simply the name of the method
+%% including its data parameters and return values. For instance, 
+
+%% A {\em parameterized event} is a term of  form $\location(p_1, \ldots , p_n)$, where 
+%% $p_1, \ldots , p_n$ are formal parameters.
+%% A command of a program can be instrumented to generate an
+%% abstract event, in which the parameters are obtained by evaluating
+%% expressions over the current program variables. The generation can be
+%% conditional on some boolean expression.
+
+We illustrate how to instrument
+the program of Figure~\ref{fig:MS} in order to specify that it is a linearizable
+implementation of a queue. 
+%% Linearizability provides the illusion that each
+%% method invocation takes effect instantaneously at some point (called the
+%% {\em linearization point}) between method invocation and return.
+%% This means that in any behavior, the sequence of executed linearization
+%% points conforms to the behavior of a sequential queue.
+%% To specify this correctness condition,
+%% we instrument each method to generate an abstract event whenever a
+%% linearization point is passed. 
+%% The abstract event is simply the name of the method
+%% including its data parameters and return values. 
+The linearization points %
+{\tikz{\node[shape=circle,inner sep=0, draw=blue,fill=red!50!blue,text width=1pt,scale=0.3]{};}} %
+are at line~\ref{ms:code:line:enq}, \ref{ms:code:line:empty} and \ref{ms:code:line:deq}.
+For instance, line~\ref{ms:code:line:enq} of the {\tt enq} method called with data value {\tt d} is instrumented to generate the
+abstract event {$\enqueue{d}$} when the {\tt CAS} command succeeds; no abstract
+event is generated when the {\tt CAS} fails.
+Generation of abstract events can be conditional. For instance,
+line~\ref{ms:code:line:empty} of the {\tt deq} method is instrumented to generate $\dequeue{empty}$
+when the value assigned to {\tt next} satisfies {\tt next.ptr = NULL}
+(i.e., it will cause 
+the method to return {\tt empty} at line~\ref{ms:code:line:emptyreturn}).
+
+%% When verifying linearizability, one must check that
+%% the instrumentation reflects the actual behavior of methods, i.e., that
+%% each method invocation generates exactly one abstract event which ``says''
+%% what the method does. This can be done by standard sequential verification
+%% techniques.
+
+%% After instrumentation,
+Each execution of the instrumented program will generate a sequence
+of abstract events called a {\em trace}. A {\em correctness property} (or
+simply a {\em property}) is a set of traces. We say that an instrumented program
+{\em satisfies} a property if each trace of the program is in the property.
+%
+In contrast to the classical (finite-state) automata-theoretic approach~\cite{VW:modelchecking},
+we specify properties by \emph{infinite-state} automata, called {\em observers}. An observer has
+a finite set of control locations, and a finite set of data variables that
+range over potentially infinite domains.
+It observes the trace and can reach an accepting control location if the trace
+is not in the property.
+
+Formally, let a {\em parameterized event} be a term of the 
+form $\location(p_1, \ldots , p_n)$, where 
+$p_1, \ldots , p_n$ are formal parameters.
+We will write $\pbar$ for $p_1, \ldots , p_n$, and
+$\dbar$ for $d_1, \ldots , d_n$.
+%
+An {\em observer} consists of
+%% $\auto=\tuple{\locs, \initloc, \final, \obsvars, \obsconstants, \obstransitions{\auto}}$
+%% where  $\locs$ is 
+a finite set of {\em observer locations}, one of which is
+%% $\initloc\in\locs$ is
+{\em initial} and some of which are 
+%% $\final$ is the set of 
+{\em accepting},
+a finite set of {\em observer variables},
+%% $\obsconstants$ is a finite set of {\em observer constants} in $\datadomain$,
+and
+%% $\obstransitions{\auto}$ is 
+a finite set of {\em transitions}.
+Each transition is of
+form ${\loc} \stackrel{\location(\pbar); g}{\obstransitions{\auto}}{\loc'}$ where 
+$\loc, \loc'$ are observer locations,
+$\location(\pbar)$ is a parameterized event, and the guard
+$g$ is a Boolean combination of equalities over formal parameters $\pbar$,
+and observer variables. Intuitively, it denotes that the observer can move
+from location $\loc$ to location $\loc'$ when an abstract event of form
+$\location(\dbar)$ is generated such that $g[\dbar/\pbar]$ is true.
+Note that the values of observer variables are not
+updated in a transition. 
+%% The observer variables assume values  in $\dset$: initially, they can assume
+%% any value in $\dset$.
+%% To simplify, % the presentation, and without loss of generality, 
+%% we always take  the observer variables to be pairwaise different.
+%
+%% with     $\varsof{\initloc}$ being the empty tuple,
+%$\obsvars$ is a finite set of {\em observer data variables}, and
+%with a distinguished subset $\vmark{\obsvars}\subseteq\obsvars$, and
+%% Observers are complete automata in that every unmatched abstract event
+%% is sent to a sink observer location. We do not 
+%% represent sink locations in the figures in order to improve readability.
+%\TODO{Sink stuff removed by Bengt}
+%
+An {\em observer configuration} is a
+pair $\tuple{\loc,\obsenv}$, where $\loc$ is an observer location,
+and $\obsenv$ maps each observer variable to a value in the data domain $\dset$.
+The configuration is initial if $\loc$ is initial; thus the variables can
+assume any initial values.
+An {\em observer step} is a triple
+\(
+\tuple{\loc,\obsenv}
+\stackrel{\location(\dbar)}{\obstransitions{\auto}}
+\tuple{\loc',\obsenv}
+\)
+such that there is a transition 
+${\loc} \stackrel{\location(\pbar) ; g}{\obstransitions{\auto}}{\loc'}$ for which
+$g[\dbar/\pbar]$ is true.
+%
+%
+A \emph{run} of the observer on a trace
+\(
+\trace =
+\location_1(\dbar_1)
+\location_2(\dbar_2)
+\cdots
+\location_n(\dbar_n)
+\)
+is a sequence of observer steps 
+\(
+\tuple{\loc_0,\obsenv}
+\stackrel{\observable{\location_1}{\dbar_1}}{\obstransitions{\auto}}
+%\tuple{\loc_1,\obsenv}
+%\stackrel{\tau}{\obstransitions{\auto}}
+%\tuple{\loc_2,\obsenv}
+\cdots
+\stackrel{\observable{\location_n}{\dbar_n}}{\obstransitions{\auto}}
+%\stackrel{\observable{\location}{\dvar_2}}{\obstransitions{\auto}}
+\tuple{\loc_n,\obsenv}
+\) where $\loc_0$ is the initial observer location.
+The run is \emph{accepting} if $\loc_n$ is accepting.
+A trace $\trace$ is \emph{accepted} by an observer $\auto$ if $\auto$ has an accepting run
+on $\trace$.
+The property specified by $\auto$ is the set of traces that are 
+not accepted by $\auto$.
+
+
+
+%% \begin{figure}[ht]
+%% \begin{tikzpicture}[framed, node distance=2.8cm, sstate/.style={circle, draw=blue!50,fill=blue!20,thick, minimum size = 5mm}, initial/.style=initial by arrow ]
+
+
+%% \draw (-2.2, 1.5) node (oname) {{\sc Double Insertion}:};
+%% %\draw (-1,0) node (order) {${\bigvee}_{\dred\neq\dblue}$};
+%% %
+%% \draw (-1,0) node[circle, draw=green!50,fill=green!20,thick, minimum size = 5mm] (o_0)   {$s_0$};
+%% \node[sstate] (o_1)    [right=of o_0]      {$s_1$};
+%% \node[circle, accepting, draw=red!50,fill=red!20,thick, minimum size = 5mm] (o_2)   [right=of o_1]  
+%% {$s_2$};
+
+%% \path[->] (o_0) edge [loop above] node {\scriptsize{$\begin{array}{c}
+%%                                               \aletter{insert(\pvar)}{\pvar}\\
+%%                                               \aletter{delete(\pvar)}{\pvar}
+%%                                             \end{array}$}} () 
+%%                 (o_0) edge node [above] {\scriptsize{$\aletter{insert(\pvar)}{\pvar=\obvar}$}} (o_1)
+%%                 (o_1) edge [bend left] node [below] {\scriptsize{$\aletter{delete(\pvar)}{\pvar=\obvar}$}} (o_0)
+%%                 (o_1) edge [loop above] node {\scriptsize{$\begin{array}{c}
+%%                                               \aletter{insert(\pvar)}{\pvar\neq\obvar}\\
+%%                                               \aletter{delete(\pvar)}{\pvar\neq\obvar}
+%%                                             \end{array}$}} ()
+%%                 (o_1) edge node [above] {\scriptsize{$\aletter{insert(\pvar)}{\pvar=\obvar}$}} (o_2);
+%% \end{tikzpicture}
+%% \caption{An observer for checking that any data value can be inserted at most once 
+%%   before being deleted (useful in e.g. a set specification).
+%%   The  $\set{s_2}$ is the set of final locations, and $\obsvars=\set{\obvar}$.
+%% }
+%% \label{fig:paperdinsertion}
+%% \end{figure}
+
+%% Thus, a program satisfies the property represented by observer
+%% $\auto$ if no trace of the program is accepted by $\auto$.
+%% %
+%% Intuitively, an observer observes a trace, and accepts whenever the
+%% trace violates the intended specification.
+Since the data variables can assume arbitrary initial values, observers
+can specify properties that are universally quantified over all data values.
+If a trace violates such a property for some data values, the
+observer can non-deterministically choose these
+as initial values of its variables, and thereafter detect the
+violation when observing the 
+\begin{wrapfigure}[8]{r}{.55\textwidth}
+%\begin{figure}
+\vspace{-25pt}
+\begin{center}
+\begin{tikzpicture}[%
+  framed%
+  ,initial/.style=initial by arrow%
+  ]
+%\draw (-2.2, 2) node (oname) {{\sc No Creation}:};
+%
+\node[obsstate=green] (o_0) {$s_0$};
+\node[obsstate=red,accepting,right=2.5cm of o_0] (o_1) {$s_1$};
+
+\path[->] (o_0) edge [loop left] node {\scriptsize{$\begin{array}{c}
+                                              \aletter{insert{(\pvar)}}{\pvar\neq\obvar}\\
+                                              \aletter{delete{(\pvar)}}{\pvar\neq\obvar}\\
+                                              \aletter{isEmpty{()}}{true}
+                                            \end{array}$}} () 
+                (o_0) edge node [above] {\scriptsize{$\aletter{delete{(\pvar)}}{\pvar=\obvar}$}} (o_1);
+\end{tikzpicture}
+\end{center}
+\vspace{-15pt}
+\caption{An observer for checking that no data value can be deleted if it has not been first inserted.
+  The variable $\obvar$ is an observer variable.
+}
+\label{fig:set:creation}
+%\end{figure}
+\end{wrapfigure}
+%
+trace. Several data structures can be specified
+by a collection of properties, each of which is represented by an observer.
+For instance, a set can be specified by a collection of properties, one of
+which is that a data value can be deleted, only if it has been previously
+inserted. 
+The observer in
+Figure~\ref{fig:set:creation} specifies this property: it accepts executions
+in which for some data value $d$, 
+a $\mbox{\tt delete}(d)$-event is observed even though no
+earlier $\mbox{\tt insert}(d)$-event has been observed. 
+%
+
+
+\section{Data Independence}
+\label{sec:wolper}
+In the previous section, we showed how observers can 
+specify some data structures, such as sets, in a straight-forward way.
+%% domain, observers can specify properties that are universally
+%% quantified over data values, by checking whether the property can be
+%% violated for some values of the variables.
+However, in order to specify some other
+data structures, including queues and stacks, 
+for which one must
+be able to ``count'' the number of copies of a data value that have been
+inserted but not removed, we must additionally employ an extension of a
+data independence argument, originating from
+Wolper~\cite{Wolper:dataindependence}, as follows.
+
+The argument assumes that for each trace, there is a fixed subset of
+all occurrences of data values in the trace, called the set of
+{\em input occurrences}.
+Formally, this subset can be arbitrary, but to make the argument work,
+input occurrences should typically be the data values that are provided as
+actual parameters of method invocations.
+Thus, in the program of Figure~\ref{fig:MS},
+the input occurrences are the parameters of
+$\enqueue{d}$ events, whereas parameters of $\dequeue{d}$ events are
+{\em not} input occurrences, since they are provided as return values.
+
+Let us introduce some definitions.
+A trace is {\em differentiated} if all its
+input occurrences are pairwise different.
+A {\em renaming} is any function $\renaming: \dset \mapsto \dset$
+on the domain of data values.
+A renaming $\renaming$ can be applied to trace $\trace$, resulting in the
+trace $\renaming(\trace)$, where each
+data value $\ditem$ in $\trace$ has been replaced by $\renaming(\ditem)$. 
+%
+%% \begin{definition}
+%% \label{def:data-independence}
+A set $\traceset$ of traces is {\em data independent} if for any trace $\trace\in\traceset$ the  following two conditions hold:
+\begin{itemize}
+\item
+$\renaming(\trace)\in\traceset$ for any renaming $\renaming$, and 
+\item
+there exists a differentiated trace $\trace_d\in\traceset$ with $\renaming(\trace_d)=\trace$ for some renaming $\renaming$.
+%% \qed
+\end{itemize}
+%% \end{definition}
+We say that a program is {\em data independent} if the set of its
+traces is data independent.
+A program, like the one in Figure~\ref{fig:MS}, 
+can typically be shown to be data independent by a simple syntactic 
+analysis that checks that data values are not
+manipulated or tested, but only copied.
+%% check. Property (i) holds if
+%% the only operations on data variables are copying an input value to a data variable, or copying
+%% the value of a data variable to an output or to another data variable, without
+%% reading an unitialized variable.
+%% %
+%% Property (ii) follows by observing that given a trace, pairwise different input values can be fed to the data structures by appending to the input data values the value of 
+%% a counter that is systematically incremented. Property (i)
+%% then ensures that the resulting trace can be renamed to the original trace.
+In a similar manner, a correctness property % $\traceprop$ is data independent if 
+% it is closed under renamings. In other words, $\trace\in\traceprop$ implies
+% $\renaming(\trace)\in\traceprop$ for any renaming $\renaming$.
+%
+is {\em data independent} if the set of traces that it specifies
+is data independent. 
+From these definitions, the following theorem follows directly.
+
+\begin{theorem}
+\label{thm:differentiated}
+A data independent program satisfies a data independent property
+iff its differentiated traces satisfy the property.
+\qed
+\end{theorem}
+%Thus, when checking that a data independent program satisfies a
+%data independent property, it suffices to consider the
+%differentiated  traces of the program. Hence,  
+%an observer for a data independent property need only accept the
+%differentiated traces that violate the property.
+%This means that whenever a data value occurs in two input occurrences of
+%a trace, the observer can stop checking (i.e., move to
+%a non-accepting sink state), since the trace will anyway be ignored.
+%
+Thus, when checking that a data independent program satisfies a
+data independent property, 
+it suffices to check that all differentiated traces of the program 
+belong to the property. 
+Hence, an observer for a data independent property need only accept the
+differentiated traces that violate the property. It should not accept any
+(differentiated or non-differentiated) trace that satisfies it. 
+%
+
+Note that the set of traces of a set is {\em not}
+data independent, e.g., since it contains a trace
+where two different data values are inserted, but {\em not} its renaming
+which inserts the same data value twice. This is not a problem,
+since the set of {\em all} traces of a set can be specified by observers,
+without using a data independence argument.
+
+\begin{wrapfigure}{r}{.71\textwidth}
+\vspace{-30pt}
+\begin{center}
+\begin{tikzpicture}[%
+  remember picture%
+  ,framed%
+  ,initial/.style=initial by arrow%
+  ]
+%
+%\draw (-1,0) node (order) {${\bigvee}_{\dred\neq\dblue}$};
+%
+\node[obsstate=green] (o_0)  {$s_0$};
+\node[obsstate, right=2cm of o_0] (o_1) {$s_1$};
+\node[obsstate, right=2cm of o_1] (o_2) {$s_2$};
+\node[obsstate=red, right=2cm of o_2, accepting] (o_3) {$s_3$};
+% \node[below=8mm of o_0, xshift=-3mm, anchor=west](guard) {\scriptsize{$guard=\left(\pvar\neq\obvar_1 \land \pvar\neq\obvar_2 \land \pvar\neq {\tt empty}\right)$}};
+% \node[right=3mm of guard] {\scriptsize{$guard'=\left(\pvar\neq\obvar_1 \land \pvar\neq\obvar_2\right)$}};
+
+\node[anchor=center](guard) at (4,-1) {\scriptsize{
+    $\begin{array}{l} guard=\left(\pvar\neq\obvar_1 \land \pvar\neq\obvar_2 \land \pvar\neq {\tt empty}\right) \\
+      guard'=\left(\pvar\neq\obvar_1 \land \pvar\neq\obvar_2\right)
+    \end{array}$}};
+
+\path[->] (o_0) edge [loop above] node[anchor=south west] {\mbox{\scriptsize $\begin{array}{c}
+                                              \aletter{enq(\pvar)}{guard}\\
+                                              \aletter{deq(\pvar)}{guard'}
+                                            \end{array}$}} () 
+                (o_0) edge node [below] {\mbox{\scriptsize $\aletter{enq(\pvar)}{\pvar=\obvar_1}$}} (o_1)
+                (o_1) edge [loop above] node[anchor=south west] {\mbox{\scriptsize $\begin{array}{c}
+                                              \aletter{enq(\pvar)}{guard}\\
+                                              \aletter{deq(\pvar)}{guard}
+                                            \end{array}$}} ()
+                (o_1) edge node [below] {\mbox{\scriptsize $\aletter{enq(\pvar)}{\begin{array}{c} \pvar=\obvar_2 \\ \pvar\neq\obvar_1\end{array}}$}} (o_2)
+                (o_2) edge [loop above] node[anchor=south west] {\mbox{\scriptsize $\begin{array}{c}
+                                              \aletter{enq(\pvar)}{guard}\\
+                                              \aletter{deq(\pvar)}{guard}
+                                              \end{array}$}} ()
+                (o_2) edge node [below] {\mbox{\scriptsize $\aletter{deq(\pvar)}{\pvar=\obvar_2}$}} (o_3);
+\end{tikzpicture}
+\tikz[remember picture,overlay]{\node[property,above=8mm of o_3,rotate=-10]{\sc Fifo};}
+\end{center}
+\vspace{-18pt}
+\caption{An observer to check that {\sc Fifo} ordering is respected. 
+All unmatched abstract events, for example $\aletter{deq(\pvar)}{\pvar=\obvar_1}$ at location $s_1$, send the observer to a sink state.
+}
+\label{fig:fifo:observer}
+\vspace{-8mm}
+\end{wrapfigure}
+
+%% A program, like the one in Figure~\ref{fig:Treiber}
+%% can typically be shown to be data independent by a simple sufficient
+%% check. Property (i) holds if
+%% the only operations on data variables are copying an input value to a data variable, or copying
+%% the value of a data variable to an output or to another data variable, without
+%% reading an uninitialized variable.
+%% %
+%% Property (ii) follows by observing that given a trace, pairwise different input values can be fed to the data structures by appending to the input data values the value of 
+%% a counter that is systematically incremented. Property (i)
+%% then ensures that the resulting trace can be renamed to the original trace.
+
+The key observation is now that the differentiated traces of queues and
+stacks can be specified succinctly by observers with a small
+number of variables.
+%% In the appendix, we provide a standard natural specification of a queue,
+%%  that data independent data structures
+%% are queues or stacks precisely when all differentiated traces verify 
+%% properties captured by simple observers.
+%
+%% and prove, in Lemma~\ref{lem:observational}, 
+In the case of a FIFO queue, its differentiated traces are precisely those
+that satisfy the following four properties
+%% For the case of queues, we show that
+%% a data independent data structure is a queue
+%% precisely when all differentiated traces satisfy
+%% the following properties
+for all data values $d_1$ and $d_2$.
+%% \begin{figure}
+%\begin{minipage}{.9\textwidth}
+\begin{description}
+\item[] {\sc No Creation:} $d_1$ must not be dequeued before it is enqueued % i.e., data cannot be created,
+\item[] {\sc No Duplication:} $d_1$ must not be dequeued twice, %i.e., data cannot be duplicated,
+\item[] {\sc No Loss:} {\tt empty} must not be returned if $d_1$ has been
+enqueued but not dequeued, %i.e., data cannot be lost
+\item[] {\sc Fifo:}   $d_2$ must not be dequeued before $d_1$
+  if it is enqueued after $d_1$ is enqueued.
+%i.e., FIFO order is respected, 
+\end{description}
+%% \caption{ Differentiated traces of a queue are exactly those verifying the four properties above 
+%% for all pairs of different data values $d_1$ and $d_2$}
+%% %\end{minipage}
+%% \end{figure}
+%
+Each such property can be specified by an observer with 
+one or two variables.
+If the property is violated by some
+specific data values $d_1$ and $d_2$, then there
+is some run of the observer,
+in which the initial values of the variables are $d_1$ and $d_2$,
+which leads to an accepting state.
+Figure~\ref{fig:fifo:observer} shows an observer for the {\sc Fifo} property.
+
+We can also
+%% Lemma~\ref{lem:observational} also
+provide an analogous characterization of the
+differentiated traces of a stack.
+
+
+%% in an atomic statement. For example, the assignment
+%% {\tt b:=CAS(\&S,t,x)} is instrumented to generate an
+%% abstract event $\mbox{\tt foo}(\mbox{\tt d})$ for a local variable
+%% {\tt d} by the 
+%% $\atomic{\mbox{\tt b:=CAS(\&S,t,x)}; \mbox{\tt emit}(\mbox{\tt foo}(\mbox{\tt d}))}$
+%% construct.
+%% To verify that no trace of the program is accepted by $\auto$, we
+%% form, as in the automata-theoretic approach~\cite{VW:modelchecking},
+%% the cross-product of the program and the observer, synchronizing
+%% on abstract events, and check that
+%% this cross-product cannot reach a configuration where the observer
+%% is in an accepting state.
+
+
+%% Using observers, we can characterize universally quantified properties 
+%% on program traces. If such a property is violated by some specific 
+%% values on the data of the observable events,
+%% then there will be some initial configuration of the observer that detects this violation. 
+%% %
+%% Using a small number of observers, depicted in \cite{technicalreport}, 
+%% we characterize all traces allowed by sets data structures.
+%% %
+%% For example, Figure \ref{fig:dinsertion} captures all traces where
+%% some arbitrary data value is inserted twice.
+%
+%
+%
+% In addition to the trace observers, we define a property 
+% of data independence that makes the verification tractable. 
+% Under data independance, it is sufficient
+% to specify only traces of a specific form, namely traces in which all input data values
+% are distinct. If both the program and the correctness property
+% are data independent, then an observer need only 
+% consider traces where each value assumed by the observer variables
+% is inserted once into the data structure.
+% %% if the correctness property is symmetric wrp.\ to different data values,
+% %% then the trace observer need only consider a finite number of distinct
+% %% data values.
+% % why there is no need to check
+% % trace properties over all (possibly infinite) data values by showing 
+% % that it is sufficient to check generated traces over a finite number of data values.
+% %
+% The techniques are illustrated by proposing trace observers using finite
+% sets of data variables
+% to specify familiar data structures like queues, stacks, and sets.
+%
+%
+%Trace observers introduce data variables from an unbounded domain. %, and thus complicate the analysis. 
+%which allows to restrict the specification to traces in which all input values are distinct\TODO{this is the first time 
+%the term input is used. Introduce it earlier?}.

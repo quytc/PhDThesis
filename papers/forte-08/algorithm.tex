@@ -1,0 +1,64 @@
+\section{Algorithm}
+\label{sec:alg}
+%
+In this section, we instantiate the scheme of Section~\ref{sec:scheme} to derive 
+an algorithm for solving \acovproblem.
+%
+We do that by introducing an effective and well quasi-ordered constraint system.
+%
+
+Throughout this section, we assume a parameterized tree system $\parsys=\parsystuple$
+and the induced approximate transition system $\atsof{\parsys}=\tuple{\confs,\atransrel{}{}}$.
+%
+We define a constraint to be a tree in $\trees{\states}$.
+%
+Although we use the same syntax as for configurations, constraints are interpreted 
+differently.
+%
+More precisely, given a constraint $\constr$, we let $\denotationof{\constr}=\setcomp{\conf
+\in\confs}{\constr\preceq\conf}$. 
+%
+
+An aspect of our constraint system is that each constraint characterizes a set of 
+configurations which is upward closed with respect to $\preceq$.
+%
+Conversely (by Higman's Lemma~\cite{Higman:divisibility}), any upward closed set 
+$\fconfs$ of configurations can be characterized as $\denotationof{\constrs_\fconfs}$ 
+where $\constrs_\fconfs$ is a finite set of constraints.
+%
+In this manner, \acovproblem{} is reduced to checking the reachability of a finite set of 
+constraints.
+%
+
+Below we show effectiveness and well quasi-ordering of our constraint system, meaning that 
+we obtain an algorithm for solving \acovproblem{}.
+%
+First, observe that the entailment relation can be computed in a straightforward manner since 
+for any constraints $\constr,\constr'$, we have  $\constr\entailed\constr'$ iff $\constr\preceq\constr'$.
+%
+
+In order to check the initial condition, we rely on previous works on \emph{regular tree languages}~\cite{CoDa:book} 
+and provide a sufficient condition on $\init$ which guarantees effectiveness of $\init\intersect\denotationof{
+\constr}=\emptyset$ for any constraint $\constr$.
+%
+More precisely, we require that the set $\init$ can be characterized by a regular tree
+language.
+%
+
+For the computation of Pre we rely on the following result.
+%
+\begin{lemma}
+\label{lem:pre:comp}
+For any constraint $\constr$, the set of constraints $\pre{\constr}$ is computable and finite.
+% for an approximate transition system.
+\end{lemma}
+%
+
+It was shown in~\cite{kruskal} that the embedding relation on trees $\preceq$ is a well quasi-order 
+(Kruskal's theorem).
+%
+This combined with results in~\cite{Parosh:Bengt:Karlis:Tsay:general} guarantee termination of 
+our scheme when instantiated on the constraints we have defined above.
+%
+
+

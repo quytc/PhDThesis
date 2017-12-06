@@ -1,0 +1,93 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "head"
+%%% End:
+%
+\section{Experimental Results}
+\label{section:experiments}
+
+\looseness -1 Based on our method, we have implemented a prototype in Java. 
+%
+We consider three classes of properties: null-dereferencing, well-formedness of output, and garbage creation.
+%
+We consider a set of programs taken from the PALE website \cite{PALE:web}.
+%
+The  results, obtained on a 1.1 GHz Pentium M, are summarised below.
+%
+\ignore{%
+{\footnotesize
+\vspace{0.2cm}
+\begin{tabular}{||l|c|c|c|c||}
+\hline
+Program & Property & Time & \# Constr. & \# Iter. \\
+\hline
+\verb+Concat+ & Deref & 0.4 s& 7 & 3\\
+\hline
+\verb+Delete+ & Deref & 0.4 s& 8 & 4\\
+\hline
+\verb+Fumble+ & Deref & 0.3 s& 3 & 2\\
+\hline
+\verb+Reverse+ & Deref & 0.3 s& 2 & 1\\
+\hline
+\verb+Walk+ & Deref & 0.4 s& 9 & 3\\
+\hline
+\verb+Zip+ & Deref & 1.9 s& 206 & 12\\
+\hline
+\verb+Fumble+ & Garbage & 0.7 s& 38 & 14\\
+\hline
+\verb+Reverse+ & Garbage & 0.8 s& 55 & 24\\
+\hline
+\verb+Reverse+ & Well-form. & 1.7 s& 48 & 20\\
+\hline
+\end{tabular}
+\vspace{0.2cm}
+}
+} % end of ignore
+
+\smallskip
+\noindent%
+{\footnotesize
+\begin{tabular}{|l|c|c|c|c||l|c|c|c|c|}\hhline{*{10}{=}}
+  {\bf Prog.} & {\bf Prop.} & {\bf Time} & {\bf \#C$^{ons.}$} & {\bf \#Iter.} &
+  {\bf Prog.} & {\bf Prop.} & {\bf Time} & {\bf \#C$^{ons.}$} & {\bf \#Iter.}\\\hhline{*{10}{=}}
+  \verb+Concat+ & Deref & 0.4 s& 7 & 3 &
+  \verb+Delete+ & Deref & 0.4 s& 8 & 4\\
+  \hline
+  \verb+Fumble+ & Deref & 0.3 s& 3 & 2 &
+  \verb+Reverse+ & Deref & 0.3 s& 2 & 1\\
+  \hline
+  \verb+Walk+ & Deref & 0.4 s& 9 & 3 &
+  \verb+Zip+ & Deref & 1.9 s& 206 & 12\\
+  \hline
+  \verb+Fumble+ & Garbage & 0.7 s& 38 & 14 &
+  \verb+Reverse+ & Garbage & 0.8 s& 55 & 24\\
+  \hline
+  \verb+Reverse+ & Well-form. & 1.7 s& 48 & 20\\\hhline{*{5}{=}}
+\end{tabular}
+}
+
+%
+\noindent
+%
+The entry {\bf \#C$^{ons.}$} gives the total number of minimal configurations added to $\toexplore$ in the analysis. The entry {\bf \#Iter.} is the number of iterations of the \textbf{while}-loop of the algorithm.
+%
+
+\noindent
+%\smallskip%
+For each of the three properties, we give a finite set of minimal configurations violating the property.
+%
+For instance, for null-dereferencing, the set contains all 
+configurations of the form $\conf=\tuple{\cstate,\graph}$
+defined as follows.
+%
+There is a transition of the form $\tuple{\cstate,\action,\cstate'}$
+where $\action$ is of one of the forms $\yvar\assigned\nxt\xvar$ or $\nxt\xvar\assigned\yvar$.
+%
+%Furthermore
+Also, $\graph$ is the graph consisting of a single vertex labeled with $\nil$ and $\xvar$.
+%$=\tuple{\vertices,\suc,\labeling}$ where $\vertices=\{\vertex\}$, 
+%$\succ(\vertex)=\undef$, $\labeling(\xvar)=\labeling(\nil)=\vertex$, and 
+%$\labeling$ is undefined on all other variables.
+%
+% This illustrated in Figure~\ref{bad:figure}, together with
+% the sets corresponding to well-formedness, and garbage generation.

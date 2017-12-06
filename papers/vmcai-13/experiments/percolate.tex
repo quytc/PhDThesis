@@ -1,0 +1,11 @@
+This protocol simulates the way results propagate in a digital
+circuit. At the leaves lie a serie of binary inputs. The nodes of the
+tree act as boolean {\tt OR} gates.
+% \begin{wrapfigure}{r}[2pt]{0.3\textwidth}
+% \tikz \node[or gate US,minimum height=2cm]{};
+% \end{wrapfigure}
+ At first, every gate has its
+output set to \emph{unknown}. At each step of the protocol, a gate for
+which each input is determined can set its output to a definite
+value. The process iterates until the root gate has a definite value.
+

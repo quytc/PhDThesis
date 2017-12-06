@@ -1,0 +1,49 @@
+\section{Case Studies}
+\label{sec:examples}
+%
+
+In this section, we provide descriptions of two tree protocols we have analyzed using our method.
+%
+For each protocol, we define the corresponding parameterized tree system model and we give the 
+sets of unsafe ($\fconfs$) and initial ($\init$) configurations.
+%
+
+\ignore{
+In the formal description of the protocols, we make use of an extension of the definition provided in 
+Section~\ref{sec:parsys}.
+%
+More precisely, in the definition of a parameterized tree system, we assume that we are given a finite set 
+of variables ranging over finite domains.
+%
+
+Formally, a parameterized system $\parsys$ is a tuple $\parsysextuple$, where $\vars$ is a finite set of 
+\emph{variable definitions} and $\rwrules$ is finite set of rewrite rules.
+%
+A variable definition is a pair $\tuple{\var,\dom{\var}}$, where $\var$ is the variable name and $\dom{\var}$ 
+is a finite set representing the possible values which can be taken by $\var$.
+%
+We redefine rewrite rules as follows.
+%
+A rule $\rwrule\in\rwrules$ is a tree in $\trees{\guards_\vars\times\assigns_\vars}$.
+%
+$\guards_\vars$ is the set of conjuctions of the form $\bigwedge_{i=1}^n\var_i=e_i$ ($n\in\nat$) where for each 
+$i:1\le i\le n$, $\var_i$ is a varibale and $e_i\in\dom{\var_i}$ is a value in the domain of $\var_i$.
+%
+$\assigns_\vars$ is the set of \emph{operations on $\vars$} each of the the form $\var_1=e_1;\ldots;\var_m=e_m$ 
+(for $m\in\nat$) where for any $j:1\le j\le m$, $\var_j$ is a variable in $\parsys$ and $e_j\in\dom{\var_j}$.
+%
+
+Observe that by finitness of $\vars$, the new definition is equivalent to the one introduced earlier 
+(Section~\ref{sec:parsys}).
+%
+Therefore, the definitions of the induced transition system, the approximation, the constraint system and 
+the computation of Pre can be modified accordingly in a straightforward manner.
+%
+
+In the description of the examples below, we use the extended definition in order to make the presentation more 
+clear.
+}
+
+\input{arbiter}
+
+\input{firewire}

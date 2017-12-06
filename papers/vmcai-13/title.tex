@@ -1,0 +1,66 @@
+
+%\title{Parametrized Verification\\through $k$-View Abstraction}
+\title{All for the Price of Few}
+\subtitle{\footnotesize (Parameterized Verification through View Abstraction)}
+
+
+
+% \author{Parosh Aziz Abdulla\inst{1}
+% \texttt{parosh@it.uu.se}
+% \and \\
+% Fr\'ed\'eric Haziza\inst{1}
+% \texttt{daz@it.uu.se}
+% \and \\
+% Luk\'a\v s Hol\'ik\inst{1}\inst{2}
+% \texttt{holik@fit.vutbr.cz}
+% }
+%\institute{}
+
+\author{Parosh Aziz Abdulla\inst{1}  \and Fr\'ed\'eric Haziza\inst{1} \and Luk\'a\v s Hol\'ik\inst{1}\inst{2} }
+\institute{Uppsala University, Sweden \and Brno University of Technology, Czech Republic.}
+
+\maketitle
+
+
+
+\begin{abstract}
+  We present a simple and efficient framework for automatic
+  verification of systems with a parameteric number of communicating
+  processes.
+  % 
+  The processes may be organized in various topologies
+  such as words, multisets, rings, or trees.
+  % 
+  Our method needs to inspect only a small number of processes in
+  order to show correctness of the whole system. It relies on an
+  abstraction function that views the system from the perspective of a
+  fixed number of processes. The abstraction is used during the
+  verification procedure in order to dynamically detect cut-off points
+  beyond which the search of the state space need not continue.
+  % 
+  We show that the method is complete for a large class of well
+  quasi-ordered systems including Petri nets.
+  %
+  Our experimentation on a variety of benchmarks demonstrate that the
+  method is highly efficient and that it works well even for classes
+  of systems with undecidable verification problems.
+\end{abstract}
+
+
+
+
+%\begin{abstract}
+%  We present a simple and efficient framework for automatic
+%  verification of parameterized systems. The method needs to run only
+%  a small number of processes in order to show correctness of the
+%  whole system.  The method relies on an abstraction function that
+%  views the system from the perspective of a parametric number $k$ of
+%  processes. The abstraction is used during the verification procedure
+%  in order to dynamically detect cut-off points beyond which the
+%  search of the state space need not continue.  We show how the
+%  framework can be instantiated for a wide range of parameterized
+%  systems with different topologies, namely words, multisets, rings,
+%  and trees.  Our experimental results demonstrate the efficiency of
+%  the approach on a variety of benchmarks belonging to the
+%  above-mentioned classes of systems.
+%\end{abstract}

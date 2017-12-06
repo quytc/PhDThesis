@@ -1,0 +1,53 @@
+\section{Conclusion and Future Work}
+\label{section:conclusion}
+We have  presented a uniform framework
+for automatic verification of 
+different classes of parameterized systems
+with topologies such as words, trees, rings, or
+multisets, with an extension to handle non-atomic global conditions.
+%
+The framework allows to perform parameterized verification by
+only considering a small set of instances of the system.
+%
+We have proved that the presented algorithm is complete for a wide
+class of well quasi-ordered systems.
+%
+Based on the method, we have implemented a prototype which performs
+efficiently on a wide range of benchmarks.
+%
+
+We are currently working on extending the framework to the case of
+multi-threaded programs operating on dynamic heap structures.
+%
+These systems have notoriously complicated behaviors.
+%
+Showing that verification can be carried out
+through the analysis of only a small number of threads
+would allow for more efficient algorithms for these systems.
+%
+Furthermore,
+our algorithm relies on a very simple abstraction function, 
+where a configuration of the system is approximated by its
+sub-structures (subwords, subtrees, etc.).
+%
+We believe
+that our approach can be lifted to more general classes
+of abstractions.
+%
+This would allow for abstraction schemes that are more
+precise than existing ones, e.g.,
+ thread-modular abstraction \cite{ThreadModular}
+and 
+Cartesian abstraction \cite{TMisCA}.
+%
+
+Obviously, the bottleneck in the application
+of the method is when the cut-off condition is only satisfied at high
+values of
+$k$ (see e.g., the {\it Kanban} example in
+Section~\ref{section:experiments}).
+%
+We plan therefore to integrate the method with advanced 
+tools that can perform efficient forward reachability analysis, like
+SPIN~\cite{SPINModelChecker}, and to use efficient
+symbolic encodings for compact representations for the set of views.

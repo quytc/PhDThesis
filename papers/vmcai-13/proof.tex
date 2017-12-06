@@ -1,0 +1,553 @@
+\section{Proof of Lemma~\ref{lemma:apost}}
+\label{proof:apost}
+
+\noindent
+{\bf Lemma~\ref{lemma:apost}.}
+{\it
+For any $k\in\nat$ and $\X\subseteq\viewsof k$,
+$\projof {\postof {\gammaof k (\X)}} k\, \cup\, V\;  =\; \projof {\postof {\limgammaof k {k+1} (\X)}} k\, \cup\, V.$
+\smallskip
+}
+%
+
+\noindent
+We will need the following definition in the proof.
+%
+Given a configuration $\conf = \loc_1\ldots\loc_n$
+%
+and a subset of its positions $\pos = \{i_1,\ldots, i_l\}\subseteq \{1,\ldots, n\},l\leq k$,
+%
+with $i_1<\ldots < i_l$, 
+%
+the subword of $\conf$ defined by $\pos$ is the word 
+%
+$\viewof \conf \pos = \loc_{i_1}\ldots \loc_{i_l}$.
+%
+We will also make use of the following observations:
+\begin{enumerate}
+\item
+If $\conf_L\,\loc\,\conf_R\trans \conf_L\,\loc'\,\conf_R$ is a transition of $\trans$
+%
+induced by a local or universally guarded rule $r$, 
+%
+then for any $\conf_L'\subword\conf_L$ and $\conf_R'\subword\conf_R$, 
+%
+$\conf_L'\,\loc\,\conf_R'\trans \conf_L'\,\loc'\,\conf_R'$ 
+%
+is also a transition of $\trans$ induced by $r$.
+\item
+If $\conf = \loc_1\ldots\loc_i\ldots\loc_n\trans \loc_1\ldots\loc'_i\ldots\loc_n = \conf'$ 
+%
+is a transition of $\trans$ induced by an existentially guarded rule 
+%
+$r = \quantrule{\loc}{\loc'}{\exists}{\circ}{\L}$ where $\circ\in\{<,>,\neq\}$
+%$r = \qtrans \loc {\quantify \L} {\loc'}$ where $\quantify \in\{\lexists,\rexists,\lrexists\}$
+%
+and the needed witness from $\L$ is at the $j$th position of $\conf$, 
+%
+then every $\viewof \conf p \trans \viewof {\conf'} p$ where $i,j\in p$ is a transition induced by $r$.
+\end{enumerate}
+
+
+
+\begin{proof}
+%
+We prove the lemma by showing that for any configuration $\conf\in\gammaof k(V)$ of the size $m > k+1$
+%
+such that there is a transition $\conf\trans\conf'$ with $\view'\in \projof {\conf'} k$, 
+%
+the following holds:
+%
+Either $\view'\in V$
+%
+or there is a configuration $\confd\in\gammaof k (V)$ of size at most $k+1$
+%
+with a transition $\confd\trans\confd'$ with $\view'\in \projof {\confd'} k$. 
+
+By definition, 
+%
+$\view'$ equals $\viewof {\conf'} p$ for some $p\subseteq\{1,\ldots,m\}$.
+%
+Let us denote by $\view$ the \emph{predecessor} $\viewof {\conf} p$ of $\view'$.
+%
+Notice that since $c\in\gammaof k(V)$, 
+any view of $c$ of the size at least $k$ belongs to $\gammaof k(V)$.
+%
+Therefore also $\view\in\gammaof k(V)$.
+%
+The transition $\conf\trans\conf'$ is induced by some rule $r\in\rules$.
+%
+Local and guarded rules induce transitions that change only state on one position of a configuration. 
+%
+Let $1\leq i\leq m$ be the index of the position in which $\conf'$ differs from $\conf$.
+%
+If $i\not\in p$, then $\view = \viewof {\conf} p = \viewof {\conf'} p = \view'$. 
+%
+In this case, we trivially have $\view'\in V$. 
+%
+Assume now that $i\in p$.
+%
+The rule $r$ may be local, universally, or existentially guarded.
+%
+If $r$ is local or universally guarded, 
+%
+then $\view\trans\view'$ is a transition of the system by observation 1. 
+%
+Then we can take $\confd = \view$ and $\confd'=\view'$.
+%
+%If $r$ is universally guarded, then since $\conf\trans\conf'$ is a transition of the system, 
+%
+%we know that $\view\trans\view'$ is also a transition of the system 
+%
+%and we can again take $\confd = \view$ and $\confd'=\view'$.
+%
+
+The interesting case is when $r$ is existentially guarded.
+%
+That is, $r = \quantrule{\loc}{\loc'}{\exists}{\circ}{\L}$ where $\circ\in\{<,>,\neq\}$.
+%That is, $r = \qtrans \loc {\quantify \L} {\loc'}$ where $\quantify \in\{\lexists,\rexists,\lrexists\}$.
+%
+There are two sub-cases:
+%
+1) there is a witness from $\L$ at some position $j\in p$ enabling the transition $\conf\trans\conf'$. 
+%
+Then $\view$ still contains the witness on an appropriate position needed to fire $r$. 
+%
+Therefore $\view\trans\view'$ is a transition of the system induced by $r$
+%
+and we can conclude as in the case when $r$ is local or universal. 
+%
+2) no witness enabling the transition $\conf\trans\conf'$ is at a position $j\in p$. 
+%
+Then there is no guarantee that $\view\trans\view'$ is a transition of the system. 
+%
+However, the witness enabling the transition $\conf\trans\conf'$ 
+%
+is at some position $j\in\{1,\ldots,m\}$. 
+%
+We will create a configuration of size at most $k+1$ by including this position $j$ to $\view$.
+%
+Let $p'= p\cup\{j\}$. 
+%
+$\viewof {\conf} {p'} \trans \viewof {\conf'} {p'}$ is a transition of the system induced by $r$ 
+%
+(by observation 2) since
+%
+$\viewof {\conf} {p'}$ contains the witness at the appropriate place w.r.t.\ the position performing $r$. 
+%
+We clearly have that $\view'\in\projof {\viewof {\conf'} {p'} } k$.
+%
+We also have that $\viewof {\conf} {p'} \in \gammaof k (V)$  
+%
+since $\viewof {\conf} {p'}\subword \conf$ and $\conf\in\gammaof k (V)$.
+%
+We may therefore take $\confd = \viewof {\conf} {p'}$ and $\confd' = \viewof {\conf'} {p'}$.
+%
+The lemma is proven.
+%
+\qed
+\end{proof}
+
+The proof for broadcast transitions is essentially the same as the one for existentially guarded transitions.
+%
+If the position $i$ of the initiating process is in $\pos$, 
+%
+then $\view\trans\view'$ is a transition of the system.
+%
+Otherwise we just include $i$, 
+%
+that is, we define $\pos' = \pos\cup\{i\}$, 
+%
+in which case $\viewof\conf{\pos'}\trans\viewof{\conf'}{\pos'}$ is a transition of the system
+%
+and $\confd = \viewof\conf{\pos'}$ and $\confd' =\viewof{\conf'}{\pos'}$.
+
+The proof of Lemma~\ref{lemma:rendez-vous} (for rendez-vous transition rules) 
+%
+is also similar to the case of existentially guarded rules.
+%
+A difference is that to create a transition of the system, 
+%
+one needs to put into $\pos'$ all position of witnesses needed to fire the transition that are missing in $\pos$.
+%
+That causes that $\viewof\conf{\pos'}$ may be of size at most $k+m$, 
+%
+as reflected in the statement of the lemma.
+
+
+
+\section{\bf Lemma~\ref{lemma:apost} Under Presence of For-Loop Rules.}
+\label{proof:non-atomic}
+
+We give the proof of an analogy of Lemma~\ref{lemma:apost} 
+%
+for transition systems of Section~\ref{section:non-atomic} induced by parameterized systems containing for-loop rules.
+%
+In the proof, we also assume possible presence of local and broadcast rules.
+
+Given a configuration $\conf = (w,\tick)\in \confs$
+%
+and a subset of its positions $\pos = \{i_1,\ldots, i_n\}\subseteq \{1,\ldots, |w|\}$
+%
+with $i_1<\ldots < i_n$, 
+%
+the view of $\conf$ defined by $\pos$ is the configuration
+%
+$\Viewof \conf \pos = (w',\tick')$ where 
+%
+$w' = w_{i_1}\ldots w_{i_n}$, $\tick' = \{(j,k)\mid (i_j,i_k)\in\tick\}$. 
+%
+Observe that $\view$ is a view of $\conf$ iff 
+%
+there is a set of positions $\pos\subseteq  \{1,\ldots, |w|\}$ 
+%
+such that $\view = \Viewof \conf \pos$.
+%
+Observe also that if an index $i$ of a process performing a for-loop is not in $\pos$, 
+%
+then the view $\Viewof{\conf,\pos}$ does not retain any information about marks $(i,j)\in\tick$ of $i$.
+%
+For convenience, we will write $\conf_i$ to denote $w_i$ 
+%
+and $(i,j)\in\conf$ to denote that $(i,j) \in \tick$.
+%
+%
+The proof is an analogy of that of basic variant of Lemma~\ref{lemma:apost} in Section~\ref{proof:apost}.
+
+\begin{proof}
+%
+We prove the lemma by showing that for any configuration $\conf\in\gammaof k(V)$ of the size $m > k+1$
+%
+such that there is a transition $t= \conf\trans\conf'$ with $\view'\in \projof {\conf'} k$, 
+%
+the following holds:
+%
+Either $\view'\in V$,
+%
+or there is a configuration $\confd\in\gammaof k(V)$ of size at most $k+1$
+%
+with a transition $\confd\trans\confd'$ with $\view'\in \projof {\confd'} k$. 
+
+The case when $\view = \view'$ is trivial since $\view' = \view \in \X$.
+%
+We further assume that $\view \neq \view'$.
+%
+We know that $\view'$ equals $\Viewof {\conf'} p$ for some $p\subseteq\{1,\ldots,m\}$.
+%
+Let us denote $\view$ its predecessor $\Viewof {\conf} p$.
+%
+The transition $t$ is induced by some rule $r\in\rules$.
+%
+We will analyze three possibilities according to the type of $t$: 
+%
+1) $r$ is a local rule or $r$ is a for-loop and $t$ is an iteration or a terminating transition; 
+%
+2) $r$ is a for-loop and $t$ is an escape; or
+%
+3) $r$ is a broadcast rule.
+
+When $r$ is a local rule, 
+%
+or $r$ is a for-loop and $t$ is a terminating transition, then  
+%
+$\view$ differs from $\view'$ at some position $i$ with $v_i \neq v_i'$. In the latter case also $(i,j)\not\in \conf'$ for all $j$.
+%
+If $t$ is an iteration, then the only difference of $\view$ and $\view'$ is that $(i,j)\in\view'$ for some $j$.
+%
+In all the three cases, $\view\trans\view'$ is also a transition induced by $r$, hence we can take $\confd=\view$ and $\confd'=\view'$. 
+
+The case when $t$ is an escape of a for-loop rule $\forrule q r \circ S s$  
+%
+is an analogy of the case when $r$ is an existentially guarded rule in the proof in Section~\ref{proof:apost}.
+%
+There are positions $1\leq j,i \leq \conf$ with $j\circ i$ 
+%
+such that $q = \conf_i$, $\conf_i' = s$, and $\conf_j\in S$. 
+%
+We also have that $(i,j')\not\in\conf'$ for all $j'$.
+%
+Observe that $i$ must be in $\pos$, since otherwise $\view = \view'$.
+%
+If also $j\in\pos$ or there is another $j'\in \pos$ with $i\circ j'$ and $\conf_i\in S$, 
+%
+then $\view\trans\view'$ is a transition induced by $r$ and we are done.
+%
+If there is no $j'\in\pos$ with $j'\circ i$ then $\view\trans\view'$ is not a transition of $\trans$.
+%
+Then $\confd$ and $\confd'$ can be obtained as follows. 
+%
+Define $\pos' = \pos\cup\{j\}$. 
+%
+Then $\Viewof\conf {\pos'}\trans\Viewof{\conf'}{\pos'}$ is again a transition of $\trans$, 
+%
+$\Viewof \conf {\pos'}$ belongs to $\limgammaof k {k+1} (\X)$ and
+%
+$\view'\in \projof {\Viewof \conf {\pos}} k$.
+%
+Thus we can take $\confd=\Viewof \conf {\pos}$ and $\confd' = \Viewof \conf {\pos'}$. 
+
+Last, assume that $r$ is a broadcast transition rule
+%
+$(\loc\trans\loc',\{\locr_1\trans\locr_1',\ldots,\locr_m\trans\locr_m'\})$.
+%
+The argument in this case is an analogy of that of escaping for-loop transition.
+%
+If the position $i$ of the state playing the role of the initiator of $t$ (thus $\loc = \conf_i, \loc'=\conf_i'$) is in $p$,
+%
+then $\view\trans\view'$ is a transition of the system and we take $\confd = \view,\confd'= \view'$.
+%
+Otherwise, we define $\pos' = \pos\cup\{i\}$ and take $\confd = \Viewof\conf{\pos'}$ and  $\confd' = \Viewof{\conf'}{\pos'}$.
+%
+\qed
+\end{proof}
+
+The proof could be carried out also for all other types of rules. 
+%
+(e.g.\ rendez-vous rules) in an analogous manner as the proof of Lemma~\ref{lemma:rendez-vous}.
+%
+However, in our framework, we use for-loop rules only together with broadcast and local rules.
+
+\section{Proof of Lemma~\ref{lemma:invariant}}
+
+The lemma states that for any $k\in\nat$ and any set containing the
+views of~$\inits$ and stable under $\apostof {.}  k$, it then in
+fact covers all the \emph{views} of $\reach$.
+%
+We will need the following trivial properties: %
+For any $k\in\nat$ and for any set $A,B,X\subseteq \confs$, 
+\begin{center}
+\begin{tabular}{r@{\hspace{3mm}}l}
+(i)   & $A \subseteq B \Rightarrow \projof{A} k \subseteq \projof{B} k$ \\
+(ii)  & $A \subseteq B \Rightarrow {\gammaof k (A)} \subseteq {\gammaof k (B)}$ \\
+(iii) & $\projof{\gammaof  k (X)} k \subseteq X$ \\
+%(iv)  & $X_{\geq k} \subseteq\reconstruct{\projof{X} k}$ \\
+(iv)  & $X \subseteq\gammaof k (\projof{X} k)$ \\
+\end{tabular}
+\end{center}
+%We note that in the proof of Lemma~\ref{lemma:invariant:general} which generalises Lemma~\ref{lemma:invariant}, point (iv) depends on the assumption that $\preceq$ and $|.|$ are compatible.
+
+\begin{lemma}\label{lemma:galois}
+$\projof A k \subseteq B \Leftrightarrow A \subseteq {\gammaof k (B)}$\\
+\end{lemma}
+
+\begin{proof}
+$\Rightarrow$ is proven using (ii) and (iv).
+$\Leftarrow$ is proven using (i) and (iii).
+% By (ii) and (iv), $\projof A k \subseteq B \Rightarrow A \subseteq {\reconstruct B}$.
+% By (i) and (iii), $A \subseteq {\reconstruct B} \Rightarrow \projof A k \subseteq B$.
+\qed
+\end{proof}
+
+%$$
+%\text{For any } k\in\nat \text{ and set } \X\subseteq\viewsof k,\,
+%\left\{
+%  \begin{array}{l}
+%    \projof{\inits} k\subseteq\X \\
+%    \apostof \X k\subseteq\X \\
+%  \end{array}
+%\right. \Rightarrow \projof{\reach} k\subseteq\X.
+%$$
+\paragraph{\bf Lemma~\ref{lemma:invariant}.}
+{\it
+For any $k\in\nat$ and $X\subseteq\viewsof k$, $\projof \inits k\subseteq X \wedge \apostof X k\subseteq X \Rightarrow \projof {\reach} k\subseteq X$.  
+}
+
+\begin{proof}
+  Let us fix a $k$ and a set $X$ such that $\projof{\inits}
+  k\subseteq X$ and $\projof {\postof{\gammaof k (X)}} k\subseteq X$
+  hold.
+%
+  Lemma~\ref{lemma:galois} implies that
+  $\inits\subseteq{\gammaof k (X)}$ and
+  $\postof{\gammaof k (X)}\subseteq{\gammaof k (X)}$.
+%
+%  Since $\post$ is monotonic w.r.t. $\subseteq$, it also holds that $\postof{\inits}
+%  \subseteq {\reconstruct X}$.
+ %
+% 
+$\gammaof k (X)$ is thus a fixpoint of $\post$ greater than $I$.
+Since $\reach$ is the least fixpoint of $\post$ greater than $I$, 
+we have $\reach\subseteq{\gammaof k (X)}$.
+%  It is easy to derive that $\reach\subseteq{\reconstruct X}$ (since
+%  $\reach~=~\mathit{\post^*(\inits)}$). 
+Finally,
+  $\projof{\reach}{k}\subseteq X$ (by lemma~\ref{lemma:galois}). 
+%and $\projof{\reach}{k}=\projof{\reach_{\geq k}}{k}$ (by definition of $\alpha_k$).
+  %
+  The lemma is proven.\qed
+\end{proof}
+
+%\section{Proofs for Section~\ref{section:completeness}}
+%\label{app:completeness}
+%%The proof of Lemma~\ref{lemma:invariant:general} is an analogy of the proof of Lemma~\ref{lemma:invariant}. 
+%%\comment{Is the assumption of WQO used? Are the facts discussed below used in the proof of Lemma~\ref{lemma:invariant:general}?}
+%%It uses the assumption that the transition relation is size preserving.
+%%Next, we prove Lemma~\ref{lemma:finiteness}.
+%%
+%%\paragraph{\bf Lemma~\ref{lemma:finiteness}}
+%%Let $|.|$ be a measure compatible with a WQO over a set $S$.
+%%For any $n\in\nat$, there is only finitely many elements of $S$ of the size $n$.
+%%\begin{proof}
+%%By contradiction.
+%%Let $T$ be an infinite subset of $S$ such that all its elements have the same size.
+%%Due to compatibility, elements of $S$ may have the same size only if they are either equivalent w.r.t. $\prec$ or incomparable. 
+%%$T$ cannot contain an infinite equivalence class of $\preceq$ because $\preceq$ is a WQO. 
+%%Thus there must be infinitely many elements in $T$ which are incomparable w.r.t.$\preceq$. However, this again contradicts that $\preceq$ is a WQO.  
+%%\qed
+%%\end{proof}
+%%Lemma~\ref{lemma:invariant:general} is proved analogically as Lemma~\ref{lemma:invariant}, using the assumption of size preserving transition relation.
+%%
+%Before we prove the Theorem~\ref{theorem:completeness}, we introduce standard notions and facts from the theory of well-quasi ordered systems (see, e.g., \cite{abdulla:well}).
+%%
+%Let $S\subseteq \confs$ and let 
+%$\preceq$ be a WQO over $\confs$.
+%%
+%%Its upward closure is the set $\ucl(V) = \{w\in Q^*\mid \exists v\in V:v\subword w\}$ 
+%%
+%%Its downward closure is the set $\dcl(S) = \{\conf\in \confs\mid\exists \conf'\in S:\conf\preceq \conf'\}$.
+%%
+%%A set is downward closed iff it equals its downward closure.
+%%
+%If $S$ is upward closed, 
+%%
+%its complement $\confs\setminus S$ is downward closed and, conversely, 
+%%
+%if $S$ is downward closed, its complement is upward closed. 
+%%
+%%
+%For every upward closed set $S$, there exists a minimal (w.r.t $\subseteq$) set $\gen$ such that $\ucl\gen = S$, 
+%%
+%called generator of $S$, 
+%%
+%which is finite.
+%%
+%If moreover $\preceq$ is a partial order, 
+%%
+%then $\gen$ is unique. 
+%%
+%%Since $\subword$ is a WQO, 
+%%
+%%every upward closed set of words has a unique finite generator. 
+%%
+%%Composition of monotonic functions is a monotonic function.
+%%
+%Last, given a relation $f\subseteq S\times S$ monotonic w.r.t. $\preceq$ 
+%%
+%and a set $T\subseteq S$, 
+%%
+%it holds that if $f(T)\subseteq T$, 
+%%
+%then $f(\dcl T)\subseteq \dcl T$, 
+%%
+%where $f(T)$ is the image of $T$ 
+%%
+%defined as $\{t'\mid\exists t\in T:(t,t')\in f\}$.
+%%
+%Recall that $\gammaof k, \post, \apost k, \abstraction k$ are monotonic functions w.r.t. $\subseteq$ for all $k\in\nat$. 
+%
+%\paragraph{\bf Theorem~\ref{theorem:completeness}.} 
+%{\it\theoremtext}
+%
+%
+%\begin{proof}
+%Let $\gen$ be the minimal generator of the upward closed set $\confs\setminus\dcl\reach$.
+%%
+%We will prove that $k$ can be chosen as $k=\max\{|\conf|\mid\conf\in\gen\}$.
+%%
+%Such $k$ exists because $\gen$ is finite.
+%
+%
+%
+%We first show an auxiliary claim that $\gammaof k(\thing) \subseteq \dcl\reach$.
+%%
+%Let $s\in \gammaof k(\thing)$. 
+%%
+%For the sake of contradiction, suppose that $s\not\in \dcl\reach$.
+%%
+%%By the definition of $\gamma$, we know that if $|s|\leq k$ then $s\in \dcl\reach$, 
+%%
+%%which contradicts our assumption.
+%%
+%%Let us therefore supppose that $|s| > k$.
+%%
+%We have that $s\in \confs\setminus\dcl\reach  =\ucl\gen$
+%%
+%and there is a generator $t\in\gen$ with $t\preceq s$.
+%%
+%By the definition of $k$, $|t|\leq k$. 
+%%
+%Since $t\in\gen$, $t\not\in\dcl\reach$ and hence $t\not\in\alpha_k(\dcl\reach)$. But due to this and since $|t| = k$ and $t\preceq s$,
+%%Notice that $\thing = [\dcl\reach]_{\leq k}$ 
+%%
+%%(by the definition of $\alpha_k$) 
+%%
+%%and thus $t\not \in [\dcl\reach]_{\leq k}$.
+%%
+%%Since $t\preceq s$, 
+%%
+%we have that $s\not\in\gammaof k(\thing)$ (by the definition of $\gammaof k$)
+%%
+%which contradicts the initial assumption and the claim is proven.
+%
+%Next, we argue that ${\thing}$ is stable under abstract post, that is,
+%%
+%$\apostof {{\thing}} k \subseteq {\thing}$.
+%%
+%Since $\reach$ is stable under $\post$ and $\post$ is monotonic w.r.t. $\preceq$,
+%%
+%we know that $\dcl\reach$ is stable under $\post$ 
+%%
+%(that is, $\post(\dcl\reach)\subseteq \dcl\reach$).
+%%
+%%By the definition of $\abstraction k$,  
+%%
+%%$\abstr k {\dcl\reach} = \thing$.
+%%
+%Then,  by the definition of $\apost k$,
+%%
+%and by monotonicity of $\abstraction k$ w.r.t. $\subseteq$, 
+%%
+%we have
+%$\apostof {\thing} k = 
+%%
+%\abstr k {\post(\gammaof k (\thing))} \subseteq 
+%%
+%\abstr k {\post(\dcl\reach)}\subseteq 
+%%
+%%\abstr k {\dcl\reach} = 
+%%
+%\thing$. 
+%%
+%%We have thus shown that $\abstr k {{{\dcl_k\reach}}}$ is closed under $\apost k$.
+%
+%Since $\dcl\reach$ contains $\inits$, $\abstr k \inits  \subseteq \thing$.
+%%
+%$\thing$ is thus a fixpoint of $\lambda X.\alpha_k(\inits)\cup\apost k (X)$.
+%%
+%Because $\Vk$ is the least fixpoint of $\lambda X.\alpha_k(\inits)\cup\apost k (X)$, 
+%%
+%$\Vk\subseteq \thing$.
+%%
+%From, $\reach\cap\bad = \emptyset$ and since $\bad$ is upward closed, 
+%we know that $\dcl\reach\cap\bad = \emptyset$.
+%%
+%Because $\gammaof k (\Vk)\subseteq 
+%%
+%\gammaof k (\thing) \subseteq  
+%%
+%%\thing  \subseteq 
+%%
+%\dcl\reach$
+%%
+%and $\dcl\reach\cap \bad = \emptyset$,
+%%
+%$\gammaof k (\Vk)\cap\bad=\emptyset$.
+%\qed
+%\end{proof}
+
+
+
+
+
+
+

@@ -1,0 +1,812 @@
+
+% put this in the beginning of a paragraph and Latex will
+% automatically try to make it one line shorter, if possible
+
+\newcommand{\X}{\looseness -1}
+
+% - ignore command
+\newcommand{\ignore}[1]{}
+\newcommand{\forget}[1]{}
+
+\newcommand{\aletter}[2]{{\left<{\tt #1}, #2\right>}}
+
+%% Having a note in the margin. Notes are numbered.
+%% ---------------------------------------------
+\newcommand{\NoteComment}[2]{%
+  \stepcounter{NoteCounter#1}%
+  {\scriptsize\bf$^{(\arabic{NoteCounter#1})}$}%
+  \marginpar
+  %[\fbox{
+  %   \parbox{2cm}{\raggedleft
+  %       \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+  %       \footnotesize #2}}]%
+  {\fbox{\parbox{25mm}{\raggedright 
+      \footnotesize$^{({\bf{\arabic{NoteCounter#1}{#1}}})}$%
+      \footnotesize #2}}}
+}
+\newcounter{NoteCounter}
+\newcommand{\Note}[1]{\NoteComment{}{#1}}
+% \renewcommand{\Note}[1]{} %% Uncomment to remove the comment
+\newcommand{\parosh}[1]{\Note{Parosh: #1}}
+\newcommand{\daz}[1]{\Note{Fred: #1}}
+\newcommand{\ahmed}[1]{\Note{Ahmed: #1}}
+\newcommand{\bengt}[1]{\Note{Bengt: #1}}
+
+%% Local note as footnotes.
+%% ---------------------------------------------
+%\newcommand{\localnote}[1]{\footnote{#1}}
+%\renewcommand{\localnote}[1]{}
+%% Uncomment to remove the comment footnote
+
+%\renewcommand{\parosh}[1]{\localnote{Parosh: #1}}
+%\renewcommand{\ahmed}[1]{\localnote{Ahmed: #1}}
+%\renewcommand{\daz}[1]{\localnote{Fred: #1}}
+%\renewcommand{\bengt}[1]{\localnote{Bengt: #1}}
+
+%% ---------------------------------------------
+
+\newcommand{\myparagraph}[1]{\noindent\textbf{#1}}
+%\renewcommand{\myparagraph}[1]{\paragraph{#1}}
+
+%% ================================
+%% Common definitions
+%% ================================
+
+
+%% ================================
+%% TikZ styles
+%% ================================
+
+
+\pgfdeclarelayer{my background} 
+\pgfsetlayers{background,my background,main}
+
+%\tikzset{background rectangle/.style={rounded corners,inner sep=1pt,bottom color=red!20,top color=white}}
+\tikzstyle{background rectangle}=[rounded corners=1ex,draw=gray!5,thick,fill=gray!10,double]
+%\tikzstyle{background rectangle}=[rounded corners,fill =red!10]
+\tikzstyle{every state}=[inner sep=0pt, minimum size=4mm,draw=blue,fill=blue!20,thick]
+\tikzstyle{every node}=[inner sep=0pt, minimum size=4mm]
+
+%% Observer states
+\tikzset{obsstate/.style={circle,thick, minimum size = 5mm, draw=#1!50,fill=#1!20}}
+\tikzset{obsstate/.default=blue}
+\tikzset{property/.style={rounded corners=1pt,inner xsep=1mm,draw=black!50,fill=white,double}}
+
+% %% --------------------------------------------------------------------------------------------------
+% \lstdefinestyle{code}{
+% %language=C,                % choose the language of the code
+% basicstyle=\rmfamily\scriptsize,       % the size of the fonts that are used for the code
+% numbers=left,                   % where to put the line-numbers
+% numberstyle=\tiny,      % the size of the fonts that are used for the line-numbers
+% % frame=lines,
+% % framexleftmargin=0.5em,
+% % framexrightmargin=0.5em,
+% numberstyle=\tiny,
+% %backgroundcolor=\color{gray},  % choose the background color. You must add \usepackage{color}
+% stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
+% numbersep=1em,                  % how far the line-numbers are from the code
+% %showspaces=false,               % show spaces adding particular underscores
+% %showstringspaces=false,         % underline spaces within strings
+% %showtabs=true,                 % show tabs within strings adding particular underscores
+% columns=flexible,
+% tabsize=1,
+% %mathescape=true,
+% %captionpos=b,                   % sets the caption-position to bottom
+% breaklines=false,                % sets automatic line breaking
+% breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+% %escapeinside={\%*}{*/)},          % if you want to add a comment within your code
+% %escapechar=\%,
+% keywordstyle=\color{black}\bfseries,% bold black keywords
+% %% morekeywords={then,atomic,data,free,new,new_cell,null,cas,other,var,cell,true,false,until}
+% morekeywords={then,atomic,free,new,other,true,false,until,pointer_t,node,data}
+% }
+
+% \lstdefinestyle{numbers}{numbers=left, stepnumber=1, numberstyle=\tiny, numbersep=2pt}
+% \lstdefinestyle{nonumbers}{numbers=none}
+
+% \RecustomVerbatimEnvironment{Verbatim}{Verbatim}{
+%   fontfamily=helvetica,
+%   numbers=left,
+%   numbersep=2pt,
+%   stepnumber=1,
+%   firstnumber=0,
+%   numberblanklines=false,
+%   commandchars=\\\[\],
+%   codes={\catcode`$=3}
+% }
+
+\newcommand\commitpoint[1]{\tikz{\path (0,0) (6pt,3pt) node[shape=circle,inner sep=0, draw=blue,fill=red!50!blue,text width=1pt,scale=0.3]{};}}
+\fvset{fontfamily=helvetica,numbers=left,numbersep=6pt,stepnumber=1,firstnumber=0,numberblanklines=false,commandchars=\\\[\],codes={\catcode`$=3}}
+\renewcommand{\theFancyVerbLine}{\tiny \arabic{FancyVerbLine}}
+
+%% Color definitions
+%% ---------------------------------------------
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\black}[1]{\textcolor{black}{#1}}
+
+%% Other definitions
+%% ---------------------------------------------
+%\newcommand{\ie}{i.e.\ }
+\newcommand{\ie}{i.e.}
+
+%\newcommand{\cds}{concurrent data-structure}
+
+\newcommand{\IMPLIES}{\Rightarrow}
+
+\newcommand{\tuple}[1]{\left\langle#1\right\rangle}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setcomp}[2]{\left\{#1|\,#2\right\}}
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\union}{\cup}
+\newcommand{\domof}[1]{Dom(#1)}
+
+\newcommand{\dset}{\mathbb{D}}
+\newcommand{\udset}{\mathbb{D}^{\bullet}}
+\newcommand{\cset}{\mathbb{C}}
+\newcommand{\explicitdset}{\{d_1,d_2,\ldots\}}
+
+\newcommand{\nvars}{\vars^{\#}}
+\newcommand{\nullconst}{{\tt NULL}}
+\newcommand{\undefconst}{{\tt UNDEF}}
+\newcommand{\freeconst}{{\tt FREE}}
+\newcommand{\vars}{\ensuremath{X}}
+
+\newcommand{\lvars}{\ensuremath{X}}
+\newcommand{\xvar}{\ensuremath{x}}
+\newcommand{\yvar}{\ensuremath{y}}
+\newcommand{\zvar}{\ensuremath{z}}
+\newcommand{\wvar}{\ensuremath{w}}
+\newcommand{\tvar}{\ensuremath{t}}
+\newcommand{\gvar}{\ensuremath{g}}
+\newcommand{\dvar}{\ensuremath{d}}
+\newcommand{\obvar}{\ensuremath{z}}
+
+
+\newcommand{\gvars}{\ensuremath{G}}
+\newcommand{\Tvar}{\ensuremath{T}}
+\newcommand{\Hvar}{\ensuremath{H}}
+
+\newcommand{\tvars}{vars}
+
+\newcommand{\pvars}{\ensuremath{P}}
+\newcommand{\npvars}{\pvars^{\#}}
+\newcommand{\pvar}{\ensuremath{p}}
+
+\newcommand{\xvars}{\ensuremath{X}}
+\newcommand{\yvars}{\ensuremath{Y}}
+\newcommand{\varsof}[1]{{\it Var}\!\left(#1\right)}
+\newcommand{\var}{\ensuremath{x}}
+
+\newcommand{\dbar}{\overline{d}}
+\newcommand{\pbar}{\overline{p}}
+
+\newcommand{\pointer}{{\it pointer}\;}
+\newcommand{\assigned}{:=}
+\newcommand{\ltassigned}{:<}
+\newcommand{\gtassigned}{:>}
+\newcommand{\equals}{=}
+\newcommand{\nequals}{\neq}
+\newcommand{\nil}{{\it null}}
+%\newcommand{\nil}{\ensuremath{\square}}
+\newcommand{\nxt}[1]{#1.{\it next}}
+\newcommand{\num}[1]{#1.{\it num}}
+\newcommand{\datafield}[1]{#1.{\it data}}
+\newcommand{\emptystring}{\varepsilon}
+\newcommand{\newvar}[1]{{\tt new(#1)}}
+\newcommand{\delvar}{{\it delete}}
+\newcommand{\assume}[1]{{\tt assume(#1)}}
+\newcommand{\declare}{{\it D}}
+\newcommand{\mname}{{\it meth}}
+\newcommand{\eitheror}[2]{\keyword{either}\ \openbrace#1\closebrace\ \keyword{or}\ \openbrace#2\closebrace}
+\newcommand{\dowhile}[2]{\keyword{do}\ \openbrace#1\closebrace%\   \keyword{while}\ #2
+}
+
+%\newcommand{\renaming}{f}
+\newcommand{\trace}{\sigma}
+\newcommand{\difftrace}{\sigma_d}
+\newcommand{\tracesof}[1]{\Sigma(#1)}
+\newcommand{\program}{P}
+\newcommand{\traceprop}{\phi}
+
+\newcommand{\auto}{{\cal A}} % automaton
+\newcommand{\acts}{{\cal L}}
+\newcommand{\consts}{C}
+\newcommand{\locs}{S}
+\newcommand{\loc}{s}
+\newcommand{\initloc}{s_0}
+\newcommand{\final}{F}
+\newcommand{\obsenv}{\vartheta}
+\newcommand{\obsvars}{Z}
+\newcommand{\obsconstants}{C}
+\newcommand{\vmark}[1]{\stackrel{\bullet}{#1}}
+%\newcommand{\obstransitions}[1]{\longrightarrow_{#1}}
+\newcommand{\obstransitions}[1]{\longrightarrow}
+\newcommand{\obsconfig}{\omega}
+\newcommand{\pcobs}{obs}
+\newcommand{\gobsconfig}{\eta}
+\newcommand{\labeling}{\lambda}
+%\newcommand{\cell}{\ensuremath{v}}
+%\newcommand{\cells}{\ensuremath{V}}
+\newcommand{\cellterms}{{\it CT}}
+\newcommand{\matrixrep}{{\it M}}
+\newcommand{\suc}{{\it Succ}}
+\renewcommand{\succ}{\suc}
+\newcommand{\cordering}{{\it Ord}}
+\newcommand{\val}{{\it Val}}
+\newcommand{\sval}{s}
+\newcommand{\heap}{\ensuremath{h}}
+\newcommand{\initheap}{\heap_0}
+\newcommand{\heaps}{\ensuremath{H}}
+\newcommand{\emptyheap}{\heap_\epsilon}
+\newcommand{\initheaps}{\heaps_{\it Init}}
+\newcommand{\size}{n}
+\newcommand{\thread}{t}
+\newcommand{\threads}{{\mathbb{T}}}
+\newcommand{\id}{id}
+\newcommand{\ids}{{\mathbb{I}}}
+\newcommand{\location}{l}
+\newcommand{\event}{e}
+\newcommand{\regular}{r}
+\newcommand{\locations}{{\mathbb{L}}}
+\newcommand{\threadids}{{\mathbb{T}}}
+\newcommand{\threadsize}{n_{\thread}}
+\newcommand{\methodsize}{n_{\method}}
+\newcommand{\prefset}[1]{\overline{#1}}
+\newcommand{\prefsetexplicit}[1]{\set{1, \ldots, #1}}
+\newcommand{\heaptuple}{\tuple{\threadsize,\cells,\succ,\labeling,\val}}
+\newcommand{\heaptuplePrime}{\tuple{\threadsize',\cells',\succ',\labeling',\val'}}
+\newcommand{\hordering}{\sqsubseteq}
+%\newcommand{\graph}{\ensuremath{g}}
+%\newcommand{\graphs}{\ensuremath{G}}
+\newcommand{\cellof}[1]{{\it cell}\left(#1\right)}
+\newcommand{\transition}{t}
+\newcommand{\transitions}{\longrightarrow}
+\newcommand{\cstates}{Q}
+\newcommand{\statesmap}{\kappa}
+\newcommand{\initcstates}{\cstates_0}
+\newcommand{\initcstate}{\cstate_0}
+\newcommand{\cstate}{q}
+\newcommand{\locenv}{\pi}
+\newcommand{\locenvs}{\pi}
+\newcommand{\initlocenvs}{\locenvs_0}
+\newcommand{\locenvset}{\Pi}
+\newcommand{\locconfig}{\rho}
+\newcommand{\initlocconfig}{\locconfig_0}
+\newcommand{\globenv}{\sigma}
+\newcommand{\initglobenv}{\globenv_0}
+\newcommand{\globconfig}{\gamma}
+\newcommand{\initglobconfig}{\globconfig_{\it Init}}
+%\newcommand{\action}{a}
+\newcommand{\op}{{\it op}}
+\newcommand{\prg}{P}
+\newcommand{\thrd}{t}
+\newcommand{\conf}{c}
+\newcommand{\confs}{C}
+\newcommand{\initconfs}{\confs_{\it Init}}
+\newcommand{\finalconfs}{\confs_F}
+\newcommand{\prgtuple}{\tuple{\cstates,\transitions}}
+\newcommand{\methodtuple}{\tuple{\cstates,\transitions}}
+\newcommand{\movesto}[1]{\stackrel{#1}{\longrightarrow}}
+\newcommand{\pmovesto}[1]{\stackrel{#1}{\leadsto}}
+\newcommand{\absmovesto}[1]{\stackrel{#1}{\longrightarrow}_A}
+\newcommand{\updateby}[2]{\ensuremath{\left[#1\leftarrow#2\right]}}
+%\newcommand{\gupdate}[2]{\left(#1.#2\right)}
+\newcommand{\hupdate}[2]{\left(#1.#2\right)}
+\newcommand{\supdate}[2]{\left(#1.#2\right)}
+\newcommand{\undef}{\uparrow}
+%\newcommand{\restrict}[1]{\backslash #1}
+\newcommand{\jlt}{\lhd}
+\newcommand{\jleq}{\unlhd}
+\newcommand{\lt}{\preceq}
+\newcommand{\sizeof}[1]{|#1|}
+\newcommand{\uc}[1]{#1\!\!\uparrow}
+\newcommand{\dc}[1]{#1\!\!\downarrow}
+% \newcommand{\uc}[1]{
+%   \begin{tikzpicture}[baseline=(n.base)]
+%     \node[draw=none,inner xsep=2pt,inner ysep=1pt](n){\ensuremath{#1}};
+%     \draw[line width=1pt]%
+%     ([yshift=2pt]n.north west)--(n.north west)--(n.north east)--([yshift=2pt]n.north east);
+% %     (n.west)-- %(n.north west)--
+% %     ([yshift=1ex]n.north)-- %(n.north east)--
+% %     (n.east);
+%   \end{tikzpicture}
+% }
+% \newcommand{\dc}[1]{
+%   \begin{tikzpicture}[baseline=(n.base)]
+%     \node[draw=none,inner xsep=2pt,inner ysep=1pt](n){\ensuremath{#1}};
+%     \draw[line width=1pt]%
+%     ([yshift=-2pt]n.north west)--(n.north west)--(n.north east)--([yshift=-2pt]n.north east);
+% %     (n.west)-- %(n.north west)--
+% %     ([yshift=1ex]n.north)-- %(n.north east)--
+% %     (n.east);
+%   \end{tikzpicture}
+% }
+\newcommand{\pre}{{\it Pre}}
+%\newcommand{\post}{{\it Post}}
+\newcommand{\rank}[2]{{\it Rank}(#1)(#2)}
+\newcommand{\toexplore}{{\tt ToExplore}}
+\newcommand{\explored}{{\tt Explored}}
+
+\newcommand{\localcstate}{\pi}
+\newcommand{\localval}{\sigma}
+\newcommand{\globalval}{\Sigma}
+\newcommand{\retval}{\mbox{\it retval}}
+\newcommand{\threadstate}{\Pi}
+\newcommand{\globconf}{\gamma}
+\newcommand{\initmeth}{\mbox{\it Init}}
+\newcommand{\invoke}[3]{\mbox{\tt invoke}[#1](#2,#3)}
+\newcommand{\respond}[3]{\mbox{\tt return}[#1](#2,#3)}
+\newcommand{\emptyconst}{\mbox{\it empty}}
+\newcommand{\tlabel}{l}
+
+%% =======================================
+
+\newcommand{\addRound}{\ensuremath{\oplus}}
+\newcommand{\delRound}{\ensuremath{\ominus}}
+%\newcommand{\mybox}[1]{\ensuremath{\,{\tikz[baseline=(n.base)]\node(n)[draw,inner sep=1pt]{#1};}\,}}
+%\newcommand{\addBox}{\ensuremath{\mybox{{\small +}}}}
+%\newcommand{\delBox}{\ensuremath{\mybox{{\Large -}}}}
+% \setlength{\fboxsep}{0pt}
+\newcommand{\addBox}{\ensuremath{\boxplus}}
+\newcommand{\delBox}{\ensuremath{\boxminus}}
+
+\newcommand{\addVar}[1]{\ensuremath{\addRound{#1}}}
+\newcommand{\delVar}[1]{\ensuremath{\delRound{#1}}}
+
+\newcommand{\addCell}[1]{\ensuremath{\addRound{#1}}}
+\newcommand{\delCell}[1]{\ensuremath{\delRound{#1}}}
+
+\newcommand{\addEqVar}[2]{\ensuremath{\addRound_{={#1}}{#2}}}
+\newcommand{\addNotEqVar}[1]{\ensuremath{\addRound_{\neq{#1}}}}
+\newcommand{\addNotEqVarEqDatum}[2]{\ensuremath{\addRound_{\neq{#1}}^{=#2}}}
+
+\newcommand{\addThread}{\ensuremath{\addRound_{thread}}}
+
+\newcommand{\ren}[2]{{\rho_{\!#1}(#2)}}
+
+% \newcommand{\delCellVal}[1]{\ensuremath{\delRound_{\val}{#1}}}
+
+%\newcommand{\resaddvar}[1]{\odot_{{#1}}}
+\newcommand{\addVarAsSuccOf}[2]{\ensuremath{\addRound_{{#1}\rightarrow}{#2}}}
+\newcommand{\addVarAsPredOf}[2]{\ensuremath{\addRound_{{#1}\leftarrow}{#2}}}
+
+\newcommand{\delEdge}[1]{\ensuremath{\delBox({#1}\rightarrow)}}
+\newcommand{\addEdge}[1]{\ensuremath{\addBox({#1}\rightarrow)}}
+\newcommand{\addEdgeBetween}[2]{\ensuremath{\addBox({#1}\rightarrow{#2})}}
+
+%% Definition of the Graph Operation environment
+%% ---------------------------------------------
+\usepackage{ifthen}
+%% ===== For the graph operation section =====
+%\newcommand{\graphopsection}[1]{\paragraph{#1}}
+\newcommand{\graphopsection}[1]{\noindent{\bf #1}}
+%\newcommand{\graphopsection}[1]{\subsection{#1}}
+%\newcommand{\graphopsection}[1]{}
+
+
+%% ===== For the graph operation environment =====
+% \newcommand{\GrOp}[1]{\marginpar[\hfill#1]{\hfill #1}}
+% \newlength{\myparindent}
+% \setlength{\myparindent}{0pt}% or {\parindent}
+% \newboolean{noop}
+% \newenvironment{graphop}[1][]{%
+% \ifthenelse{\equal{#1}{}}{\setboolean{noop}{true}}{\setboolean{noop}{false}}
+% %\setboolean{noop}{true}
+% \ifthenelse{\boolean{noop}}{}{
+% \hfill\\
+% %\fbox{%
+% \begin{minipage}[t]{0.15\textwidth}%
+% {#1}%
+% \end{minipage}%
+% %}
+% \begin{minipage}[t]{0.85\textwidth}%
+% \setlength{\parindent}{\myparindent}%
+% }% end of if
+% }{%
+% \ifthenelse{\boolean{noop}}{}{
+% \end{minipage}\\%
+% }% End of graph op
+% }%
+% \newenvironment{graphop}[1][]{%
+% \ifthenelse{\equal{#1}{}}{\setboolean{noop}{true}}{\setboolean{noop}{false}}
+% %\setboolean{noop}{true}
+% \ifthenelse{\boolean{noop}}{}{\GrOp{#1}}%
+% }{}% End of graph op
+% %
+%
+%% Environment canceled
+\newenvironment{graphop}[1][]{}{}%
+
+%\renewcommand{\algname}[2]{\alg@margin}
+
+
+%% ===== What needed for new ordering =====
+% Added by Ran, Jonathan
+\newcommand{\uninit}{\ensuremath{\square}}
+\newcommand{\alloc}{\it alloc}
+\newcommand{\lundef}[1]{{\labeling}\left(#1\right) = \bot}
+\newcommand{\ldef}[1]{{\labeling}\left(#1\right) \neq \bot}
+\newcommand{\cell}{\ensuremath{m}}
+\newcommand{\undefcell}{\mathit{undef}}
+\newcommand{\nullcell}{\mathit{null}}
+\newcommand{\freecell}{\mathit{free}}
+\newcommand{\dangcell}{{\tt \bot}}
+\newcommand{\cells}{\ensuremath{\mathbb M}}
+%% \newcommand{\cells}{\ensuremath{V}}
+\newcommand{\nucells}{\cells^\bullet}
+%\newcommand{\cell}{\ensuremath{w}}
+%\newcommand{\cells}{\ensuremath{W}}
+%\newcommand{\celofver}[1]{{\cells}\left(#1\right)}
+\newcommand{\lnuninit}[1]{\labeling(#1)\neq\uninit}
+\newcommand{\lnnull}[1]{\labeling(#1)\neq\null}
+%\newcommand{\new}{\it new}
+\newcommand{\destroy}{\it destroy}
+\newcommand{\dat}[1]{#1.{\it data}}
+\newcommand{\cvar}{\ensuremath{v}}
+\newcommand{\cvarbar}{\overline{\cvar}}
+\newcommand{\skolemvars}{D}
+
+\newcommand{\saturate}[1]{\left\lceil #1 \right \rceil}
+\newcommand{\hide}[2]{\widetilde{\exists #1} . #2}
+\newcommand{\mknonlocalexcept}[2]{\mbox{\sl mknonlocalfrom } #1 \mbox{ \sl in } #2}
+\newcommand{\isolated}[1]{\mbox{\sl isolated}(#1)}
+
+
+\newcommand{\cstr}{\phi}
+\newcommand{\cstrtuple}{\tuple{\threadsize,\sval,\heap}}
+\newcommand{\cstrtuplePrime}{\tuple{\threadsize',\sval',\heap'}}
+
+
+\newcommand{\cdstuple}{\tuple{\initheaps,\cstates,\transitions}}
+
+
+\newcommand{\etc}{\ldots {\it etc}}
+
+\newcommand{\sig}{g}
+\newcommand{\sigs}{G}
+\newcommand{\badsigs}{\sigs_{\it Bad}}
+\newcommand{\sigtuple}{\tuple{\cells,\succ,\labeling,\cordering}}
+\newcommand{\sigof}[1]{{\it sig}\left(#1\right)}
+\newcommand{\ceq}{\equiv}
+\newcommand{\clt}{\prec}
+\newcommand{\satof}[1]{{\it sat}\left({#1}\right)}
+\newcommand{\sordering}{\sqsubseteq}
+
+\newcommand{\denotationof}[1]{\left[\!\left[#1\right]\!\right]}
+\newcommand{\mapping}[3]{#1:#2\rightarrow #3}
+\newcommand{\pmapping}[3]{#1:#2\rightharpoonup #3}
+\newcommand{\defeq}{\doteq}
+\newcommand{\defneq}{\not\defeq}
+\newcommand{\deflt}{\lessdot}
+\newcommand{\sees}[2]{\stackrel{#2}{\hookrightarrow}_{#1}}
+
+
+% -------------------------------------------------------
+% Added by Ran
+
+\newcommand{\ncells}{\cells^{\#}}
+\newcommand{\lessthan}{<}
+\newcommand{\greaterthan}{>}
+\newcommand{\sassigned}{:<}
+\newcommand{\addVarAsInBetween}[1]{\ensuremath{\addRound_{{#1\rightarrow\dangcell}}}}
+\newcommand{\addEqEdgeBetween}[2]{\ensuremath{\addBox({#1}\ceq{#2})}}
+\newcommand{\addLTEdgeBetween}[2]{\ensuremath{\addBox({#1}\clt{#2})}}
+% \newcommand{\addEqEdgeBetween}[2]{\ensuremath{\addBox({\labeling(#1)}\ceq{\labeling(#2)})}}
+% \newcommand{\addLTEdgeBetween}[2]{\ensuremath{\addBox({\labeling(#1)}\clt{\labeling(#2)})}}
+\newcommand{\addPossibleEqVal}[1]{\ensuremath{\addRound_{{\ceq#1}}}}
+\newcommand{\addPossibleLTVal}[1]{\ensuremath{\addRound_{{\clt#1}}}}
+\newcommand{\addPossibleGTVal}[1]{\ensuremath{\addRound_{{#1\clt}}}}
+\newcommand{\sigtuplePrime}{\tuple{\cells',\succ',\labeling',\cordering'}}
+\newcommand{\sigopsection}[1]{\noindent{\bf #1}}
+\newcommand{\addCellVar}[1]{\ensuremath{\addRound{\labeling(#1)}}}
+\newcommand{\delCellVar}[1]{\ensuremath{\delRound{\labeling(#1)}}}
+\newcommand{\leafcells}{\cells^{L}}
+\newcommand{\subleafcells}{\cells^{l}}
+\newcommand{\readval}{\it read}
+\newcommand{\powerleafcells}{\it P(\leafcells)}
+\newcommand{\addEdgeFromLeafsetToVar}[1]{\ensuremath{\addBox({\leafcells\rightarrow#1})}}
+%\newcommand{\delCellVal}[1]{\ensuremath{\delBox_{\cordering}{#1}}}
+\newcommand{\delCellVal}[1]{\ensuremath{\delBox{#1}}}
+\newcommand{\addCellVal}[2]{\ensuremath{\addBox_{#1}{#2}}}
+\newcommand{\getval}[1]{?#1}
+\newcommand{\sendval}[1]{!#1}
+\newcommand{\method}{m}
+\newcommand{\methods}{M}
+%\newcommand{\val}{v}
+
+\newcommand{\inputargument}[1]{#1}
+\newcommand{\outputargument}[1]{#1}
+\newcommand{\inputaction}[2]{\overbrace{#1\!:#2}^{call}}
+\newcommand{\inputactiontext}[3]{[call(#2)\!:\!#1(#3)]}
+\newcommand{\outputaction}[2]{\overbrace{#1\!:#2}^{return}}
+\newcommand{\outputactiontext}[3]{[ret(#2)\!:\!#1(#3)]}
+%\newcommand{\commit}[2]{[cm\!:\!#1(#2)]}
+\newcommand{\commit}[2]{\left<#1(#2)\right>}
+\newcommand{\observable}[2]{{\tt #1}\left(#2\right)}
+\newcommand{\emit}[1]{\mbox{\tt emit}\!\left[#1\right]}
+\newcommand{\evexpr}{\location\left([\ditem, \ldots]_{in},[\ditem', \ldots]_{out}\right)}
+\newcommand{\ditem}{\mbox{\tt d}}
+\newcommand{\dwhite}{w}
+\newcommand{\dred}{r}
+\newcommand{\dblue}{b}
+\newcommand{\deps}{E}
+\newcommand{\action}{\alpha}
+\newcommand{\renaming}{f}
+\newcommand{\someditem}{\delta}
+\newcommand{\behavior}{\sigma}
+\newcommand{\behaviors}{\Sigma}
+
+\newcommand{\cds}{C}
+
+
+%\newcommand{\localize}[2]{\sigma_{#1}#2}
+
+
+
+\newcommand{\uptodate}[1]{\mbox{\em up\_to\_date}(#1)}
+\newcommand{\dequal}[2]{#1 \! = \! #2}
+\newcommand{\dnequal}[2]{#1 \! \neq \! #2}
+\newcommand{\nexttransop}{\mapsto}
+\newcommand{\nexttrans}[2]{{#1}\nexttransop{#2}}
+\newcommand{\negnexttrans}[2]{#1 \not\nexttransop #2}
+\newcommand{\succtransop}{\stackrel{+}{\rightarrow}}
+\newcommand{\succtrans}[2]{#1 \succtransop #2}
+\newcommand{\negsucctrans}[2]{#1 \not\succtransop #2}
+\newcommand{\refltransop}{\stackrel{*}{\rightarrow}}
+\newcommand{\negrefltransop}[2]{#1 \not\refltransop #2}
+%\newcommand{\twotransop}{\stackrel{{\tiny \geq 2}}{\rightarrow}}
+\newcommand{\twotransop}{\dashrightarrow}
+\newcommand{\notransop}{\Join}
+\newcommand{\refltrans}[2]{#1 \refltransop #2}
+\newcommand{\twotrans}[2]{{#1}\twotransop{#2}}
+\newcommand{\notrans}[2]{#1 \notransop #2}
+\newcommand{\arbop}{\ \mbox{\it op}\ }
+\newcommand{\unch}{\mbox{\it Unch}}
+\newcommand{\plocal}{\mbox{\it local}}
+\newcommand{\latestage}[3]{#2[#1].\mbox{\tt age} \geq \succeq #3.\mbox{\tt age}}
+\newcommand{\notlatestage}[3]{#2[#1].\mbox{\tt age} < \succeq #3.\mbox{\tt age}}
+%\newcommand{\compareages}[3]{#2[#1].\mbox{\tt age} \comprel #3.\mbox{\tt age}}
+\newcommand{\comprel}{\simeq}
+\newcommand{\isfree}[1]{\mbox{\it free}(#1)}
+\newcommand{\symbstate}{\sigma}
+\newcommand{\shapeconstr}{\phi}
+\newcommand{\constr}{\phi}
+\newcommand{\entryof}[2]{\pi[#1,#2]}
+\newcommand{\initconstr}{\constr_0}
+\newcommand{\constrprime}{\constr'}
+\newcommand{\constrbis}{\constr''}
+\newcommand{\smallconstr}{\psi}
+\newcommand{\constrtuple}{\tuple{\pcpoint,\phi}}
+\newcommand{\constrtupleprime}{\tuple{\pcpoint',\phi'}}
+\newcommand{\constrtuplebis}{\tuple{\pcpoint'',\phi''}}
+\newcommand{\constrset}{\Phi}
+\newcommand{\initconstrset}{\Phi_0}
+\newcommand{\constrtransop}{\Rightarrow}
+\newcommand{\constrtrans}[3]{#1 \stackrel{#2}{\constrtransop} #3}
+\newcommand{\refconstr}{\psi}
+\newcommand{\refconstrset}{\Psi}
+\newcommand{\refconstrsetof}[1]{\refconstrset_{#1}}
+\newcommand{\assertionof}[1]{\Phi[#1]}
+\newcommand{\dvars}{V}
+%% \newcommand{\dvar}{v}
+%% \newcommand{\tloc}[2]{#2[#1]}
+\newcommand{\pc}{\mbox{\it pc}}
+\newcommand{\bjand}{\ \land \ }
+\newcommand{\interfop}{\mbox{\it Op}}
+
+\newcommand{\enabled}[2]{\mbox{\it En}(#1,#2)}
+\newcommand{\seqop}{\mbox{ \tt ; }}
+\newcommand{\TRUE}{\mbox{\it true}}
+
+\newcommand{\setof}[1]{ \{ #1 \} }
+
+\newcommand{\term}{t}
+\newcommand{\cterm}{t}
+\newcommand{\dterm}{dv}
+\newcommand{\infrule}{r}
+\newcommand{\irule}[3]{\frac{\displaystyle{#2}}{\displaystyle{#3}}\mbox{{\sc #1}}}
+
+%% Below are new commands by Bengt
+
+\newcommand{\cmd}{S}
+\newcommand{\stmt}{S}
+\newcommand{\varstmt}{T}
+\newcommand{\stmts}{\alpha}
+%% \newcommand{\var}{v}
+\newcommand{\expr}{e}
+\newcommand{\pexp}{e}
+\newcommand{\exprval}[3]{#1_{[#2]}(#3)}
+\newcommand{\termval}[3]{#1_{#2}(#3)}
+\newcommand{\ctermval}[4]{#1_{#2,#3}(#4)}
+\newcommand{\constrval}[3]{#1,#2 \models #3}
+\newcommand{\cconstrval}[4]{#1,#2,#3 \models #4}
+\newcommand{\assval}[2]{#1 \models #2}
+\newcommand{\progsat}[2]{#1 \models #2}
+\newcommand{\guard}{g}
+\newcommand{\cspbox}{[]}
+\newcommand{\pcpoint}{q}
+\newcommand{\pcpointvar}{p}
+\newcommand{\tid}{\mbox{\sl tid}}
+%\newcommand{\tidvar}{i_j}
+\newcommand{\vartidvar}{j}
+\newcommand{\tidmap}{\theta}
+\newcommand{\cellvarmap}{\chi}
+
+%% \newcommand{\globtransrel}[3]{#2: #1{\longrightarrow}#3}
+\newcommand{\globtransrel}[3]{#1{\longrightarrow}#3}
+\newcommand{\transrel}[3]{#1\stackrel{#2}{\longrightarrow}#3}
+\newcommand{\translabel}{l}
+\newcommand{\loctrans}[3]{#1\stackrel{#2}{\rightarrow}#3}
+
+\newcommand{\globstate}{\Gamma}
+\newcommand{\locstate}{\gamma}
+\newcommand{\refinedby}{\sqsubseteq}
+\newcommand{\subsumes}{\sqsubseteq}
+\newcommand{\subsumedby}{\sqsupseteq}
+\newcommand{\keyword}[1]{\mbox{\texttt{#1}}}
+\newcommand{\atomic}[1]{\keyword{atomic}\openbrace#1\closebrace}
+\newcommand{\return}[1]{\keyword{return}\ #1}
+\newcommand{\atomicof}[1]{<<#1>>}
+
+
+\newcommand{\openbrace}{\mbox{\texttt{\{}}}
+\newcommand{\closebrace}{\mbox{\texttt{\}}}}
+
+%% \newtheorem{theorem}{Theorem}[section]
+%% \newtheorem{proposition}[theorem]{Proposition}
+%% \newtheorem{definition}[theorem]{Definition}
+%% \newtheorem{example}[theorem]{Example}
+%% \newtheorem{lemma}[theorem]{Lemma}
+%% \newtheorem{corollary}[theorem]{Corollary}
+
+\newcommand{\TODOcomment}[2]{%
+  \stepcounter{TODOcounter#1}%
+  {\scriptsize\bf$^{(\arabic{TODOcounter#1})}$}%
+  \marginpar[\fbox{
+    \parbox{2cm}{\raggedleft
+      \scriptsize$^{({\bf{\arabic{TODOcounter#1}{#1}}})}$%
+      \scriptsize #2}}]%
+  {\fbox{\parbox{2cm}{\raggedright
+      \scriptsize$^{({\bf{\arabic{TODOcounter#1}{#1}}})}$%
+      \scriptsize #2}}}
+}%
+
+\newcommand{\simpleTODOcomment}[2]{%
+  \stepcounter{TODOcounter#1}%
+  {\bf
+    \scriptsize({\arabic{TODOcounter#1}~{#1}})
+    {\bfseries{TODO:} #2}
+  }
+}
+
+\newcounter{TODOcounter}
+\newcommand{\TODO}[1]{\TODOcomment{}{#1}}
+\renewcommand{\TODO}[1]{}
+\newcommand{\TODOX}[1]{\simpleTODOcomment{}{#1}}
+
+%% Here is the new font/BJ
+\renewcommand{\rmdefault}{ptm}
+
+
+
+
+
+% Lukas Macros
+\newcommand{\symbols}{\mathbb E}
+\newcommand{\datadomain}{\mathbb D}
+\newcommand{\nedatadomain}{\underline{\datadomain}}
+\renewcommand{\symbol}{a}
+\newcommand{\datum}{d}
+\newcommand{\state}{q}
+\newcommand{\initstate}{q_0}
+\newcommand{\alphabet}{\Sigma}
+\renewcommand{\ts}{T}
+%\newcommand{\ts}{T}
+\newcommand{\states}{Q}
+\renewcommand{\transitions}{{\rightarrow}}
+\newcommand{\init}{I}
+\renewcommand{\tracesof}[1]{\llbracket #1 \rrbracket}
+%\renewcommand{\tracesof}[1]{\varphi_{#1}}
+\newcommand{\spec}{\varphi}
+\newcommand{\transitionof}[3]{\langle #1, #2, #3\rangle}
+\newcommand{\wordof}[2]{#1_1\ldots #1_#2}
+\newcommand{\vectof}[2]{#2_1,\ldots, #1_#2}
+
+\newcommand{\push}[1]{\mathtt{push(#1)}}
+\newcommand{\pop}[1]{\mathtt{pop(#1)}}
+
+\newcommand{\enqueue}[1]{\mathtt{enq(#1)}}
+\newcommand{\dequeue}[1]{\mathtt{deq(#1)}}
+
+
+\newcommand{\outp}{\mathtt{out}}
+\newcommand{\outof}[1]{\outp(#1)}
+\newcommand{\inp}{\mathtt{in}}
+\newcommand{\inof}[1]{\inp(#1)}
+\newcommand{\emptyEvent}{\ensuremath{\mathtt{empty}}}
+\newcommand{\isempty}{\ensuremath{\mathit{isempty}}}
+\newcommand{\isemptyof}[1]{\ensuremath{\mathit{isempty}(#1)}}
+\newcommand{\false}{\ensuremath{\mathit{false}}}
+\newcommand{\true}{\ensuremath{\mathit{true}}}
+\newcommand{\ioalph}{\Sigma_\mathit{i/o}}
+\newcommand{\simpleioalph}{\Sigma_\mathit{simple}}
+\newcommand{\stackspec}{\varphi_\mathit{stack}}
+\newcommand{\diffstackspec}{\varphi_\mathit{diff,stack}}
+\newcommand{\queuespec}{\varphi_\mathit{queue}}
+\newcommand{\diffqueuespec}{\varphi_\mathit{diff,queue}}
+\newcommand{\duplicationspec}{\varphi_\mathit{dupl}}
+\newcommand{\creationspec}{\varphi_\mathit{crea}}
+\newcommand{\lossspec}{\varphi_\mathit{loss}}
+\newcommand{\lifospec}{\varphi_\mathit{lifo}}
+\newcommand{\fifospec}{\varphi_\mathit{fifo}}
+\renewcommand{\special}{\mathbb{S}}
+\newcommand{\noof}[2]{{\#}(#1,#2)}
+\newcommand{\coof}[1]{\overline {#1}}
+\newcommand{\simpletraces}{\Phi}
+%\newcommand{\ts}{T}
+\newcommand{\stackts}{T_\mathit{stack}}
+\newcommand{\queuets}{T_\mathit{queue}}
+%\newcommand{\transitions}{\rightarrow}
+\newcommand{\stacktransitions}{\rightarrow_\mathit{stack}}
+\newcommand{\queuetransitions}{\rightarrow_\mathit{queue}}
+\newcommand{\word}{w}
+\newcommand{\traceset}{\Sigma}
+\newcommand{\whitetraceset}{\zeta}
+%\newcommand{\matching}{{\leadsto}}
+%\newcommand{\matchof}[2]{#1\leadsto #2}
+\newcommand{\matching}{{\curvearrowright}}
+\newcommand{\matchof}[2]{#1\curvearrowright #2}
+\newcommand{\nset}[1]{\{1,\ldots,#1\}}
+%\newcommand{\ioalphof}[1]{\ioalph(#1)}
+\newcommand{\ioalphof}[1]{\Sigma_{\mathit{i/o}[#1]}}
+\newcommand{\losstraces}{\psi_\mathit{loss}}
+\newcommand{\creationtraces}{\psi_\mathit{crea}}
+\newcommand{\crosstraces}{\psi_\mathit{crossing}}
+\newcommand{\duplicationtraces}{\psi_\mathit{dupl}}
+\newcommand{\fifotraces}{\psi_\mathit{fifo}}
+\newcommand{\lifotraces}{\psi_\mathit{lifo}}
+\newcommand{\badstacktraces}{\psi_\mathit{stack}}
+\newcommand{\badqueuetraces}{\psi_\mathit{queue}}
+\newcommand{\nestingtraces}{\psi_\mathit{nesting}}
+\newcommand{\badtraces}{\psi}
+
+\newcommand{\valuation}{\delta}
+\renewcommand{\next}{{\tt next}}
+\newcommand{\pointsto}{\mapsto}
+\newcommand{\reaches}{\dashrightarrow}
+\newcommand{\pointedby}{\mapsfrom}
+\newcommand{\reachedby}{\dashleftarrow}
+\newcommand{\unrelated}{\Join}
+\newcommand{\somerel}{\sim}
+\newcommand{\oneormore}{\leadsto}
+
+\newcommand{\expandof}[1]{\llbracket #1\rrbracket}
+\newcommand{\joinof}[1]{{\bigsqcup}{#1}}
+\newcommand{\joinop}{\sqcup}
+\newcommand{\combine}[1]{\mathit{comb}(#1)}
+\newcommand{\Pred}{\mathit{Pred}}
+\newcommand{\must}{\mathit{must}}
+\newcommand{\may}{\mathit{may}}
+\newcommand{\DVar}{V_D}
+\newcommand{\PVar}{V_P}
+\newcommand{\post}{\mathit{post}}
+\newcommand{\apost}{\mathit{Apost}}
+\newcommand{\strenghten}{\mathit{strenghten}}
+%\newcommand{\code}[1]{\mbox{\tt #1}}
+\newcommand{\code}[1]{{\tt #1}}
+\newcommand{\neqcode}{!=}
+\newcommand{\May}{\mathit{May}}
+\newcommand{\restrict}[2]{{#1}|_{#2}}
+
+
+%\newcommand{\getAge}[2]{{\textrm{up\_age(#1,\textrm{#2})}}}
+
+
+
+%\newtheorem{lemma}{Lemma}
+
+
+\newcommand{\observer}[1]{ob_{#1}}
+\newcommand{\numberOf}[2]{(#1)^{\#}_{#2}}

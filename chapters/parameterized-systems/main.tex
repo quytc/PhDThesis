@@ -1,0 +1,60 @@
+%% ====================================================================
+\chapterwithtoc{Parameterized Systems}
+\label{chapter:parameterized:systems}
+\index{Parameterized Systems}%
+%% ====================================================================
+In this thesis, we focus on systems consisting of an arbitrary number
+of processes. The size of the system is the parameter of the
+verification problem.
+% 
+For each value $n$ of the parameter, the system $S_n$ is the parallel
+composition of $n$ processes.
+%
+\index{Safety}%
+\index{Initial configurations}%
+\index{Bad configurations}%
+\index{Reachability}%
+Given a specification, we are interested in proving safety for the
+family $(S_n)_{n\ge 0}$ --- as~a~whole --- which is obtained through
+the non-reachability of some set \Bad\ of \emph{bad configurations},
+starting from some set~\Inits\ of \emph{initial configurations}. %
+%
+Processes are usually, but not necessarily, copies of each other.
+%
+\[ S_n = \underbrace{P\ \|\ P\ \|\ \cdots\ \|\ P}_{n\text{ times}}\hspace{2cm}\text{Can } (S_n)_{n\ge 0} \text{ reach }\Bad\text{ from }\Inits\text{ ?} \]
+% 
+
+%% ********************************************************************
+\KW{Examples}%
+\index{Mutual Exclusion}%
+\index{Distributed Protocols}%
+\index{Cache Coherence Protocols}%
+%% ********************************************************************
+Parameterized systems arise naturally in the modeling of mutual
+exclusion algorithms, distributed protocols, or cache coherence
+protocols. %
+For instance, sensor networks typically consist of thousands of
+identical nodes, web services must handle millions of requests of the
+same type. %
+Mutual exclusion must be guaranteed regardless of the number of
+processes that participate in a given session of the protocol. %
+Cache coherence must be ensured regardless of the number of cache
+lines or the number of physical processors.
+% 
+Those systems can be handled easily for small values of the parameter,
+that is, if the system involve a few components. It is interesting to
+extend the verification to the parameterized case, even though the
+%total 
+state-space for the whole family is infinite.
+\index{Infinite-state systems}%
+
+\input{chapters/parameterized-systems/features}
+\input{chapters/parameterized-systems/formal-definition}
+\input{chapters/parameterized-systems/non-atomic}
+\input{chapters/parameterized-systems/reachability}
+\newpage
+\input{chapters/parameterized-systems/szymanski}
+
+%% ====================================================================
+\whatwelearned{parameterized-systems}
+%% ====================================================================

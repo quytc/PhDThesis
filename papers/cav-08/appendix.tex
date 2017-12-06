@@ -1,0 +1,643 @@
+\section{Proofs of Lemmas - Section \ref{section:pre}}
+
+%\subsection*{Lemma~\ref{pre:js:monotonic:lemma}}
+\input ladder
+
+\subsection*{Lemma~\ref{backwards:iff:forwards:lemma}}
+
+Suppose $\graph_1\pmovesto{\action}\graph_2$, 
+we show there is
+a $\graph_3$ such that $\graph_1\lt\graph_3$ and
+$\graph_2\absmovesto{\action}\graph_3$ 
+(in fact $\graph_2\movesto{\action}\graph_3$).
+%
+Let $\graph_i=\tuple{\vertices_i,\succ_i,\labeling_i}$
+for $i\geq 1$.
+%and
+%$\graph_2=\tuple{\vertices_2,\succ_2,\labeling_2}$.
+%
+We consider five cases depending on the type of $\action$:
+\begin{enumerate}
+\item
+$\action$ is of the form $\xvar\equals\yvar$.
+%
+We define $\graph_3=\graph_2$ and
+show $\graph_1\lt\graph_3$ by considering 
+the following four subcases.
+%
+For each one of these subcases, $\graph_2\movesto{\action}\graph_3$ 
+follows directly from the definitions:
+\begin{enumerate}
+\item
+$\labeling_1(\xvar)\nequals\undef$, 
+$\labeling_1(\yvar)\nequals\undef$,
+$\labeling_1(\xvar)=\labeling_1(\yvar)$ and 
+$\graph_2=\graph_1$.
+%
+$\graph_1\lt\graph_3$ follows from $\graph_3=\graph_2=\graph_1$.
+\item
+\label{equal:defined:undefined}
+$\labeling_1(\xvar)\neq\undef$, $\labeling_1(\yvar)=\undef$, and
+$\graph_2=\graph_1\addEqVar{\xvar}{\yvar}$.
+%
+%
+$\graph_1\lt\graph_3$ follows by deletion of the variable $\yvar$.
+\item $\labeling_1(\xvar)=\undef$ and $\labeling_1(\yvar)\neq\undef$ 
+is similar to case~(\ref{equal:defined:undefined}).
+\item
+$\labeling_1(\xvar)=\undef$, $\labeling_1(\yvar)=\undef$
+and there is a $\graph_4$ in 
+$\graph_1\addVar{\xvar}$ such that
+$\graph_2=\graph_4\addEqVar{\xvar}{\yvar}$.
+%
+Observe that $\graph_4\lt\graph_3$ holds by deletion of the variable $\yvar$.
+%
+We show $\graph_1\lt\graph_4$ by considering the three subcases 
+resulting from $\graph_1\addVar{\xvar}$:
+%
+\begin{enumerate}
+\item
+\label{equal:undefined:undefined:addisolated}
+There is a $\vertex\not\in\vertices_1$ such that
+$\graph_4=\gupdate{(\graph_1\addVertex{\vertex})}{\labeling}\updateby{\xvar}{\vertex}$.
+%
+$\graph_1\lt\graph_4$ follows by deletion of the variable $\xvar$ 
+and the vertex $\vertex$.
+\item
+\label{equal:undefined:undefined:addvariable}
+There is a $\vertex\in\vertices_1$ such that
+$\graph_4=\gupdate{\graph_1}{\labeling}\updateby{\xvar}{\vertex}$.
+%
+$\graph_1\lt\graph_4$ follows by deletion of the variable $\xvar$.
+\item
+\label{equal:undefined:undefined:addsimple}
+There are $\vertex_1\in\vertices_1$ 
+and $\vertex_2\not\in\vertices_1$ with $\succ_1(\vertex_1)\neq\undef$, 
+and graphs $\graph_5,\graph_6$ and $\graph_7$ such that
+$\graph_7=\graph_1\addVertex{\vertex_2}$,
+$\graph_6=\gupdate{\graph_7}{\succ}\updateby{\vertex_2}{\succ_7(\vertex_1)}$,
+$\graph_5=\gupdate{\graph_6}{\succ}\updateby{\vertex_1}{\vertex_2}$, and
+$\graph_4=\gupdate{\graph_5}{\labeling}\updateby{\xvar}{\vertex_2}$.
+%
+$\graph_1\lt\graph_4$ follows by deletion of the variable $\xvar$, and elimination
+of the vertex $\vertex_2$ by contraction.
+\end{enumerate}
+%
+\end{enumerate}
+%
+%
+%
+\item
+$\action$ is of the form $\xvar\nequals\yvar$.
+%
+%
+We define $\graph_3=\graph_2$.
+%
+We show $\graph_1\lt\graph_3$ by considering 
+the following four subcases.
+%
+For each one of these subcases, $\graph_2\movesto{\action}\graph_3$ 
+follows directly from the definitions:
+\begin{enumerate}
+\item
+$\labeling_1(\xvar)\nequals\labeling_1(\yvar)$ and 
+$\graph_2=\graph_1$.
+%
+$\graph_1\lt\graph_3$ follows from $\graph_3=\graph_2=\graph_1$.
+\item
+\label{nequal:defined:undefined}
+$\labeling_1(\xvar)\nequals\undef$, $\labeling_1(\yvar)=\undef$
+and $\graph_2\in\graph_1\addNotEqVar{\xvar}{\yvar}$.
+%
+Define $\graph_3=\graph_2$. 
+%
+$\graph_3$ is in $\graph_1\addVar{\yvar}$ 
+and $\labeling_3(\xvar)\nequals\labeling_3(\yvar)$.
+%
+%Clearly $\graph_4\lt\graph_2$. 
+%
+We show $\graph_1\lt\graph_3$
+by the arguments in~(\ref{equal:undefined:undefined:addisolated}), 
+(\ref{equal:undefined:undefined:addvariable}) and
+(\ref{equal:undefined:undefined:addsimple}).
+%
+\item
+$\labeling_1(\xvar)=\undef$ and $\labeling_1(\yvar)\nequals\undef$
+is similar to~(\ref{nequal:defined:undefined}) where $\xvar$ and $\yvar$
+are permuted.
+\item
+$\labeling_1(\xvar)=\undef$, $\labeling_1(\yvar)=\undef$ and
+there is a $\graph_4$ in $\graph_1\addVar{\xvar}$
+such that $\graph_2\in\graph_4\addNotEqVar{\xvar}{\yvar}$.
+%
+We get $\graph_1\lt\graph_4$ by the arguments 
+in~(\ref{equal:undefined:undefined:addisolated}), 
+(\ref{equal:undefined:undefined:addvariable}) and
+(\ref{equal:undefined:undefined:addsimple}).
+%
+$\graph_4\lt\graph_2$ by the arguments of~(\ref{nequal:defined:undefined})
+where $\graph_1$ is replaced by $\graph_4$.
+\end{enumerate}
+%
+%
+%
+\item
+$\action$ is of the form $\xvar\assigned\yvar$.
+%
+We consider 
+the four subcases of the definition of $\graph_1\pmovesto{\action}\graph_2$.
+% 
+%$\graph_2\absmovesto{\action}\graph_3$ follows directly.
+%
+%For each one of the subcases, we show 
+%$\graph_2\absmovesto{\action}\uc{\graph_1}$:
+\begin{enumerate}
+\item
+\label{assignment:defined:defined}
+$\labeling_1(\xvar)\nequals\undef$,
+$\labeling_1(\yvar)\nequals\undef$
+and $\labeling_1(\xvar)=\labeling_1(\yvar)$ and 
+$\graph_2=\graph_1\delVar{\xvar}$.
+%
+Observe $\labeling_2(\yvar)\nequals\undef$, $\suc_1=\suc_2$ and
+$\labeling_1=\labeling_2\updateby{\xvar}{\labeling_2(\yvar)}$.
+%
+Hence $\graph_2\movesto{\action}\graph_1$.
+%
+We define $\graph_3=\graph_1$.
+\item
+\label{assignment:defined:undefined}
+$\labeling_1(\xvar)\nequals\undef$, $\labeling_1(\yvar)=\undef$
+and there exists a $\graph_3=\graph_1\addEqVar{\xvar}{\yvar}$
+such that $\graph_2=\graph_3\delVar{\xvar}$.
+%
+Observe 
+$\labeling_3(\xvar)\nequals\undef$,
+$\labeling_3(\yvar)\nequals\undef$ and 
+$\labeling_3(\xvar)=\labeling_3(\yvar)$.
+%
+Using arguments similar to~(\ref{assignment:defined:defined}),
+we deduce $\graph_2\movesto{\action}\graph_3$.
+%
+Furthermore, we have $\graph_1\lt\graph_3$ by deletion of the 
+variable $\xvar$. 
+%
+\item
+$\labeling_1(\xvar)=\undef$, $\labeling_1(\yvar)\nequals\undef$
+and $\graph_2=\graph_1$.
+%
+We have $\labeling_2(\yvar)\nequals\undef$, and define 
+$\graph_3=\gupdate{\graph_2}{\labeling}\updateby{\xvar}{\labeling_2(\yvar)}$.
+%
+We have by construction $\graph_2\movesto{\action}\graph_3$, and
+$\graph_1\lt\graph_3$ by deletion the variable $\xvar$.
+%
+\item 
+$\labeling_1(\xvar)=\undef$, $\labeling_1(\yvar)=\undef$ and
+$\graph_2\in\graph_1\addVar{\yvar}$.
+%
+We have $\labeling_2(\yvar)\nequals\undef$, and define 
+$\graph_3=\gupdate{\graph_2}{\labeling}\updateby{\xvar}{\labeling_2(\yvar)}$.
+%
+We have by construction $\graph_2\movesto{\action}\graph_3$, and
+$\graph_1\lt\graph_3$ by deletion of both variables $\xvar$ and $\yvar$
+if $\labeling_2(\yvar)=\undef$.
+%
+\end{enumerate}
+%
+%
+%
+\item
+$\action$ is of the form $\xvar\assigned\nxt\yvar$.
+%
+For each one of the six subcases corresponding to the definition 
+of $\graph_1\pmovesto{\action}\graph_2$, we define $\graph_3$ 
+such that $\graph_2\movesto{\action}\graph_3$
+and $\graph_1\lt\graph_3$.
+% 
+%Observe that $\graph_2\absmovesto{\action}\graph_3$ follows directly.
+%
+\begin{enumerate}
+\item
+\label{assignmentnext:defined:defined:defined}
+$\labeling_1(\xvar)\nequals\undef$ , $\labeling_1(\yvar)\nequals\undef$, 
+$succ_1(\labeling_1(\yvar))\neq\undef$, 
+$\succ(\labeling_1(\yvar))=\labeling_1(\xvar)$ and 
+$\graph_2=\graph_1\delVar{\xvar}$.
+%
+We define $\graph_3=\graph_1$.
+%
+%Clearly $\graph_2\movesto{\action}\graph_3$
+%and $\graph_1\lt\graph_3$.
+\item
+\label{assignmentnext:defined:defined:undefined}
+$\labeling_1(\xvar)\neq\undef$,
+$\labeling_1(\yvar)\neq\undef$, 
+$\labeling_1(\yvar)\neq\labeling_1(\nil)$, 
+$\succ_1(\labeling_1(\yvar))=\undef$,
+and there is a $\graph_3=\graph_1\addEdgeBetween{\yvar}{\xvar}$
+such that
+$\graph_2=\graph_3\delVar{\xvar}$.
+%
+%Observe that $\graph_2\movesto{\action}\graph_3$.
+%
+%We show $\graph_1\lt\graph_4$ as follows.
+%
+%Observe also that $\graph_3=\gupdate{\graph_1}{\succ}
+%\updateby{\labeling_1(\yvar)}{\labeling_1(\xvar)}$.
+%
+We deduce $\graph_1\lt\graph_3$ holds by edge deletion.
+% as defined in
+%$\graph_1=\gupdate{\graph_3}{\succ}\updateby{\labeling_1(\yvar)}{\undef}$.
+%
+\item
+\label{assignmentnext:defined:undefined}
+$\labeling_1(\xvar)\neq\undef$,
+$\labeling_1(\yvar)=\undef$,
+and there are graphs $\graph_3,\graph_4$ such that
+$\graph_4\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$,
+$\graph_3=\graph_4\addEdgeBetween{\yvar}{\xvar}$, and
+$\graph_2=\graph_3\delVar{\xvar}$.
+%
+Observe that 
+$\labeling_3(\xvar)\nequals\undef$,
+$\labeling_3(\yvar)\nequals\undef$,
+$\succ_3(\labeling_3(\yvar))$,
+$\succ_3(\labeling_3(\yvar))=\labeling_3(\xvar)$ and 
+$\graph_2=\graph_3\delVar{\xvar}$,
+meaning $\graph_2\movesto{\action}\graph_3$.
+%
+We show $\graph_1\lt\graph_4$
+and $\graph_4\lt\graph_3$ as follows.
+%
+We start with $\graph_1\lt\graph_4$, and consider the 
+three subcases corresponding to the definition 
+of $\graph_4\in\graph_1\addVarAsPredOf{\xvar}{\yvar}$.
+\begin{enumerate}
+\item 
+\label{assignmentnext:defined:undefined:vertex}
+There is a $\vertex\not\in\vertices_1$ such that
+$\graph_4=\gupdate{(\graph_1\addVertex{\vertex})}{\labeling}\updateby{\yvar}{\vertex}$.
+%
+$\graph_1\lt\graph_4$ by deleting the variable $\yvar$ and the vertex $\vertex$.
+%
+\item
+\label{assignmentnext:defined:undefined:variable}
+There is a $\vertex\in\vertices_1$ such that 
+$\labeling_1(\vertex)\nequals\labeling_1(\nil)$
+with $\succ_1(\vertex)=\undef$ or $\succ_1(\vertex)=\labeling_1(\xvar)$ 
+and $\graph_4=\gupdate{\graph_1}{\labeling}\updateby{\yvar}{\vertex}$.
+%
+$\graph_1\lt\graph_4$ by deleting the variable $\yvar$.
+%
+\item
+\label{assignmentnext:defined:undefined:contraction}
+There are $\vertex_1\in\vertices_1$, 
+$\vertex_2\not\in\vertices_1$ and graphs $\graph_5, \graph_6$
+such that 
+$\succ_1(\vertex_1)=\labeling_1(\xvar)$,
+$\graph_6=\gupdate{(\graph_1\addVertex{\vertex_2})}{\succ}
+\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+$\graph_5=\gupdate{\graph_6}{\succ}\updateby{\vertex_1}{\vertex_2}$, and 
+$\graph_4=\gupdate{\graph_5}{\labeling}\updateby{\yvar}{\vertex_2}$.
+%
+$\graph_1\lt\graph_4$ by deleting the variable $\yvar$ and 
+eliminating $\vertex_2$ by contraction.
+\end{enumerate}
+%
+We show $\graph_4\lt\graph_3$ by considering the two cases 
+$\succ_4(\labeling_4(\yvar))=\labeling_4(\xvar)$
+and 
+$\succ_4(\labeling_4(\yvar))=\undef$
+when defining $\graph_3$ in 
+$\graph_3=\graph_4\addEdgeBetween{\yvar}{\xvar}$.
+%
+Observe that these are the only possible values for 
+$\succ_4(\labeling_4(\yvar))$
+according to the definition of $\graph_4$.
+%
+In the first case, we get $\graph_4=\graph_3$. % (and hence $\graph_4\lt\graph_3$).
+%
+The second case gives
+$\graph_3=\gupdate{\graph_4}{\succ}
+\updateby{\labeling_4(\yvar)}{\labeling_4(\xvar)}$,
+and hence $\graph_4\lt\graph_3$ by edge deletion.
+% as defined in 
+%$\graph_4=\gupdate{\graph_3}{\succ}
+%\updateby{\labeling_3(\yvar)}{\undef}$.
+%
+\item
+$\labeling_1(\xvar)=\undef$,
+$\labeling_2(\yvar)\neq\undef$,
+$\succ_1(\labeling_1(\yvar))\neq\undef$, and
+$\graph_2=\graph_1$.
+%
+We define 
+$\graph_3=\gupdate{\graph_2}{\labeling}
+\updateby{\xvar}{\succ_2(\labeling_2(\yvar))}$.
+% 
+%Observe $\graph_2\movesto{\action}\graph_3$.
+% 
+We have $\graph_1\lt\graph_3$ by deleting variable $\xvar$.
+%
+\item
+$\labeling_1(\xvar)=\undef$,
+$\labeling_1(\yvar)\neq\undef$,
+$\suc_1(\labeling_1(\yvar))=\undef$, 
+$\labeling_1(\yvar)\nequals\labeling_1(\nil)$ and
+$\graph_2$ in the set $\graph_1\addEdge{\yvar}$.
+%
+Notice that $\suc_2(\labeling_2(\yvar))\nequals\undef$.
+%
+We define $\graph_3=\graph_2\addVarAsSuccOf{\yvar}{\xvar}$. 
+%
+%Observe that $\graph_2\movesto{\action}\graph_3$, 
+%and 
+$\graph_2\lt\graph_3$ holds by deletion of variable 
+$\xvar$.
+% 
+We show $\graph_1\lt\graph_2$ by considering the
+three subcases corresponding to the definition of 
+$\graph_2$ in the set $\graph_1\addEdge{\yvar}$:
+\begin{enumerate}
+\item 
+\label{assignmentnext:undefined:defined:undefined:isolate}
+There is a $\vertex\not\in\vertices_1$ and a graph $\graph_2$ 
+such that $\graph_2=\gupdate{\graph_4}{\succ}
+\updateby{\labeling_4(\yvar)}{\vertex}$ and 
+$\graph_4=\graph_1\addVertex{\vertex}$.
+%
+We have $\graph_1\lt\graph_4$ by deleting $\vertex$, while
+$\graph_4\lt\graph_2$ by edge deletion.
+% as defined in 
+%$\graph_4=\gupdate{\graph_2}{\suc}\updateby{\labeling_1(\yvar)}{\undef}$.
+%
+\item
+\label{assignmentnext:undefined:defined:undefined:notisolate}
+There is a 
+$\vertex\in\vertices$ such that $\graph_2=\gupdate{\graph_1}{\succ}
+\updateby{\labeling_1(\yvar)}{\vertex}$.
+%
+%We have 
+$\graph_1\lt\graph_2$ holds by edge deletion.
+%  as defined in 
+%$\graph_1=\gupdate{\graph_2}{\suc}\updateby{\labeling_1(\yvar)}{\undef}$.
+%
+\item
+\label{assignmentnext:undefined:defined:undefined:simple}
+There are $\vertex_1\in\vertices_1$, 
+$\vertex_2\not\in\vertices_1$ and graphs $\graph_4, \graph_5$
+such that 
+$\graph_5=\gupdate{(\graph_1\addVertex{\vertex_2})}{\succ}
+\updateby{\vertex_2}{\succ_1(\vertex_1)}$,
+$\graph_4=\gupdate{\graph_5}{\succ}\updateby{\vertex_1}{\vertex_2}$, 
+and $\graph_3=\gupdate{\graph_4}{\suc}\updateby{\labeling(\yvar)}{\vertex_2}$.
+%
+$\graph_1\lt\graph_5$ holds by deleting an edge
+% as defined in  
+%$\graph_4=\gupdate{\graph_1}{\suc}\updateby{\labeling(\yvar)}{\undef}$
+and by eliminating $\vertex_2$ with contraction.
+\end{enumerate}
+%
+\item
+$\labeling_1(\xvar)=\undef$,
+$\labeling_1(\yvar)=\undef$
+and there are $\graph, \graph', \graph''$ such that 
+$\graph\in\graph_1\addVar{\xvar}$,
+$\graph'\in\graph'\addVarAsPredOf{\xvar}{\yvar}$,
+$\graph''=\graph'\addEdgeBetween{\yvar}{\xvar}$ and
+$\graph_2=\graph''\delVar{\xvar}$.
+We define $\graph_3=\graph''$.
+$\graph_1\lt\graph_3$ by similar arguments
+to ~\ref{equal:undefined:undefined:addisolated}-\ref{equal:undefined:undefined:addvariable}-\ref{equal:undefined:undefined:addsimple} 
+(in $\graph'\in\graph_1\addVar{\xvar}$) and 
+to ~\ref{assignmentnext:defined:undefined} 
+(in $\graph'\in\graph'\addVarAsPredOf{\xvar}{\yvar}$ and
+$\graph''=\graph'\addEdgeBetween{\yvar}{\xvar}$).
+Also, $\graph_2\movesto{\action}\graph_3$ because
+$\labeling_3(\xvar)\nequals\undef$ , $\labeling_3(\yvar)\nequals\undef$, 
+$succ_3(\labeling_3(\yvar))\neq\undef$, 
+$\succ(\labeling_3(\yvar))=\labeling_3(\xvar)$ and 
+$\graph_2=\graph_3\delVar{\xvar}$.
+%
+\end{enumerate}
+%
+%
+%
+\item
+$\action$ is of the form $\nxt\xvar\assigned\yvar$.
+%
+For each one of the six subcases corresponding 
+to the definition 
+of $\graph_1\pmovesto{\action}\graph_2$, 
+we find a graph $\graph_3$ 
+such that $\graph_2\movesto{\action}\graph_3$
+and $\graph_1\lt\graph_3$:
+% 
+%Observe that $\graph_2\absmovesto{\action}\graph_3$ 
+%follows directly.
+\begin{enumerate}
+\item
+\label{nextassignment:defined:defined:defined}
+$\labeling_1(\xvar)\neq\undef$,
+$\labeling_1(\yvar)\neq\undef$,
+$\suc_1(\labeling_1(\xvar))\neq\undef$,
+$\suc_1(\labeling_1(\xvar))=\labeling_1(\yvar)$ and
+$\graph_2=\graph_1\delEdge{\xvar}$.
+%
+Define $\graph_3=\graph_1$. % (hence $\graph_1\lt\graph_3$).
+%
+Observe $\graph_3=\gupdate{\graph_2}{\succ}
+\updateby{\labeling_2(\xvar)}
+{\labeling_2(\yvar)}$,
+meaning $\graph_2\movesto{\action}\graph_3$.
+%
+\item
+$\labeling_1(\xvar)\neq\undef$,
+$\suc_1(\labeling_1(\xvar))\neq\undef$,
+$\labeling_1(\yvar)=\undef$ and there is a 
+$\graph_3=\graph_1\addVarAsSuccOf{\xvar}{\yvar}$
+such that
+$\graph_2=\graph_3\delEdge{\xvar}$.
+%
+%Observe $\labeling_4(\xvar)\neq\undef$,
+%$\suc_4(\labeling_4(\xvar))
+%=\labeling_4(\yvar)$.
+%
+%Using similar arguments 
+%to those of~(\ref{nextassignment:defined:defined:defined}),
+%we deduce $\graph_2\movesto{\action}\graph_4$.
+%
+Observe that $\graph_1\lt\graph_3$ by deletion
+of variable $\yvar$.
+%
+%We define $\graph_3=\graph_4$.
+\item
+$\labeling_1(\xvar)\neq\undef$,
+$\suc_1(\labeling_1(\xvar))=\undef$,
+$\labeling_1(\yvar)\neq\undef$, 
+$\labeling_1(\xvar)\neq\labeling_1(\nil)$ 
+and
+$\graph_2=\graph_1$.
+%
+We define $\graph_3=\gupdate{\graph_2}{\succ}
+\updateby{\labeling_2(\xvar)}
+{\labeling_2(\yvar)}$.
+%
+%We get $\graph_2\movesto{\action}\graph_3$ by definition
+%of $\graph_3$.
+%
+Also, observe 
+%$\graph_1=\gupdate{\graph_3}{\succ}
+%\updateby{\labeling_3(\xvar)}{\undef}$, meaning
+$\graph_1\lt\graph_3$ by edge deletion.
+\item
+$\labeling_1(\xvar)\neq\undef$,
+$\suc_1(\labeling_1(\xvar))=\undef$,
+$\labeling_1(\yvar)=\undef$, 
+$\labeling_1(\xvar)\neq\labeling_1(\nil)$, and
+$\graph_2$ in the set $\graph_1\addVar{\yvar}$.
+%
+Observe $\labeling_2(\yvar)\nequals\undef$.
+%
+%
+We define $\graph_3=\gupdate{\graph_2}{\succ}
+\updateby{\labeling_2(\xvar)}
+{\labeling_2(\yvar)}$.
+%
+%By definition, we get $\graph_2\movesto{\action}\graph_3$.
+%
+%Also, observe $\graph_2=\gupdate{\graph_3}{\succ}
+%\updateby{\labeling_3(\xvar)}{\undef}$,
+%meaning 
+Observe $\graph_2\lt\graph_3$ holds by edge deletion,
+%
+%Furthermore, $\graph_1=\gupdate{\graph_2}{\labeling}
+%\updateby{\yvar}{\undef}$, meaning 
+and $\graph_1\lt\graph_2$
+by deletion of variable $\yvar$.
+\item
+\label{nextassignment:undefined:undefined}
+$\labeling_1(\xvar)=\undef$,
+$\labeling_1(\yvar)\neq\undef$, and
+there is a $\graph_3$ such that
+$\graph_2=\graph_3\delEdge{\xvar}$ where
+$\graph_3\in(\graph_1\addVarAsPredOf{\yvar}{\xvar})$.
+%
+We have $\graph_3=\gupdate{\graph_2}{\succ}
+\updateby{\labeling_2(\xvar)}
+{\labeling_2(\yvar)}$, meaning 
+$\graph_2\movesto{\action}\graph_3$.
+%
+Furthermore, $\graph_1\lt\graph_3$ by arguments
+similar to those 
+in~(\ref{assignmentnext:defined:undefined:vertex}),
+(\ref{assignmentnext:defined:undefined:variable})
+and (\ref{assignmentnext:defined:undefined:contraction}).
+\item
+$\labeling_1(\xvar)=\undef$,
+$\labeling_1(\yvar)=\undef$, and
+there  graphs $\graph_3,\graph_4$ such that
+$\graph_4\in\graph_1\addVar{\yvar}$,
+$\graph_3\in\graph_4\addVarAsPredOf{\yvar}{\xvar}$, and
+$\graph_2=\graph_3\delEdge{\xvar}$.
+%
+We use similar arguments to 
+those in~(\ref{nextassignment:undefined:undefined}) 
+to deduce $\graph_2\movesto{\action}\graph_3$
+and $\graph_1\lt\graph_3$.
+\end{enumerate}
+\end{enumerate}
+
+
+%\subsection*{Lemma~\ref{forwards:implies:bakwards:lemma}}
+%
+Assume $\graph_1\absmovesto{\action}\graph_2$.
+%
+This implies the existence of a $\graph_3$ such that
+$\graph_3\movesto{\action}\graph_2$ 
+and $\graph_3\lt\graph_1$.
+%
+Showing that $\graph_2\pmovesto{\action}\graph_3$
+is sufficient for proving $\graph_2\pmovesto{}\dc{\graph_1}$.
+%
+%Lemma~(\ref{pre:js:monotonic:lemma}) gives that
+%for any $\graph_2$ verifying 
+%$\graph_2\lt\graph_3$, there exists a $\graph_4$
+%such that 
+%$\graph_4\lt\graph_1$ and $\graph_2\pmovesto{\action}\graph_4$.
+%
+We let in the following 
+%that $\graph_1\movesto{\action}\graph_3$
+%implies $\graph_3\pmovesto{\action}\graph_1$.
+%
+%We let 
+$\graph_i=\tuple{\vertices_i,\succ_i,\labeling_i}$ for $i\geq0$; 
+and consider five cases depending on the type of $\action$:
+\begin{enumerate}
+\item
+  $\action$ is of the form $\xvar\equals\yvar$. 
+  %
+  By definition:
+  $\labeling_3(\xvar)\nequals\undef$,
+  $\labeling_3(\yvar)\nequals\undef$, 
+  $\labeling_3(\xvar)=\labeling_3(\yvar)$ 
+  and $\graph_3=\graph_2$.
+  %
+  We have $\graph_2\pmovesto{\action}\graph_3$ 
+  by case~(\ref{pre:case:equalsA}) in Section~\ref{section:pre}.
+  %
+\item
+  $\action$ is of the form $\xvar\nequals\yvar$.
+%
+  By definition:
+  $\labeling_3(\xvar)\nequals\undef$, 
+  $\labeling_3(\yvar)\nequals\undef$, 
+  $\labeling_3(\xvar)\neq\labeling_3(\yvar)$ 
+  and $\graph_3=\graph_2$.
+  % 
+  We have $\graph_2\pmovesto{\action}\graph_3$ 
+  by case~(\ref{pre:case:notEqualsA}) in Section~\ref{section:pre}.
+  %
+\item
+  $\action$ is of the form $\xvar\assigned\yvar$.
+  %
+  By definition: 
+  $\labeling_3(\xvar)\nequals\undef$,
+  $\labeling_3(\yvar)\nequals\undef$, 
+  $\labeling_3(\xvar)=\labeling_3(\yvar)$ and
+  $\graph_3=\graph_2\delVar{\xvar}$.
+  %
+  We have $\graph_2\pmovesto{\action}\graph_3$ 
+  by case~(\ref{pre:case:assignedA}) in Section~\ref{section:pre}.
+  %
+\item
+$\action$ is of the form  $\xvar\assigned\nxt\yvar$.
+  By definition:
+  %
+  $\labeling_3(\xvar)\neq\undef$, %
+  $\labeling_3(\yvar)\neq\undef$, %
+  $\suc_3(\labeling_3(\yvar))\neq\undef$, %
+  $\suc_3(\labeling_3(\yvar))=\labeling_3(\xvar)$ and
+  $\graph_3=\graph_2\delVar{\xvar}$.
+  %
+  We have $\graph_2\pmovesto{\action}\graph_3$ 
+  by case~(\ref{pre:case:assignedDotNextA}) in Section~\ref{section:pre}.
+  %
+\item
+$\action$ is of the form $\nxt\xvar\assigned\yvar$.
+  By definition:
+  $\labeling_3(\xvar)\neq\undef$, %
+  $\suc_3(\labeling_3(\xvar))\neq\undef$, %
+  $\labeling_3(\yvar)\neq\undef$, %
+  $\suc_3(\labeling_3(\xvar))=\labeling_3(\yvar)$ and
+  $\graph_3=\graph_3\delEdge{\xvar}$.
+  %
+  We have $\graph_2\pmovesto{\action}\graph_3$ 
+  by case~(\ref{pre:case:dotNextAssignedA}) in Section~\ref{section:pre}.
+\end{enumerate}
+
+%
+
+
+

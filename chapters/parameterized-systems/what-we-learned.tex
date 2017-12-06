@@ -1,0 +1,21 @@
+\begin{description}
+\item[Parameterized systems] are infinite-state and the focus of this
+  thesis. They are formally defined as a pair $\parsys=(\locs,\rules)$
+  where \locs\ is a finite set of process states and \rules\ is a set
+  of local or global transitions over \locs .
+\item[Induced Model.] The system \parsys\ induces an infinite-state
+  model $(\confs,\trans)$ which describes the configurations \confs\
+  and how to update from a~configuration to another using the
+  transition relation~{\trans}.
+\item[Reachability problem] is now formally defined using the induced
+  model, the set bad configurations \Bad\ and the set of initial
+  configurations \Inits .
+  %
+  % If the bad configurations are unreachable from the initial
+  % configurations, the abstract system is then proven safe and by
+  % construction of the over-approximation, so is the original system.
+\item[Features.] Parameterized systems can be designed with several
+  features in mind, especially regarding the topology and the type of
+  communication allowed between processes.
+  % These make the parameterized verification a challenging problem.
+\end{description}

@@ -1,0 +1,223 @@
+%-----------------------------------
+\section{Implementation and Experiments}
+\label{section:experiments}
+%-----------------------------------
+%
+We have implemented a prototype in OCaml based on our method to verify
+safety properties for a numerous protocols.
+%
+We report the results running on a 3.1~GHz computer with 4GB~memory.
+%
+Table~\ref{experiments:results-linear} displays, for various protocols
+with linear topology (over 2 lines), the running times (in seconds),
+the final number of views generated ($\sizeof V$) and the number of
+bases.
+%
+The first line is the result of the atomic version of the protocol,
+while the second line represents the non-atomic version.
+%
+The complete descriptions of the experiments can be found in
+Appendix~\ref{appendix:experiments}.
+%
+In most cases, the method terminates almost immediately illustrating
+the \emph{small model property}: all patterns occur for small
+instances of the system.
+%
+
+\begin{wraptable}{r}[0pt]{0.63\textwidth}
+%\begin{minipage}{0.68\textwidth}
+\vspace{-32pt}
+%\begin{table}[ht]%[!b]
+\caption{Linear topologies. Atomic vs Non Atomic}
+\label{experiments:results-linear}
+%\centering
+\hfill%
+\begin{tabular}{|l||c||c|c|c|}\hhline{*{5}{=}}
+ {\bf Protocol}                              & {\bf Time} & {\bf $\sizeof{bases}$} & {\bf $\sizeof V$} & {\bf status}\\\hhline{*{5}{=}}
+
+
+ \multirow{2}{*}{Parosh's example}                    & 0.005      & 21     & 22     & $\safe$   \\
+                                                      & 0.006      & -      & -      & $\unsafe$ \\\hline
+ \multirow{2}{*}{Burns}                               & 0.004      & 34     & 34     & $\safe$   \\
+                                                      & 0.011      & 34     & 64     & $\safe$   \\\hline
+ \multirow{2}{*}{Dijkstra}                            & 0.027      & 93     & 93     & $\safe$   \\
+                                                      & 0.097      & 93     & 222    & $\safe$   \\\hline
+ \multirow{2}{*}{Szymanski}                           & 0.307      & 100    & 168    & $\safe$   \\
+                                                      & 1.982      & 100    & 311    & $\safe$   \\\hline
+ \multirow{2}{*}{Szymanski (compact)}                 & 0.006      & 48     & 48     & $\safe$   \\
+                                                      & 0.557      & 48     & 194    & $\safe$   \\\hline
+ Szymanski (random)                                   & 1.156      & -      & -      & $\unsafe$ \\\hline
+ \multirow{2}{*}{Bakery}                              & 0.001      & 7      & 7      & $\safe$   \\
+                                                      & 0.006      & 9      & 30     & $\safe$   \\\hline
+ \multirow{2}{*}{Gribomont-Zenner}                    & 0.328      & 119    & 143    & $\safe$   \\
+                                                      & 32.112     & 119    & 888    & $\safe$   \\\hline
+ Simple Barrier                                       & 0.018      & 31     & 61     & $\safe$   \\
+ (as array)                                           & 1.069      & 30     & 253    & $\safe$   \\\hhline{*{5}{=}}
+
+\end{tabular}
+%\end{table}
+%\end{minipage}
+\vspace{-20pt}
+\end{wraptable}
+%
+For the first example of Table~\ref{experiments:results-linear} in the
+case of non-atomicity, our tool reports the protocol to be
+$\unsafe$. It is indeed a real error and not an artifact of the
+over-approximation. The method is sound.
+%
+In fact, this is also the case when we intentionally tweak the
+implementation of Szymanski's protocol and force the for-loops to
+iterate randomly through the indices, in the non-atomic case. %
+The tool reports a trace, that is, a sequence of configurations ---
+here involving only 3 processes --- as a witness of an (erroneous)
+scenario that leads to a violation of the mutual exclusion property.
+
+%
+\def\daznc{%
+  \tikz[xshift=8ex,yshift=0.3ex]{%
+    \node[left,scale=0.9,rotate=20,color=blue!20,overlay]{contexts};
+    \node[left,scale=0.9,rotate=20,color=blue!20,overlay] at (5ex,0){needed};}
+}
+%
+\begin{wraptable}{l}[0pt]{0.68\textwidth}
+%\begin{minipage}{0.68\textwidth}
+\vspace{-28pt}
+%\begin{table}[ht]%[!b]
+\caption{Petri Net with Inhibitor Arcs}
+\label{experiments:results-pn}
+\centering
+\begin{tabular}{|l||c||c|c|c|}\hhline{*{5}{=}}
+ {\bf Protocol}           &  {\bf Time}  & {\bf $\sizeof {bases}$}& {\bf $\sizeof V$} & {\bf status}\\\hhline{*{5}{=}}
+ Critical Section with lock                           & 0.001      & 42     & 42     & $\safe$   \\
+ Priority Allocator                                   & 0.001      & 33     & 33     & $\safe$   \\
+ Barrier with Counters                                & 0.001      & 22     & 22     & $\safe$   \\\hline
+ Simple Barrier       $\daznc$                        & 0.001      & 7      & 8      & $\safe$   \\
+ Light Control                                        & 0.001      & 9      & 15     & $\safe$   \\
+ List with Counter Automata                           & 0.002      & 20     & 38     & $\safe$   \\\hhline{*{5}{=}}
+
+\end{tabular}
+\vspace{-16pt}
+%\end{table}
+\end{wraptable}
+%
+\noindent%
+We also ran the method to verify several examples with a multiset
+topology: Petri nets with inhibitor arcs. %
+Inhibitor places should retain a context in order to not fire the
+transition and potentially make the over-approximation too coarse. The
+bottom part of Table~\ref{experiments:results-pn} lists examples where
+the contexts were necessary to verify the protocol, while the top part
+lists examples that didn't require any context.
+
+
+%\tikz[remember picture,overlay]{\node[right,rotate=30,color=blue!20] at (nc){contexts needed};}
+
+%% ------------------------------------------------------------------
+\myparagraph{Accelerations.}
+%% ------------------------------------------------------------------
+We discuss a major acceleration for the procedure
+in~\ref{section:procedure} which leverages the power of the entailment
+relation. %
+It is based on the observation that $\reachof k$ contains
+configurations of size $k$, which can be used as initial input
+for the procedure.
+%
+A careful reader will observe that $\project k {\reachof k}$ contains
+views of size (up to) $k$ where all views of size $k$ have empty
+contexts. These will be useful to cut down on the computations of the
+symbolic post, %$\spost$
+since its results will often be views that are already in $\project k
+{\reachof k}$ but with larger contexts, and therefore immediately
+discardable by entailement.
+%
+Indeed the successor of a view that is entailed by a view from
+$\project{k} {\reachof {k}}$ would not bring any new information to
+the analysis. %
+%
+It is therefore interesting to seed the fixpoint computation with a
+larger set than $\project k \inits$, namely $\project k {\reachof k}$.
+%
+% Notice that we are not leveraging the monotonicity of
+% the transition system (because it is not!), but a rather simpler fact:
+% If a transition was to be enabled on \emph{both} views $\view_1$ and
+% $\view_2$ such that $\view_1\entails\view_2$, we can simply observe
+% that $\spostof{\view_1}\entails\spostof{\view_2}$. %
+% Since $\reachof {k}$ is stable by $\post$, $\project{k} {\reachof
+%   {k}}$ is also stable by $\spost$, we can safely discard the views
+% that are entailed by a view from $\project{k} {\reachof {k}}$. %
+% We could therefore use $\vinits = \project k {\reachof k}$.
+%-----------------------
+Furthermore, it is possible to use $\project {k+1} {\reachof {k+1}}$ %
+to cut down on the computation of the extensions
+$\concretizeoflim{k}{k+1}{X}$. %
+%
+If a view $v$ from $\concretizeoflim k {k+1} {X}$ is already entailed
+by a view $w$ in $\project {k+1} {\reachof {k+1}}$, %
+it is again possible to safely ignore $v$, using the same argument
+above ($w$ has an empty context) and since we already have computed
+the symbolic post on the view $w$.
+%-----------------------
+Finally, since $\reachof k$ and $\reachof {k+1}$ are finite, their
+computation can be done using any procedure for exact state-space
+exploration and we seed the symbolic fixpoint computation with
+$\project k {\reachof k \union \reachof {k+1}}$. %
+%
+The net result of these accelerations is that most experiments happen
+to be already at fixpoint, which demonstrates the efficiency of the
+method and that most behaviours are captured by small instances of the
+system.
+
+%% -----------------------------------------------------
+\myparagraph{Heuristics.}
+%% -----------------------------------------------------
+If we can empirically observe that $\project 2 {\reachof 2 \union
+  \reachof 3} = \project 2 {\reachof 2 \union \reachof 3 \union
+  \reachof 4}$, we are probably already at fixpoint. It is therefore
+interesting to inspect whether a new view could be inserted while
+computing the symbolic post on $\concretizeoflim 2 3 {X}$, even though
+we ignored contexts.
+%
+If not, we were indeed at fixpoint already and the invariant we
+discovered is strong enough to imply safety.
+% 
+If so, we can stop the computations, fetch the views that caused the
+insertion and remember their contexts for the next round of
+computations.
+%
+This heuristic happen to be very successful in the case of Szymanski's
+protocol (in its non-atomic full version).
+
+On the other hand, this strategy can also be applied in general. We do
+not remember any contexts, and if the procedure discovers a
+false-positive, we trace the views that generated it and remember
+their contexts for the next round of computations, in a CEGAR-like
+fashion. This will in fact discover necessary contexts little at a
+time. We are convinced that any smarter counter-example analysis,
+other than the basic one we implemented, will lead to faster context
+discovery, as this heuristic is interesting if few views need context.
+%
+It is however inefficient if it happens that mostly all views need a
+context (as shown with the ring agreement example).
+%
+Table~\ref{experiments:accelerations} presents the results of using
+the insertion and context discovery heuristics.
+%
+\begin{table}[ht]%[!b]
+%\vspace{-6mm}
+\caption{Leveraging the heuristics}
+\label{experiments:accelerations}
+\centering
+\begin{tabular}{|rl||c||c|c|c|}\hhline{*{6}{=}}
+ {\bf Protocol} &             &  {\bf Time}  & {\bf $\sizeof{bases}$}& {\bf $\sizeof V$} & {\bf iteration}\\\hhline{*{6}{=}}
+ \multirow{3}{*}{Agreement}             & with insertion heuristic & 8.247      & 76     & 199    & 28        \\
+                                        & with all contexts        & \tikz[baseline=(n.base)]{\node(e)[ellipse,color=blue!20,fill=blue!20]{3.950};\node(n){3.950};}      & 76     & 216    & 1         \\
+                                        & with contexts discovery  & 166.893    & 77     & 121    & 4         \\\hline
+ \multirow{2}{*}{Gribomont-Zenner}      & with insertion heuristic & \tikz[baseline=(n.base)]{\node(e)[ellipse,color=blue!20,fill=blue!20]{0.328};\node(n){0.328};}      & 119    & 143    & 7         \\
+                                        & with all contexts        & 0.808      & 119    & 317    & 1         \\
+                                        & with contexts discovery  & 50.049     & 119    & 217    & 3         \\\hline
+ \multirow{2}{*}{Szymanski, non-atomic} & with insertion heuristic & \tikz[baseline=(n.base)]{\node(e)[ellipse,color=blue!20,fill=blue!20]{2.053};\node(n){2.053};}      & 100    & 311    & 26        \\
+                                        & with all contexts        & 48.065     & 100    & 771    & 1         \\
+                                        & with contexts discovery  & 732.643    & 100    & 896    & 7         \\\hhline{*{6}{=}}
+\end{tabular}
+%\vspace{-6mm}
+\end{table}

@@ -1,0 +1,279 @@
+%% ====================================================================
+
+\chapter{Concurrent Data Structures}
+\label{section:shape:programs}
+\index{Program Model}%
+%% ====================================================================
+\index{Concurrency}%
+
+%\begin{figure}
+%\center
+%\begin{tikzpicture}[]
+%\node[rounded corners,draw = cyan,name=cell8,minimum width=24pt, minimum height=20pt,anchor=south]{};
+%\node[minimum width=8pt, minimum height=10pt,anchor=north west,font=\tiny,inner sep=0pt] at (cell8.north west){};
+%\node[ellipse callout, fill=yellow!20,anchor=east,inner sep=2pt, 
+%callout absolute pointer={($(cell8.north west)+(4pt,-5pt)$)},draw,,font=\tiny,align=center]  
+%at ($(cell8.north west)+(-4pt,-2pt)$){abstract\\ value};
+%%
+%\node[minimum width=8pt, minimum height=10pt,anchor=south west,font=\tiny,inner sep=0pt] at (cell8.south west){};
+%\node[ellipse callout, fill=yellow!20,anchor=east,inner sep=2pt, 
+%callout absolute pointer={($(cell8.south west)+(4pt,5pt)$)},draw,,font=\tiny,align=center]  
+%at ($(cell8.south west)+(-4pt,2pt)$){concrete\\ value};
+%%
+%%
+%\node[draw = blue!50,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell8.north){};
+%\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
+%callout absolute pointer={($(cell8.north)+(0pt,-5pt)$)},draw,,font=\tiny,align=center]  
+%at ($(cell8.north)+(0pt,7pt)$){{\tt mark}};
+%%
+%\node[draw = cyan,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell8.south){};
+%\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
+%callout absolute pointer={($(cell8.south)+(0pt,5pt)$)},draw,,font=\tiny,align=center]  
+%at ($(cell8.south)+(0pt,-7pt)$){{\tt lock}};
+%%
+%\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
+%callout absolute pointer={($(cell8.east)+(-4pt,0pt)$)},draw,,font=\tiny,align=center]  
+%at ($(cell8.east)+(13pt,0pt)$){{\tt next}};
+%%
+%%
+%\node[rounded corners,draw = cyan,name=cell1,minimum width=24pt, minimum height=20pt,anchor=west] at ($(cell8.east)+(-50pt,-40pt)$){};
+%\node[font=\tiny,inner sep=0pt,scale=0.8,anchor=west] at ($(cell1.west)+(0.5pt,1pt)$){{--$\infty$}};
+%\node[draw = blue!50,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell1.north){};
+%\node[draw = cyan,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell1.south){\cross};
+%\node[name=succ1,circle,fill,minimum size=3pt,inner sep=0pt,outer sep=0pt] at ($(cell1.east)+(-4pt,0pt)$) {};
+%\node[anchor=north,font=\tiny,align=center] at ($(cell1.south)+(0pt,2pt)$) {{\tt head}};
+%%
+%\node[rounded corners,draw = cyan,name=cell6,minimum width=24pt, minimum height=20pt,anchor=west,name=cell6]
+%at ($(cell1.east)+(10pt,0pt)$){};
+%\node[minimum width=8pt, minimum height=10pt,anchor=west,font=\tiny,inner sep=0pt,scale=0.8,name=d6a] at ($(cell6.west)+(1pt,1pt)$){$\infty$};
+%\node[draw = blue!50,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell6.north){\cross};
+%\node[draw = cyan,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell6.south){\cross};
+%\draw ($(cell6.north east)+(-1pt,-2pt)$) -- ($(cell6.south east)+(-8pt,0pt)$);
+%\draw ($(cell6.north east)+(-8pt,0pt)$) -- ($(cell6.south east)+(-1pt,2pt)$);
+%\draw[->] (succ1) -- (cell6);
+%\node[anchor=south,font=\tiny,align=center] at ($(cell6.north)+(0pt,-2pt)$) {{\tt tail}};
+%\end{tikzpicture}
+%\caption{A cell and the initial heap in the {\tt Lazy Set} Algorithm.}
+%\label{lazy:list:heap:cell:fig}
+%\end{figure}
+
+A concurrent data structure is a way of storing and organizing data for access and manipulated by multiple computing threads (or processes) on a single computer. The implementation of a concurrent data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Processes are sequential, each process applies a sequence of its operations to a share structures. A process can halt or have various speed. Actually, we do not tell whether a process is halted or is running fast or slowly.
+Each data structure has a type which defines a set of possible values and a set of operations such as queue, stack or set. Each object has a sequential
+specification that defines how the object behaves when its operations are
+invoked one at a time by a single process. For example, the behavior of a
+queue object can be specified by requiring that enqueue insert an item in the
+queue, and that dequeue remove the oldest item present in the queue. In a
+concurrent system, however, an object’s operations can be invoked by concurrent
+processes, and it is necessary to give a meaning to interleaved operation
+executions.
+
+An object is linearizable if each operation appears
+to take effect instantaneously at some point between the operation’s invocation
+and response. Linearizability implies that processes appear to be interleaved
+at the granularity of complete operations, and that the order of
+nonoverlapping operations is preserved. The notion of linearizability generalizes and uniles a number of ad hoc correctness conditions in the literature, and it is related to (but not identical with) correctness criteria such as sequential consistency and strict serializability.
+ 
+ There are four main techniques to construct concurrent data structures namely coarse-grained locking, fine-grained locking lazy, synchronization and lock-free programming. In the coarse-grained locking technique, a single lock is used to synchronize every access to an object. Coarse-grained synchronization is easy to reason about, however it works well when levels of concurrency are low, but if too many threads try to access the object at the same time, then the object becomes a sequential bottleneck, forcing threads to wait in line for access. In the second technique, they split the object into independently synchronized components, ensuring that method calls interfere only when trying to access the same component at the same time. In the third technique, the task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. The lock-free technique help us to eliminate locks entirely, it relies on built-in atomic operations such as {\tt compareAndSet()} for synchronization.
+ 
+ Each of these techniques can be applied (with appropriate customization) to a
+variety of common data structures (queues, stacks, sets) implemented by different linked data structures such as singly linked lists, skiplists, trees, or lists of lists. 
+%We consider systems consisting of an arbitrary number of concurrently executing threads. Each thread may at any time invoke one of a finite set of methods. Each method corresponding to one operation on the data structure.
+%Each method declares local variables and a method body.
+%We assume that the local variables include the
+%program counter $\tt pc$ and also potentially
+%include an input parameter of the method.
+%%
+%The body is built in the standard way
+%from atomic commands using standard control
+%flow constructs (sequential composition, selection, and loop constructs).
+%%
+%Each run of the program consists of an arbitrary (but finite) number of
+%concurrently executing threads. 
+%%
+%Each thread invokes one of the methods.
+%%
+%Thread execution is terminated by executing a {\tt return} command,
+%which may return a value.
+%%
+%The shared variables can be
+%accessed by all threads, whereas local variables can be accessed only
+%by the thread which is invoking the corresponding method.
+%%
+%We assume that the global variables and the heap are initialized by
+%an initialization thread, which is executed once at the beginning
+%of program execution.
+%%
+%Furthermore, we assume that the local variables  have 
+%arbitrary initial values.
+%%
+%In this thesis, we assume that variables are either pointer variables
+%(to heap cells) or data variables.
+%%
+%The data variables assume values 
+%from an unbounded or infinite (ordered) domain,
+%or from some finite set $\mathbb F$.
+%%
+%We assume w.l.o.g. that the infinite set is given by the set $\mathbb Z$ of integers.
+%
+%%
+%%As usual, we will also use arbitrary finite domains that we built from $\boolset$.
+%%
+%A parameter of a method may be instantiated by any value in $\mathbb Z$.
+%%
+%Heap cells can have a number of data fields that contain data either from
+%$\mathbb Z$ or $\mathbb F$.
+%%
+%A cell has only one pointer field, denoted {\tt next}.
+%%
+%Atomic commands include assignments between data variables, 
+%pointer variables, or fields of cells pointed to by a pointer variable.
+%%
+%The command {\tt new Node()} allocates a new structure of type
+%{\tt Node} on the heap, and returns a reference to it.
+%%
+%The compare-and-swap command {\tt CAS(\&a,b,c)} atomically
+%compares the values of {\tt a} and {\tt b}.
+%If  equal, it assigns the value of
+%{\tt c} to {\tt a}  and returns {\tt true}, 
+%otherwise, it leaves {\tt a} unchanged and returns {\tt false}. 
+%%% 
+%We assume that each statement in  a method
+%has a unique label.
+%
+%
+%
+%%\endgroup
+%
+%
+%\input heap-lazy-list
+\vspace{1cm}
+\input img/lazy-list
+
+
+
+%
+%
+%Each method declares local variables (including the input parameters
+%of the method) and a method body.
+%%
+%In this chapter, we assume that variables are either pointer variables
+%(to heap cells), or data variables (assuming values from an unbounded
+%or infinite domain%, which will be denoted
+%~$\dset$).
+%%
+%The body is built in the standard way from atomic commands using
+%standard control flow constructs (sequential composition, branching,
+%and loop constructs).
+%%
+%Method execution is terminated by executing a \prgcode{return}
+%command, which may return a value.
+%%
+%The global variables can be accessed by all threads, whereas local
+%variables can be accessed only by the thread which is invoking the
+%corresponding method.
+%%
+%We assume that the global variables and the heap are initialized by an
+%initialization method, which is executed once at the beginning of
+%program execution.
+%
+%Programs manipulate heap cells of type \prgcode{node}, each consisting
+%of a~\prgcode{val} field and a~\prgcode{next} field, which carry
+%respectively a data value and the address to another heap cell.
+%%
+%Atomic commands include assignments between data variables, pointer
+%variables, or fields of cells pointed to by a~pointer variable.
+%%
+%The command \prgcode{new node()} allocates a new structure of
+%type \prgcode{node} on the heap, and returns a reference to it.
+%%
+%\index{Compare-and-Swap (CAS)}%
+%The compare-and-swap command \prgcode{CAS(a,b,c)} compares the memory
+%locations \prgcode{a} and \prgcode{b}. If equal, it also atomically
+%assigns the value~\prgcode{c} to \prgcode{a} and returns
+%\prgcode{TRUE}. Otherwise, it leaves \prgcode{a} unchanged and returns
+%\prgcode{FALSE}.
+%%
+%Note that \prgcode{a}, \prgcode{b} and \prgcode{c} can be pointers or
+%variables using the referencing and dereferencing C constructs
+%\prgcode{\&}~and~\prgcode{*}.
+
+%\endgroup
+
+As an example, Fig.~\ref{figure:lazy-list} depicts a program
+{\tt Lazy Set} \cite{Lazyset}
+that implements a concurrent set containing integer
+elements.
+%
+The set is implemented as an ordered singly linked list.
+%
+The program contains three methods, namely {\tt add}, {\tt rmv},
+and {\tt ctn},  corresponding to operations
+that respectively add, remove, and check the existence
+of an element in the set.
+%
+%
+Each method takes an argument which is the value
+of the element, and returns a value which indicates whether
+the operation has been successful or not.
+%
+For instance, the operation {\tt add}(e) returns the value
+{\it true} if  $e$ is not already a member of the set.
+%
+In such a case a new cell with data value $e$ is added to its
+appropriate position in the list.
+%
+If $e$ is already present, then the list is not changed and 
+the value {\tt false} is returned.
+% 
+The program also contains the subroutine {\tt locate}
+that is called by the three methods.
+%
+A cell in the list has  three fields ${\tt mark}$, ${\tt lock}$, and
+${\tt val}$.
+%
+The {\tt rmv} method first logically removes the node
+from the list by setting the {\tt mark} field, before 
+physically removing the node.
+%
+The {\tt ctn} method is wait-free and traverses the list ignoring the locks
+inside the cells. The algorithm uses two global pointers, {\tt head} that points to  the first cell of the heap, and {\tt tail} that points to the last cell.  
+These two cells contain two values that are smaller 
+and larger respectively than all keys that may be                     
+inserted in the set.
+
+%\begin{figure}[]
+%  \begin{tikzpicture}
+%  %[
+%   % property/.append style={left,rotate=-10,scale=0.7,shift={(-0.5,-0.7)}},
+%   % ]
+%    \node[codeblock] (struct) {\begingroup\scriptsize\VerbatimInput[numbers=none]{experiments/code/treiber/struct-gc}\endgroup};
+%   % \node[codeblock] (init) at (struct.north east) {\begingroup\scriptsize\VerbatimInput[numbers=none]{experiments/code/treiber/init-gc}\endgroup};
+%    
+%
+%    
+%    \node[codeblock,below right] (push) at (struct.south west) {\begingroup\scriptsize\VerbatimInput{experiments/code/treiber/push-gc}\endgroup};%locate
+%    
+%        \node[codeblock,below right] (pop) at (struct.south east) {\begingroup\scriptsize\VerbatimInput[firstnumber=10]{experiments/code/treiber/pop-gc}\endgroup};
+%        
+%            \node[codeblock, below] (cnt) at (push.south) {\begingroup\scriptsize\VerbatimInput[firstnumber=10]{experiments/code/treiber/cnt}\endgroup};
+%    
+%                \node[codeblock, below] (rmv) at (pop.south) {\begingroup\scriptsize\VerbatimInput[firstnumber=10]{experiments/code/treiber/rmv}\endgroup};
+% %   \node[property] at (init.north east) {\sc Init};
+%  %  \node[property] at (push.north east) {\sc Push};
+%  %  \node[property] at (pop.north east) {\sc Pop};
+%    
+%  \end{tikzpicture}
+%  \caption{Lazy set.}
+%  \label{figure:lazy-list}
+%\end{figure}
+
+%\begingroup%
+%\setlength\intextsep{\dazintextsep}
+%\begin{figure}[ht]
+%  \centering
+%  \tikzinput{img/shape-heap}
+%  \caption{Memory layout of a Treiber stack (with $\dset=\nat$),
+%    showing only two threads.}% out of all
+%  \label{figure:shape:heap}
+%\end{figure}
+%\endgroup

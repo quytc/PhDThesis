@@ -1,0 +1,346 @@
+% Old - Prels
+
+In this paragraph, we fix a tree $\tree=(\nodes,\labeling)\in\trees{\alphabet}$.
+%
+Given two nodes $\node_0,\node_1\in\nodes$, we use $\tree\sminus (\node_0,\node_1)$ to denote 
+the tree $\tree'=(\nodes',\labeling')$ obtained from $\tree$ by replacing the subtree rooted in 
+$\node_0$ by the one rooted in $\node_1$.
+%
+Formally, we define $\nodes':=\nodes-\desc{\node_0}\Union\node_0\concat\desc{\node_1}$
+\nnote{This is incorrect: We have to substract $\node_1$ from all nodes in $\desc{\node_1}$ 
+before concatenating it with $\node_0$}.
+%
+For any $\node'\in\nodes'$, we define $\labeling'(\node'):=\labeling(\node_1\concat(\node'-\node_0))$ 
+if $\node_0\pref\node'$, and $\labeling'(\node'):=\labeling(\node')$ otherwise\nnote{Figure?}.
+%
+
+Now, we generalize he above operation by
+considering a tree $\tree'=(\nodes',\labeling')$ and an embedding $f$ of $\tree'$ in $\tree$.
+%
+We define $\tree\sminus_f\tree'$ to be the tree $\tree''$ obtained from $\tree'$ by performing
+a sequence of operations described below.
+%
+First, we enumerate the nodes of $\tree'$ in a bottom-up fashion.
+%
+Formally, let $\{\node_i\}_{1\le i\le\sizeof{\nodes}}$ be an enumeration of the set $\nodes'$ of
+nodes in $\tree'$ 
+such that for any $i,j:1\le i\neq j\le \sizeof{\nodes}$, $\node_i\spref\node_j$ implies that 
+$j < i$.
+%
+In other words, if $\node_j$ is a descendant of $\node_i$ in $\tree'$, then
+$\node_j$ occurs earlier than $\node_i$ in the enumeration.
+%
+Based on the enumeration, we define a sequence of trees $\{\tree_i\}_{1\le i\le\sizeof{\nodes}-1}$ 
+as follows.
+%
+We let $\tree_1:=\tree'$.
+%
+For any $i\ge 1$, we denote by $\node^p_i$ the parent of $\node_i$, i.e.\ $\node^p_i\concat b=
+\node_i$ for some $b$.
+%
+We define $\tree_{i+1}:=\tree_i\sminus(f(\node_i^p)\concat b,f(\node_i))$.
+%
+Finally, we let $\tree'':=\tree_{\sizeof{\nodes}-1}$.
+%
+In other words, we go through the nodes of $\tree'$ one by one in a bottom-up manner.
+%
+For each node $\node_i$ and its parent $\node^p_i$ in $\tree'$ (say $\node_i^p\concat b=\node_i$ 
+for some $b$), we consider their images $f(\node_i^p)$ and $f(\node_i)$ in $\tree$.
+%
+We replace the subtree rooted in the child of the image
+$f(\node_i^p)\concat b$ of the parent by the one rooted in the image $f(\node_i)$ of the node.
+%
+Notice that the resulting tree $\tree''$ and the trees $\tree',\tree$ are related by
+$\tree'\includedin\tree''\preceq\tree$.
+%
+\nnote{Defined formally the inclusion and the embedding.}
+Below, we define two functions denoted by $\minusinc{f}:\nodes'\to\nodes''$ and $\minusemb{f}:\nodes''
+\to\nodes$ such that $\tree'\includedin_{\minusinc{f}}\tree''\preceq_{\minusemb{f}}\tree$.
+% 
+First, for any $\node'\in\nodes'$, we define $\minusinc{f}(\node'):=f(\emptyword)\concat\node'$.
+%
+Second, for any $\node''\in\nodes''$, we consider three cases reflecting the membership of 
+$\node''\in\nodes''$:
+%
+\begin{itemize}
+\item If $f(\emptyword)\not\pref\node''$, then we let $\minusemb{f}:=\node''$.
+%
+\item If $\node''\in\image{\minusinc{f}}$, then we take $\minusemb{f}:=f(\minusinc{f}^{-1}(\node''))$.
+%
+\item Otherwise, since $f(\emptyword)\pref\node''$ and $\node''\not\in\image{\minusinc{f}}$, there is 
+a unique node $\node''_l\in\image{\minusinc{f}}$ such that $\node''_l\pref\node''$ and for any other node 
+$\node''_o\in\image{\minusinc{f}}$ the following holds:
+%
+$\node''_o\pref\node''\implies\node''_o\pref\node''_l$.
+%
+In other words, $\node''_l$ is the longest prefix of $\node''$ in $\image{\minusinc{f}}$.
+%
+We define $\minusemb{f}(\node''):=f(\minusinc{f}^{-1}(\node''_l))\concat(\node''-\node''_l)$.
+\end{itemize}
+% 
+Observe that by definition $\minusemb{f}\circ\minusinc{f}=f$.
+
+
+\nnote{New operation.}
+Given a tree $\tree'=(\nodes',\labeling')$ and a function $f:\nodes'\to\nodes$ we define 
+the \emph{renaming of $\tree$ with respect to $f$ and $\tree'$}, denoted by $\tree\rename_f
+\tree'$, to be the tree $\tree''=(\nodes,\labeling'')$ where for any $\node\in\nodes$, 
+$\labeling''(\node)=\labeling(\node)$ if $\node\not\in\image{f}$, and $\labeling''(\node)=
+\labeling'(f^{-1}(\node))$ otherwise.
+%
+
+\nnote{Auxiliary properties needed in the monotonicity proof.}
+The following properties will be used later.
+%
+\begin{lemma}
+\label{lem:auxiliary}
+For any $\tree,\tree',\tree''\in\trees{\alphabet}$ and any mappings $f$ and $g$, 
+the following hold:
+%
+\begin{enumerate}
+\item \label{rename:monotonic} $\tree'\preceq_g\tree''\implies\tree'\rename_f\tree\preceq
+\tree''\rename_{g\circ f}\tree$, and
+%
+\item \label{minus:monotonic} $\tree\preceq_f\tree'\preceq_g\tree''\implies\tree'\sminus_f
+\tree\preceq\tree''\sminus_{g\circ f}\tree$.
+\end{enumerate}
+%
+\end{lemma}
+%
+\begin{proof}
+The statement~\eqref{rename:monotonic} holds trivially since by definition of the $\rename$ 
+operation $\tree'\rename_f\tree\preceq_g\tree''\rename_{g\circ f}\tree$.
+%
+
+In order to prove \eqref{minus:monotonic}, we provide a mapping $h$ which guarantees that 
+$\tree'\sminus_f\tree\preceq_h\tree''\sminus_{g\circ f}\tree$.
+%
+First, we assume that $\tree'\sminus_f\tree$ is of the form $(\nodes',\labeling')$.
+%
+Then, we recall that by definition of the $\sminus$ operation the following holds:
+%
+\begin{itemize}
+\item $\tree\includedin_{\minusinc{f}}\tree'\sminus_f\tree\preceq_{\minusemb{f}}\tree'$, and
+%
+\item  $\tree\includedin_{\minusinc{g\circ f}}\tree''\sminus_{g\circ f}\tree\preceq_{
+\minusemb{g\circ f}}\tree''$.
+\end{itemize}
+%
+For a node $\node'\in\nodes'$, we define $h(\node')$ by three cases reflecting the membership 
+of $\node'$.
+%
+\begin{itemize}
+\item If $f(\emptyword)\not\pref\node'$, we define $h(\node'):=g(\node')$.
+%
+\item If $\node'\in\image{\minusinc{f}}$, then we take $h(\node'):=g(f(\emptyword))\concat(
+\node'-f(\emptyword))(=\minusinc{g\circ f}(\minusinc{f}^{-1}(\node')))$.
+%
+\item Otherwise, we let $h(\node'):=\minusemb{g\circ f}^{-1}(g(\minusemb{f}(\node')))$.
+%
+Observe that this is well defined (definition of $\minusemb{g\circ f}$).
+%
+
+\end{itemize}
+%
+\qed
+\end{proof}
+
+% Old - Pre \paragraph{\bf Computing Pre} 
+%
+For a constraint $\constr'$, we define $\prer{\rwrules}{\constr'}=\Union_{\rwrule\in\rwrules}
+\minipre{\rwrule}{\constr'}$, i.e.\ we compute the set of predecessor constraints with 
+respect to each rewrite rule $\rwrule\in\rwrules$. 
+% 
+
+\nnote{I will start with some auxiliary definitions which we can add to preliminaries.}
+%
+\paragraph{\bf Needed Definitions}
+%
+In the following, we fix a tree $\tree=(\nodes,\labeling)\in\trees{\alphabet}$.
+%
+\begin{itemize}
+%
+\item {\it Subtrees : } For a node $\node\in\nodes$, we denote by $\tree(\node)$ the tree 
+$\tree=(\nodes'',\labeling'')$ where $\nodes''=\setcomp{\node-\node''}{\node''\in\nodes
+\band\node\pref\node''}$ and for any $\node''\in\nodes''$, $\labeling(\node'')=\labeling(
+\node\concat\node'')$.
+%
+In other words, $\tree(\node)$ is the subtree of $\tree$ rooted at $\node$.
+%
+
+\item {\it Subtraction : } We define the \emph{subtraction} operation of subtrees 
+as follows.
+%
+For a sequence $\node\in\set{0,1}$, we denote by $\tree-\tree(\node)$ the tree $\tree''=(
+\nodes'',\labeling'')$ obtained from $\tree$ by removing the subtree $\tree(\node)$.
+%
+More precisely, if $\node\not\in\nodes$, we let $\tree''=\tree$.
+%
+In case $\node\in\nodes$, we define $\nodes'':=\nodes-\setcomp{\node'\in\nodes}{\node
+\pref\node'}$ and for any $\node''\in\nodes''$ we take $\labeling''(\node''):=\labeling(
+\node'')$.
+%
+\nnote{Observe that we can use the previous definitions to properly present the $\sminus$ 
+operation.}
+%
+
+
+\item {\it Concatenation : } We define the \emph{concatenation} operation of trees 
+as follows.
+%
+For a node $\node\in\nodes$, we denote by $\tree+(\node,\tree')$ the tree $\tree''=(\nodes'',
+\labeling'')$ where $\nodes'':=(\nodes-\desc{\node})\Union\node\concat\nodes'$ and for any 
+$\node''\in\nodes''$, $\labeling''(\node''):=\labeling(\node'')$ if $\node\not\pref\node''$, and 
+$\labeling''(\node''):=\labeling'(\node-\node'')$ otherwise.
+%
+Intuitively, we remove the subtrees below the node $\node$ and append the tree $\tree'$ 
+at $\node$.
+%
+
+\item {\it Consistent\nnote{Until we find a better name} Sets : } A non-empty set of 
+nodes $\nodes'\subseteq\nodes$ is said to be \emph{consistent} if all nodes in $\nodes'$ 
+are ``connected''.
+%
+Formally, for any $\node'\in\nodes'$, (i)  either the parent of $\node'$ is also in $\nodes'$, 
+(ii) or $\nodes'-\set{\node'}\subseteq\desc{\node'}$.
+%
+Observe that by definition, any subtree $\nodes'$ contains a unique node $\node'$ such that 
+$\nodes'-\set{\node'}\subseteq\desc{\node'}$.
+%
+In the sequel, we use $\nroot{\nodes'}$ to refer to such a node, and we denote by 
+$\nleaves{\nodes'}\subseteq\nodes'$ the set of nodes with no children in $\nodes'$.
+%
+\end{itemize}
+%
+
+\paragraph{\bf Back to Pre}
+%
+
+We fix now another tree $\tree'=(\nodes',\labeling')\in\trees{\alphabet}$.
+%
+We call \emph{a partial embedding} of $\tree'$ in $\tree$ any embedding $f:\nodes''\to\nodes$ 
+where $\nodes''\subseteq\nodes'$ is a consistent set of nodes.
+%
+Observe that if for some partial embedding $f$, $\image{f}=\nodes$, then $f^{-1}$ is 
+an inclusion of $\tree$ in $\tree'$ (i.e.\ $\tree\includedin_{f^{-1}}\tree'$).
+%
+
+In the rest of the section, we fix a consistent set $\nodes''\subseteq\nodes'$ and 
+a partial embedding $f$ of $\tree'$ in $\tree$ defined over $\nodes''$.
+%
+We introduce a special operation $\tree\splus_f\tree'$ in order to capture the effect of the 
+approximation when computing predecessors.
+%
+In order to define the $\splus_f$, we will make use of the following auxiliary operations.
+%
+Given a node $\node\in\nodes''$, we denote by $\tree\splusover_f(\node,\tree')$ the tree $\tree''$ 
+of the following form.
+%
+\[
+\tree''=\tree+(\node,\tree_a)\;\text{where }
+\tree_a=\tree'+(f(\node),\tree(\node))\text{.}
+\]
+%
+Intuitively, we first construct $\tree_a$ by concatenating $\tree'$ with the subtree 
+$\tree(\node)$ at $f(\node)$.
+%
+Then, we derive $\tree''$ by replacing in $\tree$ the subtree $\tree(\node)$ by $\tree_a$.
+%
+
+Given a node $\node\in\nodes''$ and some $b\in\set{0,1}$, we denote by $\tree\splusbelow_f(\node,b,\tree')$ 
+the set of trees $\treeset\subseteq\trees{\alphabet}$ satisfying the following property:
+%
+A tree $\tree''$ belongs to $\treeset$ iff there is a tree $\tree_a=(\nodes_a,\labeling_a)$, a node 
+$\node^b\in\nodes_a$ such that $b\pref\node^b$, and the following conditions hold:
+%
+\begin{itemize}
+\item $\tree_a-\tree_a(\node^b)=\tree'(f(\node))$, i.e.\ the tree $\tree'$ 
+can be obtained from $\tree_a$ by removing the subtree at $\node^b$;
+%
+\item $\tree_a(\node^b)=\tree(\node\concat b)$, in other words the subtrees at $\node^b$ is 
+equal to the subtree of the child $\node\concat b$ in $\tree$; and
+%
+\item $\tree''=\tree+(\node,\tree_a)$, meaning, we obtain $\tree''$ by concatenating $\tree$ 
+with $\tree_a$ at $\node$.
+\end{itemize}
+%
+We generalize the above operation by 
+%
+\[
+\tree\splusbelow(\node,\tree'):=\Union_{\tree''\in
+\tree\splusbelow(\node,0,\tree')}\tree''\splusbelow(\node,1,\tree')\text{.}
+\]
+%
+
+For two nodes $\node,\node'\in\nodes''$ such that $\node\concat b\pref\node'$ for some 
+$b\in\set{0,1}$, we denote by $\tree\splusbetween_f(\node,\node')\tree'$ the tree $\tree''$ 
+of the following form.
+%
+\[
+\tree''=\tree+\left(\node,\tree_a(f(\node)\concat b\right)\text{ where }
+\tree_a=\tree'+\left(f(\node'),\tree(\node')\right)\text{.}
+\]
+%
+Intuitively, we first construct $\tree_a$ by replacing the subtree $\tree'(f(\node'))$ by 
+$\tree(\node')$, then we derive $\tree''$ by replacing the subtree $\tree(\node)$ by 
+$\tree_a(f(\node))$.
+%
+
+We are now ready to generalize the above operations by defining $\tree\splus_f\tree'$.
+%
+We consider first an enumeration of the nodes of $\node''$ in a bottom-up fashion.
+%
+In other words, let $\{\node_i\}_{1\le i\le\sizeof{\nodes''}}$ be an arrangement of the nodes 
+of $\nodes''$ such that for any $i,j:1\le i\neq j\le \sizeof{\nodes''}$, $\node_i\spref\node_j$ 
+implies that $j < i$.
+%
+Then we define a sequence of sets of trees $\{\treeset_i\}_{0\le i\le\sizeof{\nodes}}$ 
+as follows.
+%
+We let $\treeset_0:=\set{\tree}$.
+%
+For any $i\ge 0$, we define $\treeset_{i+1}$ in terms of $\treeset_i$ by three case analysis 
+reflecting the nature of the node $\node_{i+1}$.
+%
+\begin{itemize}
+\item If $\node_{i+1}\in\nleaves{\nodes''}$, then we let $\treeset_{i+1}:=\Union_{\tree''\in
+\treeset_i}\set{\tree''\splusbelow_f(\node_{i+1},\tree')}$.
+%
+\item If there is $b\in\set{0,1}$ such that $\node_{i+1}\concat b\in\nodes''$ and 
+$\node_{i+1}\concat (1-b)\not\in\nodes''$, then we first define $\treeset_a:=\Union_{\tree''
+\in\treeset_i}\set{\tree''\splusbetween_f(\node_{i+1},\node_{i+1}\concat b,\tree')}$.
+%
+Afterwards, we let $\treeset_{i+1}:=\Union_{\tree''\in\treeset_a}\tree''\splusbelow_f(
+\node_{i+1},1-b,\tree')$.
+%
+Observe that this is the case where $\node_{i+1}$ has only one child in $\nodes''$.
+%
+\item Otherwise, we first define $\treeset_a:=\Union_{\tree''\in\treeset_i}\set{\tree''
+\splusbetween_f(\node_{i+1},\node_{i+1}\concat 0,\tree')}$, then we take $\treeset_{i+1}:=
+\Union_{\tree''\in\treeset_a}\set{\tree''\splusbetween_f(\node_{i+1},\node_{i+1}\concat 1,\tree')}$.
+\end{itemize}
+%
+
+Finally, we let $\tree\splus_f\tree':=\Union_{\tree''\in\treeset_{\sizeof{\nodes''}}}\set{\tree''
+\splusover_f(\node_{\sizeof{\nodes''}},\tree'}$.
+%
+Intuitively, starting from $\tree$, we construct several trees by inserting the nodes 
+not in the image of $f$ such that, by the end, the tree $\tree'$ is included in each of the resulting 
+trees at $\nroot{\nodes''}$.
+%
+Observe that $\tree$ is embedded in each one of these trees.
+%
+
+Consider now a constraint $\constr'$ and a rule $\rwrule\in\rwrules$.
+%
+We define $\minipre{\rwrule}{\constr'}$ to be the set of constraints satisfying the following:
+%
+A constraint $\constr$ belongs to $\minipre{\rwrule}{\constr'}$ iff there is a partial embedding 
+$f$ of $\constr'$ in $\tright{\rwrule}$ such that
+%
+\[
+\constr\in\left(\constr\rename_f\tright{\rwrule}\right)\splus_f\tleft{\rwrule}\text{.}
+\]
+%
+
+

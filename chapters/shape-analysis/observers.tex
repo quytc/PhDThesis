@@ -1,0 +1,181 @@
+%% ====================================================================
+\chapter{Verification of Linearization}
+In order to derive the totally ordered execution from a concurrent
+execution, each method is instrumented to generate a so-called
+abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
+communicated to an external \emph{observer}, which records the sequences of
+abstract events from the code execution. In the next section, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property.
+\section*{Observers}
+\label{section:observers}
+\index{Observers}
+%% ====================================================================
+
+
+We specify the serial semantics of data structures by observers, as introduced
+in \cite{AHHR:integrated:rep}. Observers are finite automata extended with a finite set of observer registers that
+assume values in $\mathbb Z$. At initialization, the registers are nondeterministically assigned arbitrary
+values, which never change during a run of the observer. 
+\vspace{1cm}
+\begin{figure}[h]
+%\begin{wrapfigure}{r}{0.5\textwidth} 
+  \centering
+  \tikzinput{img/set-observer} 
+  \vspace{0.3cm}
+  \caption{A stack observer}
+  \label{figure:shape:set:observers}
+%\end{wrapfigure}
+\end{figure} \vspace{1cm} Transitions are labeled
+by linearization events that may be parameterized on registers. Observers are used as
+acceptors of sequences of linearization events. The observer processes such sequences
+one event at a time. If there is a transition, whose label, after replacing registers by their values, matches the event, such a transition is performed. If there is no such transition,
+the observer remains in its current state. The observer accepts a sequence if it can be
+processed in such a way that an accepting state is reached. We use observers to give exact specifications of the behaviors of data structures such as sets, queues, and stacks. The observer is defined in such a way that it accepts
+precisely those sequences of abstract events that are not allowed by the semantics of
+the data structure. This is best illustrated by an example. Fig. 3 depicts an observer that
+accepts the set of method invocations that are not allowed by behavior of a set 
+
+
+\section*{Linearization Policies}
+\label{controllers:subsection}
+In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place. However, for a large class of linearizable implementations,
+the LPs are not fixed in the code of their methods, but depend on actions
+of other threads in each particular execution. This happens, e.g., for algorithms that
+employ various forms of helping mechanisms, in which the execution of a particular
+statement in one thread defines the LP for one or several other threads. For example, in the the {\tt Lazy Set} algorithm, the linearization point of unsuccessful {\tt ctn} method is not fixed in the code of the method. It stays in the code of the {\tt add} method. There have been several previous works dealing with the problems of non-fixed linearization points \cite{Poling,Colvin:Lazy-List,CGLM:cav06,SWD:cav12,Derrick:fm14,SDW:tcl14,Vafeiadis:cav10,Vafeiadis:Aspect}. However, they are either manual approaches without tool implementation or not strong enough to cover various types of concurrent programs. In this thesis we handle non-fixed linearization points by providing semantic for specifying linearization policies. The linearization point of a thread may be defined in two ways:
+(i) The thread may define its own linearization point,
+and in that case may also help other threads define their 
+own linearization points.
+(ii) The thread may be helped by other threads.
+%
+The helping mechanism may contain complicated patterns.
+%
+For instance, the helping thread may broadcast a message to the other threads
+(e.g., the {\tt Lazy Set} algorithm).
+%
+Both the helping and the helped threads will then interact with the observer to
+communicate their parameters and return values.
+%
+In such a case, the helping thread may be able to help an unbounded number
+of threads (all those who can be helped in the current configuration).
+%
+In other cases, 
+the helping thread may explicitly 
+linearize for the helped thread, which means that 
+the helped thread itself need not communicate with the observer.
+%
+%
+Furthermore, a given algorithm may use several of these patterns to 
+define its linearization points.
+%
+\input img/policy 
+
+To specify the linearization patterns, we equip each method with a
+{\it controller} whose behavior is defined by a set of rules which are described detail in paper II.
+%
+The controller is occasionally activated by the thread,
+and helps organize the interaction  
+of the thread with other threads as well as with the observer.
+%
+More precisely, some 
+statements in a  method are declared to be {\it triggering}. If a triggering statement is executed then 
+the controller of the thread will also be executed simultaneously.  
+
+Let us describe an example of how the {\tt controller} works in the {\tt Lazy Set} algorithm, the linearization point of the successful {\tt add} is statically defined at the line 4 in the code of the method. When the thread \threada\; reaches the triggering statement at line 4 at the step \;\stepa\;.
+%the linearization point of the {\tt add} operation
+%is defined statically in the code of the method
+%(lines {\tt 2} and {\tt 4}).
+%%
+%There are two possible linearization points
+%corresponding to whether the 
+%operation is {\it unsuccessful} (the element to be added is already in the 
+%list), or {\it successful} (the element is not in the list.)
+%%
+%In the first case, the thread reaches the triggering statement
+%at line {\tt 2} and the condition ``{\tt c.val = e}''  holds,
+%i.e., we have found the element {\tt e} in the list. Thereafter, it informs the observer that an {\tt add} operation 
+%with argument {\tt e} has been performed, and that the outcome
+%of the operation is {\tt false} (the operation was unsuccessful.)
+%%
+Before a successful {\tt add} operation is communicated to the observer 
+to informs the observer that an {\tt add} operation 
+with argument {\tt e} has been performed, and that the outcome
+of the operation is {\tt true} (the operation was successful) in the step \stepf\;. The controller will help other threads
+by to linearize. This is done by {\it broadcasting} a message to the threads \threadb, \threadc\; which is executing {\tt ctn} in steps \stepb, \stepc. These threads then inform the observer that the element e is not in the list in \stepc, \stepe\; respectively. Note that \threadb, \threadc\; can get message in any order. The detail of controller is described in paper II.
+
+\chapter{Shape Analysis}
+Pointers and heap-allocated storage are features of all modern imperative programming languages. However,
+they are ignored in most formal treatments of the semantics of imperative programming languages
+because their inclusion complicates the semantics of assignment statements: an assignment through a
+pointer variable (or through a pointer-valued component of a record) may have far-reaching side effects.
+Works that have treated the semantics of pointers include [5, 42, 43, 45].
+These far-reaching side effects also make program dependence analysis harder, because they make it
+difficult to compute the aliasing relationships among different pointer expressions in a program. Having
+less precise program dependence information decreases the opportunities for automatic parallelization
+and for instruction scheduling.
+The usage of pointers is error prone. Dereferencing NULL pointers and accessing previously deallocated
+storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
+program understanding, debugging, and optimization. These activities need answers to many questions
+about the structure of the heap contents and the pointer variables pointing into the heap.
+By shapes, we mean descriptors of heap contents. Shape analysis is a generic term denoting static
+program-analysis techniques that attempt to determine properties of the heap contents relevant for the
+applications mentioned above
+A difficult challenge in verifying heap manipulation programs is to handle infinite sets of reachable heap configurations. The area of verifying programs with dynamic linked data structures has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic heap abstraction. The first approach is based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures). 
+  
+Among the works based on separation logic, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. The reason for that is that their approaches effectively decomposes the heap into disjoint components and process them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
+
+This issue can be fixed by automata techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of heaps on a tree structure,
+and represent non-tree edges by using regular “routing” expressions. These expressions
+describe how the target can be reached from the source using tree edges. Finite tree transducers
+are used to compute set of reachable configurations, and symbolic configuration is abstracted
+collapsing certain states of the automat. The refinement technique called counterexample-guided
+abstraction refinement (CEGAR) technique is used during the run of the analysis. This technique
+is fully automatically and can handle complex data structures such as binary trees with linked
+leaves. However, it suffers from the inefficiency and it also can not handle concurrent programs.
+TVLA (Three-Valued Logic Analyzer) \cite{SagivRW02} is the first and one of the most popular shape analysis
+method. It is based on a three-valued first-order predicate logic with transitive closure. Intuitively,
+concrete heap structure is represented by a finite set of abstract summary nodes, each of them
+representing a set of concrete nodes. The shape of the heap is characterized by a set of usersupplied
+predicates. The method is not fully automatic, its the synthesis of appropriate predicates
+that are able to express the invariants in the program. This problem is even more difficult with
+complicated heap structures such as skiplist, trees, or lists of lists.  
+  
+\section*{Contribution}
+In this thesis, we proposed three approaches for heap abstractions. In paper I, we proposed a novel approach of representing sets of heaps via tree automata (TA). In our representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are nodes pointed to by program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic [15]. Using this decomposition, sets of heaps with a bounded number of cut-points are then represented by the so called forest automata (FA) that are basically tuples of TA accepting tuples of trees whose leaves can refer back to the roots of the trees. Moreover, we allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist). \input TA
+In addition, we express relationships between data elements associated with nodes of the heap graph by two classes of constraints. Local data constraints are associated with transitions of TA and capture relationships between data of neighboring nodes in a heap graph; they can be used, e.g., to represent ordering internal to some structure such as a binary search tree. Global data constraints are associated with states of TA and capture relationships between data in distant parts of the heap. This approach was applied to verification of sequential heap manipulation programs. This approach is general and fully automatic, it can handle many types of sequential programs without any manual step. However, due to the complexity of tree automata operations, this approach is not suitable to handle concurrent programs where a large number of states and computation are needed. Figure \ref{figure:forest} shows an example of how to represent a heap by a set of tree automata. Figure \ref{figure:forest}(a) shows an example of a heap where nodes whose values are \nodea, \nodeb, \nodec, \noded, \nodee \; are cut-points, and $\tt x$, $\tt y$, $\tt z$ are local pointer variables and $\tt g$ is global pointer variable. Figure \ref{figure:forest}(b) shows its forest representation. In the forest representation, there are five TAs in which the TAs \taa \; and \tac \; refer to the root of the last TA \tae\;, and both TAs \tab \; and \tad \; refer to the root of TA \tac \;. The local data constraints are located along the solid arrows between nodes, whereas global constraints are located along the dashed arrows. In this figure, the global constraints $\tt \prec_{aa}$ means that all nodes in the left hand side are smaller than all nodes in the right hand side. We just show here small examples of data constraints, the detail about different types of constraints can be found in paper I.   
+
+In paper II, we provide a symbolic encoding of the heap structure, that is less precise than the approach in paper I. However it is precise enough to allow the verification of the concurrent algorithms, and efficient enough to make the verification procedure feasible in practice. The main idea of the abstraction is to have a more precise description of the parts of the heap that are visible (reachable) from global variables, and to make a succinct representation of the parts that are local to the threads. More concretely, we will extract a set of heap segments, where the end points of a segment is pointed to by a cut-point which is reachable from global variables. A cut-point in this approach is a reachable node from global variable, and pointed by a global variables or having more than two incoming pointers. For each segment, we will store a summary of the content of the heap along the segment. This summary consists of two parts, each part contains different pieces of information, including the values of the cell variables if they have finite values, and the ordering among them if they are integer variables. The first part summaries information between the end point and its predecessor, whereas the second part summaries information between the start point and the predecessor node. For each given program, the set of possible abstract shapes insight and hence the verification procedure is guaranteed to terminate. This approach is very efficient but it is not optimal for complicated concurrent data structures like trees, lists of lists or skiplists. Figure \ref{heapsummary} gives our summary abstraction of the heap in figure \ref{figure:forest}(a). In this approach, \nodea, \nodeb, \nodec, \nodee \; are cut-points. The node \noded \; is not a cut-point like the approach in paper I because its not reachable from the global variable $\tt g$. In each heap segment, the fist part is described by the white box, and the second part is described by the gray box.   
+\input SL
+In paper III, we present an approach which can handle concurrent programs implemented from simple to complex data structures. In our fragment abstraction, we represent the part of the heap that is accessible to a thread by a set of fragments. A fragment represents a pair of heap cells (accessible to $\thread$)
+that are connected by a pointer field, under the applied data abstraction. The fragment contains both
+(i) {\em local} information about the cell's fields and variables that
+  point to it, as well as
+(ii) {\em global} information, representing how
+  each cell in the pair can reach to and be reached from
+  (by following a chain of pointers) a small set of globally significant
+  heap cells.
+ A set of fragments represents the set of heap
+structures in which each pair of pointer-connected nodes is represented by some
+fragment in the set.
+Put differently, a set of fragments describes the set of heaps that can be formed by
+``piecing together'' pairs of pointer-connected nodes that are represented
+by some fragment in the set. This ``piecing together'' must
+be both locally consistent (appending only fragments that agree on their
+common node), and globally consistent (respecting the global reachability
+information).
+\input fragment
+
+Let us illustrate how pairs of heap nodes can be represented by fragments. Figure \ref{fragment} shows the set of fragments abstracted from the heap in \ref{figure:forest}(a). In each fragment, the ordering between two keys of two nodes is shown as a label on the arrow between two tags. Above each tag is pointer variables. The first brown row under each tag is $\tt reachfrom$ information, whereas the second green row is $\tt reachto$ information.
+
+%To verify linearizability of the algorithm in Figure~\ref{figure:lazy-list},
+%we must represent several key invariants of the heap. These include (among others)
+%\begin{numberedlist}
+%	\item The list is strictly sorted in $\tt key$ order, two unmarked nodes cannot have the same $\tt key$.
+%\item All nodes which are unreachable from the head of the list are marked.
+%\item The variable $\tt p$ points to a cells whose $\tt key$ field is never
+%  larger than the input parameter of its $\tt add$,$\tt rmv$ and $\tt cnt$ methods.
+%\end{numberedlist}
+%Let us illustrate how such invariants are captured by our fragment abstraction. 1) All fragments are strictly sorted, implying that the list is strictly sorted. 2) This is verified by inspecting each tag: $\frag_{6}$ contains the only unreachable tag, and it is also marked. 3) The fragments express this property in the case where the value of $\tt key$ is the same as the value of the observer register $\tt x$. Since the invariant holds for any value of $\tt x$, this property is sufficiently represented for purposes of verification.   
+
+
+
+

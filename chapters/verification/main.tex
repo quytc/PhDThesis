@@ -1,0 +1,63 @@
+%% ====================================================================
+\chapterwithtoc{Introduction}
+\label{chapter:verification}
+%% ====================================================================
+
+Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to achieve without computers. However, sometime they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious such as errors in banking systems and airplanes. The error is obviously not caused by the machine itself, but it seems to originate from the program that controls the machine. The error is normally called bugs. 
+%% ********************************************************************
+\KW{Complex machines}%
+%% ********************************************************************
+The probability of existing bugs in complex software systems is not low, in particular concurrent systems. They usually have complicated input and involve many features, they have to handle many concurrent operations which makes them difficult to design and make them perfect by human effort.
+%% ********************************************************************
+\KW{Find bugs}%
+%% ********************************************************************
+Detecting and fixing software bugs are important tasks in software process in software industry. Leave bugs
+undetected in any project might in fact lead to
+subsequent bugs and other problems. It will
+become too costly to solve them or too daunting to attempt to. Therefore, the quality phase takes a substantial amount of
+resources, both in terms of time and manpower.
+
+%% ********************************************************************
+\KW{Safety$\Rightarrow$no bugs}%
+\index{Critical systems}%
+\index{Safety}%
+%% ********************************************************************
+Some bugs are less serious than others. We can still use software programs with these bugs. For example, bugs appearing in computer games and online news. However, in the case of critical systems such as banking or software systems in airplanes, safety is the most important aspect and we have to ensure that there no bugs in either the software nor the hardware.
+%% ********************************************************************
+\KW{Testing}\index{Verification Methods!Testing}%
+%% ********************************************************************
+The predominant method to improve software quality is
+\emph{testing}. It is a dynamic analysis where a program is run under specific conditions, so-called test cases, and checking
+whether the result with a given input matches the expected output.
+%
+The test cases are carefully designed to cover all possible cases of program executions.\index{Coverage}
+%% ********************************************************************
+\KW{Simulation}\index{Verification Methods!Simulation}%
+%% ********************************************************************
+Similarly, we can check for correctness of a program by using a \emph{model} of the program. The model can be extracted by
+removing all parts that are irrelevant for the tests, and can be used
+to \emph{simulate} the executions. However, there is no guarantee to cover all possible executions. Therefore, we have to find the way to achieve a full coverage of program executions. When the domain of the input parameters is large or if the program is
+complex, the method will suffer from the state-space explosion
+problem.\index{State-space!explosion}%
+%
+% The topic of this thesis is centered around the following question.
+% %
+% \begin{statement}
+%   \it%
+%   Can we design a method that would give us\\%
+%   \emph{guarantees} that no error is left undetected\\%
+%   and that does not (too much) suffer from state-space explosion?
+% \end{statement}
+
+%\index{Error-free Guarantee}%
+%The topic of this thesis is design methods guaranteeing that no error is undetected and that do not suffer from state-space explosion.
+
+\input{chapters/verification/formal-verification}
+\input{chapters/verification/model-checking}
+%\input{chapters/verification/parameterized-verification}
+\newpage
+%\input{chapters/verification/theoretical-limitations}
+
+%% ====================================================================
+%\whatwelearned{verification}
+%% ====================================================================

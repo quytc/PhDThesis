@@ -1,0 +1,374 @@
+\section{Introduction}
+\label{sec:introduction}
+%
+In this paper, we consider one of the most difficult current challenges in
+software verification, namely to automate its
+application to algorithms with an unbounded number of
+threads that concurrently access a dynamically allocated shared state.
+Such algorithms are of central importance in concurrent programs\TODO{F: Since they aim at removing unnecessary waiting time and lock contention.}. They
+are widely used in libraries,
+\TODO{\cite{Cambridge:lock-free}~BJ: What is this reference doing here? AR: it might have been me that added it a long time ago. Now, I also think it is better to remove it. }
+such as the Intel Threading Building Blocks or
+the \url{java.util.concurrent}  package,
+to provide efficient concurrent realizations of
+simple interface abstractions.
+They are notoriously difficult to get correct and verify, since they
+often employ fine-grained synchronization and avoid locking wherever
+possible. A number of bugs  in published
+algorithms have been reported~\cite{DDGJLMMSS:dcas,MiSc:correction}.
+It is therefore important to develop efficient techniques for
+verifying conformance to simple abstract specifications of overall
+functionality, a concurrent implementation of a common
+data type abstraction, such as a queue, should be verified to conform
+to a simple abstract specification of a (sequential) queue.
+
+%% It is well understood how to
+%% accomplish this for finite-state programs (as embodied, e.g., in
+%% the SPIN tool~\cite{Holzmann:spin}),
+%% but we lack approaches for handling unbounded data domains in specifications
+%% and implementations in connection with an unbounded number of threads and
+%% dynamically allocated data structures.
+
+We present an integrated technique for specifying and automatically
+verifying that a concurrent program conforms to an abstract
+specification of its functionality.
+%% We can, for instance, specify and verify that a concurrent program is a
+%% linearizable implementation of a FIFO queue.
+Our starting point is the
+automata-theoretic approach to model checking~\cite{VW:modelchecking}, in which
+programs are specified by automata that accept precisely those
+executions that violate the intended specification, and
+verified by showing that these automata never accept when they are
+composed with the program.
+This approach is one of the most successful approaches to automated
+verification of finite-state programs, but is still insufficiently developed
+for infinite-state programs. In order to use this approach for our purposes,
+we must address a number of challenges.
+%
+\begin{enumerate}
+\item
+The abstract specification is infinite-state, 
+because the implemented data structure may 
+contain an unbounded number of data values from
+an infinite domain.
+\item
+The program is infinite-state in several dimensions: it
+(i) consists of an unbounded number of concurrent threads, 
+(ii) uses unbounded dynamically allocated memory, and 
+(iii) the domain of data values is unbounded.
+%% \item
+%% the program uses dynamically allocated memory, and
+\item
+The program does not rely on automatic garbage collection, but manages
+memory explicitly. This requires additional mechanisms to avoid
+the ABA problem, i.e., that a thread mistakenly confuses an outdated
+pointer with a valid one.
+\end{enumerate}
+%
+Each of these challenges requires a significant advancement over current
+specification and verification techniques.
+
+We cope with challenge 1 by combining two ideas. First,
+we present a novel technique for specifying
+programs by a class of automata, called {\em observers}.
+They extend automata, as used by~\cite{VW:modelchecking},
+by being parameterized on
+a finite set of variables that assume values from an unbounded domain.
+This allows to specify properties that should hold for an infinite number of
+data values.
+%% They observe the execution of a program,
+%% and are designed to accept precisely those executions that violate the
+%% intended specification, similarly as in 
+%% the automata-theoretic approach to model checking~\cite{VW:modelchecking}.
+In order to use our observers to specify queues, stacks, etc., where one
+must ``count'' the number of copies of a data value that have been inserted but
+not removed, we must extend the power of observers by a second idea.
+This is a data independence argument, adapted  from
+Wolper~\cite{Wolper:dataindependence}, which 
+implies that it is sufficient to consider executions in which
+any data value is inserted at most once.
+This allows us to succinctly specify data structures such as queues and 
+stacks, using observers with typically less than $3$ variables.
+%% For safety properties, this reduces to checking that the automaton cannot
+%% reach an accepting state. This approach is implemented, e.g., in SPIN,
+%% where the automata are called never-claims.
+%% To specify a program, one first instruments it by the generation of
+%% {\em abstract events} to determine what an observing automaton will see from
+%% a program execution. The automaton (we call it an {\em observer}) then
+%% observes the sequence of abstract events and can move to an
+%% accepting location whenever the specified property is violated (in this
+%% paper, we consider only safety properties).
+%% The variables of the observer can initially assume any values in the data
+%% domain. This allows observers to specify properties that are universally
+%% quantified over data values: by checking whether there are some
+%% values of the variables that violate the property.
+
+To cope with challenge 2(i), we would like to adapt the successful
+thread-modular approach~\cite{BLMRS:cav08},
+which verifies a concurrent program by generating an invariant
+that correlates the global state with the local state of an arbitrary thread.
+However, to cope with challenge 3, the generated invariant must be able
+to express that {\em at most} one thread accesses some
+cell on the global heap. Since this cannot be expressed in the
+thread-modular approach, we therefore extend it to
+generate
+invariants that correlate the global state with the local states of an
+arbitrary {\em pair} of threads.
+
+To cope with challenge 2(ii) we need to use shape analysis. %
+We adapt a variant of the transitive closure logic by Bingham and
+Rakamari\'c~\cite{BiRa:vmcai06} for reasoning about heaps with single
+selectors, to our framework. This formalism tracks reachability
+properties between pairs of pointer variables, and we adapt it to our
+analysis, in which pairs of threads are correlated. %
+On top of this, we have developed a novel optimization, based on the
+observation that it suffices to track the possible relations between
+each pair of pointer variables separately, analogously to the use of
+DBMs used in reasoning about timed automata~\cite{Dill:DBM}.
+%% This optimization makes our analysis efficient without sacrificing
+%% essential information.
+Finally, we cope with challenge 2(iii) by first observing that data values
+are compared only by equalities or inequalities, and then employing
+suitable standard abstractions on the concerned data domains.
+
+%% The above techniques bring the needed precision for verification,
+%% at the price of significant state-space explosion, which mainly arises
+%% from reasoning about the dynamically allocated heap when pairs
+%% of threads must be correlated.
+%% We have therefore developed a novel optimization, built on the observation that
+%% it is enough to consider pairs of pointer variables separately from each other.
+%% This optimization tracks the possible relations between each pair of
+%% pointer variables separately, vaguely analogous to the use of
+%% DBMs used in reasoning about timed automata~\cite{Dill:DBM}.
+%% It makes our analysis efficient without sacrificing essential information.
+
+%% reasoning over an abstract domain which 
+%% able to 
+%% In this paper, we further present a novel verification technique that is
+%% able to handle the combined challenges of  
+%% unbounded data domains, an unbounded number of concurrent threads,
+%% dynamically allocated memory, and explicit memory management.
+%% The unbounded data domain is handled by the observer technique just
+%% described. 
+%% To cope with the unbounded number of concurrent threads, a natural
+%% attempt would be to use a thread-modular analysis~\cite{BLMRS:cav08}, which
+%% correlates the local variables of an arbitrary
+%% single thread with the global variables, but does not correlate the
+%% variables of different threads to each other.
+%% However, a thread-modular approaches is not precise enough 
+%% to verify programs with explicit memory management, not relying on a
+%% garbage collector. 
+%% The basis of our shape analysis is
+%% The formalism is capable of capturing acyclic shape graphs where heap cells have
+%% one pointer field (i.e., we consider singly linked list structures).%, similarly as \cite{Vafeiadis:RGSep}. 
+%% \\
+%% {\bf (* What does this limitation to ``acyclic'' really mean? *)}
+
+We have implemented our technique, and
+applied it to
+specify and automatically
+verify that a number of concurrent programs are linearizable
+implementation of stacks and queues~\cite{HeWi:linearizability}.
+This shows that our new contributions result in an integrated
+technique that addresses the challenges 1 -- 3,
+and can fully automatically verify a range of 
+concurrent implementations of common data structures.
+In particular, our approach advances the power of automated verification in
+the following ways.
+%
+\begin{itemize}
+\item
+We present a direct approach for verifying that a concurrent program is a linearizable implementation of, e.g., a queue, which consists in checking a few
+small properties of the algorithm, and is thus
+suitable for automated verification.
+Previous approaches typically verified linearizability separately from
+conformance to a simple abstraction, most often
+using simulation-based arguments, which are harder
+to automate than simple property-checking.
+\item
+We can automatically verify concurrent programs that use
+explicit memory management. This was previously beyond
+the reach of automatic methods.
+\end{itemize}
+%
+In addition, on examples that have been verified automatically by
+previous approaches, our implementation is in many cases significantly faster.
+%% The only manual intervention is the instrumentation by abstract events,
+%% which should be done at linearization points.
+%\\ {\bf (* Carefully check how our runtimes compare with various other papers.
+%Maybe remove the last stuff about ``significantly faster''? *)}\\
+%% In summary, the contributions of the paper include
+%% \vspace*{-6pt}
+%% \begin{itemize}
+%% \item
+%% A novel technique for automatically verifying
+%% that a program conforms to an infinite-state specification, which can be used
+%% to prove conformance to common data structure specifications.
+%% \item
+%% A verification technique, which is
+%% able to handle the combined challenges of  
+%% unbounded data domains, unbounded number of concurrent threads,
+%% dynamically allocated memory, and explicit memory management.
+%% \item
+%% Experimental evaluation, which shows that our technique can fully
+%% automatically verify a range of 
+%% concurrent implementations of common data
+%% structure implementations, such as queues, stacks, etc.
+%% \end{itemize}
+
+\paragraph{Overview} We give an overview of how our technique can be used
+to show that a concurrent program is a linearizable
+implementation of a data structure.
+As described in Section~\ref{sec:concdata}, we consider concurrent programs
+consisting of an arbitrary number of
+sequential threads that access shared global variables and a shared heap using
+a finite set of methods.
+Linearizability provides the illusion that each
+method invocation takes effect instantaneously at some point (called the
+linearization point) between method invocation and
+return~\cite{HeWi:linearizability}.
+In Section~\ref{sec:observers}, we show how to specify this
+correctness condition by first instrumenting each method to generate a
+so-called abstract event whenever a linearization point is passed.
+We also introduce {\em observers}, and show how to use them for specifying
+properties of sequences of abstract events.
+In Section~\ref{sec:wolper}, we introduce the data independence argument that
+allows observers to specify queues, stacks, and other
+unbounded data structures.
+In Section~\ref{sec:annotations}, we describe our analysis for checking that
+the cross-product of the program and the observer cannot reach an accepting
+location of the observer. The analysis is based on a shape analysis, which
+generates an invariant that correlates
+the global state with the local states of an arbitrary pair of threads.
+We also introduce our optimization which tracks
+the possible relations between each pair of pointer variables separately.
+We report on experimental results in Section \ref{section:experiments}. Section \ref{sec:conclusion} contains conclusions and
+directions for future work. 
+%
+
+
+%% After the comparison with related work, we present
+%% the class of programs considered in Section~\ref{sec:concdata}. 
+%% %% In Section \ref{sec:concdata} we present the class of programs that we considr.
+%% In Section \ref{sec:observers}, we define observers, and how to use them for
+%% specification. 
+%% % In the appendix, we provide observers along with proofs of precisely
+%% % capturing standard natural specifications of data structures.
+%% % added by AR
+
+
+\paragraph{Related work.}
+Much previous work on verification of concurrent programs has concerned the
+detection of generic concurrency problems, such as race conditions,
+atomicity violations, or deadlocks~\cite{FlFr:atomizer:journal,NAW:pldi06,NPSG:icse09}.
+Verification of conformance to a simple abstract specification has
+been performed using
+refinement techniques, which establish simulation relations %between
+between the implementation and specification, using partly manual
+techniques~\cite{Doherty:lockfree,CGLM:cav06,EQSST:tacas10,WaSt:ppopp05}.
+%% often using separate techniques for proving atomicity of sequences of
+%% statements~\cite{
+
+Amit et al~\cite{Amit:comparisonAbstraction} verify linearizability
+by verifying conformance to an abstract specification, which is
+the same as the implementation, but restricted to serialized executions.
+They build a specialized abstract domain that correlates the state (including
+the heap cells) of a concrete thread and the state of the serialized version, and a sequential reference data structure.
+The approach can handle a bounded number of threads.
+Berdine et al~\cite{BLMRS:cav08} generalize
+the approach to an unbounded number of threads by making the shape analysis
+thread-modular.
+In our approach, we need not keep track of heaps emanating from
+sequential reference executions, and so we can use a simpler shape
+analysis.
+Plain thread-modular analysis is also not powerful enough
+to analyze e.g. algorithms with explicit memory management.
+%
+\cite{BLMRS:cav08} thus improves the precision by correlating local states of
+different threads. This causes however a severe state-space explosion
+which limits the applicability of the method.
+
+%% We have adapted the approach for achieving thread-modularity of ~\cite{BLMRS:cav08}.
+
+Vafeiadis~\cite{Vafeiadis:vmcai09} formulates the specification using
+an unbounded sequence of data values that represent, e.g., a queue or
+a stack. He verifies conformance using a specialized abstraction to
+track values in the queue and correlate them with values in the implementation.
+Like \cite{Shacham:thesis}\TODO{AR: added the citation without explaining that
+In addition, data independence as introduced in 
+\cite{Wolper:dataindependence} can justify to only 
+consider a small number of values during verification.
+For instance, \cite{Shacham:thesis} makes use of such an argument
+in order to bound the number of values when verifying
+compositions of linearizable operations.}, 
+our technique for handling values in queues need only consider a
+small number of data values (not an unbounded one), for which it is
+sufficient to track equalities.
+%% In the analysis, Vafeiadis
+%% relies on manual simplification of the effect of actions when analyzing
+%% interference, which we do automatically.
+The approach is extended in~\cite{Vafeiadis:cav10} to automatically infer
+the position of linearization points: these have to be supplied in our approach.
+
+Our use of data variables in observers for specifying properties that
+hold for all data values in some domain is related in spirit to the 
+identification of arbitrary but fixed objects or resources
+by Emmi et al.~\cite{EJKM:reference} and Kidd et
+al.~\cite{KRDV:vmcai09:journal}.
+In the  framework of regular model checking,
+universally quantified temporal logic properties
+can be compiled into automata with
+data variables that are assigned arbitrary initial
+values~\cite{AJNOS:logic:journal}.
+%
+%% In addition, data independence as introduced in 
+%% \cite{Wolper:dataindependence} can justify to only 
+%% consider a small number of values during verification.
+%% For instance, \cite{Shacham:thesis} makes use of such an argument
+%% in order to bound the number of values when verifying
+%% compositions of linearizable operations.
+
+% The extension of thread-modular analysis to track correlations between
+% pairs of threads has been used by Segalov et al.~\cite{Sagiv:correlation}.
+%% They record dependencies of local states of different threads 
+%% by keeping track of possible states of pairs of processes.
+%They note (as we do) that the approach brings a severe explosion.
+Segalov et al.~\cite{Sagiv:correlation} continue the work of \cite{BLMRS:cav08}
+by also considering an analysis that keeps track of correlations between threads.
+They strive to counter the state-space explosion that \cite{BLMRS:cav08} suffers from,
+and propose optimizations that are based on the
+assumption that inter-process relationships that need to be recorded
+are relatively loose, allowing a rather crude abstraction over the
+state of one of the correlated threads. 
+%These optimizations do not work well 
+%when relationships between threads are tight.
+These optimizations do not work well when thread correlations are tight.
+Our experimental evaluation in
+Section~\ref{section:experiments} shows that our optimizations of the
+thread correlation approach achieve significantly better analysis
+times than~\cite{Sagiv:correlation}.
+
+There are several works that apply different verification
+techniques to programs with a bounded number of threads, including
+the use of TVLA~\cite{YaSa:queue}.
+Several approaches produce decidability
+results under limited conditions~\cite{CernyRZCA:CAV10},
+or techniques based on non-exhaustive testing~\cite{Burckhardt:PLDI10} or
+state-space exploration~\cite{Vechev:spin09} for a bounded number of
+threads.
+
+%% Thread-modular analysis~\cite{FlQa:spin03} has been adapted to
+%% heap-manipulating programs and used for verifying
+%% generic concurrency bugs, such as race conditions by Gotsman et al.
+%% ~\cite{GBCS:pldi07}. Our shape analysis is extended from the
+%% transitive closure logic by~\cite{BiRa:vmcai06},
+%% where it is used to verify properties of sequential programs.
+
+
+
+%We obtain a very simple automated technique which is
+%able to directly specify and verify conformance to specifications of
+%behavioral properties over both control and data, for programs that
+%use  an arbitrary
+%number of threads and an arbitrary large data domain.
+

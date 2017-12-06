@@ -1,0 +1,48 @@
+\begin{figure}[h]
+\vspace{1cm}
+	\center
+\begin{tikzpicture}
+
+\node[name=cell1]{};
+
+\node[draw, rounded corners = 0.09cm, fill = red!30, draw = red, name = n1, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,0pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = blue!30, draw = blue, name = n3, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,-30pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = n5, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(80pt,-30pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = orange!30, draw = orange, name = n6, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(0pt,-60pt)$){{$$}};
+\node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = n7, minimum width=15pt, minimum height=15pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(120pt,-30pt)$){{$$}};
+
+
+\draw[->, -stealth, dotted, color = black!60, line width=0.4mm] (n1) to  (n5);
+
+\draw[->,-stealth , dotted, color = black!60, line width=0.4mm] (n3) to  (n5);
+\draw[->, -stealth, dotted, color = black!60, line width=0.4mm] (n6) to  (n5);
+\draw[->, -stealth, dotted, color = black!60, line width=0.4mm] (n5) to  (n7); 
+
+\node[minimum width=12pt, draw, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(100pt,-22pt)$){{$\tt \succ$}};
+\node[minimum width=12pt, draw, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(45pt,-2pt)$){{$\tt \prec$}};
+\node[minimum width=12pt, draw, fill=black!10, minimum height=8pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(35.5pt,-2pt)$){{$\tt \prec$}};
+
+
+\node[minimum width=12pt, draw, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(35pt,-23pt)$){{$\tt \prec$}};
+
+\node[minimum width=12pt, draw, fill = black!10, minimum height=8pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(24.5pt,-23pt)$){{$\tt \succ$}};
+ 
+\node[minimum width=12pt, draw, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(45pt,-53pt)$){{$\tt \prec$}};
+\node[minimum width=12pt, draw, fill = black!10, minimum height=8pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(34.5pt,-53pt)$){{$\tt \prec$}};
+
+
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,0pt)$){{$\tt x$}};
+\node[name = y, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,-29pt)$){{$\tt y$}};
+\node[name = y, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(80pt,-16pt)$){{$\tt g$}};
+
+\node[name = x, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(-10pt,-58pt)$){{$\tt z$}};
+
+
+
+\end{tikzpicture}
+\vspace{1cm}
+\caption{A summary representation}
+\label{heapsummary}
+\end{figure}
+

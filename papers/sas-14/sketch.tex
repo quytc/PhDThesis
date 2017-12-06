@@ -1,0 +1,45 @@
+\section{Introduction}\label{section:introduction}
+
+We introduce a method for verification of parameterized systems of processes \todo{what are they ...}.
+%These systems are not well-quasi ordered since the universally quantified transitions are not monotonic. 
+%Despite that, many of them they can still be verified by methods which are complete for well quasi ordered systems and can deliver sound results on general systems.
+The verification problem is know to be decidable in general only for a subclass of these systems which are well quasi-ordered (WQO). In our settings, it means systems which do not use universally quantified transitions, which are not monotonic. There is a number of methods which target primarily WQO and are proved complete for them. Some of these are still sound when run on systems with non-monotonic transition relation, and were successfully used to verify many of them. This is possible mostly only if the system, even though it does not have monotonic transition relation, has an invariant which is strong enough to imply safety, inductive, and upward closed. If there is no such upward closed invariant, the WQO specialised methods are bound to fail.
+Our primary motivation is an observation that there appears to be quite a significant subclass of systems which have only ``almost'' upward closed invariants, where by almost upward close we mean that 
+they may be expressed as unions of \emph{finite} intersections of upward closed sets.
+%The methods which specialise on WQO usually cannot even express such invariants and hence do not have a chance of success.  
+As we show in this paper, discovery of almost upward closed invariants is in fact still feasible, and we present a sound and complete method to do that.
+%A need of inferring such invariants was noticed for instance in Kumar [] and Parosh []. 
+%In Kumar,  Papers, where - explain the connection of quantified invariants with upward/downward?, try to figure out better how they add the variables to solve it. Ask Kumar.
+
+An example of such system is the implementation of a barrier on the figure, where \todo{... or the Parosh example? Barrier seems simpler and more sensible to me.}
+We may observe the process in the state wait counts on that \emph{if there is a delayed process in a state init, then there is a also a process in the state pivot}, 
+and thus he bases his decision to move through barrier on the \emph{absence of a process in the state pivot (which implies absence of a process in the state init)}.
+%Hence, an invariant property needed to verify this systems includes the fact that if there is a process in the state init and a process in the state waiting, then there is a process in the state pivot. Notice that this property is not upward closed, explain, but it can be expressed as an intersection of two upward closed sets: ....
+A pattern which is common for many systems with almost upward closed invariants can be recognized here: 
+the presence of an entity $A$ (wait and init together) is implied by a presence of an entity $B$ (pivot), 
+and the system performs a critical step which involves testing the absence of $A$ by absence of $B$. 
+It is clear that the strong enough inductive invariant must imply that $A \Rightarrow B$, 
+in other words, it cannot intersect with $\uparrow A \cap \uparrow B$. An intersection of two upward closed sets is not generally upward closed.
+
+
+Our method can infer such invariants fully automatically.
+Of course, since we are dealing with an undecidable problem, the method has its limitations. 
+For instance, we are not able to infer (even to express) invariants which involve equalities of numbers of precesses in different states 
+(such invariant could be expressed as an \emph{infinite} intersection of upward closed sets).
+
+The proposed method retains most of the simplicity of the method \cite{AbHaHo:view:abstraction} for verification of WQO which it is based on.
+Due to its simplicity, we were able to extend it to handle fine-grained parameterized systems, 
+where the quantified conditions are checked non-atomically. This way of modelling is closer to to the real systems, and can reveal bugs which would be otherwise hide, and can reveal bugs which would be otherwise hidden.
+To the best of our knowledge, there is no other method which combines the ability to infer non-upward closed invariants with a support of fine-grained modelling. 
+This combination allowed us to verify, among others, the full fine-grained version of the Szymanski's mutual exclusion protocol, 
+which has been considered a challenge in parameterized verification. 
+Many previous works use a variant of Szymanski's algorithm as a case study, but they are either not fully automatic, or they use simplified versions of it which does not feature one of the aspects, the fine-grained modelling or a non-upward closed invariant. 
+Besides Szymanski's protocol, we have tested our method also on number of other case studies, some of which cannot be verified by any other methods we are aware of, and observed good results.
+We also show that when lifting our reasoning to a more abstract level, 
+we obtain a verification scheme which is complete for systems with almost upward closed invariants.
+
+%\section{Overview}
+%Example, I would rather put the barrier since the phenomena are more obvious there, it is simpler, and it kind of makes sense. 
+%Say that VMCAI does the upward part, and that the context introduces the intersection there.
+
+

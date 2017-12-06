@@ -1,0 +1,307 @@
+%% -------------------------------------------------
+\subsection{View Abstraction}
+\label{section:abstraction}
+%% -------------------------------------------------
+
+% We work with words in $\A^*$, where $\A=\locs\union\setsof\locs$ and
+% $\setsof\locs$ denotes the set of subsets of $\locs$. We use
+% $p,q,\ldots$ to denote states in $\locs$, and $P,R,\ldots$ to denote
+% sets of states in $\setsof\locs$.
+
+A \emph{context-sensitive view} (henceforth only \emph{view}) is a
+word of the form $R_0b_1R_1\ldots b_kR_k$ where $b_i\in\locs$ for
+$i\in\range 1 k$ and $R_i \subseteq\locs$ for $i\in\range 0 k$. %
+\TODO{We use $\range a b$ to denote the set of integers $\set{a\ldots b}$. }%
+We call the word $\word b k$ the \emph{basis} of the view where $k$ is
+the \emph{size} of the view and we call each set $R_i$ a
+\emph{context}. %
+ %
+% We use $\viewsof k$ (resp.\ $\viewsofupto k$) to denote the set of
+% views of size $k$ (resp.\ up to $k$).
+We use $\viewsof k$ to denote the set of views of size $k$.
+
+% Furthermore, for $w\in\A^∗$, we use $w^\bullet$ to denote the union
+% of all states in $\locs$ occurring in $w$ either as one of its
+% letters or listed in one of its sets. As an example, for $R =
+% \set{q_1,q_2} we have that (Rq_3R)^\bullet = \set{q1, q2, q3}$.
+
+\begin{wrapfigure}{r}{0.32\textwidth}
+  \vspace{-20pt}%
+  \hfill%
+  \input projection
+  \vspace{-28pt}%
+\end{wrapfigure}
+%
+For $k,n\in\nat, k\leq n$, let $H_n^k$ be the set of strictly
+increasing injections of $\range 1 k$ to $\range 1 n$, that is, for
+any function $h\in H_n^k$, the following property holds: $1\leq
+i<j\leq k \implies 1\leq h(i)<h(j)\leq n$. %
+%
+For $h\in H_n^k$ and a view $\view =R_0b_1R_1\ldots b_nR_n$, we define
+$\proj{h}{\view}$ to
+be %the projection function that maps the view $v_n$ \conf to
+the view $\view' = R'_0b'_1R'_1\ldots b'_kR'_k$, obtained in the
+following way (as depicted in the figure on the right):
+%
+(i) $b'_i=b_{h(i)}$ for $i\in\range 1 k$, %
+(ii) $R'_0=(\bigcup_{0{\leq}j<h(0)}R_j)\union(\bigcup_{0<j<h(0)}\set{b_j})$, %
+%(iii) $R'_i=(\bigcup_{j\in\rangeopen{h(i)}{h(i+1)}}(R_j\union\set{b_j})$ for $i\in\range{1}{k-1}$, %
+(iii) $R'_i=(\bigcup_{h(i)<j<h(i+1)}(R_j\union\set{b_j})$ for $i\in\range{1}{k-1}$, %
+and (iv) $R'_k=(\bigcup_{h(k)<j{\leq}n}(R_j\union\set{b_j})$. %
+%
+Informally, while respecting the order, $k$ elements of the basis of
+$\view$ are retained as the basis of $\view'$, while all other
+elements are projected away into an (appropriate) context.
+%
+For a configuration $\conf$, we define $\mk{\conf}$ to be the view
+such that the basis is the configuration itself and the contexts are
+all empty. %
+Formally, for $\conf\in\confsof n$, $\mk{\conf} = R_0b_1R_1\ldots
+b_nR_n$ where $b_i=c[i]$ for $i\in\range 1 n$ and $R_i=\emptyset$ for
+$i\in\range 0 n$.
+%
+
+The {\it abstraction function} $\abstr_k$ maps a~view
+%$\conf\in\confsof n$
+$\view$ %
+into the set of \emph{all} sub-views of size at most $k$:
+%
+%if $k\leq\sizeof\conf$, 
+$\project k \view = %
+\setcomp{\proj h {\mk{\conf}}}{h\in H_{\sizeof \conf}^\ell,\ell\leq k}$.
+%; %
+%if $\sizeof\conf<k$, $\project k \conf = \emptyset$.
+%
+For a connfiguration $\conf$, we let $\project k \conf = \project k {\conf^\bullet}$.
+We lift $\abstr_k$ to sets of views/configurations as usual.
+%
+Intuitively, we abstract configurations with a \emph{set} of views:
+the abstraction function extracts \emph{all} subwords from a
+configuration, while retaining the rest in appropriate contexts. %
+%
+
+%% -----------------------------------------------------
+\myparagraph{Entailment.}
+%% -----------------------------------------------------
+We will now define the relation of entailment of views which, intuitivelly, compares the strenght of restrictions that views pose one configurations they represent (which will be made precise later by definition of concretization).
+We let a view $u = R_0b_1R_1,\ldots,b_kR_k$ \emph{entails} a view $v = R'_0b'_1R'_1,\ldots,b'_kR'_k$ of the same size $k$, denoted $u\entails v$, if $b_i=b'_i$ for all
+$i\in\range 1 k$ and $R_i\subseteq R'_i$ for all $i\in\range 0 k$. %
+%
+%We let $u$ entail a view $w$ of a larger size if there is $w'\in \abstr_k(w)$ with $u\entails w'$. Notice that $\entails$ is a partial order.
+We will write $\minsetof V$ to denote the set of minimal elements of a set of views $V$ w.r.t. $\entails$ and for another set $W$ of views, 
+we write $V\entails W$ if every $w\in W$ is entailed by some $v\in V$.
+
+
+%We define first the entailement relation $\sentailed$ on views of the
+%same size. %
+%Consider two views $\view = R_0b_1R_1,\ldots,b_kR_k$ and $\view' =
+%R'_0b'_1R'_1,\ldots,b'_kR'_k$, of the same size $k$. %
+%We use $\view\sentailed\view'$ to denote that $b_i=b'_i$ for all
+%$i\in\range 1 k$ and $R_i\subseteq R'_i$ for all $i\in\range 0 k$. %
+%%
+%Consider now two views $\view$ and $\view'$ of the size $k$ and $k'$,
+%respectively, with $k\leq k'$. %
+%We define $\view\entails\view'$ iff there exists a strictly increasing
+%injection $h\in H_{k'}^k$ such that $\view\sentails\proj{h}{\view'}$.
+%%
+%Intuitively, $\view$ entails $\view'$ if the basis of $\view$ is a
+%subword of the basis of $\view'$ and each context of $\view$ has its
+%elements injected either in a context or as a basis element of
+%$\view'$, while respecting the order.
+%%
+%% The contexts allow a basis to not completely forget some (important)
+%% states.
+%%
+%The entailement relation is defined on sets of views as follows: For
+%$X\subseteq\viewsof k$ and $Y\subseteq\viewsof{k'}$, where $k\leq k'$,
+%we say that $X\entails Y$ iff for all $y\in Y$, there exists $x\in X$
+%such that $x\entails y$.
+%
+
+%% -----------------------------------------------------
+\myparagraph{Concretization.}
+%% -----------------------------------------------------
+For every $k\in \nat$, the {\it concretization} function
+$\concretize_k: 2^{\viewsof k}\rightarrow2^\confs$ maps a~set of views
+$V\subseteq\viewsof k$ into the set of configurations 
+%that can be
+%reconstructed from the views in $V$.
+%
+%Formally, 
+%$\concretizeof k V = \setcomp{\conf\in\confs}{V\entails\project{k}{\conf}}$.
+$\concretizeof k V = \setcomp{\conf}{V\entails\project{k}{\conf}}$.
+%
+% For example, $\concretizeof k {\set{%
+%     \emptyset 1\emptyset 2\emptyset,%
+%     \emptyset 2\emptyset 3\set{8},%
+%     \emptyset 1\emptyset 3\emptyset}} = \set{\emptyset 1\emptyset 2\emptyset 3\set{8}}$.
+%
+It is obvious that $\concretizeof k V = \concretizeof k {\minsetof V}$, hence
+sets of configurations can be represent conciesely as sets of their
+$\entails$-minimal views. 
+
+For example, let $X = \set{\wc{1/ ,2/ },\wc{2/ ,3/8},\wc{1/ ,3/ }}$, %
+where the square boxes are contexts, and the round boxes are states
+from the basis. Its concretization $\concretizeof 2 X$ is the set
+$\set{\w{1,2,3}}$. %
+A configuration that is abstracted to $\wc{2/ ,3/8}$ must contain
+$\w{2,3}$ as a subword with a state $\w 8$ (or several)
+on the right of $\w 3$, for example $\w{1,2,3,8}$, but
+notice that it is not in $\concretizeof 2 X$ because the view
+$\wc[1]{2/3,8/ }$ (another abstraction of $\w{1,2,3,8}$ of size
+2) does not entail any view in $X$. %
+%
+For another example where $X = \set{%
+  \wc{1/ ,2/ },%
+  \wc{2/ ,2/ },%
+  \wc{1/2},%
+  \wc{2/ }%
+}$, %
+$\concretizeof 2 X$ is the infinite set
+$\set{\w{1,2}^{+}, \w{2,2}^{*}}$.
+
+Let us give an intuitive explanation of how do sets of views encode intersections of upward closed sets of configurations, as claimed in Section~\ref{section:introduction}. \todo{Do this with an example.}
+%Consider a set of views $V$, we argue that the complement of $\overline{\gamma_k(V)}$ is an intersection of upward closed sets.
+%Let $B$ be the set of bases $V$ (in other words, $B$ contains elements of $V$ with all contexts emtpy). Then $\gamma_k(B)$ contains all configurations except those contain a subword in $\overline B$, hence $\overline \gamma_k(B)$ is an upward closed defined by the set of minimal elements $\overline B$.
+%Let us consider the original views ov $V$ again. The semantics of a $\view = R_0b_1R_1,\ldots,b_kR_k$ with the base $b$ is, informally, whenever there is $b$ within a configuration, it must appear in a context specified by $R_0\ldots R_k$. Let $\{v_1,\ldots,v_k\}$ be the shortest words which satisfy this constraint (for instance ....).  Then the part of the complement of $\overline{\gamma_k(V)}$ specified by $v$ is the set $\ucl \{b\} \cap \ucl\{v_1,\ldots,v_k\}$
+
+\myparagraph{Procedure}
+Our verification consists of computing of a fix-point of the standard abstract post-image of the set of initial configuration and checking its intersection with the set of bad configurations. 
+Formally, we want to compute $\mu X.\alpha_k(I)\cup \alpha_k\circ \post \circ \gamma_k (X)$ and check that it does not intersect with $\bad$.
+The precision of the abstraction increases with $k$ as well as its veboseness and hence demands of the abstract computation, hence we increase the $k$ starting from $1$ until the intersection with $\bad$ is empty.
+Since $\gamma_k(X)$ is typically infinity, abstract post cannot be computed directly and we need a way of computing it symbolically. We will show that this can be done similarly as described in \cite{AbHaHo:view:abstraction} by computing the symbolic post $\alpha_k\circ \post \circ \gamma_k^{k+1} (X)$ where $\gamma_k^{k+1} (X)$
+
+
+
+%% -----------------------------------------------------
+\myparagraph{Computing the post-image.}
+%% -----------------------------------------------------
+The parameterized system $\parsys=(\locs,\rules)$ induces a transition
+system $\transys = (\confs,\trans)$. As usual, the \emph{abstract
+  post-image} of a~set of views $V\subseteq\viewsof k$ is defined as
+$\apostof k V = \project k {\postof {\concretizeof{k}{V}}}$, where
+$\postof c = c'$ if $c\trans c'$. %
+Computing $\apostof{k}{V}$ is a~central component of our verification
+procedure. %
+It cannot be computed straightforwardly since the set
+$\concretizeof{k}{V}$ is typically infinite.
+
+We introduce a \emph{symbolic post} ($\spost$) that operates on views
+in the following way:
+%
+Consider two views $\view = R_0b_1R_1,\ldots,b_kR_k$ and $\view' =
+R'_0b'_1R'_1,\ldots,b'_kR'_k$, of the same size $k$ (since the
+transitions of $\trans$ are size-preserving). %
+$\view'$ is a successor of $\view$, i.e., $\view' = \spostof \view$,
+with $b_i = s$, $b'_i = s'$, $b_j=b'_j$ for all $j\neq i$ and $R_j=R'_j$ for $j\in\range 1 k$ iff either (i) $\rules$
+contains a local rule $\loc\trans\loc'$, or (ii) $\rules$ contains a
+global rule $\quantrule\loc{\loc'}{\quantify}\circ S$, and one of the
+following conditions is satisfied:
+%\begin{compactitem}
+\begin{itemize}%[topsep=0pt]%package enumitem
+\item 
+$\quantify=\forall$ and for all $j\in\range 1 {\sizeof \view}$ such that $j\circ i$, it holds that $b_j\in \witnesses \wedge R_j\subseteq\witnesses$.
+\item 
+$\quantify=\exists$ and there exists $j\in\range 1 {\sizeof \view}$ such that $j\circ i$ and $b_j\in \witnesses \vee R_j\intersection\witnesses\neq\emptyset$.
+%\end{compactitem}
+\end{itemize}
+\noindent%
+Notice that the context $R_j$ are all checked against $\witnesses$,
+\emph{atomically}.
+
+
+%% ------------------------------------------------------------------
+\myparagraph{Strength of the view abstraction.}
+%% ------------------------------------------------------------------
+The strength lies in letting the symbolic post operator consider a
+\emph{set} of views instead of views individually.
+%
+Consider, for example, $k=2$ and the transition (from
+Fig.\ref{figure:demo}) %
+$\quantrule{\w 3}{\w 4}{\exists}{\neq}{\w{2}}$.
+%
+As mentioned in Section~\ref{section:introduction}, it is possible
+that the computation of all reachable configurations encounters the
+configurations \w{0,3} and \w{0,3,1,2}, which can be
+abstracted to \wc{0/,3/} and \wc{0/,3/{1,2}} but only the first
+one is retained (by entailment).
+%
+Applying the transition on \w{0,3,1,2} leads to
+\w{0,4,1,2} while it is disabled for \w{0,3}. The
+minimal view $\view = \wc{0/,3/}$ does not remember the presence of
+state\,\w{2}. Observe that $\spost$ is disabled on it.
+%
+The \wc{0/,4/} would be missing (so would \wc{0/,4/{1,2}}) and
+we would therefore under-approximate the system.
+
+It is necessary to examine all cases where the symbolic post
+\emph{could} be enabled, that is, if there is a configuration in
+$\reach$ which has \w{0,3,2} as a subword.
+%
+If it was the case, the set of views \emph{must necessarily} also
+contain views of the form \wc[?]{0/?,2/?} and \wc[?]{3/?,2/?}.
+%
+So we first could ``extend'' the view $\view$ into a larger view of
+the form \wc[?]{0/?,3/?,2/?}, and then apply the symbolic post.
+%
+Intuitively, we ``enabled'' the symbolic post to capture the effect of
+every transition of the system, therefore over-approximate the
+abstract post, by only considering slightly larger views (as we will
+show in the next section).
+
+Formally, for $\ell > k$, we define %
+$\concretizeoflim k \ell V := \project \ell {\concretizeof k V}$ %
+and show the following {\it small model} lemma for the class of
+systems of Section~\ref{section:paramsys}.
+%
+\begin{lemma}
+\label{lemma:apost}
+For any $k\in\nat$ and $X\subseteq\viewsof k$,
+%$\concretizeof k {\apostof k X} \subseteq \concretizeof k {\project k {\spostof{\concretizeoflim k {k+1} X}}}$.
+${\project k {\spostof{\concretizeoflim k {k+1} X}}}\entails{\apostof k X} $.
+\end{lemma}
+
+Consider now another transition, %
+$\quantrule{\w 0}{\w 1}{\forall}{\neq}{\w{0,1,4}}$,
+%
+and the configurations \w{0,0} and \w{0,4,2}, which are
+reachable and and can be abstracted into \wc{0/,0/} and
+\wc{0/,4/2}. %
+%
+The view $\view=\wc{0/,4/2}$ remembers the presence of
+state\,\w{2} %
+and $\spost$ is not enabled on it. 
+%
+It is important to notice that the concretization will never
+reconstruct configurations where the state\,\w{4} is not in the
+presence of\,\w{2}, and therefore limiting the applicability of
+the symbolic post.
+%
+The contexts allow a basis to not completely forget some (important)
+states. They are a ``must-be-present'' type of information for the
+states that are not kept in the basis.
+%
+Observe that the view abstraction of~\cite{AbHaHo:view:abstraction}
+\emph{would} extend $\view$ into \w{0,0,4} and allow $\spost$
+to derive \w{1,4}, source of the false-positive mentioned in
+Section~\ref{section:introduction}.
+
+%% ------------------------------------------------------------------
+\myparagraph{Precision.}
+%% ------------------------------------------------------------------
+The concretization function is the source of precision for the
+method. %
+Instead of considering views individually and approximating the
+operational semantics of the transition system, we consider views
+altogether and thus gain precision.
+% , i.e., for any set of views
+% $X\in\viewsof k$, $\concretizeof {k+1} X \subseteq \concretizeof {k} X$.
+%
+Indeed, only considering the views \wc{1/,2/} and
+\wc{2/,3/} is not enough to extend to \wc{1/,2/,3/} if
+\wc{1/,3/} is missing from the set.
+%
+Approximating the symbolic post operator is a great source of
+imprecision~\cite{AbDeRe:context:sensitive}. %
+We instead concretize the views in a consistent manner and apply a
+natural (exact) symbolic post operator afterwards.

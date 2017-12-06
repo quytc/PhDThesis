@@ -1,0 +1,185 @@
+%--------------------------------------------------------
+\section{Experimental results}
+\label{section:experiments}
+%--------------------------------------------------------
+%
+{%\footnotesize
+\begin{table}[!b]
+\caption{Experimental Results. (stack+ (resp.~queue+) is an observer encompassing the loss, creation, duplication and lifo (resp.~fifo) observers).}
+%\caption{Experimental Results.}
+\label{experiments:results}
+\centering
+\begin{tabular}{|l||c|@{\hskip 5pt}r|r@{\hskip 5pt}||@{\hskip 5pt}r|c|}
+\multicolumn{1}{c}{}                            & \multicolumn{3}{c}{Conformance}                            & \multicolumn{2}{c}{Safety only} \\\hhline{*{6}{=}}
+{\bf Data-structure}                            & {\bf Observers}        & {\bf Time} & {\bf $|C|$} & {\bf Time}  & {\bf $|C|$}       \\\hhline{*{6}{=}}
+Coarse Stack                                    & \multirow{2}{*}{stack+}& 0.02s      & 436         &  0.01s      & 102               \\  
+Coarse Stack, no GC                             &                        & 0.07s      & 569         &  0.01s      & 130               \\\hline
+Coarse Queue                                    & \multirow{2}{*}{queue+}& 0.04s      & 673         &  0.01s      & 196               \\  
+Coarse Queue, no GC                             &                        & 0.48s      & 1819        &  0.10s      & 440               \\\hline  
+Two-Locks Queue\cite{MS:QueueAlgorithms}        & \multirow{2}{*}{queue+}& 0.08s      & 1830        &  0.02s      & 488               \\  
+Two-Locks Queue, no GC                          &                        & 0.73s      & 3460        &  0.13s      & 784               \\
+                                                & \multicolumn{3}{r@{\hskip 5pt}||@{\hskip 5pt}}{\scriptsize \emph{vs} 47s in~\cite{BLMRS:cav08}}
+                                                                   & \multicolumn{2}{c|}{\scriptsize \emph{vs} 6162s/304s in~\cite{YaSa:queue}} \\\hline
+Coarse Priority Queue (Buckets)                 &  \multirow{2}{*}{prio}            & 0.24s      & 1242        &  0.07s      & 526    \\  
+Coarse Priority Queue (List-based)              &                        & 0.04s      & 499         &  0.01s      & 211               \\  
+Bucket locks Priority Queue                     &                        & 0.22s      & 1116        &  0.05s      & 372               \\\hline  
+Treiber's lock-free stack\cite{Treiber:stack}   & stack+                 & 0.23s      & 714         & 0.01s       & 78                \\  
+                                                & \multicolumn{3}{r@{\hskip 5pt}||@{\hskip 5pt}}{\scriptsize \emph{vs} 0.09s in~\cite{Vafeiadis:RGSep}} & & \\
+Treiber's lock-free stack, no GC                & stack+                 & 2.28s      & 1535        & 0.10s       & 190               \\  
+                                                & \multicolumn{3}{r@{\hskip 5pt}||@{\hskip 5pt}}{\scriptsize \emph{vs} 53s in~\cite{BLMRS:cav08}} & & \\\hline
+M\&S's lock-free queue\cite{MS:QueueAlgorithms} & queue+                 & 3.31s      & 3476        & 0.44s       & 594               \\  
+                                                & \multicolumn{3}{r@{\hskip 5pt}||@{\hskip 5pt}}{\scriptsize \emph{vs} 3.36s in~\cite{Vafeiadis:RGSep}} & & \\
+M\&S's lock-free queue, no GC                   & queue+                 & 550s       & 53320       & 25s         & 6410              \\
+                                                & \multicolumn{3}{r@{\hskip 5pt}||@{\hskip 5pt}}{\scriptsize \emph{vs} o.o.m.\ in~\cite{BLMRS:cav08}}
+                                                                   & \multicolumn{2}{c|}{\scriptsize \emph{vs} 727s/309s in~\cite{YaSa:queue}} \\\hhline{*{6}{=}}  
+%
+%
+% \multicolumn{6}{l}{stack+ (resp.~queue+) is an observer encompassing}\\
+% \multicolumn{6}{l}{the loss, creation, duplication and lifo (resp.~fifo) observers}\\
+\end{tabular}
+\end{table}%
+}% end table and footnotesize
+%
+We have implemented a prototype in OCaml and used it 
+to automatically establish the conformance of concurrent 
+data-structures (including lock-free and lock-based
+stacks, queues and priority queues)
+to their operational specification (implying their linearizability).
+%
+Our analysis also implicitly checks for standard shape-related errors such
+as null/undefined pointer dereferencing (taking into account the known dangling pointers'
+dereferences \cite{Michael:2002}), double-free, or presence of
+cycles.
+%, as well a dereferencing of a freed cell
+%
+%The examples cover stacks, queues and priority queues, in a lock-based
+%or a lock-free fashion. 
+%
+
+Some of the examples are verified in the absence of garbage
+collection,
+%
+in particular, the lock-free versions of Treiber's
+\cite{Treiber:stack} stack and Michael\&Scott's queue (see
+Figure~\ref{fig:MS}).  We hereafter refer to them as Treiber's stack
+and M\&S's queue, and garbage collection as GC.
+%
+The verification of these examples is extensively demanding as it
+requires to correlate the possible states of the threads with high
+precision.
+%
+We are not aware of any other method capable of verifying high level functionality of these benchmarks.
+%
+We ran the experiments on a 3.5~GHz processor with 8GB~memory. We
+report, in Table~\ref{experiments:results}, the running times (in
+seconds) and the final number of joined shape constraints generated
+($|C|$, reduced by symmetry). 
+%
+
+In addition to establishing correctness of the original versions of
+the benchmark programs, we also stressed our tool with few examples in
+which we intentionally inserted bugs (cf. Table~\ref{experiments:bugs}).
+%
+As expected, the tool did not establish correctness of these erroneous
+programs since the approach is sound.
+%
+For example, we tested whether stacks (resp. queues) implementations
+can exhibit fifo (resp. lifo) traces,
+%
+we tested whether values can be lost (loss observer),
+or memory errors can be triggered (memo observer accepts 
+on memory errors made visible),
+%
+we moved linearization points to wrong positions,
+%
+and we tested a program which stores wrong values of inserted data. 
+%
+In all these cases, the analysis correctly reported traces that 
+violated the concerned safety property.
+%
+Finally, we ran the data structure implementations without garbage
+collection discarding the \code{age} counters and our (precise)
+analysis produced as expected a trace involving the ABA problem \cite{aba:1983}.
+%
+%In this case, the analysis showed its precision 
+%by reporting a safety violation after precisely recreating the ABA scenario.
+
+%This is meant to observe the ABA problem~\ref{ABA}:
+%
+% A deleting thread working slowlyer than other inserting threads could
+% not notice the modifications to the data-structure and loose in
+% essence some inserted data.
+%
+%If two threads point to a cell that they are about to deallocate. One
+%of them will succeed faster and a third thread might reallocate a new
+%cell at that same location. The slowest thread might continue its
+%execution without noticing the changes. It is therefore possible that
+%this latter thread dequeues the cell without noticing that many others
+%have been enqueued in the meantime. The loss observer does capture
+%this faulty behavior.
+
+% The examples can be described with a simple C-like programming
+% language and can be found in Appendix~\ref{appendix:experiments}.
+%
+
+{\footnotesize
+\begin{table}[!t]%!h 
+\caption{Introducing intentional bugs: The analysis is sound and the programs are not verified.}
+%  We mark the programs which do not assume garbage collection with a~*.}
+%   In case the analysis gives false positives, we discard the involved constraints
+%   and continue the exploration until we find a concrete error.}
+\label{experiments:bugs}
+\centering
+\begin{tabular}{|c|c|c||c|c|}\hhline{*{5}{=}}
+ {\bf Data-structure}     & {\bf Modification} & {\bf Observer} & {\bf Output} & {\bf Time} \\\hhline{*{5}{=}}
+
+  Treiber's stack         & none               & fifo           & bad trace    & 0.07s      \\\hline %% 456 constraints
+  Treiber's stack, no GC  & none               & fifo           & bad trace    & 6.19s      \\\hline %% 908 constraints
+  M\&S's queue            & none               & lifo           & bad trace    & 1.26s      \\\hline %% 1790 constraints
+  Two-locks queue         & bad commit point   & fifo           & bad trace    & 0.02s      \\\hline %% 657 constraints
+  M\&S's queue            & bad commit point   & loss           & bad trace    & 0.51s      \\\hline %% 873 constraints
+  Treiber's stack         & omitting data      & lifo           & bad trace    & 0.02s      \\\hline %% 213 constraints
+  Treiber's stack, no GC  & discard ages       & loss           & bad trace    & 0.42s      \\\hline %% 221 constraints
+  Treiber's stack, no GC  & discard ages       & loss           & cycle creation & 0.01s    \\\hline %% 104 constraints
+  M\&S's queue, no GC     & discard ages       & loss           & bad trace    & 272s       \\\hline %% 6100 constraints
+  M\&S's queue, no GC     & discard ages       & loss           & dereferencing null & 0.01s \\\hline %% 392 constraints
+  M\&S's queue            & swapped assignments& memo           & dereferencing null & 0.01s \\ %% 199 constraints
+%%  Treiber's stack*        & none               & memo           & free cell dereferencing    & 0.01s \\ %% 121 constraints
+  \hhline{*{5}{=}} 
+\end{tabular}
+\end{table}%
+}% end footnotesize
+%
+We also include a succinct comparison with related work. Although it is
+often unfair to compare approaches solely based on running times of
+different tools, we believe that such a comparison can give an idea of
+the efficiency of the involved approaches.
+%
+%To support the claim that our method is of a superior efficiency, 
+%We cite in the following some published running times of other tools.
+Our running times on the versions of Treiber's stack and M\&S's queue
+that assume GC are comparable with the results of
+\cite{Vafeiadis:RGSep}. However, the verification of versions that do
+not assume GC is, to the best of our knowledge, beyond the reach of
+\cite{Vafeiadis:RGSep} (since it does not correlate states of different threads). 
+%
+\cite{Sagiv:correlation} verifies linearizability of concurrent
+implementations of sets,  e.g., a lock-free \code{CAS}-based set
+\cite{Vechev:PLDI08} (verified in 2975s) of a comparable complexity to
+M\&S's queue without GC (550s with our prototype).
+%
+Basic memory safety of M\&S's queue and two-locks
+queue~\cite{MS:QueueAlgorithms} without GC was also verified in
+\cite{YaSa:queue}, but only for a scenario where all threads are
+either dequeuing or enqueuing. The verification took 727s and 309s for
+M\&S's queue and 6162s and 304s for the two-locks queue. Our
+verification analysis produced the same result significantly faster,
+even allowing any thread to non deterministically decide to either
+enqueue or dequeue.
+%
+In \cite{BLMRS:cav08}, linearizability of the Treibers's stack (resp.\
+two-locks queue~\cite{MS:QueueAlgorithms}) is verified in 53s (resp.\
+47s). We achieve the same result in less than 3 seconds. 
+Finally, a variant of M\&S's queue without GC could not be %successfully
+verified in \cite{BLMRS:cav08} 
+due to lack of memory.

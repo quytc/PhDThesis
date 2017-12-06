@@ -1,0 +1,63 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{llncs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input settings.tex  % Loaded packages
+\input styles.tex    % TikZ and algorithms
+\input defs.tex      % Common definitions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\pagestyle{empty} %% For the camera-ready version
+
+%\pagecolor{white}
+%\pagecolor[rgb]{0,0,0.2}
+%\color{gray}
+%\color[rgb]{0,0,0.51}
+% \pagecolor[rgb]{0,0,0}
+% \color{pink}
+
+\pdfpagesattr{/CropBox [92 62 523 728]} % LNCS page made big 
+%\pdfpagesattr{/CropBox [122 102 490 690]} % LNCS page made biggest 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input init.tex
+\input abstract.tex
+
+\input introduction.tex
+\input paramsys.tex
+\input method.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \NOTE{SO FAR SO GOOD}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input non_atomic_daz.tex
+%\input non_atomic.tex
+%\input non_atomic2.tex
+%\input non_atomic3.tex
+%\input non_atomic4.tex
+%\input non_atomic5.tex
+
+\input experiments.tex
+%\input related_work.tex
+\input conclusion.tex
+
+{%\small
+\bibliographystyle{splncs_srt}
+\bibliography{literature}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vfill\eject\appendix 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{proof.tex}
+\newpage
+\input{experiments/index.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

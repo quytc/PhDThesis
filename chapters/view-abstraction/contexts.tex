@@ -1,0 +1,489 @@
+%% ====================================================================
+\section{Contexts}
+\label{section:view:contexts}
+%% ====================================================================
+%
+\index{Downward-closed sets}%
+The simple abstraction presented in
+Section~\ref{section:view:abstraction} allows us to compute
+invariants\index{Invariant} that are \emph{downward-closed} with
+respect to the subword relation~$\subword$. Several methods~%
+\cite{%KMMPS2001,DLS01,BLW03,Tou01,
+  CTV06,%
+  PRZ-tacas01,%
+  BHV04,%
+  AJNO:simple,%
+  APRXZ01,%
+  Namjoshi:VMCAI07,%
+  rmc:wo:transducers,%
+  GerSis:many,%
+  PXZ02}
+have been devised to take advantage from such invariants, but there
+are several classes of systems that are beyond their applicability.
+%
+The reason is that such systems do not allow good downward-closed
+invariants, and hence over-approximating the set of reachable
+configurations by downward-closed sets will give false
+counter-examples.
+%
+
+
+Let us briefly explain where the problem comes from. A deeper
+explanation can be found in Paper~\ref{paper:SAS14}.
+%
+Consider for example the view \w{a,b}. It emerges from some
+configurations that contain the former view as a~subword.
+%
+It might be the case %is possible
+that \emph{all} those configurations do also contain $\w{d}$ on the
+right of $\w{b}$ (i.e.\ all the configurations contain in fact the
+subword $\w{a,b,d}$).
+%
+In such a case, the transition
+$\quantrule{a}{c}{\forall}{>}{\neg\set{d}}$ will be enabled on the
+view $\w{a,b}$, but it would not have been enabled on any of the
+configurations that contain that view as a~subword.
+%
+The problem is now that the new view $\w{c,b}$ is potentially harmful
+in the sense that it can lead to a counter-example.
+%
+Notice moreover that no extension to views of larger size will always
+disable the transition on those views (i.e.\ increasing the precision
+will not eliminate the problem).
+
+In this section, we introduce a new type of view and adapt the method
+from Section~\ref{section:view:method} to target a class of invariants
+which are needed in many practical cases and cannot be expressed as
+downward-closed sets.
+
+%% -----------------------------------------------------
+\subsection{Context-Sensitive Views}
+\label{section:view:contexts:abstract:domain}
+%% -----------------------------------------------------
+\index{View!Context-sensitive}%
+A \emph{context-sensitive view} (henceforth only called \emph{view})
+is a pair $(b_1\ldots b_k,R_0\ldots R_k)$, often written as
+$R_0b_1R_1\ldots b_kR_k$, where $b_1\ldots b_k$ is a configuration and
+$R_0\ldots R_k$ is a \emph{context}, such that $R_i\subseteq \locs$
+for all $i\in\range 0 k$.
+%
+\index{Configuration}%
+We call the configuration $b_1\ldots b_k$ the \emph{base} of the view
+where $k$ is its \emph{size} and we call the set $R_i$ the $i^{th}$
+\emph{context}. %
+We use $\viewsof k$ to denote the set of views of size up to $k$.
+%
+For $k,n\in\nat, k\leq n$, let $H_n^k$ be the set of strictly
+increasing injections $h \colon \range{0}{k+1} \rightarrow
+\range{0}{n+1}$, i.e.\ \mbox{$1\leq i<j\leq
+  k$} $\Rightarrow$ \mbox{$1\leq h(i)<h(j)\leq n$}.
+%
+Moreover, we require that $h(0) = 0$ and $h(k+1) = n+1$.
+
+%% -----------------------------------------------------
+\KW{Projections}%
+\index{Projection}%
+%% -----------------------------------------------------
+%\noindent%
+\begin{wrapfigure}{r}{0.48\linewidth}
+  \hfill%
+  \tikzinput{img/contexts-projection}
+  %\caption{Projection}
+  %\label{figure:projection}
+\end{wrapfigure}
+%
+We define the projection of a configuration.
+%
+For $h\in H_n^k$ and a configuration \mbox{$c=q_1\ldots q_n$}, we use
+$\proj{h}{c}$ to denote the view %
+\mbox{$v=R_0b_1R_1\ldots b_kR_k$}, obtained in the following way %
+%(see Figure~\ref{figure:projection}): %
+(depicted on the right): %
+\begin{enumerate}[label={(\roman{*})}]
+\item $b_i=q_{h(i)}$ for $i\in\range 1 k$, %
+\item $R_i=\setcomp{q_j}{h(i)<j<h(i+1)}$ for $i\in\range{0}{k}$. %
+\end{enumerate}
+%
+\smallskip%
+Intuitively, respecting the order, $k$ elements of~$c$ are retained as
+the base of $v$, while all other elements are collected
+into %an appropriate
+\emph{contexts} as sets in the appropriate positions.
+
+%% -----------------------------------------------------
+%% Projection of a view
+%% -----------------------------------------------------
+%\noindent%
+\begin{wrapfigure}[5]{r}{0.36\textwidth}
+  \vspace{-1em}
+  \hfill%
+  \tikzinput{img/contexts-projection-view}
+  %\caption{View Projection}
+  %\label{figure:projection-view}
+\end{wrapfigure}
+%
+We also define projections of views (depicted on the right).
+% 
+For a view \mbox{$v=R_0b_1R_1\ldots b_nR_n$} and %an injection
+\mbox{$h\in H_n^k$}, we overload the notation from the projection of
+configurations and use $\proj{h}{v}$ to denote the view %
+\mbox{$v'=R'_0b'_1R'_1\ldots b'_kR'_k$}, such that: %
+%(see Figure~\ref{figure:projection-view})%
+\begin{enumerate}[label={(\roman{*})}]
+\item $b'_i=b_{h(i)}$ for $i\in\range 1 k$ and 
+\item $R'_i=\setcomp{b_j}{h(i)<j<h(i+1)}\union(\bigcup_{h(i)\leq
+    j<h(i+1)}R_j)$ for all $i\in\range{0}{k}$.
+\end{enumerate}
+
+\smallskip%
+%% -----------------------------------------------------
+%% Entailement on views
+\index{Entailement}%
+%% -----------------------------------------------------
+We define an \emph{entailment relation} on views of the same size. %
+%
+Let $u=R_0b_1R_1,\ldots,b_nR_n$ and $v=R'_0b'_1R'_1,\ldots,b'_nR'_n$
+be views of the same size~$n$. %
+We say that $v$ \emph{entails} $u$ or that $u$ is \emph{weaker}
+than~$v$, denoted $u\entails v$, if $b_1\cdots b_n =b'_1\cdots b_n'$
+and $R_i\subseteq R'_i$ for all $i\in\range{0}{n}$. %
+%
+Views of different sizes are not comparable.
+% 
+For two sets $V$ and~$W$ of views, we write $V\entails W$ if every
+$w\in W$ entails some $v\in V$. Formally, $V\entails W \Leftrightarrow
+\forall w\in W, \exists v\in V, v\entails w$.
+%
+We use $\minsetof V$ to denote the set of views in $V$ that are
+\emph{weakest}, i.e.\ minimal w.r.t.~$\entails$.
+%
+We use $V\minunion W$ to denote the set $\minsetof{V\union W}$.
+
+%% -----------------------------------------------------
+\KW{Abstraction and Concretization}%
+%% -----------------------------------------------------
+We are now ready to define the abstraction and concretization
+functions using context-sensitive views as symbolic encoding.
+%
+Let $k\in\nat$. %
+\index{Abstraction}%
+The \emph{abstraction function}~$\Absof{k}$ maps~$x$, a~view or
+a~configuration, into the set of its projections of size~$k$ or
+smaller:
+%
+$$
+\Absof{k}(x) = \setcomp{\proj{h}{x}}{h\in H_{\sizeof x}^\ell,\ell\leq
+  \min(k,\sizeof x)}
+$$
+% 
+For a set $X$ of views or of configurations, we define $\Absof{k}(X)$
+as the set of its weakest projections %
+$\minsetof{\cup_{x\in X}\Absof{k}(x)}$.
+%
+\index{Concretization}%
+The \emph{concretization} function $\Concof{k}$ maps a~set of views
+$V\subseteq\viewsof k$ into the set of configurations %
+$$\Concof{k}(V) = \setcomp{c\in\confs}{V\entails\Absof{k}(c)}$$
+
+%% -----------------------------------------------------
+\subsection{Verification Procedure and Approximation}
+%% -----------------------------------------------------
+%
+The verification procedure from Algorithm~\ref{algo:view:procedure}
+must be adapted to cope with contexts.
+%
+The procedure will still take advantage of extensions, but the latter
+are no longer configurations of smaller size. They are now equipped
+with a context, and the concrete post from
+Section~\ref{section:view:abstraction} cannot directly be used on
+them. Moreover, since $\Concof{k}(V)$ is in general infinite, we need
+to compute the abstract post-image symbolically.
+\index{Symbolic Representations}%
+
+Although it is possible to compute the abstract transformer precisely
+(see Paper~\ref{paper:SAS14}), we introduce an over-approximation for
+efficiency reasons and show that the resulting procedure is sound and
+complete.
+
+%% -----------------------------------------------------
+\subsubsection{Symbolic Post Operator}
+\label{section:view:contexts:symbolic:post:operator}
+\index{Post-image operator}%
+%% -----------------------------------------------------
+To define the symbolic post operator, we first define a~transition
+relation on views.
+%
+For a view~$v=(\base,\ctx)$, $i\leq\sizeof\base$, and a~transition
+$\delta\in\Delta$, we define the symbolic immediate successor of $v$
+under a $\delta$-move of the $i^{th}$~process from $\base$, denoted
+$\sdelta(v,i)$.
+%
+Informally, the moving process checks the other processes from the
+base. In addition, if $\delta$ is a~universal transition, the moving
+process checks as well the processes in the contexts.
+%, to determine if it can move.
+%
+If the transition is enabled, the moving process from $\base$ changes
+its state according to the $\delta$-transition, otherwise it is
+blocked.
+%
+The contexts do not change.
+%
+% Applying a symbolic move is similar to first ``materializing'' the
+% processes in the context $\ctx$ into a~configuration~$c$, performing
+% the $\delta$-transition on $c$ (which necessarily contains $\base$)
+% and projecting back the materialized processes return into their
+% respective context.
+%
+In fact, we can here observe the role played by a context: it retains
+enough information in a~view to \emph{disable} (or \emph{block})
+universal transitions, which would have been otherwise enabled without
+the presence of contexts. %
+%
+This reduces the risk of running a~too~coarse over-approximation.
+
+% -----------------------------
+Formally, for a view~$v=R_0b_1R_1{\ldots}b_nR_n$ and $i\leq n$, we
+have that $\sdelta(v,i) = R_0b_1'R_1{\ldots}b_n'R_n$ %
+iff %
+\mbox{$b_i = \src$}, $b_i' = \dst$, $b_j=b_j'$ for all $j:j\neq i$ and
+either
+\begin{enumerate}[label={(\roman{*})}]
+\item $\delta$~is a local rule $\src\trans\dst$, or   
+\item $\delta$~is a global rule of the form
+  $\quantrule\src{\dst}{\quantify}{\sim}{S}$, and one of the following
+  two conditions is satisfied:
+  % 
+  \begin{enumerate}[label={(\alph{*})}]
+  \item %
+    $\quantify=\forall$ and it holds both that $b_j\in\witnesses$ for
+    all $j\in\range{1}{n}$ such that $j\sim i$ and that
+    $R_j\subseteq\witnesses$ for all $j\in\range{0}{n}$ such that
+    $j\sim i$, or
+  \item %
+    $\quantify=\exists$ and there exists $j\in\range{1}{n}$ such that
+    $j\sim i$ and $b_j\in\witnesses$.
+  \end{enumerate}
+\end{enumerate}
+%
+Note that we do not need to check the contexts in the latter
+case. Indeed, this is supported by the fact that the views work
+collectively. If there is a view where a process appears in a context,
+then there is always another view where it appears in the base, while
+the others are in a context.
+%
+% This is a nice place to recall the strength of the abstraction, and
+% say that the set $\concretizeoflim{k}{k+1}{V}$ is
+% super-precise. Moreover, if a context contains some crap process, it
+% does not necessarily create a problem.
+%
+%% -------------------------
+Finally, for a~set of views~$V$, we define $\spost(V) =
+\setcomp{\sdelta(v,i)}{ v \in V, i \leq \sizeof{v}, \delta\in\rules}$.
+%
+
+%% -------------------------
+We now explain how we define the \emph{symbolic post} operating on
+views.
+%
+It is based on the observation that a process needs \emph{at most one}
+other process as a witness in order to perform its transition %
+%
+(cf. an existential transition as illustrated in
+Figure~\ref{figure:view:small:preconditions}).
+% ; Other processes do not help
+% to enable local or universal transitions at all).
+%
+A~moving process can appear either (i)~in the base of a~view, or
+(ii)~in a~context.
+%
+\index{View!Extensions}%
+\emph{Extending adequately} the view with one extra process is enough
+to determine whether the moving process, in case~(i), can perform its
+transition.
+%
+However, in case~(ii), since $\spost$ only updates processes of the
+base, a~first extension %with one process
+``materializes'' a moving process into the base and a~second
+extension %by one process
+considers its witness.
+%
+Therefore, it is sufficient to extend the views with two extra
+processes to determine if a~transition is \emph{enabled}, whether the
+moving process belongs to the base or a~context of a~view.
+%
+Formally, for a~set $V$ of views of size~$k$ and for $\ell>k$, we
+define the \emph{extensions} of~$V$ of size~$\ell$ as the set of views
+% $\Concoflim{k}{\ell}(V)=\setcomp{v\in\viewsof{\ell}}{\abstrof{k}(v)\entailedby{}V}$.
+$\Concoflim{k}{\ell}(V)=\Absof{l}(\Concof{k}(V))$.
+%
+Finally, we define the \emph{symbolic post} as %
+$\Absof{k}\circ\spost\circ\Concoflim{k}{k+2}(V)$.
+%
+Similarly to the equation on page~\pageref{view:abstraction:equation},
+we have shown in Paper~\ref{paper:SAS14} that the symbolic post is the
+best abstract transformer, i.e.\ for any~$k$ and set of views $V$ of
+size up to $k$, it holds that %
+$$V \minunion
+\Absof{k}\circ\post\circ\Concof{k}(V) = V \minunion \Absof{k}\circ
+\spost \circ \Concoflim{k}{k+2}(V) $$
+
+%% -----------------------------------------------------
+\subsubsection{Approximation}
+\index{Concretization}%
+%% -----------------------------------------------------
+The computation of the above exact symbolic post comes at some cost,
+mostly due to the computation of $\Concoflim{k}{\ell}(V)$ .
+%
+We therefore introduce an over-approximation and compute the set
+$$\aConcoflim{k}{\ell}(V)=\setcomp{v\in\views}{\Absof{k}(v)\entailedby{}V,\sizeof{v}\leq\ell}$$
+i.e.\ the set of views of size~$\ell$ that can be generated from~$V$,
+without inspecting its concretization first.
+%
+Views in $\aConcoflim{k}{\ell}(V)$ have (at least) the same bases as
+the views in $\Concoflim{k}{\ell}(V)$, but they might have smaller
+contexts (and are therefore weaker). As a~consequence, they might
+enable more (universal) transitions than their counterparts in
+$\Concoflim{k}{\ell}(V)$.
+%
+Consider for example the case where $k=2$, $\ell=3$ and the set of
+views $V = \set{ab, bc, ac[e], ce[f], ae, be, af, bf, cf, ef}$ --- we
+write contexts in brackets, and ignore the empty contexts for brevity.
+%
+The set $\aConcoflim{2}{3}(V)$ contains the view~$abc[e]$ but
+$\Concoflim{k}{\ell}(V)$ contains the view~$abc[e,f]$ because the
+smallest configuration in $\Concof{2}(V)$ that has $abc$ as a subword
+is $abcef$ (this is due to the view $ce[f]$ which enforces the
+presence of~$f$).
+%
+Another example is $V = \{ab,bc,ac[e],a[c]e,[a]ce\}$.
+%
+Here, $\aConcoflim 2 3 (V)$ contains $abc[e]$, however, there is
+no view with the base $abc$ in $\Concoflim{2}{3}(V)$ since there
+is no configuration with the subword $abc$ in $\Concof 2 (V)$.
+
+We show in Paper~\ref{paper:SAS14}, that it is an
+over-approximation, i.e.\ for any $\ell\geq k$ and $V\subseteq\views$,
+it holds that %
+$$\aConcoflim{k}{\ell}(V)\entails \Concoflim{k}{\ell}(V)$$
+
+%% -----------------------------------------------------
+\subsubsection{Sound and Complete algorithm}
+%% -----------------------------------------------------
+%
+We combine the fixpoint computation of the symbolic post with a
+systematic state-space exploration in order to find a %concrete
+bad configuration.
+
+\noindent%
+\begin{wrapfigure}{r}[0pt]{0.62\linewidth}
+  \hfill%
+  \begin{algorithm}[H]
+    \DontPrintSemicolon%
+    \For{$k:=1$ \bf{to} $\infty$\nllabel{implementation:outerloop}}{%
+      \lIf{$\isbad(\Reach_{k})$\nllabel{implementation:exact}}{\Return Unsafe}%\;%
+      $V := \mu X\,.\,\Absof{k}(\Inits) \minunion \Absof{k}\circ\spost\circ\aConcoflim{k}{k+2}(X)$\nllabel{implementation:fixpoint}\;%
+      \lIf{$\neg\isbad(V)$\nllabel{implementation:test}}{\Return Safe}%
+    }
+    \caption{Verification Procedure}
+    \label{algo:view:procedure:contexts}
+  \end{algorithm}
+\end{wrapfigure}
+%
+The algorithm (described succintly in
+Algorithm~\ref{algo:view:procedure:contexts}) proceeds by iteration
+over configurations and views of size up to~$k$, starting from $k=1$
+and increasing~$k$ after each iteration.
+%
+%\newpage%====================================
+Every iteration consists in two computations in parallel:
+\begin{enumerate}[label={(\alph{*})}]
+\item %
+  Using the exact post-image, we compute the set $\Reach_k$ of
+  configurations reachable from the initial configurations, involving
+  only configurations of size~$k$ % up to~$k$
+  (line~\ref{implementation:exact}).
+  %
+  Note that there are only finitely many such configurations and that
+  we consider %, in this chapter,
+  length-preserving transitions,
+  % \footnote{Refer to Paper~\ref{paper:SAS14} for the case of non
+  %   length-preserving transitions.} %
+  so this step terminates and
+\item %
+  the fixpoint computation of the symbolic post over views of size up
+  to~$k$.
+\end{enumerate}
+%
+%
+% Moreover, a reachable bad configuration is reachable by a path via
+% configurations of some maximal size, hence it will be eventually
+% discovered.
+%
+A~reachable bad configuration of some size must be reachable through
+a~sequence of transitions involving configurations of %
+some maximal size, %the same size,
+so it will be eventually discovered.
+%
+In the fixpoint computation of the symbolic post
+(line~\ref{implementation:fixpoint}), it is sound to replace
+$\Concoflim k {k+2}$ with the
+over-approximation~$\aConcoflim{k}{k+2}$.
+
+
+\index{Verification Algorithm!Termination}%
+Finally, the termination criteria on line~\ref{implementation:exact}
+and~\ref{implementation:test} require the use of the
+function~$\isbad$, which returns whether a set of configurations
+contains a~bad configuration or whether a set of views characterizes
+a~bad configuration, depending on the type of its input parameter.
+%
+If its input parameter is a set $X$ of configurations, the
+function~$\isbad$ is implemented by checking whether any configuration
+from~$\minbad$ can be a~subword of some configuration in $X$.
+%
+If its input parameter is a set $V$ of views, the function~$\isbad$ is
+implemented by checking whether an element of~$\minbad$ can appear
+within the base of a~view from $V$.
+%
+We do not inspect any context, because the views work collectively and
+there is always another view in the set which contains this context
+element in its base.
+
+\index{Soundness}%
+The resulting verification algorithm is sound and terminates for
+some~$k$ if and only if there is a reachable bad configuration or if
+there is a~good invariant\index{Invariant} %
+(of a~specific form which expresses more than downward-closed
+properties --- see Paper~\ref{paper:SAS14}).
+%
+\index{Small Model Property}%
+It uses the property of small models, that is, most behaviors are
+captured with small instances of the systems, either in the form of
+configurations and views.
+
+%% ------------------------------------------------------------------
+\subsubsection{Acceleration}
+\index{Entailement}%
+\index{Verification Algorithm!Acceleration}%
+%% ------------------------------------------------------------------
+In a similar manner to the procedure from \ref{section:view:method},
+the fixpoint computation on line~\ref{implementation:fixpoint} can be
+accelerated by leveraging the entailment relation. %
+It is based on the observation that $\Reach_k$ contains configurations
+of size up to~$k$, which can be used as initial input for the fixpoint
+computation (rather than~$\Inits$).
+%
+All views of size~$k$ in $\Absof{k}(\Reach_k)$ have empty contexts
+(i.e.\ they are weakest). %
+They avoid the computations of the symbolic post on any stronger
+views.
+%
+A~similar argument can be used to see that it is not necessary to
+apply $\spost$ on the views in $\aConcoflim{k}{k+2}(X)$ that are
+stronger than the views in $\Absof{k+2}(\Reach_{k+2})$.
+%
+We therefore seed the fixpoint computation with a larger set than
+$\Absof{k}(\Inits)$, namely
+$\Absof{k}(\Reach_k\union\Reach_{k+1}\union\Reach_{k+2})$, and cache
+the set of views $\Absof{k+2}(\Reach_{k+2})$.

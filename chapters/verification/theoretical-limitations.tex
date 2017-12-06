@@ -1,0 +1,90 @@
+%%% ====================================================================
+%\section[Theoretical Limitations \ldots\ \emph{not}!]{Theoretical Limitations}
+%\KW{Decidability}%
+%\KW{Theoretical limitations}%
+%\index{Theoretical limitations}%
+%%% ====================================================================
+%It is important to understand the type of programs that the methods
+%can handle and with which limitations.
+%%
+%\index{Theoretical limitations!Decidability}%
+%A problem is %said
+%\emph{decidable} if there exists an algorithm to solve \emph{every}
+%instance of the problem.
+%% Otherwise, it is \emph{undecidable},
+%% which is also the case when some instances can be solved but not all.
+%%
+%% Even though undecidable problems are hard ones to solve, some
+%% instances can potentially still be solved.
+%\index{Theoretical limitations!Intractability}%
+%Decidable problems can still be \emph{intractable}, that is, even if a
+%solution exists, it is difficult to compute because it requires too
+%much time or space resources.
+%%
+%On the contrary, in the case of undecidable problems, it is sometimes
+%possible to design algorithms that can work well in practice for
+%\emph{some} instances but do not guarantee to compute a solution for
+%all input combinations or even terminate in general.
+%%
+%Research challenges regarding the theoretical limitations of
+%algorithms consist of identifying %
+%(i) undecidable problems and %
+%(ii) classes of systems and specifications for which the verification
+%problem is decidable and designing efficient algorithms for these.
+%%
+%
+%% The verification problem is known to be undecidable in general, but
+%% decidable for the subclass of parameterized systems which are well
+%% quasi-ordered
+%% (WQO)~\cite{Parosh:Bengt:Karlis:Tsay:general,abdulla:well}.
+%The problem of parameterized verification is well-known to be
+%undecidable in general~\cite{Parosh:Bengt:Karlis:Tsay:general} %
+%but for some subclass of systems (see
+%Chapters~\ref{chapter:monotonic:abstraction}
+%to~\ref{chapter:shape:analysis}), the verification problem becomes
+%decidable, yet complex, and we present efficient algorithms to solve
+%it.
+%% chapter~\ref{chapter:monotonic:abstraction},
+%% \ref{chapter:view:abstraction} and~\ref{chapter:shape:analysis}.
+%%
+%
+%We would like to pinpoint that this thesis is \emph{not} about
+%theoretical results on decidability of some class of programs.
+%%
+%Rather than providing computational bounds on the time and/or amount
+%of space in memory the verification algorithms require or comparing
+%which algorithm is best, the thesis focuses %instead
+%%on whether the algorithms are practical. %
+%on finding the suitable abstractions that make the algorithms
+%\emph{practical}, i.e.\ terminate in a reasonable amount of time.
+%% In other words, do they compute the answers in a reasonable amount of
+%% time?
+%We shall not bother much about the amount of space they require,
+%because we can assume that %, as long as it stays within reason,
+%it is always possible to extend the capacity of the machine and re-run
+%the methods. %
+%
+%In the coming chapters, we will describe the different techniques to
+%make the algorithms usable in practice. This was the challenge and we
+%present the results in this thesis.
+%%
+%\begin{statement}
+%  \it%
+%  This focus of this thesis is on designing efficient algorithms\\%
+%  for the intractable problem of parameterized verification\\%
+%  for a specific class of programs.
+%\end{statement}
+%
+%% There are numerous methods targeting primarily WQO systems and proven
+%% to be complete for them. %
+%% Universally quantified transitions are not monotonic, and systems with
+%% such transitions are not WQO. %
+%% Some of these methods are however still sound for such systems, and
+%% were successfully used to verify many of them, mostly because these
+%% systems have an inductive and upward-closed invariant which is strong
+%% enough to imply safety. %
+%% The WQO specialized methods are bound to fail, if they cannot derive
+%% such upward-closed invariants.
+%% %
+%% Refer to Section~\ref{section:related_work} for more details on
+%% related works.

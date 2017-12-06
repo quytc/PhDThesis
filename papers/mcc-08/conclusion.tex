@@ -1,0 +1,23 @@
+%% -----------------------------------------
+\Section{Conclusion}
+\label{section:conclusion}
+
+We have presented a method to model-check race-freeness of programs
+written in a subset of the C language, using POSIX threads. We model
+the behaviour of the system as Petri nets and take advantage of upward
+closure to efficiently represent infinite sets of
+configurations. Race-freeness is a safety property and we check it
+using a symbolic backward reachability analysis. It is based on a
+simple algorithmic principle and is fully automatic and sound. It is
+moreover guaranteed to terminate for the class of properties we
+consider.
+%
+
+We plan to extend the model to obtain a closer relationship to
+pthreaded programs. For instance, we will include waiting for
+termination of a specific thread and broadcasting of a wake up
+signal. We also would like to measure the usefulness of the method by
+examining the amount of false positives and the limitations with
+respect to the program size. Finally, we would like to report more
+precise program traces involving race conditions.
+%

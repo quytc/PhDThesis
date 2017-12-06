@@ -1,0 +1,49 @@
+\title{Parameterized Tree Systems}
+
+
+\author{Parosh Aziz Abdulla\inst{1}
+\texttt{parosh@it.uu.se}
+\and \\
+Noomene Ben Henda\inst{1}
+\texttt{Noomene.BenHenda@it.uu.se}
+\and \\
+Giorgio Delzanno\inst{2}
+\texttt{giorgio@disi.unige.it}
+\and \\
+Fr\'ed\'eric Haziza\inst{1}
+\texttt{frederic.haziza@it.uu.se}
+\and \\
+Ahmed Rezine\inst{1}
+\texttt{Rezine.Ahmed@it.uu.se}
+}
+
+\institute{Uppsala University, Sweden \and Universit\`a di Genova, Italy.}
+
+\maketitle
+
+\begin{abstract}
+%
+Several recent works have considered \emph{parameterized verification},
+i.e.\ automatic verification of systems consisting of an arbitrary
+number of finite-state processes organized in a \emph{linear array}.
+%
+The aim of this paper is to extend these works by giving a simple and
+efficient method to prove safety properties for systems with
+\emph{tree-like} architectures.
+%
+A process in the system is a finite-state automaton and a transition
+is performed jointly by a process and its parent and children
+processes.
+%
+The method derives an over-approximation of the induced transition
+system, which allows the use of finite trees as symbolic
+representations of infinite sets of configurations.
+%
+Compared to traditional methods for parameterized verification of
+systems with tree topologies, our method does not require the
+manipulation of tree transducers, hence its simplicity and efficiency.
+%
+We have implemented a prototype which works well on several nontrivial
+tree-based protocols.
+
+\end{abstract}

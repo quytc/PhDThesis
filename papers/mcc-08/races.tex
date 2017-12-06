@@ -1,0 +1,89 @@
+%% ----------------------------------------------
+\Section{Race-Freeness}
+\label{section:races}
+
+\SubSection{Bad states and ordering} 
+
+\noindent%
+\begin{minipage}{0.6\linewidth}
+  A data race occurs when multiple threads access a shared variable
+  and at least one has the intention of changing it, without any
+  synchronization constraints (i.e. event ordering). Consequently,
+  given a variable $v$, we notice that a bad state (i.e.\ a race on
+  $v$) is one configuration that contains at least two tokens in
+  either $\LD{v}$ or $\ST{v}$ with one of them in the $\ST{v}$ place.
+\end{minipage}
+\begin{minipage}{0.39\linewidth}
+  \hfill%
+  \begin{tikzpicture}
+    [scale=0.9,show background rectangle,every place/.append style={scale=0.9}]
+
+    \begin{scope}
+      \node[place,shared,label=above:$\LD{v}$,tokens=1] (Rx) at (0,0) {};
+      \node[place,shared,label=above:$\ST{v}$,tokens=1] (Wx) at (1.5,0) {};
+      \begin{pgfonlayer}{my background}
+        \node[dottedrectangle,fit=(Rx) (Wx)](r){};
+      \end{pgfonlayer}
+    \end{scope}
+
+    \begin{scope}[shift={(0,-2)}]
+      \node[place,shared,label=below:$\LD{v}$] (Rx2) at (0,0) {};
+      \node[place,shared,label=below:$\ST{v}$,tokens=2] (Wx2) at (1.5,0) {};
+      \begin{pgfonlayer}{my background}
+        \node[dottedrectangle,fit=(Rx2) (Wx2)](r2){};
+      \end{pgfonlayer}
+    \end{scope}
+
+     % the horizontal line
+    \node (b) at (barycentric cs:Rx=1,Wx=1,Rx2=1,Wx2=1) {and};
+    \draw (b) -- +(-1,0) (b) -- +(1,0);
+
+  \end{tikzpicture}
+\end{minipage}
+
+We therefore introduce the following (partial) pre-order $\preceq$ on
+configurations.  For two configurations $\conf$ and $\conf'$, we say
+that $\conf\preceq\conf'$ if all the places in $\conf'$ contain more
+tokens than the respective places in $\conf$. That is, we can obtain
+$\conf$ by removing tokens from $\conf'$.
+
+For a configuration $\conf$, we use $\uc{\conf}$ to denote the
+\emph{upward closure} of $\conf$, i.e.\
+$\uc{\conf}=\setcomp{\conf'}{\conf\preceq\conf'}$.
+%
+For a set $\confs$ of configurations, we define $\uc{\confs}$ as
+$\bigcup_{\conf\in\confs}\uc{\conf}$.
+
+Upward closed sets are attractive to use because they can be
+characterized by their minimal elements, which often makes it possible
+to have efficient symbolic representations of infinite sets of
+configurations.
+
+
+\SubSection{Safety property}
+
+A set $\confs$ of configurations is said to be \emph{reachable} if
+$\initconfs\movesto{*}\confs$.
+%
+Checking the safety property amounts to performing reachability
+analysis: is it possible to reach a bad configuration from an initial
+configuration through a sequence of actions performed by different
+threads?
+%
+It can be shown using standard
+techniques~\cite{VW:modelchecking,GoWo:safety}, that checking safety
+properties can be translated into instances of the following coverability
+problem.
+
+\probbox{Coverability}
+{%
+  \item A set of initial configurations $\initconfs$.
+  \item An upward closed set of bad configurations $\finalconfs$.
+}{%
+Is $\uc{\finalconfs}$ reachable? (i.e.\ $\initconfs\movesto{*}\uc{\finalconfs}$ ?)
+}
+
+The main idea is to perform symbolic backward reachability analysis,
+using upward closed sets, to check for race-freeness for concurrent
+programs written in the SML language. A negative answer guarantees the
+absence of races in the program.

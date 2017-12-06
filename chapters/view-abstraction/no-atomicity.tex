@@ -1,0 +1,299 @@
+%% ====================================================================
+\section[No Atomicity]{Dropping the Atomicity Assumption}
+\label{section:view:non:atomic}
+%% ====================================================================
+
+\index{Global Conditions!non-atomic}%
+We present an extension of our method to handle parameterized systems
+where global conditions are \emph{not} checked atomically.
+%
+It is necessary for the model to keep track of intermediate
+configurations when a~non-atomic global condition is evaluated at the
+same time as another transition, potentially also guarded by a~global
+condition.
+%
+We use the model presented in
+Section~\ref{section:paramsys:non:atomic}: %
+both existentially and universally guarded transitions are replaced
+with a~variant of a~for-loop rule of the form:
+%
+\hfill%
+$\forrule \sim \witnesses \src {\dst} e$
+
+\noindent%
+where $e\in Q$ is the \emph{escape} state.
+%
+We recall that, for a configuration with linear topology, in that
+model, a~process inspects the states of the other processes
+\emph{in-order}.
+%
+Therefore, it is sufficient to only keep track of the last position
+that each process has inspected (using the total map
+$\tick:\range{1}{n}\rightarrow\range{0}{n}$, initially assigned the
+value~$0$). It follows that, for every process $i$, lower positions
+than~$\tick(i)$ (in the available range $\sim$) are then also
+inspected, while higher positions are not yet inspected.%
+\footnote{%
+  In the case processes do not loop in-order, $\tick$~is replaced with
+  a~binary relation $R\subseteq\range{1}{n}\times\range{1}{n}$ on
+  positions, initially empty. When process $i$ inspects process $j$,
+  the pair $(i,j)$ is added to the relation. We say that $i$
+  \emph{ticks} $j$. This can be implemented with a~matrix of size
+  $n{\times}n$ of boolean values and allows us to cover the case where
+  processes inspect each other in a~random order.
+  % 
+  % However, for simplicity in this section, we present the case where
+  % processes are inspected in-order.%
+}%
+% Furthermore, we present at once the non-atomic extension in the case
+% of context-sensitive views.
+
+% ----------------------------------
+%\subsubsection{Abstract Domain in the Non-Atomic Setting}
+%\subsubsection{Abstract Domain}
+%
+\index{Abstraction}%
+In order to instantiate an abstract domain, we need to handle the fact
+that a context is a set and does not reflect which processes have been
+inspected by another given process.
+%
+\index{Context-sensitive view}%
+We extend the (context-sensitive) views
+% from Section~\ref{section:view:contexts:abstract:domain}.
+with some extra information.
+%
+% They will be analogies of the original ones, customized to the new
+% notion of configuration and successor function.
+%
+A view is now of the form %
+$(R_0q_1R_1\ldots q_nR_{n},\tick,\unticked)$, %
+where $(q_1\cdots q_n,\tick)$ is a configuration called the
+\emph{base}, and $(R_0,\cdots,R_n,\unticked)$ is a \emph{context},
+such that $R_0,\ldots,R_{n}\subseteq Q$ and $\unticked:\range 1
+n\rightarrow 2^\locs$ is a total map which assigns a subset of
+$\locs$ %$R_{\tick(i)}$ % a subset of $\importantof i \cap R_{\tick(i)}$
+to every $i\in\range{1}{n}$.
+%
+Intuitively, the role of $\unticked(i)$ is to keep track of the
+processes that process~$i$ has not yet inspected in case they get
+mixed up in a context with other already inspected processes.
+%
+This will be the case, as depicted in
+Figure~\ref{figure:projection-na}, for one context only, say $R_\ell$
+(in fact, $R_\ell$ is the context where $\tick(i)$ is projected~to). %
+It is obvious that contexts of higher (resp.\ lower) indices than
+$\ell$ contain processes that are not (resp.\ are) inspected by
+process~$i$.
+% Intuitivelly, $\loc \in \unticked(i)$ marks the presence of a~process
+% in state $\loc$ in the context $R_{\tick(i)}$ that the
+% $i^{th}$~process has not yet ticked.
+
+\begingroup
+%\setlength{\intextsep}{\dazintextsep}
+\setlength{\intextsep}{\the\bigskipamount}
+\begin{figure}[ht]
+  \begin{minipage}{0.55\linewidth}
+    \noindent\tikzinput[\linewidth]{img/na-projection}
+  \end{minipage}%
+  \begin{minipage}{0.45\linewidth}
+    \caption{Projection with non-atomicity. The blue states have been
+      inspected by process~$i$, the green states have not. The
+      abstraction needs to distinguish for that context which states
+      have been inspected from those that have not.}
+  \label{figure:projection-na}
+  \end{minipage}
+\end{figure}
+\endgroup
+
+%% -------------------------------------------------
+In order to use Algorithm~\ref{algo:view:procedure:contexts} with the
+new abstract domain (i.e.\ abstraction and concretization), we need in
+fact only to adjust the notion of projections, the entailement
+relation and the symbolic post on views.
+%
+The procedure will then run as in the previous section.
+
+%% -------------------------------------------------
+\index{Projection}%
+The projection of a~configuration into a~view is defined in a similar
+manner as in
+Section~\ref{section:view:method}. % provided that the right-most ticked
+% position and the set of not-yet ticked states are now properly
+% updated.
+%
+For $h\in H_n^k, k\leq n$, and a~configuration
+$c=(q_1{\cdots}q_n,\tick)$, $\proj h c = (\proj h
+{q_1{\cdots}q_n},\tick',\unticked')$ where $\tick'$ and $\unticked'$
+are defined as follows. %
+For all $i\in \range{1}{k}$, there exists $\ell$ such that
+$h(\ell)\leq \tick(i) < h(\ell+1)$. Then, $\tick'(i) = \ell$ and
+$\unticked'(i) = \setcomp{q_j}{\tick(i) < j < h(\ell+1)}$.
+%
+% Informally, the sets of ticked and unticked processes in the contexts
+% are updated accordingly as in Fig.~\ref{figure:projection}.
+%
+The projection of views is defined analogously.
+%
+Note that this definition also implies that the concretization of a
+set of views is precise enough and reconstructs configurations with
+in-order ticks.
+
+% ----------------------------------
+\index{Entailement}%
+The entailment relation between the views $v = (R_0q_1R_1\ldots
+q_nR_{n},\tick,\unticked)$ and $v' = (R_0'q_1'R_1'\ldots
+q_n'R_{n}',\tick',\unticked')$ (of the same size) is defined such that
+$v\entails v'$ iff
+\begin{enumerate}[label={(\roman{*})}]
+\item both have the same base, i.e.\ %
+  $(q_1\cdots q_n,\tick) = (q_1'\cdots q_n',\tick')$,
+\item $R_i\subseteq R_i'$ for all $i\in\range{0}{n}$, and
+%$R_0\subseteq R_0', \cdots, R_n\subseteq R_n'$
+\item $\unticked(i)\subseteq \unticked'(i)$ for all $i\in\range{1}{n}$.
+%$\unticked(1)\subseteq \unticked'(1), \cdots, \unticked(n)\subseteq \unticked'(n)$
+\end{enumerate}
+%
+This intuitivelly reflects that the more unticked states within a
+context the likelier it is for a transition to be blocked, and the
+larger contexts are the likelier they retain non-ticked
+states. %in the future.
+%
+%Both impose more restrictions on configurations.
+
+% Finally, the abstraction and concretization functions are used as-is
+% using the new definition of projection and entailment.
+
+% ----------------------------------
+%\subsubsection{Method}
+Since we do not maintain any order in the contexts, we
+cannot %have no possibilities to
+make a~particular view reflect an intermediate state of an in-order
+for-loop rule. However, recall that views work collectively, so there
+will be another view distinguishing that intermediate state.
+%
+Therefore, the symbolic post $\spost$ is adapted from the previous
+post operators, with the particularity that it ``ticks'' each context
+at~once as a~block and handles the extra $\unticked$ information
+adequately.
+%
+% The only component to adapt in the function $\spost$, which handles
+% views similarly as in
+% Section~\ref{section:view:contexts:symbolic:post:operator}.
+% %
+% In fact, the symbolic post is close to the concrete post operator
+% defined in Section~\ref{section:paramsys:non:atomic}, with the
+% particularity that it ``ticks'' each context at~once as a~block.
+Intuitively, process $i$ inspects its ``next'' context by ``ticking''
+the elements of~$\unticked(i)$ unless it has to escape.
+%
+If it then cannot %does not need to
+escape, it moves on to the following position and marks the following
+context as unticked (the new value of~$\unticked(i)$).
+%
+Notice that the inspected context might contain process states that
+would make the transition escape (but not~$\unticked(i)$). It means
+that those processes potentially changed state \emph{after} they got
+ticked.
+%
+Finally, process~$i$ terminates if there is no more context or base
+element to inspect.
+
+Formally, we fix a~view $v=(R_0b_1R_1{\ldots}b_nR_n,\tick,\unticked)$
+of size~$n$, a~position~$i\in\range{1}{n}$ and a~global transition
+$\delta = \forrule{\sim}{\witnesses}{\src}{\dst}{e}$ from $\rules$ %
+(since the case of a~local transition is trivial).
+%
+As before, we distinguish three types of symbolic $\sdelta$-move
+on~$v$ by the process in the base at position~$i$ %
+(See Figure~\ref{figure:view:non:atomic:ticking}):
+%
+(a)~$\sdelta_i(v,i)$ for a~loop iteration, %
+(b)~$\sdelta_e(v,i)$ for escaping and %
+(c)~$\sdelta_t(v,i)$ for termination.
+% 
+Each type of move is defined only if $b_i = \src$. 
+
+\begingroup
+%\setlength{\intextsep}{\dazintextsep}
+\setlength{\intextsep}{\the\bigskipamount}
+\begin{figure}[!h]
+  \centering
+  \tikzinput[0.32\linewidth]{img/na-ticks-iteration}\hfill%
+  \tikzinput[0.32\linewidth]{img/na-ticks-escape}\hfill%
+  \tikzinput[0.32\linewidth]{img/na-ticks-terminal}
+  \caption{Non-atomic ``ticking'' for the global transition
+    $\forrule{\neq}{\neg\set{1,2}}{3}{7}{4}$. Note that contexts are
+    ticked at once.}
+  \label{figure:view:non:atomic:ticking}
+\end{figure}
+\endgroup
+
+%===========================
+Recall that $\tick(i)$ represents the position that process $i$ has
+last inspected, which is either $0$ at the start or always points to
+an element of the base.
+%
+% We illlustrate the non-atomic ``ticking'' using the global transition
+% $\forrule{\neq}{\neg\set{1,2}}{3}{7}{4}$ (Note that contexts are
+% ticked at once).
+%
+
+% \noindent%
+% {%
+%   \tikzinput[0.32\linewidth]{img/na-ticks-iteration}\hfill%
+%   \tikzinput[0.32\linewidth]{img/na-ticks-escape}\hfill%
+%   \tikzinput[0.32\linewidth]{img/na-ticks-terminal}%
+% }
+%
+\begin{enumerate}[label={(\alph{*})},leftmargin=0pt]
+\item %
+  Carefully looking at the indices in the view, process $i$ now
+  inspects the processes of the \emph{first} context that it has not
+  inspected, i.e.\ the context~$R_{\tick(i)}$.
+  %
+  $\sdelta_i(c,i)$ is defined if both the following two properties are
+  satisfied: %
+  (i) $\unticked(i)\subseteq\witnesses$ and %
+  (ii) $\tick(i)+1\sim i$, $\tick(i)+1 \leq n$ and
+  $b_{\tick(i)+1}\in\witnesses$.
+  %
+  It is then obtained from~$v$ by only
+  updating $\tick(i)$ to~$\tick(i)+1$ and resetting $\unticked(i)$ to
+  $R_{\tick(i)+1}$.
+  %
+  % Intuitively, process~$i$ is only \emph{ticking}
+  % position~$\tick(i)+1$ and the context in between as a~block. Note
+  % that it is possible that $R_{\tick(i)+1}$ contains elements from
+  % $\witnesses$, but if they are not members of $\unticked(i)$, then
+  % they might have been already inspected and do not disable the
+  % transition or causes it to escape.
+\item %
+  $\sdelta_e(c,i)$ is defined if one of the following two properties
+  is satisfied: %
+  (i) $\unticked(i)\not\subseteq\witnesses$ or
+  (ii) $\tick(i)+1\sim i$, $\tick(i)+1 \leq n$ and $b_{\tick(i)+1}\not\in\witnesses$.
+  % 
+  It is obtained from~$v$ by changing the state of the process~$i$
+  to~$e$ and resetting $\tick(i)$ to~$0$ and $\unticked(i)$
+  to~$\emptyset$. Intuitively, process~$i$ has found a~reason to
+  escape.
+\item %
+  $\sdelta_t(c,i)$ is defined if $\tick(i)+1\not\sim i$ or $\tick(i)+1>n$.
+  %
+  It is obtained from~$v$ by changing the state of the process~$i$
+  to~$\dst$ and resetting $\tick(i)$ to~$0$ and $\unticked(i)$
+  to~$\emptyset$. Intuitively, process~$i$ has reached the end of the
+  iteration and terminates its transition (i.e.\ moves to its target
+  state).
+\end{enumerate}
+
+%\index{Verification Algorithm}%
+\smallskip%
+This concludes how we adapted
+Algorithm~\ref{algo:view:procedure:contexts} to cope with
+non-atomically checked global conditions in the presence of contexts.
+%
+% See also Paper~\ref{paper:VMCAI13},~\ref{paper:SAS14}
+% and~\ref{paper:STTT15}.
+For further details, refer to
+Paper~\ref{paper:VMCAI13},~\ref{paper:SAS14} and~\ref{paper:STTT15}.

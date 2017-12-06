@@ -1,0 +1,361 @@
+%% ====================================================================
+\section{Method}
+\label{section:view:method}
+%% ====================================================================
+
+Now that we have defined the abstraction function and how to jump
+between sets of configurations and sets of views, we are ready to
+describe the procedure that manipulates views.
+\index{Verification Scheme}%
+%
+The procedure is a forward analysis, composed of two nested loops.
+%
+The inner-loop explores if the initial configurations can reach the
+set~\Bad\ of bad configurations, in the abstract domain using views of
+size up to~$k$.
+%
+\index{Cut-off}%
+The outer-loop determines a~\emph{\mbox{cut-off}} point $K$ such that
+the views $V\subseteq\viewsof{K}$ of size~$K$, computed by the
+inner-loop, satisfy the following properties:
+%
+\begin{enumerate}[label=(\roman*)]
+\item \index{Invariant}%
+  \label{view:abstraction:fixpoint}$V$ is an invariant for all instances, %
+  i.e.\ $\Reach\subseteq\Concof{K}(V)$ and $\apost{K}(V)\subseteq{V}$
+\item \index{Safety}%
+  \label{view:abstraction:safety}$V$ is sufficient to prove safety, %
+  i.e.\ $\Concof{K}(V) \cap \Bad = \emptyset$.
+\end{enumerate}
+%
+%
+% Recall that \Reach\ is the set of the reachable configurations (of any
+% size). %
+
+\noindent%
+\begin{wrapfigure}{r}[0pt]{0.55\linewidth}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
+    \For{$k:=1$ \bf{to} $\infty$\nllabel{scheme:view:outerloop}}{%
+      \lIf{$\Reach_{k}\cap\Bad\neq\emptyset$\nllabel{scheme:view:exact}}{\Return Unsafe}%\;
+      $V := \mu X\,.\,\Absof{k}(\Inits) \cup \apost{k}(X)$\nllabel{scheme:view:fixpoint}\;
+      \lIf{$\Concof{k}(V) \cap \Bad = \emptyset$\nllabel{scheme:view:test}}{\Return Safe}
+    }
+    \caption{Verification Scheme}
+    \label{algo:view:scheme}
+  \end{algorithm}
+\end{wrapfigure}
+%
+Point~\ref{view:abstraction:fixpoint} expresses that we have reached a
+set of views that collectively over-approximates the set~$\Reach$ of
+all reachable configurations, and that we cannot get new views by
+applying the abstract post-image. So the set $V$ is ``stable'' and
+point~\ref{view:abstraction:safety} states that none of the
+configurations represented by~$V$ are bad, so the system is safe.
+%
+% We denote $\Reach_n$ the set of reachable configurations of the
+% system~$S_n$, i.e.\ $\Reach_n = \post^{*}(\Inits_n)$ where $\Inits_n$
+% is the set of initial configurations of size~$n$ and $\post^{*}$ is
+% the repeated application of the (concrete) post-image.%
+% \footnote{We consider here transitions that do not change the size of
+%   a configuration. Paper~\ref{paper:VMCAI13} presents some extensions
+%   to deal with non size-preserving transitions.} %
+%
+
+%% ********************************************************************
+\KW{Nested loops}%
+%% ********************************************************************
+\noindent%
+\begin{wrapfigure}{l}[0pt]{0.65\linewidth}
+  %\centering
+  \tikzinput[\linewidth]{img/view-method}
+  \caption{Algorithm~\ref{algo:view:scheme} as a diagram.}
+  \label{algo:view:diagram}
+  \smallskip
+\end{wrapfigure}
+%
+The outer-loop on line~\ref{scheme:view:outerloop} searches for a
+suitable~$k$.
+%
+The procedure starts by computing (on line~\ref{scheme:view:exact})
+the reachable configurations of size~$k$, concretely (i.e.\ without
+abstraction), denoted $\Reach_k$.
+%
+Formally, $\Reach_k = \post^{*}(\Inits_k)$ where $\Inits_k$
+is the set of initial configurations of size~$k$ and $\post^{*}$ is
+the repeated application of the (concrete) post-image.%
+\footnote{We consider here transitions that do not change the size of
+  a configuration. Paper~\ref{paper:VMCAI13} presents some extensions
+  to deal with non size-preserving transitions.} %
+%
+If a bad configuration is discovered during that step, the system is
+surely not safe, and we can even pinpoint a~counter-example.
+%
+\index{Fixpoint}%
+Otherwise, the procedure continues to the inner-loop, a fixpoint
+computation (line~\ref{scheme:view:fixpoint}) of a set of views that
+at least covers the views of size~$k$ generated from the initial
+configurations.
+%
+The inner-loop consists of computing the recombinations from the
+so-far collected set of views, and detecting if the abstract
+post-image generates new views. In such a case, the procedure loops
+and starts again from the new set of views. If not, the fixpoint is
+reached and no new views will be detected.
+
+Assume that the inner-loop on line~\ref{scheme:view:fixpoint} reaches
+a fixpoint. The set $V$, by construction at the end of the inner-loop,
+contains the views of~$\Inits$ and is stable under the abstract
+post-image, i.e.\ for some $k$, we have both
+$\Absof{k}(\Inits)\subseteq V$ and $\apost{k}(V)\subseteq V$.
+%
+It is not hard to derive that this set covers in fact all the views of
+$\Reach$, that is $\Absof{k}(\Reach)\subseteq V$ and the set $V$
+fulfills point~\ref{view:abstraction:fixpoint}.
+%
+The proof is in paper~\ref{paper:STTT15}.
+
+
+The \mbox{cut-off} condition \index{Cut-off}%
+is tested on line~\ref{scheme:view:test}. %
+There are two outcomes: %
+\begin{enumerate}[label=(\alph*)]
+\item if the test fails, we don't know whether the system is indeed
+  unsafe or whether the abstraction introduced a~spurious
+  behaviour. The procedure increases $k$, hence the precision of the
+  abstraction, and reiterates the outer-loop
+  (line~\ref{scheme:view:outerloop}),
+\item the test succeeds so the computed set $V$ fulfills
+  point~\ref{view:abstraction:safety} %
+  (and point~\ref{view:abstraction:fixpoint} by the fixpoint
+  computation) so the system is then safe. %
+\end{enumerate}
+
+%% ====================================================================
+%\vspace{-\baselineskip} % Cheating
+%\subsection*{Implementation}
+\subsubsection*{Implementation}
+\KW{Heart of the method}%
+\index{Verification Algorithm}%
+%% ====================================================================
+%
+Algorithm~\ref{algo:view:scheme} is only a scheme and computing
+$\apost{k}(V)$ is a~central component of the verification procedure.
+%
+It cannot be computed in a~straightforward manner because the set
+$\Concof{k}(V)$ is in general infinite and therefore hardly
+representable.
+%
+However, we can easily see that applying the abstraction function on
+the post-image of the configurations, which are the (potentially
+infinite) re-constructions~$\Concof{k}(V)$ from some set of views~$V$,
+will mostly return the same views that were already in~$V$, and
+generate a~few new ones. %
+Indeed, for each configuration, only a ``small'' part changes, the
+other parts will be abstracted into the same views.
+%
+This is why it is interesting to enable all transitions on views
+directly, as if they were performed on configurations, effectively
+removing the need to re-construct the full~configurations.
+
+Going in that direction, we must notice that the global condition of
+a~transition can mention some process states that have been abstracted
+away, making the transition disabled.
+%
+\index{View!Extensions}%
+In order to enable those transitions, we try to \emph{extend} the
+views such that they would encompass the missing witness processes,
+necessary to perform the transitions.
+%
+In fact, we show that it is sufficient to consider only the
+configurations in $\Concof{k}(V)$ with size up to~$k+1$ (that is,
+extensions with only \emph{one} extra witness).
+%
+There are finitely many such configurations, and hence their
+post-image can be computed.
+%
+Formally, for $\ell\geq 0$, we define %
+$$
+\Concoflim{k}{\ell}(V)\coloneqq
+\setcomp{c\in\confs}{\Absof{k}(c)\subseteq X,\,\sizeof{c}\leq\ell}
+$$%
+and we have proven that the set of views
+$\Absof{k}(\post(\Concof{k}(V)))\union V$ can be instead computed
+using the following (finite) set: %
+\label{view:abstraction:equation}%
+$$\Absof{k}(\post(\Concof{k}(V)))\,\union\,V\;=\;\Absof{k}(\post(\Concoflim{k}{k+1}(V)))\,\cup\,V$$
+
+Using the previous equation, we can alleviate the problem of
+reconstructing the (potentially infinite) set of configurations
+$\Concof{k}(V)$ in the abstract post computations.
+%
+Instead, it is enough to extend the views $V$ of size $k$ in a
+consistent way, yielding a finite set, and apply the transitions on
+those extended views.
+%
+The union on both side of the equation handles the case where a
+transition is potentially disabled.
+%
+The full proof can be found in paper~\ref{paper:VMCAI13}.
+
+
+
+%% ********************************************************************
+\KW{Small preconditions}%
+\index{Small Preconditions}%
+%% ********************************************************************
+Moreover, it is the case that the transitions have \emph{small
+  preconditions}, that is, the views don't need to be extended by much
+in order for transitions to be enabled.
+%
+Depending on the transition, we can hence get away with a
+configuration that is only a slightly extended version of some view
+(here, extended with one extra \emph{witness} process, see
+Figure~\ref{figure:view:small:preconditions}).
+
+\begingroup%
+\setlength\intextsep{\dazintextsep}
+\begin{figure}[ht]
+  \centering
+  \tikzinput[\linewidth]{img/small-preconditions}
+  \caption{Consider the configuration on the top and a~view~$v$
+    (marked with a~black border). The transition
+    {\protect$\quantrule{s}{t}{\exists}{>}{\set{w}}$} is disabled on
+    the view as-is, but it is enabled in case the view is extended
+    with the state \w[witness]{w} and gives then the view~$v'$.}
+  \label{figure:view:small:preconditions}
+\end{figure}
+\endgroup
+
+%% ********************************************************************
+\KW{Requirements}%
+\index{Verification Algorithm!Requirements}%
+%% ********************************************************************
+To implement an effective procedure, the following steps are required
+(marked with a red wave in diagram~\ref{algo:view:diagram}):
+%
+\begin{strategy}
+\item {\bf Computing the abstraction $\Absof{k}(\Inits)$ of initial
+    configurations.} %
+  This is not a difficult step, since $\Inits$ is usually a~(very
+  simple) regular set, and $\Absof{k}(\Inits)$ is easily computed
+  using a~straightforward automata construction.
+  % 
+  For instance, in the case of Szymanski's protocol from
+  Section~\ref{section:paramsys:example}, all processes are initially
+  in state~\w[i]{0}, hence $\Absof{k}(\Inits)$ contains only the words
+  of size $l\leq k$ consisting of only the letter~$\w{0}$. %
+%
+\item {\bf Computing the abstract post-image.} %
+  We circumvent the potential infinite set $\Concof{k}(V)$ and only
+  consider the abstract post-image of the configurations from the
+  finite set $\Concoflim{k}{k+1}(V)$.
+  %
+  This is the main reason that makes the method so efficient, together
+  with the small precondition property from the transitions.
+%
+\item {\bf Evaluating the test $\Concof{k}(V)\cap\Bad = \emptyset$.} %
+  Since $\Bad$ is usually the upward-closure of a~finite set
+  $\minbad$, the test can be carried out by testing whether there is
+  $b\in\minbad$ such that $\Absof{k}(b)\subseteq V$.
+  %
+  For instance, in the case of Szymanski's protocol from
+  Section~\ref{section:paramsys:example} (for $k=2$), all the bad
+  configurations follow the same patterns: %
+  {\badpattern{9}{9}}, %
+  {\badpattern{9}{10}}, %
+  {\badpattern{10}{9}} or %
+  {\badpattern{10}{10}}. %
+  This means that they must contain the views \w[b]{9,9}, \w[b]{10,9},
+  \w[b]{9,10} or \w[b]{10,10}. We check whether any latter view is
+  included in the set of views from the fixpoint. %
+%
+\item {\bf Exact reachability analysis.}  Line~\ref{scheme:view:exact}
+  requires the computation of $\Reach_k$. %
+  Since $\Reach_k$ is finite, it can be computed with any (fast)
+  procedure for exact exploration of finite-state systems.
+\end{strategy}
+%
+% Since the problem is generally undecidable, existence of $k$ for which
+% the test on line~\ref{scheme:view:test} succeeds for a~safe system
+% cannot be guaranteed and the algorithm may not terminate. However, as
+% discussed in Section~\ref{section:view:completeness}, such a guarantee
+% can be given under the additional requirement of monotonicity of
+% transition relation w.r.t. a well-quasi ordering.
+% %
+% The method terminates otherwise for all our examples discussed in
+% Section~\ref{section:experiments}, many of which are \emph{not} well
+% quasi-ordered.
+
+\begin{wrapfigure}{r}{0.68\linewidth}
+  \hfill%
+  \begin{algorithm}[H]
+    \DontPrintSemicolon%
+    \For{$k:=1$ \bf{to} $\infty$\nllabel{implementation:view:outerloop}}{%
+      \lIf{$\Absof{k}(\Reach_{k})\cap\minbad\neq\emptyset$\nllabel{implementation:view:exact}}{\Return Unsafe}%\;%
+      $V := \mu X\,.\,\Absof{k}(\Reach_{k}) \cup \Absof{k}\circ\post\circ\Concoflim{k}{k+1}(X)$\nllabel{implementation:view:fixpoint}\;%
+      \lIf{$V\cap\minbad=\emptyset$\nllabel{implementation:view:test}}{\Return Safe}%
+    }
+    \caption{Verification Procedure}
+    \label{algo:view:procedure}
+  \end{algorithm}
+\end{wrapfigure}
+%
+%% ********************************************************************
+\KW{Acceleration}%
+\index{Verification Algorithm!Acceleration}%
+%% ********************************************************************
+The implementation presented on the right %in Algorithm~\ref{algo:view:procedure}
+fulfills the above requirements. %
+%
+Notice a simple acceleration in that procedure, based on the
+observation that we can seed the fixpoint computation (on
+line~\ref{implementation:view:fixpoint}) with a larger set than
+$\Absof{k}(\Inits)$, namely $\Absof{k}(\Reach_k)$.
+%
+The effect of this acceleration is that most experiments happen to be
+(almost already) at fixpoint, using $\Absof{k}(\Reach_k)$ as initial
+input.
+%
+This demonstrates the efficiency of the method and that most
+behaviours are captured by small instances of the system.
+%
+The test performed on line~\ref{implementation:view:exact} is carried
+out using the minimal elements \minbad\ of the set \Bad\ of bad
+configurations, such that we still compute $\Reach_k$ but only check
+if $\Absof{k}(\Reach_k)$ contains a bad ``view'' from {\minbad}.
+
+
+
+%% ====================================================================
+%\subsection*{Termination and Completness}
+\subsubsection*{Termination and Completness}
+% \label{section:view:completeness}
+%% ====================================================================
+We have shown so far that the method is in fact sound, i.e.\ when it
+returns that the system is safe, it is indeed the case.
+\index{Soundness}%
+%
+We show in Paper~\ref{paper:VMCAI13} and Paper~\ref{paper:STTT15} that
+the method is also complete for a~large class of systems, namely those
+that are monotonic with respect to a well-quasi ordering (see
+Chapter~\ref{chapter:monotonic:abstraction}).
+% equipped with a~well-quasi ordering and a~monotonic transition
+% relation (i.e.\ WQO systems from
+% Chapter~\ref{chapter:monotonic:abstraction}).
+%
+\index{Completeness}%
+\index{Well-Quasi Ordering (WQO)}%
+Completeness states that if the system is safe, the method will show
+that it is. In our case, if the system is WQO and safe, there exists
+$k$ such that the test on line~\ref{implementation:view:test}
+succeeds. If the system is not safe, there is surely a~$k$ such that
+$\Reach_k$ exhibits the error. Consequently, for WQO systems, the
+method is guaranteed to terminate.
+\index{Verification Algorithm!Termination}%
+
+\begin{comment}
+Graph with downward-closure of R (=all reachable confs).
+In case of Szymanski, no version of downward-closed R will not intersect with Bad.
+Must be expressed in other ways (it is not downward-closed and hence: contexts)
+\end{comment}

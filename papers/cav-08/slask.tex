@@ -1,0 +1,1456 @@
+\newcommand{\tuple}[1]{\left(#1\right)}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setcomp}[2]{\left\{#1|\,#2\right\}}
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\vars}{X}
+\newcommand{\xvars}{X}
+\newcommand{\yvars}{Y}
+\newcommand{\varsof}[1]{{\it Var}\!\left(#1\right)}
+\newcommand{\var}{x}
+\newcommand{\xvar}{x}
+\newcommand{\yvar}{y}
+\newcommand{\pointer}{{\it pointer}\;}
+\newcommand{\assigned}{:=}
+\newcommand{\equals}{=}
+\newcommand{\nequals}{\neq}
+\newcommand{\nil}{{\it null}}
+\newcommand{\nxt}[1]{#1.{\it next}}
+\newcommand{\tree}{T}
+\newcommand{\str}{S}
+\newcommand{\labeling}{\lambda}
+\newcommand{\node}{s}
+\newcommand{\nodeof}[1]{{\it node}\!\left(#1\right)}
+\newcommand{\clstr}{r}
+\newcommand{\conf}{c}
+\newcommand{\emptystring}{\varepsilon}
+
+
+
+\newcommand{\gap}{\alpha}
+\newcommand{\btree}[2]{#1\!\left[#2\right]}
+
+
+
+The set of trees is defined inductively as follows
+\begin{itemize}
+\item
+A set $\yvars\subseteq\xvars$ is a tree.
+\item
+If $\yvars\subseteq\vars$, $\gap_1,\ldots,\gap_n\in\nat$,
+and $\tree_1,\ldots,\tree_n$ are trees then
+$\btree{\yvars}{\gap_1\tree_1\gap_2\tree_2\cdots\gap_n\tree_n}$ is a tree.
+\end{itemize}
+We define $\varsof{\tree}$ as follows:
+\begin{itemize}
+\item
+If $\tree=\yvars$ then $\varsof{\tree}=\yvars$.
+\item
+If
+$\tree=\varsof{\btree{\yvars}{\gap_1\tree_1\gap_2\tree_2\cdots\gap_n\tree_n}}$
+then $\varsof{\tree}=\yvars\cup\varsof{\tree_1}\cup\cdots\cup\varsof{\tree_n}$.
+\end{itemize}
+We say that $\tree$ is {\it well-formed}
+
+
+
+
+%
+A {\it tree} $\tree$ is a pair $\tuple{\str,\labeling}$, where 
+ $\str\subseteq\nat^*$, called {\it tree structure}, is a finite  prefix-closed set of words
+over $\nat^*$;
+and $\labeling$ is s mapping from $\str$ to $2^\vars$.
+%
+Each word $\node\in\str$ is called a {\it node}.
+%
+Furthermore, the following conditions are satisfied:
+\begin{itemize}
+\item
+$\labeling(\node_1)\cap\labeling(\node_2)=\emptyset$
+if $\node_1\neq\node_2$.
+%
+In other words, a variable appears at most once in a tree.
+\item
+$\nil\in\labeling(\node)$ only if $node=\emptystring$.
+%
+That is, nodes labled with $\nil$ do not have any successors.
+\end{itemize}
+%
+For a tree $\tree=\tuple{\str,\labeling}$, we use $\varsof{\tree}$ to denote the set
+of variables that occur in $\tree$, i.e.,
+$\varsof{\tree}=\bigcup_{\node\in\str}\labeling(\node)$.
+%
+For a variable $\var\in\vars$, we write
+$\nodeof{\tree,\var}$ to denote the node $\node\in\str$ such that
+$\var\in\labeling(\node)$.
+%
+If such an $\node$ does not exist then the value of $\nodeof{\node}$ is undefined.
+%
+Notice that $\node$ is unique in case it exists.
+
+
+A {\it cluster} $\clstr$ is wither a tree or it is
+a sequence $\tree_1\cdots\tree_n$ of trees such that
+\begin{itemize}
+\item
+$\varsof{\tree_i}\cap\varsof{\tree_j}=\emptyset$
+ for all $i,j:1\leq i\neq j\leq n$.
+%
+In other words, a variable appears at most once in the whole cluster.
+\item
+$\nil\not\in\varsof{\tree_i}$ for all $i:1\leq i\leq n$.
+% 
+\end{itemize}
+%
+We define $\varsof{\clstr}:=\varsof{tree_1}\cup\cdots\cup\varsof{\tree_n}$.
+%
+
+A {\it configuration} $\conf$ is a finite set $\set{\clstr_1,\ldots,\clstr_n}$ of clusters
+such that $\varsof{\clstr_i}\cap\varsof{\clstr_j}\subseteq\set{\nil}$ 
+for all $i,j:1\leq i\neq j\leq n$.
+%
+
+------
+080122
+
+
+\section{Computing Predecessors}
+
+For a graph $\grph=\tuple{\vertices,\suc,\labeling}$,
+a graph $\grph'=\tuple{\vertices',\suc',\labeling'}$,
+and a transition $\transition$,
+we write $\grph\pmovesto{\transition}\grph'$ to denote that
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\transition$ is of the form $\xvar\equals\yvar$,
+$\labeling(\xvar)=\labeling(\yvar)$, and $\grph'=\grph$.
+\item
+$\transition$ is of the form $\xvar\assigned\yvar$,
+$\labeling(\xvar)=\labeling(\yvar)$, and one the following conditions is satisfied:
+\begin{enumerate}
+\item
+\label{sass1}
+There is a $\vertex\not\in\vertices$ such that
+$\vertices'=\vertices\cup\set{\vertex}$,
+$\suc'=\suc$, and $\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{sass2}
+There is a $\vertex\in\vertices$ such that
+$\vertices'=\vertices$,
+$\suc'=\suc$, and $\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{sass3}
+There are $\vertex\in\vertices$ and $\vertex'\not\in\vertices$ such that
+$\suc(\vertex)\neq\undef$,
+$\vertices'=\vertices\cup\set{\vertex'}$,
+$\suc'=\suc\updateby{\vertex}{\vertex'}\updateby{\vertex'}{\suc(\vertex)}$, and
+$\labeling'=\labeling\updateby{\xvar}{\vertex'}$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\xvar\assigned\nxt\yvar$
+and one the following conditions is satisfied:
+\begin{enumerate}
+\item
+\label{nass1}
+$\suc(\labeling(\yvar))=\labeling(\xvar)$ and
+there is a $\vertex\not\in\vertices$ such that
+$\vertices'=\vertices\cup\set{\vertex}$ 
+$\suc'=\suc$, and $\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{nass2}
+$\suc(\labeling(\yvar))=\labeling(\xvar)$ and
+there is a $\vertex\in\vertices$ such that
+$\vertices'=\vertices$,
+$\suc'=\suc$, and $\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{nass3}
+$\suc(\labeling(\yvar))=\labeling(\xvar)$ and
+there are $\vertex\in\vertices$ and $\vertex'\not\in\vertices$ such that
+$\suc(\vertex)\neq\undef$,
+$\vertices'=\vertices\cup\set{\vertex'}$,
+$\suc'=\suc\updateby{\vertex}{\vertex'}\updateby{\vertex'}{\suc(\vertex)}$, and
+$\labeling'=\labeling\updateby{\xvar}{\vertex'}$.
+\item
+\label{nass4}
+$\suc(\labeling(\yvar))=\undef$ and
+there is a $\vertex\not\in\vertices$ such that
+$\vertices'=\vertices\cup\set{\vertex}$ 
+$\suc'=\suc\updateby{\labeling(\yvar)}{\labeling(\xvar)}$, 
+and $\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{nass5}
+$\suc(\labeling(\yvar))=\undef$ and
+there is a $\vertex\in\vertices$ such that
+$\vertices'=\vertices$,
+$\suc'=\suc\updateby{\labeling(\yvar)}{\labeling(\xvar)}$, and 
+$\labeling'=\labeling\updateby{\xvar}{\vertex}$.
+\item
+\label{nass6}
+$\suc(\labeling(\yvar))=\undef$ and
+there are $\vertex\in\vertices$ and $\vertex'\not\in\vertices$ such that
+$\suc(\vertex)\neq\undef$,
+$\vertices'=\vertices\cup\set{\vertex'}$,
+$\suc'=\suc\updateby{\labeling(\yvar)}{\labeling(\xvar)}\updateby{\vertex}{\vertex'}\updateby{\vertex'}{\suc(\vertex)}$, and
+$\labeling'=\labeling\updateby{\xvar}{\vertex'}$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\xvar\equals\nxt\yvar$,
+$\suc(\labeling(\yvar))=\labeling(\xvar)$ or $\suc(\labeling(\yvar))=\undef$, and
+$\grph'=\grph$.
+\item
+$\transition$ is of the form $\nxt\xvar\assigned\yvar$,
+$\suc(\labeling(\xvar))=\labeling(\yvar)$,
+$\vertices'=\vertices$, $\suc'=\suc\updateby{\xvar}{\undef}$, and
+$\labeling'=\labeling$
+\end{enumerate}
+%
+For configurations $\conf_1=\tuple{\cstate_1,\grph_1}$ and $\conf_2=\tuple{\cstate_2,\grph_2}$ ,
+we write $\conf_1\pmovesto{}\conf_2$ to denote that $\cstate_2=\cstate_1$ and $\grph_1\pmovesto{}\grph_2$.
+%
+For a set $\confs$ of graphs and a graph $\conf$, we define $\rank{\confs}{\conf}$
+to be the smallest $n$ such that there is a sequence
+$\conf_0\pmovesto{}\conf_1\pmovesto{}\cdots\pmovesto{}\conf_n$
+where $\conf_0=\conf$ and there is a $\conf'\in\confs$ such that $\conf'\lt\conf_n$.
+
+
+\noindent
+\begin{minipage}{0.65\textwidth}
+\begin{lemma}
+\label{pre:js:monotonic:lemma}
+For configurations $\conf_1$, $\conf_2$, and $\conf_3$, if
+$\conf_1\pmovesto{}\conf_2$ and $\conf_3\lt\conf_1$ then there
+is a configuration $\conf_4$ such that $\conf_3\pmovesto{}\conf_4$ and
+$\conf_4\lt\conf_2$.
+\end{lemma}
+\end{minipage}
+\hfill%
+\begin{minipage}{0.3\textwidth}
+\begin{tikzpicture}[show background rectangle,>=stealth]
+\draw[blue](0,0) node{$\conf_1$};
+\draw[blue](0.9,0.1) node{$\pmovesto{}$};
+\draw[blue](1.8,0) node{$\conf_2$};
+
+
+\draw[blue] (0,-0.45) node[rotate=90]{$\lt$};
+\draw[red] (1.8,-0.45) node[rotate=90]{$\lt$};
+
+
+\draw[blue](0,-0.9) node{$\conf_3$};
+\draw[red](0.9,-0.8) node{$\pmovesto{}$};
+\draw[red](1.5,-0.88) node{$\exists$};
+\draw[red](1.8,-0.9) node{$\conf_4$};
+\end{tikzpicture}
+\end{minipage}
+
+
+\begin{lemma}
+\label{backwards:implies:forwards:lemma}
+For configurations $\conf_1$ and $\conf_2$, if $\conf_1\pmovesto{}\conf_2$
+then $\conf_2\absmovesto{}\uc{\conf_1}$.
+\end{lemma}
+
+
+
+
+------
+080123
+
+
+\section{Computing Predecessors}
+
+For a graph $\graph=\tuple{\vertices,\suc,\labeling}$,
+a graph $\graph'$,
+and a transition $\transition$,
+we write $\graph\pmovesto{\transition}\graph'$ to denote that
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\transition$ is of the form $\xvar\equals\yvar$ and
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\labeling(\graph)(\xvar)=\labeling(\graph)(\yvar)$, and 
+$\graph'=\graph\removevar\xvar$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$, $\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=\graph\addeqvar{\xvar}\yvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$, $\labeling(\graph)(\yvar)\neq\undef$, and
+$\graph'=\graph\addeqvar{\yvar}\xvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$, $\labeling(\graph)(\yvar)=\undef$, and
+$\graph'\in\left(\graph\addvar\xvar\right)\addeqvar{\xvar}\yvar$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\xvar\assigned\yvar$ and
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\labeling(\graph)(\xvar)=\labeling(\graph)(\yvar)$, and 
+$\graph'=\graph\removevar\xvar$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$, $\labeling(\graph)(\yvar)=\undef$,
+and 
+$\graph'=\left(\graph\addeqvar{\xvar}\yvar\right)\removevar\xvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$ and $\graph'=\graph$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\xvar\nequals\yvar$ and
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\labeling(\graph)(\xvar)\neq\labeling(\graph)(\yvar)$, and 
+$\graph'=\graph$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$, $\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=\graph\addneqvar{\xvar}\yvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$, $\labeling(\graph)(\yvar)\neq\undef$, and
+$\graph'=\graph\addneqvar{\xvar}\yvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$, $\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=\left(\graph\addvar\xvar\right)\addneqvar{\xvar}\yvar$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\xvar\assigned\nxt\yvar$ and
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\yvar))\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\yvar))=\labeling(\graph)(\xvar)$,
+and
+$\graph'=\graph$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$, and
+$\suc(\graph)(\labeling(\graph)(\yvar))=\undef$,
+and
+$\graph'=\graph_1\removevar\xvar$.
+where
+$\graph_1=\graph\addnxteqvar{\xvar}{\yvar}$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\labeling(\graph)(\yvar)=\undef$,
+and there graphs $\graph_1,\graph_2$ such that
+$\graph_1=\graph\addvar\yvar$,
+$\graph_2=\graph_1\addnxteqvar{\xvar}\yvar$, and
+$\graph'=\graph_2\removevar\xvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\yvar))\neq\undef$, and
+$\graph'=\graph$.
+\item
+$\labeling(\graph)(\xvar)=\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\yvar))=\undef$, and
+$\graph'=\graph\addnxtvar\yvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$,
+$\labeling(\graph)(\yvar)=\undef$,
+and 
+$\graph'=\left(\graph\addvar\yvar\right)\addnxtvar\yvar$.
+\end{enumerate}
+\item
+$\transition$ is of the form $\nxt\xvar\assigned\yvar$ and
+one of the following conditions is satisfied:
+\begin{enumerate}
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\xvar))\neq\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\xvar))=\labeling(\graph)(\yvar)$, and
+$\graph'=\gupdate{\graph}{\suc}\updateby{\xvar}{\undef}$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\xvar))\neq\undef$,
+$\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=\gupdate{\graph_1}{\suc}\updateby{\xvar}{\undef}$ where
+$\graph_1=\gupdate{\graph}{\labeling}\updateby{\yvar}{\suc(\graph)(\xvar)}$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\xvar))=\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$, and
+$\graph'=\graph$.
+\item
+$\labeling(\graph)(\xvar)\neq\undef$,
+$\suc(\graph)(\labeling(\graph)(\xvar))=\undef$,
+$\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=\graph\addvar\yvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$,
+$\labeling(\graph)(\yvar)\neq\undef$, and
+$\graph'=\graph\addvar\xvar$.
+\item
+$\labeling(\graph)(\xvar)=\undef$,
+$\labeling(\graph)(\yvar)=\undef$, and
+$\graph'=(\graph\addvar\xvar)\addvar\yvar$.
+\end{enumerate}
+
+\end{enumerate}
+
+
+
+
+For configurations $\conf_1=\tuple{\cstate_1,\graph_1}$ and $\conf_2=\tuple{\cstate_2,\graph_2}$ ,
+we write $\conf_1\pmovesto{}\conf_2$ to denote that $\cstate_2=\cstate_1$ and $\graph_1\pmovesto{}\graph_2$.
+%
+For a set $\confs$ of graphs and a graph $\conf$, we define $\rank{\confs}{\conf}$
+to be the smallest $n$ such that there is a sequence
+$\conf_0\pmovesto{}\conf_1\pmovesto{}\cdots\pmovesto{}\conf_n$
+where $\conf_0=\conf$ and there is a $\conf'\in\confs$ such that $\conf'\lt\conf_n$.
+
+
+\noindent
+\begin{minipage}{0.65\textwidth}
+\begin{lemma}
+\label{pre:js:monotonic:lemma}
+For configurations $\conf_1$, $\conf_2$, and $\conf_3$, if
+$\conf_1\pmovesto{}\conf_2$ and $\conf_3\lt\conf_1$ then there
+is a configuration $\conf_4$ such that $\conf_3\pmovesto{}\conf_4$ and
+$\conf_4\lt\conf_2$.
+\end{lemma}
+\end{minipage}
+\hfill%
+\begin{minipage}{0.3\textwidth}
+\begin{tikzpicture}[show background rectangle,>=stealth]
+\draw[blue](0,0) node{$\conf_1$};
+\draw[blue](0.9,0.1) node{$\pmovesto{}$};
+\draw[blue](1.8,0) node{$\conf_2$};
+
+
+\draw[blue] (0,-0.45) node[rotate=90]{$\lt$};
+\draw[red] (1.8,-0.45) node[rotate=90]{$\lt$};
+
+
+\draw[blue](0,-0.9) node{$\conf_3$};
+\draw[red](0.9,-0.8) node{$\pmovesto{}$};
+\draw[red](1.5,-0.88) node{$\exists$};
+\draw[red](1.8,-0.9) node{$\conf_4$};
+\end{tikzpicture}
+\end{minipage}
+
+
+\begin{lemma}
+\label{backwards:implies:forwards:lemma}
+For configurations $\conf_1$ and $\conf_2$, if $\conf_1\pmovesto{}\conf_2$
+then $\conf_2\absmovesto{}\uc{\conf_1}$.
+\end{lemma}
+
+
+-------
+
+
+\begin{proof}
+If $\grph_1=\grph_3$ then the proof is trivial.
+%
+Assume that $\grph_1\jlt\grph_3$.
+%
+Let $\grph_i=\tuple{\vertices_i,\suc_i,\labeling_i}$ for $i\in\set{1,2,3}$.
+%
+We will show that 
+there
+is a  $\grph_4$ such that $\grph_3\pmovesto{\transition}\grph_4$ and
+$\grph_4\jleq\grph_2$.
+%
+We consider the following cases:
+\begin{itemize}
+\item
+If $\transition$ is of the form $\xvar\assigned\yvar$ and 
+ $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass1}.
+%
+By definition of case~\ref{sass1}, it follows 
+that there is a $\vertex_2\not\in\vertices_1$ such that
+$\vertices_2=\vertices_1\cup\set{\vertex_2}$,
+$\suc_2=\suc_1$, and $\labeling_2=\labeling_1\updateby{\xvar}{\vertex_2}$.
+%
+Define $\grph_4=\tuple{\vertices_4,\suc_4,\labeling_4}$, where
+$\vertices_4=\vertices_3\cup\set{\vertex_2}$,
+$\suc_4=\suc_3$, and $\labeling_4=\labeling_3\updateby{\xvar}{\vertex_2}$.
+%
+By definition of case~\ref{sass1} it follows that
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+We show that $\grph_4\jleq\grph_2$.
+%
+There are three subcases:
+%
+\begin{itemize}
+\item
+If $\grph_3\jlt\grph_1$ due to vertex deletion, then
+there is an isolated where $\vertex_1\in\vertices_1$ such that 
+$\vertices_3=\vertices_1-\set{\vertex_1}$, 
+$\suc_3=\suc_1$, and $\labeling_3=\labeling_1$.
+%
+This means that 
+$\vertices_4=\vertices_2-\set{\vertex_1}$, 
+$\suc_4=\suc_2$, and $\labeling_4=\labeling_2$.
+%
+By the definition of vertex deletion it follows that
+$\grph_4\jlt\grph_2$.
+
+\item
+If $\grph_3\jlt\grph_1$ due to edge deletion, then
+there is a $\vertex_1\in\vertices_1$ such that
+$\vertices_3=\vertices$, $\suc_3=\suc_1\updateby{\vertex_1}{\undef}$,
+and $\labeling_3=\labeling_1$.
+%
+%
+This means that 
+$\vertices_4=\vertices_2$,
+$\suc_4=\suc_2\updateby{\xvar}{\vertex_2}$, 
+and $\labeling_4=\labeling_2$.
+%
+By the definition of edge deletion it follows that
+$\grph_4\jlt\grph_2$.
+
+\item
+If $\grph_3\jlt\grph_1$ due to contraction, then
+there is a simple  $\vertex_1\in\vertices_1$ such that
+$\vertices_3=\vertices_1-\set{\vertex_1}$,
+$\suc_3=\left(\suc_1\restrict{\vertex_1}\right)\updateby{\suc_1^{-1}(\vertex_1)}{\suc_1(\vertex_1)}$.
+%
+This means that 
+$\vertices_4=\vertices_2-\set{\vertex_1}$,
+$\suc_4=\left(\suc_3\restrict{\vertex_1}\right)\updateby{\suc_3^{-1}(\vertex_1)}{\suc_3(\vertex_1)}$.
+and $\labeling_4=\labeling_2$.
+%
+By the definition of contraction it follows that
+$\grph_4\jlt\grph_2$.
+\end{itemize}
+\item
+If $\transition$ is of the form $\xvar\assigned\yvar$ and 
+ $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass2}.
+%
+By definition of case~\ref{sass2}, it follows 
+that there is a $\vertex\in\vertices_1$ such that
+$\vertices_2=\vertices_1$,
+$\suc_2=\suc_1$, and $\labeling_2=\labeling_1\updateby{\xvar}{\vertex}$.
+%
+Define $\grph_4=\tuple{\vertices_4,\suc_4,\labeling_4}$ according to the following
+three subcases:
+%
+\begin{itemize}
+\item
+If $\grph_3\jlt\grph_1$ due to vertex deletion, then
+there is an isolated where $\vertex_1\in\vertices_1$ such that 
+$\vertices_3=\vertices_1-\set{\vertex_1}$, 
+$\suc_3=\suc_1$, and $\labeling_3=\labeling_1$.
+There are wo subcases:
+\begin{itemize}
+\item
+If $\vertex=\vertex_1$.
+%
+Define 
+$\vertices_4=\vertices_3\cup\set{\vertex_1}$,
+$\suc_4=\suc_3$, and $\labeling_4=\labeling_3\updateby{\xvar}{\vertex_1}$.
+%
+By definition of case~\ref{sass1} it follows that
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+We observe that $\vertices_4=\vertices_3\cup\set{\vertex_1}=
+(\vertices_1-\set{\vertex_1})\cup\set{\vertex_1}=
+\vertices_1=\vertices_2$.
+%
+Furthermore,
+$\suc_4=\suc_2$ and
+$\labeling_4=\labeling_3\updateby{\xvar}{\vertex_1}=
+\labeling_1\updateby{\xvar}{\vertex_1}=\labeling_1\updateby{\xvar}{\vertex}=
+\labeling_2$.
+%
+In other words $\grph_4=\grph_2$.
+
+\item
+If $\vertex\neq\vertex_1$.
+%
+Define
+$\vertices_4=\vertices_3$,
+$\suc_4=\suc_3$, and $\labeling_4=\labeling_3\updateby{\xvar}{\vertex}$.
+%
+Since $\vertex\in\vertices_3$ it follows definition of case~\ref{sass2} that
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+We observe that 
+$\vertices_4=\vertices_2-\set{\vertex_1}$, 
+$\suc_4=\suc_2$, and $\labeling_4=\labeling_2$.
+%
+By the definition of edge deletion it follows that
+$\grph_4\jlt\grph_2$.
+\end{itemize}
+\item
+If $\grph_3\jlt\grph_1$ due to edge deletion, then
+there is a $\vertex_1\in\vertices_1$ such that
+$\vertices_3=\vertices_1$, $\suc_3=\suc_1\updateby{\vertex_1}{\undef}$,
+and $\labeling_3=\labeling_1$.
+%
+We define
+$\vertices_4=\vertices_3$,
+$\suc_4=\suc_3$, and $\labeling_4=\labeling_3\updateby{\xvar}{\vertex}$.
+%
+Since $\vertex\in\vertices_3$ it follows definition of case~\ref{sass2} that
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+We observe that
+$\vertices_4=\vertices_2$, $\suc_4=\suc_2\updateby{\vertex_1}{\undef}$,
+and $\labeling_4=\labeling_2$.
+%
+By the definition of edge deletion it follows that
+$\grph_4\jlt\grph_2$.
+\item
+If $\grph_3\jlt\grph_1$ due to contraction, then
+there is a simple  $\vertex_1\in\vertices_1$ such that
+$\vertices_3=\vertices_1-\set{\vertex_1}$,
+$\suc_3=\left(\suc_1\restrict{\vertex_1}\right)\updateby{\suc_1^{-1}(\vertex_1)}{\suc_1(\vertex_1)}$.
+%
+There are two subcases:
+\begin{itemize}
+\item
+If $\vertex=\vertex_1$.
+%
+Define $\vertices_4=\vertices_3\cup\set{\vertex}$,
+$\suc_4=\suc_3\updateby{\suc_1^{-1}(\vertex)}{\vertex}\updateby{\vertex}{\suc_3(\suc_1^{-1}(\vertex))}$,
+and
+$\labeling_4=\labeling_3\updateby{\xvar}{\vertex}$.
+%
+Observe that $\suc_3(\suc_1^{-1}(\vertex))\neq\undef$ 
+(in fact $\suc_3(\suc_1^{-1}(\vertex))=\suc_1(\vertex)$).
+%
+By definition of case~\ref{sass3} it follows that
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+Also, we observe that 
+$\vertices_4=\vertices_3\cup\set{\vertex}
+=
+\vertices_1-\set{\vertex_1}\cup\set{\vertex}
+$.
+%
+It follows that 
+$\vertices_4=\vertices_1=\vertices_2$,
+%
+Fuerthemore,
+\[
+\begin{array}{l}
+\suc_4=\\
+\suc_3\updateby{\suc_1^{-1}(\vertex)}{\vertex}\updateby{\vertex}{\suc_3(\suc_1^{-1}(\vertex))}
+=\\
+\left(\suc_1\restrict{\vertex_1}\right)\updateby{\suc_1^{-1}(\vertex_1)}{\suc_1(\vertex_1)}
+\updateby{\suc_1^{-1}(\vertex)}{\vertex}\updateby{\vertex}{\suc_3(\suc_1^{-1}(\vertex))}
+=\\
+\suc_1=\suc_2
+\end{array}
+\]
+Finally, $\labeling_4=\labeling_3\updateby{\xvar}{\vertex}
+=\labeling_1\updateby{\xvar}{\vertex}=\labeling_2
+$.
+In other words, $\grph_4=\grph_2$.
+\end{itemize}
+\end{itemize}
+\item
+If $\transition$ is of the form $\xvar\assigned\yvar$ and 
+$\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass3}.
+%
+By definition of case~\ref{sass3}, it follows 
+that there are $\vertex_1\in\vertices_1$ and $\vertex_2\not\in\vertices_1$ such that
+$\suc_1(\vertex_1)\neq\undef$,
+$\vertices_2=\vertices_1\cup\set{\vertex_2}$,
+$\suc_2=\suc_1\updateby{\vertex_1}{\vertex_2}\updateby{\vertex_2}{\suc_1(\vertex_1)}$, and
+$\labeling_2=\labeling_1\updateby{\xvar}{\vertex_2}$.
+%
+Define $\grph_4=\tuple{\vertices_4,\suc_4,\labeling_4}$ according to the following
+three subcases:
+%
+\begin{itemize}
+\item
+If $\grph_3\jlt\grph_1$ due to vertex deletion, then
+there is an isolated where $\vertex_3\in\vertices_1$ such that 
+$\vertices_3=\vertices_1-\set{\vertex_3}$, 
+$\suc_3=\suc_1$, and $\labeling_3=\labeling_1$.
+%
+We define 
+$\vertices_4=\vertices_3\cup\set{\vertex_2}$,
+$\suc_4=\suc_3\updateby{\vertex_1}{\vertex_2}\updateby{\vertex_2}{\suc_3(\vertex_1)}$, and
+$\labeling_4=\labeling_3\updateby{\xvar}{\vertex_2}$.
+%
+Since $\vertex_2\not\in\vertices_1$  it follows that $\vertex_2\not\in\vertices_3$; and
+since $\suc_1(\vertex_1)\neq\undef$ it follows that $\vertex_1$ is not isolated in $\grph_1$
+and hence $\vertex_1\neq\vertex_3$.
+%
+Since $\suc_1(\vertex_1)\neq\undef$ 
+it follows that 
+$\suc_3(\vertex_1)\neq\undef$.
+%
+from the definition of case~\ref{sass3}, it follows
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+Since $\vertex_2\not\in\vertices_1$
+it follows that
+$\vertices_4=
+\vertices_3\cup\set{\vertex_2}=
+(\vertices_1-\set{\vertex_3})\cup\set{\vertex_2}=
+(\vertices_1\cup\set{\vertex_2})-\set{\vertex_3}=
+\vertices_2-\set{\vertex_3}
+$.
+Fuerthermore, we observe that
+$\suc_4=
+\suc_3\updateby{\vertex_1}{\vertex_2}\updateby{\vertex_2}{\suc_3(\vertex_1)}=
+\suc_1\updateby{\vertex_1}{\vertex_2}\updateby{\vertex_2}{\suc_1(\vertex_1)}=
+\suc_2$; and
+$\labeling_4=
+\labeling_3\updateby{\xvar}{\vertex_2}=
+\labeling_1\updateby{\xvar}{\vertex_2}=
+\labeling_2$.
+%
+By the definition of vertex deletion it follows that
+$\grph_4\jlt\grph_2$.
+\item
+If $\grph_3\jlt\grph_1$ due to edge deletion, then
+there is a $\vertex_1\in\vertices_1$ such that
+$\vertices_3=\vertices_1$, $\suc_3=\suc_1\updateby{\vertex_3}{\undef}$,
+and $\labeling_3=\labeling_1$.
+%
+%
+There are two subcases:
+\begin{itemize}
+\item
+If $\vertex_1=\vertex_3$.
+%
+Define $\vertices_4=\vertices_3\cup\set{\vertex_2}$,
+$\suc_4=\suc_3$, and
+$\labeling_4=\labeling_3\updateby{\xvar}{\vertex_2}$.
+%
+By case~\ref{sass2} (taking $\vertex$ to be $\vertex_2$)
+it follows that 
+$\grph_3\pmovesto{\transition}\grph_4$.
+%
+Define $\grph_5=\tuple{\vertices_5,\suc_5,\labeling_5}$ where
+$\vertices_5=\vertices_2$, $\suc_5=\suc_2\updateby{\vertex_1}{\undef}$,
+and $\labeling_5=\labeling_2$.
+%
+It follows by edge deletion that $\grph_5\jlt\grph_2$ and that $\grph_4\jlt\grph_5$.
+%
+This means that 
+\end{itemize}
+
+%
+\end{itemize}
+\end{itemize}
+
+\end{proof}
+
+
+
+\subsection*{Lemma~\ref{backwards:implies;forwards:lemma}}
+\begin{proof}
+Suppose that $\grph_1\pmovesto{\transition}\grph_2$ for some transition $\transition$.
+%
+It follows that $\labeling_1(\xvar)=\labeling_1(\yvar)$.
+%
+We show that there is a $\grph_3=\tuple{\vertices_3,\suc_3,\labeling_3}$ such that
+$\grph_1\lt\grph_3$ and $\grph_2\absmovesto{}\grph_3$.
+%
+We consider several subcases depending on the form of $\transition$:
+\begin{itemize}
+\item
+If $\transition$ is of the form $\xvar\assigned\yvar$ then there are three 
+possible subcases:
+\begin{itemize}
+\item
+If $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass1}, then
+there is a $\vertex\not\in\vertices_1$ such that
+$\vertices_2=\vertices_1\cup\set{\vertex}$,
+$\suc_2=\suc_1$, and $\labeling_2=\labeling_1\updateby{\xvar}{\vertex}$.
+%
+Define 
+$\vertices_3=\vertices_2$, $\suc_3=\suc_2$, and
+$\labeling_3=\labeling_2\updateby{\xvar}{\labeling_2(\yvar)}$.
+%
+It follows that $\grph_2\absmovesto{\transition}\grph_3$ and that 
+$\grph_1\jlt\grph_3$ (by vertex deletion).
+\item
+If $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass2}, then
+that there is a $\vertex\in\vertices_1$ such that
+$\vertices_2=\vertices_1$,
+$\suc_2=\suc_1$, and $\labeling_2=\labeling_1\updateby{\xvar}{\vertex}$.
+%
+Define $\grph_3=\grph_2$.
+%
+It follows that $\grph_2\absmovesto{\transition}\grph_3$.
+\item
+If $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{sass3}, then
+there are $\vertex\in\vertices_1$ and $\vertex_1\not\in\vertices_1$ such that
+$\suc_1(\vertex)\neq\undef$,
+$\vertices_2=\vertices_1\cup\set{\vertex_1}$,
+$\suc_2=\suc_1\updateby{\vertex}{\vertex_1}\updateby{\vertex_1}{\suc(\vertex)}$, and
+$\labeling_2=\labeling_1\updateby{\xvar}{\vertex_1}$.
+%
+Define 
+$\vertices_3=\vertices_2$, $\suc_3=\suc_2$, and
+$\labeling_3=\labeling_2\updateby{\xvar}{\labeling_2(\yvar)}$.
+%
+It follows that 
+$\grph_2\absmovesto{\transition}\grph_3$ and that 
+$\grph_1\lt\grph_3$ (by applying edge deletion twice and vertex deletion once).
+\end{itemize}
+\item
+If $\transition$ is of the form $\xvar\assigned\nxt\yvar$,
+then  there are six possible subcases:
+
+
+\begin{itemize}
+\item
+If $\grph_1\pmovesto{\transition}\grph_2$ due to case~\ref{nass4}, then
+$\suc_1(\labeling_1(\yvar))=\undef$ and
+there is a $\vertex\not\in\vertices_1$ such that
+$\vertices_2=\vertices_1\cup\set{\vertex}$ 
+$\suc_2=\suc_1\updateby{\labeling_1(\yvar)}{\labeling_1(\xvar)}$, 
+and $\labeling_2=\labeling_1\updateby{\xvar}{\vertex}$.
+%
+Define $\vertices_3=\vertices_2$,
+$\suc_3=\suc_2$, and
+$\labeling_3=\labeling_2\updateby{\xvar}{\suc_2(\labeling_2(\yvar))}$.
+%
+It follows that $\grph_2\absmovesto{\transition}\grph_3$.
+%
+Furthermore, $\vertices_3=\vertices_2=\vertices_1\cup\set{\vertex}$,
+and $\suc_3=\suc_2=\suc_1\updateby{\labeling_1(\yvar)}{\labeling_1(\xvar)}$.
+%
+Finally
+\[
+\begin{array}{l}
+\labeling_3=
+\\
+\labeling_2\updateby{\xvar}{\suc_2(\labeling_2(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{\vertex}\updateby{\xvar}{\suc_2(\labeling_2(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{\suc_2(\labeling_2(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{\suc_2((\labeling_1\updateby{\xvar}{\vertex})(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{\suc_2(\labeling_1(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{  (\suc_1\updateby{\labeling_1(\yvar)}{\labeling_1(\xvar)}) (\labeling_1(\yvar))}=
+\\
+\labeling_1\updateby{\xvar}{\labeling_1(\xvar)}=
+\\
+\labeling_1
+\end{array}
+\]
+This means that 
+$\grph_1\lt\grph_3$ (by applying edge deletion and vertex deletion).
+
+\end{itemize}
+
+\end{itemize}
+
+
+\end{proof}
+
+-----
+
+
+\newcommand{\pintgrs}{{\mathbb N}^{>0}}
+\newcommand{\encoding}{e}
+\newcommand{\cnt}{\#}
+\newcommand{\sigof}[1]{{\it sig}\left(#1\right)}
+
+
+\section{Encodings and Signatures}
+\label{encoding:section}
+Let $\pintgrs$ denote the set of positive integers.
+%
+A vertex $\vertex$ is said to be a {\it leaf} if $\succ^{-1}(\vertex)=\emptyset$;
+a {\it joint} if  $\sizeof{\succ^{-1}(\vertex)}\geq 2$; and
+a root if $\succ(\vertex)=\undef$.
+%
+A vertex is said to be {\it non-trivial} if it is either a leaf, a joint, or a root.
+%
+A graph is said to be {\it compact} are non-trivial.
+%
+
+An {\it encoding} is a tuple $\encoding=\tuple{\vertices,\succ,\labeling,cnt}$ where
+$\graph\tuple{\vertices,\succ,\labeling}$ is a compact graph, and
+$\cnt:\vertices\times\vertices\rightarrow\pintgrs$ is a partial mapping such that
+$\cnt(\vertex_1,\vertex_2)\neq\undef$ iff $\vertex_2=\succ(\vertex_1)$.
+%
+In other words, $\cnt$ associates a positive integer to each edge in $\graph$.
+%
+We call $\graph$ the {\it signature} of $\encoding$ and denote it by $\sigof{\encoding}$.
+
+
+----
+\section{Termination}
+\label{termination:section}
+In this section, we show termination of the reachability algorithm.
+%
+We do that in several steps.
+%
+First, we recall basic concepts of the theory of well quasi-orderings.
+%
+Then, we identify particular properties of our graphs which are implied by
+the fact each node has at most one successor.
+%
+This will lead to particular encodings of the graph structures
+which can be shown to be well quasi-ordered.
+%
+Finally, we present the termination proof.
+%
+Let $\pintgrs$ denote the set of positive integers.
+
+\paragraph{\bf Well Quasi-Orderings}
+For a set $B$ and a pre-order on $B$, we say that $\preceq$ is 
+a {\it well quasi-ordering (WQO)} on $B$ if the following property is
+satisfied:
+for any infinite sequence $b_0,b_2,b_3,\ldots$ of elements in $A$, there are 
+$i,j$  such that $i<j$ and $b_i\preceq b_j$.
+%
+A simple example of a WQO is the standard ordering on natural numbers.
+%
+We extend the ordering above to a an ordering $\preceq^*$ on
+the set $A^*$ of finite words over $A$ as follows:
+$a_1 a_2\cdots a_m\preceq^* b_1 b_2\cdots b_n$ if there is an injection $h$
+from the set
+from $\set{1,2,\ldots,m}$ to the set $\set{1,2,\ldots,n}$ such that
+$i<j$ implies $h(i)<h(j)$ and $a_i\preceq b_{h(i)}$ for all $i,j:1\leq i,j\leq m$.
+%
+In our proofs, we will use the following property of WQOs (see e.g.\cite{WQO}).
+%
+\begin{lemma}
+\label{WQO:properties:lemma}
+If $\preceq$ is a WQO then $\preceq^*$ is a WQO on $A^*$.
+\end{lemma}
+In other words, WQOs extend to finite words under the mentioned ordering.
+%
+As special cases, WQOs also extend to multisets, vectors of length for a given
+$k\in\pintgrs$, etc.
+%
+
+
+\paragraph{\bf Blocks}
+In this paragraph, we identify some particular patterns in the class of
+graphs we consider in this paper.
+%
+Consider a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+A vertex $\vertex$ is said to be a {\it leaf} if $\succ^{-1}(\vertex)=\emptyset$;
+and a root if $\succ(\vertex)=\undef$.
+%
+A graph is said to be a {\it tree} if it contains exactly one root, and it
+is called\localnote{Better name.} a {\it star} if it contains no root.
+
+%
+A {\it block} $\vertices'$ of $\vertices$ is a maximal subset of $\vertices$
+such that for each pair $\vertex,\vertex'\in\vertices'$ it is the
+case that $\tuple{\vertex,\vertex'}\in(\succ\cup\succ^{-1})^*$.
+%
+In other words, the pair
+$\tuple{\vertex,\vertex'}$ is in the reflexive, symmetric, and transitive closure of
+$\succ$.
+%
+A graph $\graph'=\tuple{\vertices',\succ',\labeling'}$ is said to be a {\it block}
+of $\graph$ if $\vertices'$ is a block of $\vertices$, and 
+$\succ'$ and $\labeling'$ are the restrictions of $\succ$ and $\labeling$ to
+$\vertices'$, respectively.
+%
+In other words, $\succ'(\vertex)=\undef$ if $\vertex\not\in\vertices$
+and $\succ'(\vertex)=\succ(\vertex)$  otherwise.
+%
+Furthermore, if $\labeling(\xvar)=\vertex$ then
+$\labeling'(\xvar)=\undef$ if $\vertex\not\in\vertices'$, and
+$\labeling'(\xvar)=\vertex$ otherwise.
+%
+Since, in our case, each vertex has at most one successor, it follows that 
+each block of $\graph$ is either a tree or a star.
+%
+
+
+%For a graph $\graph$ and a set $\graphs$ of blocks of $\graph$, we write 
+%$\graph\graphsubtract\graphs$ to denote the graph
+%we get from $\graph$ by deleting all the vertices which occur in $\graphs$ from $\graph$,
+%and restricting the successor and labeling functions in $\graph$ accordingly.%
+
+
+\paragraph{\bf Encodings and Signatures}
+
+A graph is said to be {\it compact} if it does not contain simple vertices.
+%
+An {\it encoding} is a tuple $\encoding=\tuple{\vertices,\succ,\labeling,\cnt}$ where
+$\tuple{\vertices,\succ,\labeling}$ is a compact graph, and
+$\cnt:\vertices\times\vertices\rightarrow\pintgrs$ is a partial mapping such that
+$\cnt(\vertex_1,\vertex_2)\neq\undef$ iff $\vertex_2=\succ(\vertex_1)$.
+%
+In other words, $\cnt$ associates a positive integer to each edge in $\graph$.
+%
+We call $\graph$ the {\it signature} of $\encoding$ and denote it by $\sigof{\encoding}$.
+
+Fix a graph $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+For non-simple vertices $\vertex,\vertex'\in\vertices$, we say that
+$\vertex'$ is the {\it target}\localnote{Better name.} of $\vertex$ if there are
+vertices $\vertex_0,\vertex_1,\ldots,\vertex_{n+1}$ such that
+$\vertex_0=\vertex$, $\vertex_{n+1}=\vertex'$, $\vertex_i$ is simple for all $i:1\leq i\leq n$, and
+$\vertex_i=\succ(\vertex_{i-1})$ for all $i:1\leq i\leq n+1$.
+%
+In other words, there is path of simple nodes leading from $\vertex$ to $\vertex'$.
+%
+In such a case we define the {\it distance} between $\vertex$ and $\vertex'$ by
+$\dist(\vertex,\vertex'):=n$.
+%
+Notice that the target $\vertex'$ of vertex $\vertex$ is unique if it exists.
+%
+We define $\encodingof{\graph}$ to be the encoding
+$\tuple{\vertices',\succ',\labeling',\cnt}$, where
+$\vertices'$ is the set of non-simple nodes in $\vertices$,
+$\succ(\vertex)=\vertex'$ if $\vertex'$ is the target of $\vertex$ in $\graph$,
+$\labeling'=\labeling$, and
+$\cnt(\vertex,\vertex')=\dist(\vertex,\vertex')$.
+%
+We define $\sigof{\graph}:=\sigof{\encodingof{\graph}}$.
+
+
+A vertex is said to be {\it unguarded} if it is a leaf and there is no
+variable $\xvar\in\xvars$ with $\labeling(\xvar)=\vertex$.
+%
+For a graph $\graph$,
+we define the {\it degree}\localnote{Better name.} of $\graph$ as
+$\degof{\vertex}:=d_2-d_1$ where $d_2$ is the number of unguarded vertices and
+$d_1$ is the number of roots in $\graph$.
+%
+We define $\zeroreduce{\graph}$ to be the graph
+we get from $\graph$ by keeping only the blocks
+which have degree zero.
+%
+Analogously, we define $\posreduce{\graph}$ to be the graph
+we get from $\graph$ by keeping only the blocks
+which have positive degree.
+%
+
+Consider, compact graphs $\graph=\tuple{\vertices,\succ,\labeling}$ and 
+$\graph'=\tuple{\vertices',\succ',\labeling'}$.
+%
+For a bijection
+$h:\vertices\rightarrow\vertices'$, we say that $\graph_1$ and $\graph_2$ are {\it isomorphic}
+with respect to $h$, denoted $\graph\sim_h\graph'$
+if, for all vertices $\vertex,\vertex'\in\vertices$ and variables $\xvar\in\xvars$,
+it is the case that
+(i) $\vertex'=\succ(\vertex')$ iff $h(\vertex')=\succ'(h(\vertex))$; and
+(ii) $\labeling(\xvar)=\vertex$ iff $\labeling'(\xvar)=h(\vertex)$.
+%
+We say that $\graph$ and $\graph'$ are isomorphic, denoted $\graph\isomorphic\graph'$
+if $\graph\isomorphic_h\graph'$ for some $h$; and
+%
+For encodings $\encoding,\encoding'$, we write $\encoding\isencodingorder_h\encoding'$ if 
+$\sigof{\encoding}\isomorphic_h\sigof{\encoding'}$ and for all vertices $\vertex,\vertex'$,
+if $\cnt(\vertex,\vertex')\neq\undef$ then  $\cnt(\vertex,\vertex')\leq\cnt(h(\vertex),h(\vertex'))$.
+%
+We write $\encoding\isencodingorder\encoding'$ to denote that
+$\encoding\isencodingorder_h\encoding'$ for some $h$.
+
+For an injection $h:\vertices\rightarrow\vertices'$, 
+we say that $\graph_1$ is {\it included} in $\graph_2$
+with respect to $h$, denoted $\graph\included_h\graph'$
+if, for all vertices $\vertex,\vertex'\in\vertices$ and variables $\xvar\in\xvars$,
+it is the case that
+(i) if $\vertex'=\succ(\vertex')$ then $h(\vertex')=\succ'(h(\vertex))$; and
+(ii) if $\labeling(\xvar)=\vertex$ then $\labeling'(\xvar)=h(\vertex)$.
+%
+%
+For encodings $\encoding,\encoding'$, we write $\encoding\incencodingorder_h\encoding'$ if 
+$\sigof{\encoding}\included_h\sigof{\encoding'}$ and for all vertices $\vertex,\vertex'$,
+if $\cnt(\vertex,\vertex')\neq\undef$ then  $\cnt(\vertex,\vertex')\leq\cnt(h(\vertex),h(\vertex'))$.
+%
+We write $\encoding\incencodingorder\encoding'$ to denote that
+$\encoding\incencodingorder_h\encoding'$ for some $h$.
+%
+
+
+We use $\encoding\encodingorder_h\encoding'$ to denote that both
+$\posreduce{\encoding}\isencodingorder_h\posreduce{\encoding'}$
+and
+$\zeroreduce{\encoding}\incencodingorder_h\zeroreduce{\encoding'}$.
+
+
+
+
+The first step in the termination proof is the following which bounds the
+sizes of graphs of a bounded degree (provided that we delete blocks of size zero).
+%
+The proof of the lemma exploits the fact the each vertex has at most successor, which means that
+each block is either a tree or a star.
+%
+\begin{lemma}
+\label{finite:deg:lemma}
+For any $k\in\pintgrs$, there are only finitely many compact graphs $\graph$ 
+such that $0<\degof{\graph}\leq k$.
+\end{lemma}
+%
+From Lemma~\ref{finite:deg:lemma} and properties of WQOs\localnote{Specify which.},
+we get the following lemma.
+%
+\begin{lemma}
+\label{encoding:WQO:lemma}
+The ordering $\encodingorder$ is a WQO on any set $\graphs$ of graphs with bounded degree.
+\end{lemma}
+%
+The next lemma shows the relation between the orderings $\encodingorder$  and
+$\lt$.
+%
+For encodings $\encoding=\tuple{\vertices,\succ,\labeling,\cnt}$ and
+$\graph'=\tuple{\vertices',\succ',\labeling',\cnt'}$, and the
+underlying graphs $\graph$ and $\graph'$,
+suppose that $\encodingof{\graph_1}\encodingorder\encodingof{\graph_1}$.
+%
+Then, we can derive $\graph$ from $\graph'$ the applying a finite sequence of contraction
+operations (***).
+%
+More precisely, for each pair of vertices $\vertex,\vertex'$ with
+$m=\cnt(\vertex,\vertex')\leq\cnt'(\vertex,\vertex')=n$, we contract
+$n-m$ edges between $\vertex$ and $\vertex'$.
+%
+This gives the following lemma.
+%
+\begin{lemma}
+\label{encoding:implication:lemma}
+For graphs $\graph_1,\graph_2$, if 
+$\encodingof{\graph_1}\encodingorder\encodingof{\graph_1}$ then
+$\graph_1\lt\graph_2$.
+\end{lemma}
+
+The following lemma implies that the degree of the configurations generated during the reachability
+algorithm is bounded by the degree of the configurations in the set $\finalconfs$.
+%
+The proof of the lemma can be carried out by the fact that no unguarded vertices
+are introduced in the computation of $\pmovesto{}$.
+%
+\begin{lemma}
+\label{backward:bounded:degree:lemma}
+For graphs $\graph_1,\graph_2$, if $\graph_1\pmovesto{}\graph_2$
+then $\degof{\graph_2}\leq\degof{\graph_1}$.
+\end{lemma}
+%
+Now, we are ready to prove the termination of the reachability algorithm.
+%
+Suppose that that algorithm does not terminate.
+%
+Then, during the course of the algorithm, we add to the set
+$\toexplore$ an infinite sequence $\conf_0,\conf_1,\conf_2,\ldots$ of configurations,
+where $\conf_i$ is of the form $\tuple{\cstate,\graph_i}$, and
+and where $\conf_i\not\lt\conf_j$ for all $i,j$ with $i<j$.
+%
+From Lemma~\ref{backward:bounded:degree:lemma}, we know that that 
+the set $\set{\graph_0,\graph_1,\graph_2,\ldots}$ has bounded degree, and therefore
+by Lemma~\ref{encoding:WQO:lemma}, it follows that there
+are $i,j$ such that $i<j$ $\encoding(\graph_i)\isencodingorder\encoding(\graph_j)$.
+%
+From Lemma~\ref{encoding:implication:lemma} it follows that
+$\graph_i\lt\graph_j$, and hence $\conf_i\lt\conf_j$ which is a contradiction.
+%
+This gives the following theorem.
+%
+\begin{theorem}
+The reachability algorithm is guaranteed to terminate.
+\end{theorem}
+
+Now, we are ready to show (Lemma~\ref{encoding:WQO:lemma})
+that $\encodingorder$ is a WQO on any set of graphs
+whose degrees are bounded by some $k\in\pintgrs$.
+%
+The proof of consists of two parts, namely
+proving that $\incencodingorder$ is a WQO on graphs with degree $0$,
+and that $\isencodingorder$ is a WQO on graphs whose degrees are positive and bounded by $k$.
+%
+The first property follows from the fact that, even if there is no bound on the number
+of blocks with degree $0$ in a compact graph with degree $0$, there are finitely many types of such blocks,
+namely (i) blocks which does not contain vertices labeled by variables
+and which are either a single isolated vertex, a single vertex with a self-loop, or
+two vertices with an edge between them; (ii)
+or those which contain at least one vertex labeled
+by a variable.
+%
+The second property follows from Lemma~\ref{finite:deg:lemma} and the fact that a compact graph 
+of degree at most $k$ contains at most $k$ blocks with positive degrees.
+%
+The lemma follows then from Lemma~\ref{WQO:properties:lemma}.
+%
+Consider a star $\graph=\tuple{\vertices,\succ,\labeling}$.
+%
+The loop in $\graph$ is the graph $\graph_{\ell}=\tuple{\vertices_{\ell},\succ_{\ell},\labeling_{\ell}}$,
+where $\vertices_{\ell}\subseteq\vertices$ is largest set such that for each
+$\vertex\in\vertices_{\ell}$ it is the case that $\tuple{\vertex,\vertex}\in\succ^+$.
+%
+In other words, there is a path from $\vertex$ along the edges of
+$\graph$ leading back to $\vertex$.
+%
+Furthermore, $\succ_{\ell}$ and $\labeling_{\ell}$ are the restrictions of
+$\succ$ and $\labeling$ to $\vertices_{\ell}$.
+%
+For a vertex $\vertex\in\graph_{\ell}$, the tree rooted at $\vertex$
+is a graph $\graph_{\vertex}=\tuple{\vertices_{\vertex},\succ_{\vertex },\labeling_{\vertex}}$,
+where $\vertices_{\vertex}\subseteq\vertices$ is largest set such that for each
+$\vertex'\in\vertices_{\vertex}$ it is the case that $\tuple{\vertex',\vertex}\in\succ^*$,
+i.e., there is path along the edges of $\graph$ from $\vertex'$ to $\vertex$.
+%
+
+An unfolding of $\graph$ is a graph $\graph_u$ such that
+$\graph_u=\gupdate{\graph}{\suc}\updateby{\vertex}{\undef}$
+for some $\vertex$ in the loop of $\graph$.
+%
+Notice that $\graph_u$ is a tree (with root $\vertex)$.
+%
+For a star $\graph=\tuple{\vertices,\succ,\labeling}$ and vertices $\vertex_1,\vertex_2 \in \vertices$, we define the set $\Between(\vertex_1, \vertex_2)$ as $\{\vertex' \in \vertices | \dist(\vertex_1,\vertex') < \dist(\vertex_1,\vertex_2)\}$
+%
+For two blocks $\graph=\tuple{\vertices,\succ,\labeling},\graph'=\tuple{\vertices',\succ',\labeling'}$, we can check
+$\graph\lt\graph'$ as follows.
+%
+If both $\graph$ and $\graph'$ are trees then we can use (variants)
+of tree embedding algorithms such as the ones of \cite{DBLP:journals/jda/Valiente05, Kilpelainen95Ordered}.
+%
+If $\graph$ is a tree and $\graph'$ is a star then
+$\graph\lt\graph'$ iff $\graph\lt\graph'_u$ for some unfolding $\graph'_u$ of $\graph'$.
+%
+Finally, if both $\graph$ and $\graph'$ are stars then
+$\graph\lt\graph'$ iff there exists an injection $h : \vertices \to \vertices'$ s. t. for all vertices $\vertex,\vertex'\in\vertices$ and variables $\xvar\in\xvars$,
+it is the case that
+(i) if $\vertex'=\succ(\vertex)$ then $\Between(h(\vertex),h(\vertex')) = \emptyset$; and
+(ii) if $\labeling(\xvar)=\vertex$ then $\labeling'(\xvar)=h(\vertex)$.
+%
+%$\graph_u\lt\graph'_u$ for some unfoldings $\graph_u$ of $\graph'_u$
+%of $\graph$ and $\graph'$ respectively.
+
+
+
+
+------
+
+
+
+\noindent
+\begin{minipage}{0.65\textwidth}
+
+\begin{lemma}
+\label{backwards:implies:forwards:lemma}
+For configurations $\conf_1$ and $\conf_2$, if $\conf_1\pmovesto{}\conf_2$
+then $\conf_2\absmovesto{}\uc{\conf_1}$.
+\end{lemma}
+\begin{proof}
+see appendix.
+\end{proof}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\hfill%
+\begin{tikzpicture}[show background rectangle,>=stealth]
+\draw[blue](0,0) node{$\conf_1$};
+\draw[blue](0.9,0.1) node{$\pmovesto{}$};
+\draw[blue](1.8,0) node{$\conf_2$};
+
+
+\draw[red] (0,-0.45) node[rotate=270]{$\lt$};
+
+
+\draw[red](0,-0.9) node{$\conf_3$};
+\draw[red](-0.3,-0.88) node{$\exists$};
+
+\draw[red,->] (1.4,-0.2) -- (0.4,-0.7);
+\end{tikzpicture}
+\end{minipage}
+
+
+
+
+\noindent
+\begin{minipage}{0.65\textwidth}
+\begin{lemma}
+\label{forwards:implies:bakwards:lemma}
+For configurations $\conf_1$ and $\conf_2$, if $\conf_1\movesto{}\uc{\conf_2}$
+then $\conf_2\pmovesto{}\dc{\conf_1}$.
+\end{lemma}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\hfill%
+\begin{tikzpicture}[show background rectangle,>=stealth]
+\draw[blue](0,0) node{$\conf_1$};
+\draw[blue](0.9,-0.99) node[rotate=180]{$\pmovesto{}$};
+\draw[blue](1.8,0) node{$\conf_3$};
+
+\draw[red] (0,-0.45) node[rotate=90]{$\lt$};
+\draw[blue] (1.8,-0.45) node[rotate=90]{$\lt$};
+
+\draw[red](0,-0.9) node{$\conf_4$};
+\draw[->,red](0.6,0) -- (1.2,0) ;
+\draw[red](-0.3,-0.88) node{$\exists$};
+\draw[blue](1.8,-0.9) node{$\conf_2$};
+\end{tikzpicture}
+\end{minipage}
+
+\noindent
+As a corollary of Lemma~\ref{forwards:implies:bakwards:lemma}, it follows that
+if $\conf_1\absmovesto{}\uc{\conf_2}$
+then $\conf_2\pmovesto{}\dc{\conf_1}$.
+
+
+
+\noindent
+\begin{minipage}{0.65\textwidth}
+\begin{lemma}
+\label{pre:js:monotonic:lemma}
+For configurations $\conf_1$, $\conf_2$ and $\conf_3$, if
+$\conf_1\pmovesto{}\conf_2$ and $\conf_3\lt\conf_1$ then there
+is a configuration $\conf_4$ such that $\conf_3\pmovesto{}\conf_4$ and
+$\conf_4\lt\conf_2$.
+\end{lemma}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\hfill%
+\begin{tikzpicture}[show background rectangle,>=stealth]
+\draw[blue](0,0) node{$\conf_1$};
+\draw[blue](0.9,0.1) node{$\pmovesto{}$};
+\draw[blue](1.8,0) node{$\conf_2$};
+
+
+\draw[blue] (0,-0.45) node[rotate=90]{$\lt$};
+\draw[red] (1.8,-0.45) node[rotate=90]{$\lt$};
+
+
+\draw[blue](0,-0.9) node{$\conf_3$};
+\draw[red](0.9,-0.8) node{$\pmovesto{}$};
+\draw[red](1.5,-0.88) node{$\exists$};
+\draw[red](1.8,-0.9) node{$\conf_4$};
+\end{tikzpicture}
+\end{minipage}
+
+
+---%
+\section{Ordering}
+\label{section:orderings}
+In this section, we introduce an ordering on configurations.
+%
+Based on the ordering, we will define the coverability problem
+which we use to check safety properties and
+define the abstract transition relation, which is an over-approximation
+of the concrete transition relation.
+
+
+\paragraph{\bf Ordering.} 
+Let $\graph=\tuple{\vertices,\suc,\labeling}$ and
+$\graph'=\tuple{\vertices',\suc',\labeling'}$.
+%
+We write $\graph\jlt\graph'$ to
+denote that one of the following properties is satisfied:
+%
+\begin{itemize}
+\item %
+  {\it Variable Deletion}: %
+  $\graph=\graph'\delVar{\xvar}$ for some variable $\xvar$.
+  % 
+\item %
+  {\it Vertex Deletion}: %
+  $\graph=\graph'\delVertex{\vertex}$ for some isolated vertex
+  $\vertex\in\vertices'$.
+  % 
+\item %
+  {\it Edge Deletion}: %
+  $\graph=\gupdate{\graph'}{\suc}\updateby{\vertex}{\undef}$ for some
+  $\vertex\in\vertices'$.
+  % 
+\item %
+  {\it Contraction}: %
+  There are vertices $\vertex_1,\vertex_2,\vertex_3\in\vertices'$ and
+  graphs $\graph_1,\graph_2$ such that $\vertex_2$ is simple,
+  $\suc'(\vertex_1)=\vertex_2$, $\suc'(\vertex_2)=\vertex_3$,
+  $\graph_1=\gupdate{\graph'}{\suc}\updateby{\vertex_2}{\undef}$,
+  $\graph_2=\gupdate{\graph_1}{\suc}\updateby{\vertex_1}{\vertex_3}$
+  and $\graph=\graph_2\delVertex{\vertex_2}$.
+  % 
+  \ignore{%
+  \begin{minipage}{0.3\textwidth}
+    \begin{tikzpicture}[show background rectangle]
+      \begin{scope}[scale=0.5]
+        \node[xshift=-1cm,shape=circle,fill=white,draw=none,scale=0.7] (v1){$\vertex_1$};
+        \node[shape=circle,fill=white,draw=none,scale=0.7] (v2){$\vertex_2$};
+        \node[xshift=1cm,shape=circle,fill=white,draw=none,scale=0.7] (v3){$\vertex_3$};
+        \node[draw=none,above=3mm] at (v2) {Before contraction};
+      \end{scope}
+      \begin{scope}[scale=0.5,yshift=-2.3cm]
+        \node[xshift=-1cm,shape=circle,fill=white,draw=none,scale=0.7] (v4){$\vertex_1$};
+        \node[draw=none] (v5){};
+        \node[xshift=1cm,shape=circle,fill=white,draw=none,scale=0.7] (v6){$\vertex_3$};
+        \node[draw=none,above=3mm] at (v5) {After contraction};
+      \end{scope}
+      \draw[->] (v1) -- (v2);
+      \draw[->] (v2) -- (v3);
+      \draw[->] (v4) -- (v6);
+    \end{tikzpicture}
+  }%
+\end{itemize}
+%
+%
+We write $\graph\lt\graph'$ to denote that there are
+$\graph_0\jlt\graph_1\jlt\graph_2\jlt\cdots\jlt\graph_n$ with $n\geq
+0$, $\graph_0=\graph$, and $\graph_n=\graph'$.
+%
+That is, we can obtain $\graph$ from $\graph'$ by performing a finite
+sequence of variable deletion, vertex deletion, edge deletion and contraction operations.
+%
+For configurations $\conf=\tuple{\cstate,\graph}$ and
+$\conf'=\tuple{\cstate',\graph'}$, we write $\conf\lt\conf'$ to
+denote that $\cstate'=\cstate$ and $\graph\lt\graph'$.
+%
+
+For a configuration $\conf$, we use $\uc{\conf}$ to denote the %
+{\it upward closure} of $\conf$, $\ie$
+$\uc{\conf}=\setcomp{\conf'}{\conf\lt\conf'}$.
+%
+We use $\dc{\conf}$ to denote the
+{\it downward closure} of $\conf$, $\ie$
+$\dc{\conf}=\setcomp{\conf'}{\conf'\lt\conf}$.
+%
+For a set $\confs$ of configurations, we define $\uc{\confs}$ as
+$\bigcup_{\conf\in\confs}\uc{\conf}$.
+%
+We define $\dc{\confs}$ analogously.
+%For sets $\confs_1$ and $\confs_2$ of configurations, we write
+%$\confs_1\lt\confs_2$ to denote that $\conf_1\lt\conf_2$ for some
+%$\conf_1\in\confs_1$ and $\conf_2\in\confs_2$.
+
+
+
+\paragraph{\bf Safety Properties.}
+In order to analyze safety properties, we
+study the {\it coverability problem} defined below.
+%
+
+\probbox{Coverability}
+{%
+  \item Sets $\initconfs$ and $\finalconfs$ of configurations.
+}{%
+Is it the case $\initconfs\absmovesto{*}\uc{\finalconfs}$?
+}
+\newline
+Intuitively, $\uc{\finalconfs}$ represents a set of ``bad'' states which we do not 
+want to reach during the execution of the program.
+\localnote{Fred: should we add ``starting from any configuration in $\initconfs$''}
+%
+This set is represented by a set $\finalconfs$ of minimal elements.
+%
+In Section~\ref{implementation:section}, we will describe
+how to encode properties such as garbage generation,
+dereferencing and shape violation as reachability of upward sets of configurations represented by
+finite sets of minimal elements.
+%
+Therefore, checking safety with respect to these properties
+amounts to solving the coverability problem.
+
+
+\paragraph{\bf Abstract Transition Relation.}
+We write $\conf_1\absmovesto{\transition}\conf_2$ to denote that there is a $\conf_3$ such that
+$\conf_3\lt\conf_1$ and $\conf_3\movesto{\transition}\conf_2$.
+%
+In other words, a step of the abstract transition relation consists of first moving to 
+a smaller configuration (wrt $\lt$) and then performing a step of the concrete transition relation.
+%
+Notice that the abstraction corresponds to an over-approximation and therefore
+any safety property which holds in the abstract system will also hold in the 
+concrete one.\localnote{Fred:we can add a figure here}

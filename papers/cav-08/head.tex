@@ -1,0 +1,54 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+%
+\documentclass{llncs}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{amssymb}  
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{ifthen}
+\usepackage{alg}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{hhline}
+%\usepackage{pgflibraryarrows}
+%\usepackage[pdftex]{graphicx}
+%\usepackage[all]{xy}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{arrows}
+
+\input comm
+
+\begin{document}
+
+\input title
+\input introduction
+\input prels
+\input graphops
+\input ordering
+\input pre
+\input algorithm
+\input termination 
+\input experiments
+\input conclusion
+
+\bibliographystyle{abbrv}
+{
+  \bibliography{biblio}
+}
+\newpage
+\appendix
+\input appendix
+\input encoding
+
+
+\end{document}
+
+
+
+
+

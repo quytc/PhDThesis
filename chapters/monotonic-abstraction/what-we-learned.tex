@@ -1,0 +1,26 @@
+\begin{description}
+\item[Upward-closed sets.] Monotonic abstraction relies on a preorder
+  which allows us to symbolically and compactly represent sets of
+  configurations, rather than individual configurations.
+\item[Monotonic systems] enjoy the property that firing a transition
+  on a configuration can always done on a bigger configuration
+  (w.r.t.\ the preorder) and the images are ordered accordingly. %
+  Moreover, reachability of some sets is decidable for such systems.
+\item[Monotonic Over-Approximation] is used to transform non-monotonic
+  systems into abstract monotonic systems. This allows us to define
+  the pre-image that preserves the upward-closedness of sets.
+\item[Bad configurations] often follow a simple pattern and the set of
+  all bad configurations turn out to be upward-closed.
+\item[Backward Reachability] is interesting to compute the
+  predecessors of the bad set.
+\item[Well-Quasi Orderings] imply that there is no infinite sequence
+  of incomparable elements. Therefore, any upward-closed set can be
+  fully-characterized by a finite set of minimal elements. This allows
+  us to concretely implement a fully-automatic and efficient backward
+  procedure that is guaranteed to terminate.
+\item[Applications.] The technique derives over-approximation for
+  systems arranged as linear topologies and we showed that it can
+  easily be applied to multisets (with the important class of Petri
+  Nets), sequential heap programs manipulating singly-linked lists and
+  that it can be extended to tree topologies.
+\end{description}
