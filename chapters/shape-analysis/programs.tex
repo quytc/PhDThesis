@@ -57,9 +57,10 @@
 %\label{lazy:list:heap:cell:fig}
 %\end{figure}
 
-A concurrent data structure is a way of storing and organizing data for access and manipulated by multiple computing threads (or processes) on a single computer. The implementation of a concurrent data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Processes are sequential, each process applies a sequence of its operations to a share structures. A process can halt or have various speed. Actually, we do not tell whether a process is halted or is running fast or slowly.
-Each data structure has a type which defines a set of possible values and a set of operations such as queue, stack or set. Each object has a sequential
-specification that defines how the object behaves when its operations are
+A concurrent data structure is a way of storing and organizing data for access and manipulated by multiple computing threads (or processes) on a shared-memory computer. Several features of shared-memory multiprocessors make concurrent data structures significantly more difficult to design and to verify as correct than their sequential counterparts. The primary source of this additional difficulty is concurrency: Because threads are executed concurrently on different processors, and are subject to operating system scheduling decisions, page faults, interrupts, etc., we must think of the computation as completely asynchronous, so that the steps of different threads can be interleaved arbitrarily. This significantly complicates the task of designing correct concurrent data structures. 
+
+The implementation of a concurrent data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Processes are sequential, each process applies a sequence of its operations to a share structures. A process can halt or have various speed. Actually, we do not tell whether a process is halted or is running fast or slowly.
+Each data structure has a type which defines a set of possible values and a set of operations such as queue, stack or set. Each object has a sequential specification that defines how the object behaves when its operations are
 invoked one at a time by a single process. For example, the behavior of a
 queue object can be specified by requiring that enqueue insert an item in the
 queue, and that dequeue remove the oldest item present in the queue. In a
@@ -216,13 +217,13 @@ Each method takes an argument which is the value
 of the element, and returns a value which indicates whether
 the operation has been successful or not.
 %
-For instance, the operation {\tt add}(e) returns the value
-{\it true} if  $e$ is not already a member of the set.
+For instance, the operation {\tt add} returns the value
+{\it true} if  $\tt e$ is not already a member of the set.
 %
 In such a case a new cell with data value $e$ is added to its
 appropriate position in the list.
 %
-If $e$ is already present, then the list is not changed and 
+If $\tt e$ is already present, then the list is not changed and 
 the value {\tt false} is returned.
 % 
 The program also contains the subroutine {\tt locate}
@@ -239,8 +240,17 @@ The {\tt ctn} method is wait-free and traverses the list ignoring the locks
 inside the cells. The algorithm uses two global pointers, {\tt head} that points to  the first cell of the heap, and {\tt tail} that points to the last cell.  
 These two cells contain two values that are smaller 
 and larger respectively than all keys that may be                     
-inserted in the set.
+inserted in the set. In more detail, the {\tt locate} method traverses the list using two local variables ${\tt p}$ and $\tt c$, starting at the head of the list and moves down the list (line 2), comparing ${\tt c}$’s val to ${\tt e}$. When $\tt c$ is set to the
+first entry with a val greater than or equal to $\tt e$, the traversal stops, and the
+method locks $\tt p$ and $\tt c$ (line 7). Thereafter, if both $\tt p.mark$ and $\tt c.mark$ are \false \; and ${\tt p.next = c}$ then the method returns a pair $\tt (p,c)$ (line 9). Otherwise, it unlocks $\tt p$ and $\tt c$ and tries traversing again from the head of the list.
 
+The {\tt add} method calls {\tt locate} at line 1. If a node with val $\tt e$ is  already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false \; (line 7-8). Otherwise, a new node $\tt n$ is created (line 3), and added into the list by linking it into the list between the $\tt p$ and $\tt c$ pointers returned by
+{\tt locate} (line 3-4). Then, the method unlocks $\tt p$ and $\tt c$ and returns \true.  
+
+The {\tt rmv} method also calls {\tt locate} at line 1. If a node with val $\tt e$ is  not already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false (line 7-9). Otherwise, node $\tt c$ is logically removed (line 3), and unlinked from the list (line 4-5). Then, the method unlocks $\tt p$ and $\tt c$ and returns \true.  
+
+The {\tt ctn} method scans the list by using local variable $\tt c$, ignoring whether nodes are marked or not, until $\tt c$ is set to the
+first entry with a val greater than or equal to $\tt e$. It simply returns \true \; if and only if the $\tt c$ entry is unmarked with the desired val.    
 %\begin{figure}[]
 %  \begin{tikzpicture}
 %  %[
