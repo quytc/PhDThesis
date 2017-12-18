@@ -18,13 +18,13 @@ becomes visible to other threads. A (concurrent) history is linearizable if and 
   
 
 \index{Linearizability}%
-The Figure~\ref{figure:shape:linearizability} provides a examples of trace of methods of concurrent program implementing sets.
+Figure~\ref{figure:shape:linearizability} provides a examples of trace of methods of concurrent program implementing sets.
 In the trace, each method takes effect
 instantaneously at its (called the \emph{linearization point})
 between call and return events~\cite{HeWi:linearizability}. When we order methods according to its linearization point, we get a total ordered sequence that respect the behavior of the set.
-A linearization point normally stays inside the code of the
-method.  However, in some cases, it it is located in
-the code of another method depending on the execution path.
+%A linearization point normally stays inside the code of the
+%method.  However, in some cases, it it is located in
+%the code of another method depending on the execution path.
 
 
 

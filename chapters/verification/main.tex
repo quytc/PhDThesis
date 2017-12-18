@@ -3,18 +3,17 @@
 \label{chapter:verification}
 %% ====================================================================
 
-Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to achieve without computers. However, sometime they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious such as errors in banking systems and airplanes. The error is obviously not caused by the machine itself, but it seems to originate from the program that controls the machine. The error is normally called bugs. 
+Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to achieve without computers. However, sometime they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious such as errors in banking systems and airplanes. Errors in computer systems are obviously not caused by the machine itself, but it seems to originate from the program that controls the machine. The error is normally called bugs. 
 %% ********************************************************************
 \KW{Complex machines}%
 %% ********************************************************************
-The probability of existing bugs in complex software systems is not low, in particular concurrent systems. They usually have complicated input and involve many features, they have to handle many concurrent operations which makes them difficult to design and make them perfect by human effort.
+The probability of existing bugs in complex software systems is not low. They usually have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
 %% ********************************************************************
 \KW{Find bugs}%
 %% ********************************************************************
-Detecting and fixing software bugs are important tasks in software process in software industry. Leave bugs
-undetected in any project might in fact lead to
+Detecting and fixing software bugs are important tasks in software process in software industry. Leave bugs undetected in any project might in fact lead to
 subsequent bugs and other problems. It will
-become too costly to solve them or too daunting to attempt to. Therefore, the quality phase takes a substantial amount of
+become too costly to solve them or too daunting to attempt to. Therefore, ensuring correct software requires a substantial amount of
 resources, both in terms of time and manpower.
 
 %% ********************************************************************
@@ -22,10 +21,11 @@ resources, both in terms of time and manpower.
 \index{Critical systems}%
 \index{Safety}%
 %% ********************************************************************
-Some bugs are less serious than others. We can still use software programs with these bugs. For example, bugs appearing in computer games and online news. However, in the case of critical systems such as banking or software systems in airplanes, safety is the most important aspect and we have to ensure that there no bugs in either the software nor the hardware.
-%% ********************************************************************
-\KW{Testing}\index{Verification Methods!Testing}%
-%% ********************************************************************
+
+Some bugs are less serious than others. In some cases, we can still use software programs with these bugs. For example, bugs appearing in computer games and online news. However, in the case of critical systems 
+%such as banking, software systems in airplanes, safety is the most important aspect and we have to ensure that there no bugs in either the software nor the hardware.
+especially algorithms in libraries of programming languages, safety is the most important aspect and we have to ensure that there no bugs. These algorithms are used in many applications, and bugs will have wide impacts. Some of such libraries provide standard data structures such as stacks, queues, containers. These data structures can be both sequential or concurrents, and they typically used heap-allocated memory to store their data. For example, concurrent link queue in java.util.concurrent uses singly linked list data structure to store data.   
+
 The predominant method to improve software quality is
 \emph{testing}. It is a dynamic analysis where a program is run under specific conditions, so-called test cases, and checking
 whether the result with a given input matches the expected output.

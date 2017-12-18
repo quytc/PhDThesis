@@ -18,13 +18,9 @@ satisfies its specification.
 %It is often called a push-button technology.
 %
  
-This approach was introduced by Emerson and Clarke~\cite{CE82} and by
-Queille and Sifakis~\cite{QS82}. The method requires a program and a property as input and then it extracts a model from the program. The method then computes and returns either "correct" when the specification
-is satisfied by the program, or "incorrect" when the program does not satisfy its specification. In the case of incorrect answer, the method can explain the reason by giving a counter-example. A state in the model contains relevant information about the program. Alongside all the states of the system, the model depicts the
-transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of
-transitions, starting from some initial states. States and transitions together describe the \emph{operational
-  semantics}, that is, how every step of the system takes place in the
-model. The number of states and transitions can be finite or infinite Model-checking aims to explore the state-space entirely from some initial states. However, when the state-space is of large size. It grows in-fact
+This approach was introduced by Emerson and Clarke~\cite{CE82} and by Queille and Sifakis~\cite{QS82}. The method requires a program and a property as input and then it extracts a model from the program. The method then computes and returns either "correct" when the specification is satisfied by the program, or "incorrect" when the program does not satisfy its specification. In the case of incorrect answer, the method can explain the reason by giving a counter-example. A state in the model contains relevant information about the program. Alongside all the states of the system, the model depicts the
+transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of transitions, starting from some initial states. States and transitions together describe the \emph{operational
+  semantics}, that is, how every step of the system takes place in the model. The number of states and transitions can be finite or infinite Model-checking aims to explore the state-space entirely from some initial states. However, when the state-space is of large size. It grows in-fact
 exponentially with the number of parameters or the size of their
 domain. Therefore, there have been several methods to deal with the
 state-space explosion problem.
@@ -36,30 +32,29 @@ state-space explosion problem.
 %\caption{Example of symbolic representation where the right part is a concrete reachable state-space and the left part is abstract state-space using symbolic representation}
 %\label{symbolicabs}
 %\end{figure}
-\vspace{1cm}
-\begin{figure}[h]
-  \centering
-  \tikzinput{img/symbolic-representations}    
-  \vspace{0.3cm}
-  \caption{Symbolic Representation}      
-\label{symbolicabs}
-\end{figure}
-\vspace{1cm}
+%\vspace{1cm}
+%\begin{figure}[h]
+%  \centering
+%  \tikzinput{img/symbolic-representations}    
+%  \vspace{0.3cm}
+%  \caption{Symbolic Representation}      
+%\label{symbolicabs}
+%\end{figure}
+%\vspace{1cm}
+                   
 The choice of which transition to pick during the exploration can be
 crucial for the efficiency of the procedure. In some cases, exploring all orderings of events is not necessary because some states can be re-visited. \emph{Partial order} techniques aim at detecting and avoiding
 redundant situations, while retaining important dependencies among
 actions. They however do not reduce the state-space. The main approach called \emph{symbolic
-  representation}  to solve the state-space explosion problem is to avoid representing concretely all states of the system. the approach group several states together form sets of states and represent them by single states described in figure \ref{symbolicabs}. The grouping process is performed by \emph{dropping} irrelevant
-details (as opposed to disregarding them) based on properties that we want to verify. Figure \ref{symbolicmodelchecking} show the architecture of symbolic model checking in which it is sound to prove safety of the abstract model in order to imply
-safety for the original system, since all the behaviours of the latter
-are represented in the former. %
+  representation}  to solve the state-space explosion problem is to avoid representing concretely all states of the system. The process is performed by \emph{dropping} irrelevant
+details (as opposed to disregarding them) based on properties that we want to verify. By doing that, we get an set of abstract states from reachable states of a concrete system. Thereafter, the method returns safe if the abstract states do not contain any bad state. The approach described in figure \ref{symbolicmodelchecking}.  %
 %
 The challenge is to find over-approximations that do not introduce
 behaviours that could turn out to be bad. Indeed, the method would
 return that the property is not satisfied and we would not know
 whether it comes from the approximation or from the concrete system
-itself. %
-
+itself. % 
+                                   
 %\begin{figure}
 %{\noindent\centering %
 %  \includegraphics[trim=0cm 6cm 2cm 2cm,clip,scale = 0.25]{img/badstate.pdf}%

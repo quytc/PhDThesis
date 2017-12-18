@@ -1,11 +1,11 @@
 %% ====================================================================
-
-\chapter{Concurrent Data Structures}
+ 
+\chapter{Data Structures}
 \label{section:shape:programs}
 \index{Program Model}%
 %% ====================================================================
 \index{Concurrency}%
-
+                
 %\begin{figure}
 %\center
 %\begin{tikzpicture}[]
@@ -25,7 +25,7 @@
 %\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
 %callout absolute pointer={($(cell8.north)+(0pt,-5pt)$)},draw,,font=\tiny,align=center]  
 %at ($(cell8.north)+(0pt,7pt)$){{\tt mark}};
-%%
+%%  
 %\node[draw = cyan,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell8.south){};
 %\node[ellipse callout, fill=yellow!20,inner sep=2pt, 
 %callout absolute pointer={($(cell8.south)+(0pt,5pt)$)},draw,,font=\tiny,align=center]  
@@ -56,17 +56,19 @@
 %\caption{A cell and the initial heap in the {\tt Lazy Set} Algorithm.}
 %\label{lazy:list:heap:cell:fig}
 %\end{figure}
+In general, a data structure is any data representation and its
+associated operations. Even an integer or floating point number stored on the computer can be viewed as a simple data structure. More typically, a data structure is meant to be an organization or structuring for a collection of data items. A sorted list of integers stored in an array is an example of such a structuring. The implementation of a data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Each data structure has a type which defines a set of possible values and a set of operations such as queue, stack or set. Each data structure have its own specification that specify behaviors of its operations. The behavior of each operation is determined by its inputs and outputs. For example, the behavior of a stack object can be specified by requiring that its {\tt push} operation insert an item in the stack, and that {\tt pop} removes the newest item present in the stack. Data structure typically used heap-allocated memory to store their data. A heap-allocated memory can be singly-linked list, skip-list or array of lists. 
+
 
 A concurrent data structure is a way of storing and organizing data for access and manipulated by multiple computing threads (or processes) on a shared-memory computer. Several features of shared-memory multiprocessors make concurrent data structures significantly more difficult to design and to verify as correct than their sequential counterparts. The primary source of this additional difficulty is concurrency: Because threads are executed concurrently on different processors, and are subject to operating system scheduling decisions, page faults, interrupts, etc., we must think of the computation as completely asynchronous, so that the steps of different threads can be interleaved arbitrarily. This significantly complicates the task of designing correct concurrent data structures. 
 
-The implementation of a concurrent data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Processes are sequential, each process applies a sequence of its operations to a share structures. A process can execute at a varying rate. Actually, we do not tell whether a process is halted or is running fast or slowly.
-Each data structure has a type which defines a set of possible values and a set of operations such as queue, stack or set. Each object has a sequential specification that defines how the object behaves when its operations are
-invoked one at a time by a single process. For example, the behavior of a
-stack object can be specified by requiring that its {\tt push} operation insert an item in the
-stack, and that {\tt pop} removes the newest item present in the stack. In a
-concurrent system, however, an object’s operations can be invoked by concurrent
+Processes are sequential, each process applies a sequence of its operations to a share structures. A process can execute at a varying rate. Actually, we do not tell whether a process is halted or is running fast or slowly. Each object has a sequential specification that defines how the object behaves when its operations are
+invoked one at a time by a single process. An object’s operations can be invoked by concurrent
 processes, and it is necessary to give a meaning to interleaved operation
 executions.
+
+There are several techniques to construct concurrent data structures including coarse-grained locking, fine-grained locking, and lock-free programming. In the coarse-grained locking technique, a single lock is used to synchronize every access to an object. Coarse-grained synchronization is easy to reason about, however it works well when levels of concurrency are low, but if too many threads try to access the object at the same time, then the object becomes a sequential bottleneck, forcing threads to wait in line for access. Therefore, in fine-grained locking technique, they split the object into independently synchronized components, ensuring that method calls interfere only when trying to access the same component at the same time. There is a trick in this technique called lazy synchronization.  The task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. The lock-free technique help us to eliminate locks entirely, it relies on built-in atomic operations such as {\tt compareAndSet()} for synchronization. Each of these techniques can be applied (with appropriate customization) to a variety of common data structures (queues, stacks, sets) implemented by different linked data structures such as singly linked lists, skiplists, trees, or lists of lists. 
+
 
 An object is linearizable if each operation appears
 to take effect instantaneously at some point between the operation’s invocation
@@ -74,10 +76,7 @@ and response. Linearizability implies that processes appear to be interleaved
 at the granularity of complete operations, and that the order of
 nonoverlapping operations is preserved. The notion of linearizability generalizes and uniles a number of ad hoc correctness conditions in the literature, and it is related to (but not identical with) correctness criteria such as sequential consistency and strict serializability.
  
- There are four main techniques to construct concurrent data structures namely coarse-grained locking, fine-grained locking lazy, synchronization and lock-free programming. In the coarse-grained locking technique, a single lock is used to synchronize every access to an object. Coarse-grained synchronization is easy to reason about, however it works well when levels of concurrency are low, but if too many threads try to access the object at the same time, then the object becomes a sequential bottleneck, forcing threads to wait in line for access. In the second technique, they split the object into independently synchronized components, ensuring that method calls interfere only when trying to access the same component at the same time. In the third technique, the task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. The lock-free technique help us to eliminate locks entirely, it relies on built-in atomic operations such as {\tt compareAndSet()} for synchronization.
  
- Each of these techniques can be applied (with appropriate customization) to a
-variety of common data structures (queues, stacks, sets) implemented by different linked data structures such as singly linked lists, skiplists, trees, or lists of lists. 
 %We consider systems consisting of an arbitrary number of concurrently executing threads. Each thread may at any time invoke one of a finite set of methods. Each method corresponding to one operation on the data structure.
 %Each method declares local variables and a method body.
 %We assume that the local variables include the
@@ -203,54 +202,40 @@ variety of common data structures (queues, stacks, sets) implemented by differen
 As an example, Fig.~\ref{figure:lazy-list} depicts a program
 {\tt Lazy Set} \cite{Lazyset}
 that implements a concurrent set containing integer
-elements.
+elements with three operations $\tt add$, $\tt remove$ and $\tt contains$.
 %
-The set is implemented as an ordered singly linked list.
-%
+The set is constructed by using lazy synchronization technique and  implemented as an ordered singly linked list. A cell in the list has three fields ${\tt mark}$, ${\tt lock}$, and
+${\tt val}$. The field $\tt mark$ is true if
+the node has been logically removed from the set. The ${\tt lock}$ field is a lock and the field ${\tt val}$ presents the data value which is integer in this case.
 The program contains three methods, namely {\tt add}, {\tt rmv},
-and {\tt ctn},  corresponding to operations
+and {\tt ctn},  corresponding to operations $\tt add$, $\tt remove$ and $\tt contains$
 that respectively add, remove, and check the existence
-of an element in the set.
-%
-%
-Each method takes an argument which is the value
-of the element, and returns a value which indicates whether
-the operation has been successful or not.
-%
-For instance, the operation {\tt add} returns the value
-{\it true} if  $\tt e$ is not already a member of the set.
-%
-In such a case a new cell with data value $e$ is added to its
-appropriate position in the list.
-%
-If $\tt e$ is already present, then the list is not changed and 
-the value {\tt false} is returned.
+of an element in the set. Each method takes an argument which is the value of the element, and returns a value which indicates whether
+the operation has been successful or not. For instance, the operation {\tt add} returns the value
+{\it true} if  $\tt e$ is not already a member of the set. If $\tt e$ is already present, then the list is not changed and the value {\tt false} is returned.
 % 
-The program also contains the subroutine {\tt locate}
-that is called by the three methods.
+The program also contains the subroutine {\tt locate} that returns a structure containing the nodes on either side of the key.
 %
-A cell in the list has  three fields ${\tt mark}$, ${\tt lock}$, and
-${\tt val}$.
-%
+
 The {\tt rmv} method first logically removes the node
 from the list by setting the {\tt mark} field, before 
 physically removing the node.
 %
-The {\tt ctn} method is wait-free and traverses the list ignoring the locks
+The {\tt ctn} method traverses the list ignoring the locks
 inside the cells. The algorithm uses two global pointers, {\tt head} that points to  the first cell of the heap, and {\tt tail} that points to the last cell.  
 These two cells contain two values that are smaller 
 and larger respectively than all keys that may be                     
-inserted in the set. In more detail, the {\tt locate} method traverses the list using two local variables ${\tt p}$ and $\tt c$, starting at the head of the list and moves down the list (line 2), comparing ${\tt c}$’s val to ${\tt e}$. When $\tt c$ is set to the
+inserted in the set. In more detail, the {\tt locate} method traverses the list using two local variables ${\tt p}$ and $\tt c$, starting at the head of the list and moves down the list (line 2), comparing ${\tt c.val}$ to ${\tt e}$. When $\tt c$ is set to the
 first entry with a val greater than or equal to $\tt e$, the traversal stops, and the
-method locks $\tt p$ and $\tt c$ (line 7). Thereafter, if both $\tt p.mark$ and $\tt c.mark$ are \false \; and ${\tt p.next = c}$ then the method returns a pair $\tt (p,c)$ (line 9). Otherwise, it unlocks $\tt p$ and $\tt c$ and tries traversing again from the head of the list.
+method locks $\tt p$ and $\tt c$ (line 7). Thereafter, if both $\tt p.mark$ and $\tt c.mark$ are \false \; and ${\tt p.next = c}$ meaning that there is no added cell from other thread between $\tt p$ and $\tt c$ then the method returns a pair $\tt (p,c)$ (line 9). Otherwise, it unlocks $\tt p$ and $\tt c$ and tries traversing again from the head of the list.
 
-The {\tt add} method calls {\tt locate} at line 1. If a node with val $\tt e$ is  already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false \; (line 7-8). Otherwise, a new node $\tt n$ is created (line 3), and added into the list by linking it into the list between the $\tt p$ and $\tt c$ pointers returned by
+The {\tt add} method calls {\tt locate} at line 1 to locate variables $\tt p$ and $\tt c$. If $\tt c.val = e$ meaning that a node whose $\tt val$ is equal to $\tt e$ is already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false \; (line 7-8). Otherwise, a new node $\tt n$ is created (line 3), and added into the list by linking it into the list between the $\tt p$ and $\tt c$ pointers returned by
 {\tt locate} (line 3-4). Then, the method unlocks $\tt p$ and $\tt c$ and returns \true.  
 
-The {\tt rmv} method also calls {\tt locate} at line 1. If a node with val $\tt e$ is  not already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false (line 7-9). Otherwise, node $\tt c$ is logically removed (line 3), and unlinked from the list (line 4-5). Then, the method unlocks $\tt p$ and $\tt c$ and returns \true.  
+The {\tt rmv} method also calls {\tt locate} at line 1 locate variables $\tt p$ and $\tt c$. If $\tt c.val \neq e$ meaning that a node with val $\tt e$ is not already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false (line 7-9). Otherwise, node $\tt c$ is logically removed (line 3) where the $\tt mark$ field of $\tt c$ gets assigned \true, and unlinked from the list (line 4-5). Then, the method unlocks $\tt p$ and $\tt c$ and returns \true.  
 
 The {\tt ctn} method scans the list by using local variable $\tt c$, ignoring whether nodes are marked or not, until $\tt c$ is set to the
-first entry with a val greater than or equal to $\tt e$. It simply returns \true \; if and only if the $\tt c$ entry is unmarked with the desired val.    
+first entry with a val greater than or equal to $\tt e$. It simply returns \true \; if and only if the $\tt c$ entry is unmarked with the desired val. The program is linearizable if it respects the sequential specification of a set. Informally, for each method {\tt add}, {\tt rmv} and {\tt ctn}, there exist a linearization point so that in each execution of the program, when these methods are ordered according to their linearization points. We get a correct sequence that respect the sequential specification of a set.  In this program, linearization point of unsuccessful {\tt ctn} is not stayed at the code of the method. Whereas, other linearization points of other methods stay at their codes. We explain more detail about this in the linearization policies section. 
 %\begin{figure}[]
 %  \begin{tikzpicture}
 %  %[
