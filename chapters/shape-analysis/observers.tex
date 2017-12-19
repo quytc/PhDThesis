@@ -1,18 +1,18 @@
 %% ====================================================================
 \chapter{Verification of Linearizabilities}
-\todo{I am fixing from here}
-In order to derive the totally ordered execution from a concurrent
-execution, each method is instrumented to generate a so-called
-abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
-communicated to an external \emph{observer}, which records the sequences of
-abstract events from the code execution. In the next section, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property.
+In the previous sections, we describe data structures and linearization properties of concurrent data structures. In this section, we describe our approach to verify these linearization properties. Firstly, we explain the definition of \emph{observer} which is used to specify sequential specification of data structures. Thereafter, we describe how to verify linearization properties by using our \emph{controller} which is used to specify how a data structure is linearizable.
 \section*{Observers}
 \label{section:observers}
 \index{Observers}
 %% ====================================================================
 
+In order to derive the totally ordered execution from a concurrent
+execution, each method is instrumented to generate a so-called
+abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
+communicated to an external \emph{observer}, which records the sequences of
+abstract events from the code execution. In the next paragraph, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property
 
-We specify the serial semantics of data structures by observers, as introduced
+We specify the sequencial semantics of data structures by observers, as introduced
 in \cite{AHHR:integrated:rep}. Observers are finite automata extended with a finite set of observer registers that
 assume values in $\mathbb Z$. At initialization, the registers are nondeterministically assigned arbitrary
 values, which never change during a run of the observer. 
@@ -38,7 +38,7 @@ accepts the set of method invocations that are not allowed by behavior of a set
 
 \section*{Linearization Policies}
 \label{controllers:subsection}
-In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place. However, for a large class of linearizable implementations,
+In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place \cite{AHHR:integrated:rep,BLMRS:cav08,Vafeiadis}. However, for a large class of linearizable implementations,
 the LPs are not fixed in the code of their methods, but depend on actions
 of other threads in each particular execution. This happens, e.g., for algorithms that
 employ various forms of helping mechanisms, in which the execution of a particular
@@ -82,7 +82,7 @@ statements in a  method are declared to be {\it triggering}. If a triggering sta
 the controller of the thread will also be executed simultaneously.  
 
 
-In the {\tt Lazy Set} algorithm, a successful {\tt rmv} method has its LP at line 3, and an unsuccessful {\tt rmv} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. However linearization point of unsuccessful {\tt ctn} is not fixed in the code of the method.  Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads \threada\;, \threadb\;, and \threadc. The \threada \; is executing the {\tt add} to add the element {\tt e} into the set, whereas \threadb\; and \threadc\; are excuting {\tt ctn} to lock for the element {\tt e} in the set. When the thread \threada\; reaches the triggering statement at line 4 of the {\tt add} method at the step \;\stepa\;.
+In the {\tt Lazy Set} algorithm, a successful {\tt rmv} method has its LP at line 3, and an unsuccessful {\tt rmv} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. However linearization point of unsuccessful {\tt ctn} is not fixed in the code of the method.  Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads \threada\;, \threadb\;, and \threadc. The \threada \; is executing the {\tt add} to add the element {\tt e} into the set, whereas \threadb\; and \threadc\; are executing {\tt ctn} to lock for the element {\tt e} in the set. When the thread \threada\; reaches the triggering statement at line 4 of the {\tt add} method at the step \;\stepa\;. The controller rule 
 %the linearization point of the {\tt add} operation
 %is defined statically in the code of the method
 %(lines {\tt 2} and {\tt 4}).
