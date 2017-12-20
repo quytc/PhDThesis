@@ -81,7 +81,7 @@ More precisely, some
 statements in a  method are declared to be {\it triggering}. If a triggering statement is executed then 
 the controller of the thread will also be executed simultaneously.  
 
-
+%\input lazy-list-rrules
 In the {\tt Lazy Set} algorithm, a successful {\tt rmv} method has its LP at line 3, and an unsuccessful {\tt rmv} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. However linearization point of unsuccessful {\tt ctn} is not fixed in the code of the method.  Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads \threada\;, \threadb\;, and \threadc. The \threada \; is executing the {\tt add} to add the element {\tt e} into the set, whereas \threadb\; and \threadc\; are executing {\tt ctn} to lock for the element {\tt e} in the set. When the thread \threada\; reaches the triggering statement at line 4 of the {\tt add} method at the step \;\stepa\;. The controller rule 
 %the linearization point of the {\tt add} operation
 %is defined statically in the code of the method

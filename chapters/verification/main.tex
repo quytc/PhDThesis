@@ -3,7 +3,7 @@
 \label{chapter:verification}
 %% ====================================================================
 
-Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to achieve without computers. However, sometime they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious such as errors in banking systems and airplanes. Errors in computer systems are obviously not caused by the machine itself, but it seems to originate from the program that controls the machine. The error is normally called bugs. 
+Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to achieve without computers. However, sometime they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious such as errors in banking systems and airplanes. Errors in computer systems are typically not caused by the machine itself, but it seems to originate from the program that controls the machine. The error is normally called bugs. 
 %% ********************************************************************
 \KW{Complex machines}%
 %% ********************************************************************
@@ -13,7 +13,7 @@ The probability of existing bugs in complex software systems is not low. They us
 %% ********************************************************************
 Detecting and fixing software bugs are important tasks in software process in software industry. Leave bugs undetected in any project might in fact lead to
 subsequent bugs and other problems. It will
-become too costly to solve them or too daunting to attempt to. Therefore, ensuring correct software requires a substantial amount of
+become too costly to solve. Therefore, ensuring correct software is important and it requires a substantial amount of
 resources, both in terms of time and manpower.
 
 %% ********************************************************************
@@ -24,7 +24,14 @@ resources, both in terms of time and manpower.
 
 Some bugs are less serious than others. In some cases, we can still use software programs with these bugs. For example, bugs appearing in computer games and online news. However, in the case of critical systems 
 %such as banking, software systems in airplanes, safety is the most important aspect and we have to ensure that there no bugs in either the software nor the hardware.
-especially algorithms in libraries of programming languages, safety is the most important aspect and we have to ensure that there no bugs. These algorithms are used in many applications, and bugs will have wide impacts. Some of such libraries provide standard data structures such as stacks, queues, containers. These data structures can be both sequential or concurrents, and they typically used heap-allocated memory to store their data. For example, concurrent link queue in java.util.concurrent uses singly linked list data structure to store data.   
+especially algorithms in libraries of programming languages, safety is the most important aspect and we have to ensure that there no bugs. These algorithms are used in many applications, and bugs will have wide impacts. Some of such libraries provide standard data structures such as stacks, queues, containers. 
+
+A data structure is a particular way of organizing and storing data in a computer so that it can be accessed and modified efficiently. More precisely, a data structure is a collection of data values, the relationships among them, and operations that can be applied to the data. Each data structure has it own specification which describes the behaviour of the data structure. A data structure can be both sequential or concurrent, concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. They should allow a large degree of parallelism among accessing threads to minimize serialization bottlenecks, while maintaining the appearance of atomic operations. Data structures typically use heap-allocated memory to store their data. For example, concurrent link queue in java.util.concurrent uses singly linked list data structure to store data.   
+
+
+%Many modern programming languages provide libraries of concurrent data structures (e.g., the java.util.concurrent package and Intel Threading Building Blocks library) that are widely used. 
+
+
 
 The predominant method to improve software quality is
 \emph{testing}. It is a dynamic analysis where a program is run under specific conditions, so-called test cases, and checking
@@ -34,9 +41,10 @@ The test cases are carefully designed to cover all possible cases of program exe
 %% ********************************************************************
 \KW{Simulation}\index{Verification Methods!Simulation}%
 %% ********************************************************************
-Similarly, we can check for correctness of a program by using a \emph{model} of the program. The model can be extracted by
-removing all parts that are irrelevant for the tests, and can be used
-to \emph{simulate} the executions. However, there is no guarantee to cover all possible executions. Therefore, we have to find the way to achieve a full coverage of program executions. When the domain of the input parameters is large or if the program is
+%Similarly, we can check for correctness of a program by using a \emph{model} of the program. The model can be extracted by
+%removing all parts that are irrelevant for the tests, and can be used
+%to \emph{simulate} the executions. 
+However, there is no guarantee to cover all possible executions. Therefore, we have to find the way to achieve a full coverage of program executions. When the domain of the input parameters is large or if the program is
 complex, the method will suffer from the state-space explosion
 problem.\index{State-space!explosion}%
 %

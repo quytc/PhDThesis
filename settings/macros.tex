@@ -42,6 +42,46 @@
 \newcommand{\src}{\mathtt{src}}
 \newcommand{\dst}{\mathtt{dst}}
 
+
+\newcommand{\borule}[4]{\mbox{\bf when }#1\mbox{ \bf provided }#2\mbox{ \bf broadcast }#3\mbox{ \bf emit }#4}
+
+
+
+\newcommand{\rrule}[3]{\mbox{\bf when }#1\mbox{ \bf provided }#2\mbox{ \bf emit }#3}
+\newcommand{\frule}[5]{\mbox{\bf from } #1 \mbox{ \bf when }#2\mbox{ \bf provided }#3\mbox{ \bf emit }#4\mbox{ \bf goto } #5}
+
+\newcommand{\frulenostate}[3]{ \mbox{ \bf when }#1\mbox{ \bf provided }#2\mbox{ \bf emit }#3}
+
+\newcommand{\eventseq}{w}
+\newcommand{\veventseq}{v}
+
+
+\newcommand{\rulename}{\rho}
+\newcommand{\sndrule}[6]{\mbox{\bf from } #1 \mbox{ \bf when }#2\mbox{ \bf provided }#3\mbox{ \bf emit }#4\mbox{ \bf broadcast } #5 \mbox{ \bf goto } #6}
+\newcommand{\sndrulenostate}[4]{\mbox{ \bf when }#1\mbox{ \bf provided }#2\mbox{ \bf emit }#3\mbox{ \bf broadcast } #4}
+
+
+\newcommand{\rcvrule}[5]{\mbox{\bf from } #1  \mbox{ \bf when }#2\mbox{ \bf provided }#3\mbox{ \bf emit }#4 
+\mbox{ \bf goto } #5}
+\newcommand{\rcvrulenostate}[3]{\mbox{ \bf when }#1\mbox{ \bf provided }#2\mbox{ \bf emit }#3}
+
+\newcommand{\rcvruletwostate}[6]{\mbox{\bf from } #1 {,} #2  \mbox{ \bf when }#3\mbox{ \bf provided }#4\mbox{ \bf emit }#5 \mbox{ \bf goto } #6}
+
+
+\newcommand\snd[1]{{#1}!}
+\newcommand\rcv[1]{{#1}?}
+\newcommand{\ctrlof}[1]{{\tt cntrl}\left(#1\right)}
+\newcommand{\augof}[1]{{\tt aug}\left(#1\right)}
+\newcommand{\rvalues}{\theta}
+\newcommand{\param}{p}
+\newcommand{\ord}{{\tt ord}}
+\newcommand\before{\tt before}
+\newcommand\after{\tt after}
+
+\newcommand{\subsumed}{\sqsubseteq}
+
+
+
 %\newcommand{\bad}{\mathit{Bad}}
 \newcommand{\Bad}{\ensuremath{\mathcal{B}}}
 \newcommand{\minbad}{\ensuremath{\Bad_{min}}}

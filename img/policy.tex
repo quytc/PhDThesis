@@ -28,7 +28,7 @@
 \node[draw, rounded corners, fill = red!10, draw = red, name = addc, minimum width=40pt, minimum height=20pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(20pt,130pt)$){{controller}};
 \node[draw, rounded corners, fill = blue!10, draw = blue, name = cntc, minimum width=40pt, minimum height=20pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(130pt,130pt)$){{controller}};
 \node[draw, rounded corners, fill = orange!10, draw = orange, name = rmvc, minimum width=40pt, minimum height=20pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(240pt,130pt)$){{controller}}; 
-
+   
 
 \draw[->, dashed, color = red, line width=0.30mm] (addT) to  (addc);
 \draw[->, dashed,color = blue,line width=0.30mm] (cntT) to  (cntc);
@@ -36,13 +36,13 @@
 \draw[->, dashed, color = red, line width=0.30mm] (addc) to  (cntc);
 \draw[->, dashed, color = red, line width=0.30mm, bend left = -15] (addc) to (rmvc);
 
+   
  
-
 \draw[<->, dashed, color = red, line width=0.30mm] (addc) to  (observer);
 \draw[<->, dashed,color = blue,line width=0.30mm] (cntc) to  (observer);
 \draw[<->, dashed, color = orange,line width=0.30mm] (rmvc) to  (observer); 
 
-
+  
 \node[draw, circle, fill = gray!20, draw = black, name = step1, minimum width=13pt, minimum height=13pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(25pt,115pt)$){{$\tt 1$}};
 
 \node[draw, circle, fill = gray!20, draw = black, name = step1, minimum width=13pt, minimum height=13pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(190pt,110pt)$){{$\tt 4$}};
