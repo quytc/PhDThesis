@@ -57,21 +57,32 @@
 %\label{lazy:list:heap:cell:fig}
 %\end{figure}
 In general, a data structure is any data representation and its
-associated operations. Even an integer or floating point number stored on the computer can be viewed as a simple data structure. More typically, a data structure is meant to be an organization or structuring for a collection of data items. A sorted list of integers stored in an array is an example of such a structuring. The implementation of a data structure usually requires writing a set of operations that access and manipulate instances of that structure concurrently. Each data structure has an interface which defines a set of possible values and a set of operations. Examples of data structures are queue, stack and set. More precisely, the interface consists of a set of operations or methods, each having a number of input and output parameters, and a specification of the effect of each operation. 
+associated operations. Even an integer or floating point number stored on the computer can be viewed as a simple data structure. Typically, a data structure is meant to be an organization or structuring for a collection of data items. A sorted list of integers stored in an array is an example of such a structuring. The implementation of a data structure consists of a set of operations that access and manipulate instances of that structure concurrently. Each data structure has an interface which defines a set of possible values and a set of operations. Examples of data structures are queue, stack and set. More precisely, the interface consists of a set of operations or methods, each having a number of input and output parameters, and a specification of the effect of each operation. 
 %Each data structure have its own specification that specify behaviors of its operations. The behavior of each operation is determined by its inputs and outputs. 
 %For example, the behavior of a stack object can be specified by requiring that its {\tt push} operation insert an item in the stack, and that {\tt pop} removes the newest item present in the stack. Data structure typically used heap-allocated memory to store their data. A heap-allocated memory can be singly-linked list, skip-list or array of lists. 
-A stack has two operations {\tt push} and {\tt pop}. A {\tt push} operation has parameters element $\tt e$ and its effect is to insert $\tt e$ in the stack, and {\tt pop} removes the newest item present in the stack. Data structure typically used heap-allocated memory to store their data. A heap-allocated memory can be singly-linked list, skip-list or array of lists.
+A stack has two operations {\tt push} and {\tt pop}. A {\tt push} operation inserts an element $\tt e$ which is the parameter of {\tt push} in the stack, and {\tt pop} removes the newest item present in the stack. 
 
-A concurrent data structure is a way of storing and organizing data for access and manipulated by multiple computing threads (or processes) on a shared-memory computer. Several features of shared-memory multiprocessors make concurrent data structures significantly more difficult to design and to verify as correct than their sequential counterparts. The primary source of this additional difficulty is concurrency: Because threads are executed concurrently on different processors, and are subject to operating system scheduling decisions, page faults, interrupts, etc., we must think of the computation as completely asynchronous, so that the steps of different threads can be interleaved arbitrarily. This significantly complicates the task of designing correct concurrent data structures. 
+The implementation of a data structure should provide
+an efficient way to store data in computer memory and perform its operations
+in an efficient way. Data structures
+typically used heap-allocated memory to store their data. Various schemes
+can be used to organize the heap-allocated memory, such as singly-linked lists,
+doubly-linked lists, skip-lists, trees. The implementation
+can be sequential or concurrent.
+
+A concurrent data structure is a way of storing and organizing data for access and manipulation by multiple computing threads (or processes) on a shared-memory computer. Each operation is implemented as a sequential
+method that is executed by a thread. Several features of shared-memory multiprocessors make concurrent data structures significantly more difficult to design and to verify as correct than their sequential counterparts. The primary source of this additional difficulty is concurrency: because threads are executed concurrently possibly on different processors, and are subject to operating system scheduling decisions, interrupts, etc., we must think of the interaction between threads as completely asynchronous, so that the steps of different threads can be interleaved arbitrarily. %This significantly complicates the task of designing correct concurrent data structures. 
+
+
+
+There are several techniques to construct concurrent data structures including coarse-grained locking, fine-grained locking, and lock-free programming. In the coarse-grained locking technique, a single lock is used to synchronize every access to an object. Coarse-grained synchronization is easy to reason about, however it works well only when levels of concurrency are low, but if too many threads try to access the object at the same time, then the object becomes a sequential bottleneck, forcing threads to wait in line for access. Therefore, “Fine-grained synchronization techniques address this problem by splitting the object into independently synchronized components, ensuring that method calls interfere only when trying to access the same component at the same time. 
+%There is a trick in this technique called lazy synchronization.  The task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. 
+The lock-free technique help us to eliminate locks entirely, it relies on built-in atomic operations such as {\tt compareAndSet()} for synchronization. Each of these techniques can be applied (with appropriate customization) to a variety of common data structures (queues, stacks, sets) implemented by different linked data structures such as singly linked lists, skiplists, trees, or lists of lists. 
 
 Processes are sequential, each process applies a sequence of its operations to a share structures. A process can execute at a varying rate. Actually, we do not tell whether a process is halted or is running fast or slowly. Each object has a sequential specification that defines how the object behaves when its operations are
 invoked one at a time by a single process. An object’s operations can be invoked by concurrent
 processes, and it is necessary to give a meaning to interleaved operation
 executions.
-
-There are several techniques to construct concurrent data structures including coarse-grained locking, fine-grained locking, and lock-free programming. In the coarse-grained locking technique, a single lock is used to synchronize every access to an object. Coarse-grained synchronization is easy to reason about, however it works well when levels of concurrency are low, but if too many threads try to access the object at the same time, then the object becomes a sequential bottleneck, forcing threads to wait in line for access. Therefore, in fine-grained locking technique, they split the object into independently synchronized components, ensuring that method calls interfere only when trying to access the same component at the same time. There is a trick in this technique called lazy synchronization.  The task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. The lock-free technique help us to eliminate locks entirely, it relies on built-in atomic operations such as {\tt compareAndSet()} for synchronization. Each of these techniques can be applied (with appropriate customization) to a variety of common data structures (queues, stacks, sets) implemented by different linked data structures such as singly linked lists, skiplists, trees, or lists of lists. 
-
-
 An object is linearizable if each operation appears
 to take effect instantaneously at some point between the operation’s invocation
 and response. Linearizability implies that processes appear to be interleaved
@@ -206,7 +217,8 @@ As an example, Fig.~\ref{figure:lazy-list} depicts a program
 that implements a concurrent set containing integer
 elements with three operations $\tt add$, $\tt remove$ and $\tt contains$.
 %
-The set is constructed by using lazy synchronization technique and  implemented as an ordered singly linked list. A cell in the list has three fields ${\tt mark}$, ${\tt lock}$, and
+The set is constructed by using lazy synchronization technique (small trick of fine-grained synchronization) in which the task of removing a component from a data structure can be split into two phases: the component is logically removed simply by setting a tag bit, and later, the component can be physically removed by unlinking it from the rest of the data structure. 
+ and  implemented as an ordered singly linked list. A cell in the list has three fields ${\tt mark}$, ${\tt lock}$, and
 ${\tt val}$. The field $\tt mark$ is true if
 the node has been logically removed from the set. The ${\tt lock}$ field is a lock and the field ${\tt val}$ presents the data value which is integer in this case.
 The program contains three methods, namely {\tt add}, {\tt rmv},
