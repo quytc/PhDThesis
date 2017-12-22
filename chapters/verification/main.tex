@@ -3,19 +3,30 @@
 \label{chapter:verification}
 %% ====================================================================
 
-Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them to do. In some cases, the consequence could be very serious for errors in banking systems
-and flight control systems. Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so called bugs. 
+Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them to do. \bjcom{skip ``do''}
+In some cases, the consequence could be very serious for errors in banking systems
+and flight control systems.
+\bjfix{In some cases, the consequence could be very serious for errors in banking systems and flight control systems.}
+{In many cases, the consequences could be very serious, for example when errors
+in banking or flight control software results in unexpected behaviors.}
+Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so called bugs. 
 %% ********************************************************************
 \KW{Complex machines}%
 %% ********************************************************************
-Bugs are quite common in complex software systems,
+Bugs are quite common  in complex software systems,
 since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
+\bjfix{Bugs are quite common  in complex software systems,
+since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.}
+{Bugs are quite common  in complex software systems,
+since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.}
 %% ********************************************************************
 \KW{Find bugs}%
 %% ********************************************************************
 Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge
 problems. They can be very hard to detect and correct. It will
-become too costly to solve. Therefore, it is very important to allocate sufficient
+become too costly to solve.
+\bjfix{It will become too costly to solve.}{, especially if they are discovered after the software has been delivered.}
+Therefore, it is very important to allocate sufficient
 resources, both in terms of time and manpower, to ensuring that developed
 software is as free of bugs as possible.
 
@@ -25,33 +36,55 @@ software is as free of bugs as possible.
 \index{Safety}%
 %% ********************************************************************
 
-Some bugs are less serious than others. In some cases, we can still use software programs with these bugs. For example, bugs appearing in computer games and online news. However, in the case of critical systems 
+Some bugs are less serious than others. In some cases, we can still use software programs with these bugs. For example, bugs appearing in computer games and online news.
+\bjfix{In some cases, we can still use software programs with these bugs. For example, bugs appearing in computer games and online news.}{Some types of software, e.g., in user interfaces or entertainment software, can be useable even if it contains a small number of bugs}
+However, in the case of critical systems \bjcom{add ``and system components''}
 %such as banking, software systems in airplanes, safety is the most important aspect and we have to ensure that there no bugs in either the software nor the hardware.
-especially algorithms in libraries of programming languages, safety is the most important aspect and we have to ensure that there no bugs. These algorithms are used in many applications, and bugs will have wide impacts. Some of such libraries provide standard data structures such as stacks, queues, containers. These data structures provide ways of storing multiple values in a single variable. It is used to organize data in such a way that the insertion deletion,searhing i.e manipulation of data is done with minimal complexity , and that gives a efficient performance of our computing. By using data structures data can be easily, and efficiently exchanged; it allows portability, comprehensibility, and adaptability of information.
+especially algorithms \bjfix{especially algorithms}{such as software} in libraries of programming languages, safety is the most important aspect and we have to ensure that there no bugs.
+\bjfix{safety is the most important aspect and we have to ensure that there no bugs. These algorithms are used in many applications, and bugs will have wide impacts. }
+{bugs can have far-reaching impacts consequences, and must be avoided as much as possible}
+\bjcom{Here you suddenly talk about ``algorithms'' rather than ``softare'': confusing}
+Some of such libraries provide standard data structures such as stacks, queues, containers. These \bjfix{These}{Such} data structures provide ways of storing multiple values in a single variable.
+\bjfix{multiple values in a single variable.}
+{and retrieving data in a way that suits the application at hand}
+\bjcom{Here, I suggest you insert a concrete example of a data structure and how it can be used in some application.}
+It is used to organize data in such a way that the insertion deletion,searhing i.e manipulation of data is done with minimal complexity , and that gives a efficient performance of our computing. \bjcom{I suggest to remove the previous sentence}
+By using data structures data can be easily, and efficiently exchanged; it allows portability, comprehensibility, and adaptability of information.
 
-A data structure is a particular way of organizing and storing data in a computer so that it can be accessed and modified efficiently. More precisely, a data structure is a collection of data values, the relationships among them, and operations that can be applied to the data. 
+A data structure is a particular way of organizing and storing data in a computer so that it can be accessed and modified efficiently. More precisely, a data structure is a collection of data values, the relationships among them, and operations that can be applied to the data.
+\bjcom{The previous sentence repeats what was said in the preceding paragraph. Skip it, and start this paragraph with the next sentence}
 %Each data structure has it own specification which describes the behaviour of the data structure. 
-A data structure can be both sequential or concurrent, concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. 
+A data structure can be both sequential or concurrent, concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. \bjcom{Break the preceding sentence. You can make several sentences with slightly more content}
 %They should allow a large degree of parallelism among accessing threads to minimize serialization bottlenecks, while maintaining the appearance of atomic operations. 
-Data structures typically use heap-allocated memory to store their data. For example, concurrent link queue in java.util.concurrent uses singly linked list data structure to store data.   
+\bjcom{Here, you can insert more material. You can say, things like (appr.) ``A data structure should ideally provide a simple interface to the software that uses
+it'' You can say in short what such an interface does. Then you can continue ``In order to implement this interface, the data structure may internally be quite complex.} 
+Data structures typically use heap-allocated memory to store their data. For example, concurrent link queue in java.util.concurrent uses singly linked list data structure to store data. \bjcom{Fix grammar errors in the preceding sentence}
+\bjcom{Extend the paragraph more by stuff that can complicate data structure implementations, e.g., saying that they can be concurrent and that concurrency
+can be tricky and difficult to get correct}
+
 
 
 %Many modern programming languages provide libraries of concurrent data structures (e.g., the java.util.concurrent package and Intel Threading Building Blocks library) that are widely used. 
-
 
 
 The predominant method to improve software quality is
 \emph{testing}. It is a dynamic analysis where a program is run under specific conditions, so-called test cases, and checking
 whether the result with a given input matches the expected output.
 %
-The test cases are carefully designed to cover all possible cases of program executions.\index{Coverage}
+The test cases are \bjfix{are}{should be }
+carefully designed to cover all possible cases of program executions.\index{Coverage}
 %% ********************************************************************
 \KW{Simulation}\index{Verification Methods!Simulation}%
 %% ********************************************************************
 %Similarly, we can check for correctness of a program by using a \emph{model} of the program. The model can be extracted by
 %removing all parts that are irrelevant for the tests, and can be used
 %to \emph{simulate} the executions. 
-However, there is no guarantee to cover all possible executions. Therefore, we have to find the way to achieve a full coverage of program executions. \emph{testing} can be used to show the presence of bugs, but never to show their absence. So, it is needed to use formal verification that a software system is correct with respect to some specifications. %
+However, there is no guarantee to cover all possible executions. Therefore, we have to find the way to achieve a full coverage of program executions.
+\bjcom{Skip the preceding sentence. You can insert in the beginning of the next: ``Therefore, it is said that.. `` (do not put italics again)} \emph{testing} can be used to show the presence of bugs, but never to show their absence. 
+\bjcom{The next sentence is strange. You must continue the flow by saying, e.g., that it would be nice to have techniques for checking that all executions
+conform to the interface of a data structure, and then say that a possibility is to use formal techniques, and that this will be approach used in your
+thesis}
+So, it is needed to use formal verification that a software system is correct with respect to some specifications. %
 %
 % The topic of this thesis is centered around the following question.
 % %
