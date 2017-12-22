@@ -4,16 +4,14 @@
 
 %Formal verification uses mathematical methods to verify whether a software satisfies its specification provided by users. 
 %formal verification is the process of checking whether a software satisfies its predefined properties. 
-=======
-Formal verification uses mathematical methods to verify \bjfix{verify}{check} whether a software satisfies its specification provided by users. 
+Formal verification uses mathematical methods to check whether a software satisfies its specification provided by users. 
 %formal verification is the process of checking whether a software satisfies its predefined properties. 
-\bjcom{Skip the following sentece. Continue into the next paragraph}
-There is a wide variety of specification to be checked for software programs, these specification can be very domain-specific, as in “train collisions and derailments do not occur in train traffic” or it may be generic, as in “no execution of the system dereferences a null pointer.” 
+%\bjcom{Skip the following sentece. Continue into the next paragraph}
+%There is a wide variety of specification to be checked for software programs, these specification can be very domain-specific, as in “train collisions and derailments do not occur in train traffic” or it may be generic, as in “no execution of the system dereferences a null pointer.” 
 % be either safety or liveness properties. Liveness properties state that program execution eventually reaches several desirable states at some point of execution, for example liveness properties can be "the postman delivers the letter to the recipient", "A sent message is eventually received". In contract, verifying safety property of a program is satisfied is reduced to checking that something bad will never happen in the execution of the program [48]. 
 %\input model
 %In order to specify liveness properties, it is needed to  describe traces of events by using temporal logics, statistics, and probabilities. Checking aliveness property is done by repeatedly checking reachability of good situations in program executions. 
-
-There are several approaches for formal verification \bjcom{put comma ``,''} including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether \bjcom{insert ``a''} system is equivalent to its specification with respect to some notation \bjfix{notation}{notion} of behavioral equivalence. \bjcom{Insert a sentence about where it is used. I think it is mostly used for hardware designs in industry} Theorem proving is a technique where both the \bjcom{insert ``behavior of the''} system and its desired properties are expressed in mathematicaal logic. Then, theorem proving \bjcom{insert ``typically assisted by an interactive theorem prover} will try to prove that the system satisfies these properties. 
+There are several approaches for formal verification, including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether a system is equivalent to its specification with respect to some notion of behavioral equivalence. This is \bjcom{Insert a sentence about where it is used. I think it is mostly used for hardware designs in industry} Theorem proving is a technique where both the \bjcom{insert ``behavior of the''} system and its desired properties are expressed in mathematicaal logic. Then, theorem proving \bjcom{insert ``typically assisted by an interactive theorem prover} will try to prove that the system satisfies these properties. 
 
 Model checking approach take \bjfix{Model checking approach take}{Model checking takes as input} a model of the system under
 consideration and a formal specification of the \bjfix{the}{a} property to be verified as inputs. \bjcom{Insert a sentence saying like ``The specification of a software component may consist of a number of such properties, each of which can be verified using model checking''}
