@@ -2,9 +2,9 @@
 \section*{Formal Verification} 
 %Computer programs are written based on human intuition, which is probably leads to programming errors. Current practice is to test programs on various sample inputs in the hope of finding any possibility of incorrect program behavior. There exist many approaches like testing, simulation, static analysis and simple debugging techniques, such as inserting assertions and print statements in the source code, which show the presence of software errors. 
 
-Formal verification uses mathematical methods to verify whether a software satisfies its predefined properties. 
+Formal verification uses mathematical methods to verify whether a software satisfies its specification provided by users. 
 %formal verification is the process of checking whether a software satisfies its predefined properties. 
-There is a wide variety of properties to be checked for software programs, these properties can be very domain-specific, as in “train collisions and derailments do not occur in train traffic” or it may be generic, as in “no execution of the system dereferences a null pointer.” 
+There is a wide variety of specification to be checked for software programs, these specification can be very domain-specific, as in “train collisions and derailments do not occur in train traffic” or it may be generic, as in “no execution of the system dereferences a null pointer.” 
 % be either safety or liveness properties. Liveness properties state that program execution eventually reaches several desirable states at some point of execution, for example liveness properties can be "the postman delivers the letter to the recipient", "A sent message is eventually received". In contract, verifying safety property of a program is satisfied is reduced to checking that something bad will never happen in the execution of the program [48]. 
 %\input model
 %In order to specify liveness properties, it is needed to  describe traces of events by using temporal logics, statistics, and probabilities. Checking aliveness property is done by repeatedly checking reachability of good situations in program executions. 
@@ -12,8 +12,8 @@ There is a wide variety of properties to be checked for software programs, these
 There are several approaches for formal verification including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether system is equivalent to its specification with respect to some notation of behavioral equivalence. Theorem proving is a technique where both the system and its desired properties are expressed in mathematical logic. Then, theorem proving will try to prove that the system satifies these properties. 
 
 Model checking approach take a model of the system under
-consideration and a formal specification of the property to be verified as inputs. The approach exhaustively explorer all possible states of the model which can be finite or infinite where infinite sets of states can be represented finitely by using abstraction techniques. In this way, it can be shown that a given system model truly satisfies a certain property. It is a real challenge to examine the largest possible
-state spaces that can be treated.
+consideration and a formal specification of the property to be verified as inputs. The approach exhaustively explorer all possible states of the model which can be finite or infinite where infinite sets of states can be represented finitely by using abstraction techniques. In this way, it can be shown that a given system model truly satisfies a certain specification. Model checking is a general verification approach that is applicable to a wide range of applications
+such as embedded systems, software engineering, and hardware design. However, it usually work well with finite-state systems are considered. It is a real challenge to examine the largest possible state spaces that can be treated. For example, applying model checking to infinite-state systems such as data structures with many dimensions of infiniteness is a real challenge in current software verification research. 
 %In this thesis though, we consider programs where the specification describes the bad behaviors. We concentrate on safety properties and try to design abstraction techniques to verify that a program including both sequential and concurrent program respects its specifications. 
 
 %\section*{Verification of Data Structures}
