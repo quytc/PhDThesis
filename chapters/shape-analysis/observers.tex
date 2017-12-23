@@ -1,10 +1,25 @@
 %% ====================================================================
 \chapter{Verification of Linearizabilities}
-In the previous sections, we describe data structures and linearization properties of concurrent data structures. In this section, we describe our approach to verify these linearization properties. Firstly, we explain the definition of \emph{observer} which is used to specify sequential specification of data structures. Thereafter, we describe how to verify linearization properties by using our \emph{controller} which is used to specify how a data structure is linearizable.
+\bjcom{A better title is ``Specifying Linearizability''}
+In the previous sections, we describe data structures and linearization properties \bjfix{linearization properties of concurrent data structures}{the correctness criterion of linearizability for concurrent data structures} of concurrent data structures. In this section, we describe our approach to verify these linearization properties \bjcom{strange term}.
+\bjcom{Here, you should motivate that the goal is to specify linearizability in a way that is suitable for automated verification}
+Firstly, we explain the definition of \emph{observer} which is used to specify sequential specification of data structures. Thereafter, we describe how to verify linearization properties \bjcom{strange term} by using \bjcom{You should rather speak about ``linearization policies''}
+our \emph{controller} which is used to specify how a data structure is linearizable.
+
+\bjcom{Here, you can give a paragraph with overview of the chapter. You can say that you separate the problem of specifying linearizability into several ones.
+  1. To specify the sequential semantics of a data structure in a way that is suitable for automated verification.
+  2. To specify placement of linearization points in executions of a concurrent data structure.
+  For the first, you use the techniques of (* TACAS 13 *) of observers. For the second, you present a new technique, in which methods are equipped with
+  controllers. Controllers specify so-called ``linearization policies'', which prescribe how LPs are placed in executions.
+  You can also add a section, where you survey the technique of observers that synchronize at call and return events
+  }
+
 \section*{Observers}
 \label{section:observers}
 \index{Observers}
 %% ====================================================================
+\bjcom{This introduction does not work. It is not an introduction to observers, but rather says how they are used in linearization policies. Some of the
+material can be moved to the survey section before the ``Observers'' section (see above)}
 
 In order to derive the totally ordered execution from a concurrent
 execution, each method is instrumented to generate a so-called
@@ -12,9 +27,20 @@ abstract event whenever a linearization point is passed. Right after the program
 communicated to an external \emph{observer}, which records the sequences of
 abstract events from the code execution. In the next paragraph, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property
 
-We specify the sequencial semantics of data structures by observers, as introduced
-in \cite{AHHR:integrated:rep}. Observers are finite automata extended with a finite set of observer registers that
-assume values in $\mathbb Z$. At initialization, the registers are nondeterministically assigned arbitrary
+\bjcom{It would be nice to have an extra introductory paragraph. It can say something like:
+  \begin{inparaenum}[1.]
+  \item Data structures are, by nature, infinite-state objects, since they are intended to carry an unbounded number of data elements.
+  \item For automated verification, it is desirable with specifications that are constructed without explicitly mentioning such infinite objects.
+  \item This problem is addressed by observers [2]. Observers specify allowed sequences of operations by constraining their projection on a small
+    number of data elements. For instance, a stack data structure is specified by (* continue here *)
+  \end{inparaenum}
+  After this, you can continue as below.
+}
+    
+
+We specify the sequencial \bjcom{please spell check!!!!} semantics of data structures by observers, as introduced
+in \cite{AHHR:integrated:rep}. Observers are finite automata extended with a finite set of observer registers \bjcom{put in italics} that
+assume values in $\mathbb Z$. \bjcom{You must introduce this domain earlier} At initialization, the registers are nondeterministically assigned arbitrary
 values, which never change during a run of the observer. 
 \vspace{1cm}
 \begin{figure}[h]
@@ -26,7 +52,8 @@ values, which never change during a run of the observer.
   \label{figure:shape:set:observers}
 %\end{wrapfigure}
 \end{figure} \vspace{1cm} Transitions are labeled
-by linearization events that may be parameterized on registers. Observers are used as
+by linearization events \bjcom{I suggest you say ``operations''. Later you will say that linearization events are operations}
+that may be parameterized on registers. Observers are used as
 acceptors of sequences of linearization events. The observer processes such sequences
 one event at a time. If there is a transition, whose label, after replacing registers by their values, matches the event, such a transition is performed. If there is no such transition,
 the observer remains in its current state. The observer accepts a sequence if it can be
@@ -34,24 +61,45 @@ processed in such a way that an accepting state is reached. We use observers to 
 precisely those sequences of abstract events that are not allowed by the semantics of
 the data structure. This is best illustrated by an example. Fig. 3 depicts an observer that
 accepts the set of method invocations that are not allowed by behavior of a set 
-
+\bjcom{Continue and explain in 5-10 lines how it works}
 
 \section*{Linearization Policies}
 \label{controllers:subsection}
-In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place \cite{AHHR:integrated:rep,BLMRS:cav08,Vafeiadis}. However, for a large class of linearizable implementations,
+In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place \cite{AHHR:integrated:rep,BLMRS:cav08,Vafeiadis}.
+\bjcom{Insert explanation of how this works for add and rm methods of the lazy set}
+However, for a large class of linearizable implementations,
 the LPs are not fixed in the code of their methods, but depend on actions
 of other threads in each particular execution. This happens, e.g., for algorithms that
 employ various forms of helping mechanisms, in which the execution of a particular
-statement in one thread defines the LP for one or several other threads. For example, in the the {\tt Lazy Set} algorithm, the linearization point of unsuccessful {\tt ctn} method is not fixed in the code of the method. It stays in the code of the {\tt add} method. There have been several previous works dealing with the problems of non-fixed linearization points \cite{Poling,Colvin:Lazy-List,CGLM:cav06,SWD:cav12,Derrick:fm14,SDW:tcl14,Vafeiadis:cav10,Vafeiadis:Aspect}. However, they are either manual approaches without tool implementation or not strong enough to cover various types of concurrent programs. In this thesis we handle non-fixed linearization points by providing semantic for specifying linearization policies. The linearization point of a thread may be defined in two ways:
+statement in one thread defines the LP for one or several other threads.
+\bjcom{A problem here is that the lazy set does not use ``helping''. PLease adapt the text to avoid such a misunderstanding}
+For example, in the the {\tt Lazy Set} algorithm, the linearization point of unsuccessful {\tt ctn} method is not fixed in the code of the method.
+\bjcom{The previous sentence is sloppy. You probably mean that ``it is not possible to assign a fixed LP in the code of the ctn method''. Your current text
+  may give the impression that there is an LP, but it is not fixed: it is unclear what this means}
+It stays in the code of the {\tt add} method.
+\bjcom{I suspect that the previous statement is incorrect. As I understand it, there is no fixed LP for ctn in the add method, since the placement depends on
+  what happens in the execution}
+\bjcom{Here, you must insert a detailed explanation of why this is the case, and how linearization points can be assigned in each execution. This will easily be
+10-20 lines. After that, end the paragraph}
+
+ There have been several previous works dealing with the problems of non-fixed linearization points \cite{Poling,Colvin:Lazy-List,CGLM:cav06,SWD:cav12,Derrick:fm14,SDW:tcl14,Vafeiadis:cav10,Vafeiadis:Aspect}. However, they are either manual approaches without tool implementation or not strong \bjfix{strong}{general} enough to cover various types of concurrent programs. \bjcom{You must comment in more detail about these works in a ``related works'' section of the intro}
+ In this thesis we handle non-fixed linearization points by providing semantic for specifying linearization policies.providing semantic for specifying linearization policies.
+\bjfix{providing semantic for specifying linearization policies}
+{a mechanism for assigning LPs to executions, which we call \emph{linearization policies}}
+The linearization point of a thread may be defined in two ways: \bjcom{Again, do not say that there are EXACTLY two ways}
 (i) The thread may define its own linearization point,
 and in that case may also help other threads define their 
 own linearization points.
 (ii) The thread may be helped by other threads.
-%
+\bjcom{The points (i) and (ii) are almost impossible to understand, since you do not explain anything about what happens}
+\bjcom{I suggest you replace the preceding (i) and (ii) by giving a couple of EXAMPLES of how methods may linearize. You already have explained on
+  in the preceding paragraph (for lazy set). You can informally present a helping mechanism, which you can borrow from some other algorithm that
+  you verify. In all cases, you must explain concretely what happens in the concurrent algorithm, not just be abstract}
 The helping mechanism may contain complicated patterns.
 %
 For instance, the helping thread may broadcast a message to the other threads
 (e.g., the {\tt Lazy Set} algorithm).
+\bjcom{I do not see any broadcasting in the code...}
 %
 Both the helping and the helped threads will then interact with the observer to
 communicate their parameters and return values.
@@ -67,12 +115,22 @@ the helped thread itself need not communicate with the observer.
 %
 Furthermore, a given algorithm may use several of these patterns to 
 define its linearization points.
+\bjcom{The preceding paragraph has the fundamental problem that you do not describe how the ALGORITHM works, but
+  rather you describe what the CONTROLLERS do. The controllers are not part of the algorithm (they will be introduced only
+  later, when you describe how they work}
+\bjcom{To be more precise on ``helping''. My understanding is that in concurrent algorithms, ``helping'' means that one method
+  actively helps another method to perform an operation, e.g., to remove an element. In your above text, you use ``helping''
+  in another sense: namly that the LP of one method can be placed in the operation of another. This is different, and has nothing
+  to do with the working of the algorithm, it is only relevant for reasoning about linearizability. So, if you discuss ``helping'', it
+  should be in an example where the methods actually help each other}
+
 %
 \input img/policy 
 
-To specify the linearization patterns, we equip each method with a
+To specify the linearization patterns \bjcom{new undefined term, you can use ``various ways in which LPs can be assigned}, we equip each method with a
 {\it controller} whose behavior is defined by a set of rules which are described detail in paper II.
 %
+\bjcom{You need a couple of more sentences here to explain what is the role of controllers}
 The controller is occasionally activated by the thread,
 and helps organize the interaction  
 of the thread with other threads as well as with the observer.
@@ -82,7 +140,10 @@ statements in a  method are declared to be {\it triggering}. If a triggering sta
 the controller of the thread will also be executed simultaneously.  
 
 %\input lazy-list-rrules
-In the {\tt Lazy Set} algorithm, a successful {\tt rmv} method has its LP at line 3, and an unsuccessful {\tt rmv} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. However linearization point of unsuccessful {\tt ctn} is not fixed in the code of the method.  Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads \threada\;, \threadb\;, and \threadc. The \threada \; is executing the {\tt add} to add the element {\tt e} into the set, whereas \threadb\; and \threadc\; are executing {\tt ctn} to lock for the element {\tt e} in the set. When the thread \threada\; reaches the triggering statement at line 4 of the {\tt add} method at the step \;\stepa\;. The controller rule 
+In the {\tt Lazy Set} algorithm, a successful {\tt rmv} method has its LP at line 3, and an unsuccessful {\tt rmv} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. However linearization point of unsuccessful {\tt ctn} is not fixed in the code of the method.
+\bjcom{The preceding text in this paragraph can be moved and adapted to the earlier paragraphs of this chapter, where you explaine fixed and non-fixed LPs}
+\bjcom{The rest of this paragraph fits into the text as it is}
+ Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads \threada\;, \threadb\;, and \threadc. The \threada \; is executing the {\tt add} to add the element {\tt e} into the set, whereas \threadb\; and \threadc\; are executing {\tt ctn} to lock for the element {\tt e} in the set. When the thread \threada\; reaches the triggering statement at line 4 of the {\tt add} method at the step \;\stepa\;. The controller rule 
 %the linearization point of the {\tt add} operation
 %is defined statically in the code of the method
 %(lines {\tt 2} and {\tt 4}).
@@ -103,6 +164,12 @@ to informs the observer that an {\tt add} operation
 with argument {\tt e} has been performed, and that the outcome
 of the operation is {\tt true} (the operation was successful) in the step \stepf\;. The controller will help other threads
 by to linearize. This is done by {\it broadcasting} a message to the threads \threadb, \threadc\; which is executing {\tt ctn} in steps \stepb, \stepc. These threads then inform the observer that the element e is not in the list in \stepc, \stepe\; respectively. Note that \threadb, \threadc\; can get message in any order. The detail of controller is described in paper II.
+\bjcom{The description of linearization policy in the preceding paragraph is in principle OK. But the grammar and language is not acceptable. There are even unfinished sentences. Please make an effort to write nice english, explaining in a way that colleagues can easily understand how things work.}
+
+\bjcom{Write more about linearization policies. You should by example explain syntax of controllers, intuitively what they can do, etc.
+  For instance, how they reduce checking for linearizability to checking (non)reachability of bad states. This includes all the stuff that is
+currently done by monitors.
+  You shoudl also survey results in the paper: e.g., later you write ``In paper II, we show that ... reduces to reachability ...''}
 
 \chapter{Shape Analysis}
 Pointers and heap-allocated storage are features of all modern imperative programming languages.
