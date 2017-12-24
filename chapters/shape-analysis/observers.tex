@@ -1,46 +1,38 @@
 %% ====================================================================
-\chapter{Verification of Linearizabilities}
-\bjcom{A better title is ``Specifying Linearizability''}
-In the previous sections, we describe data structures and linearization properties \bjfix{linearization properties of concurrent data structures}{the correctness criterion of linearizability for concurrent data structures} of concurrent data structures. In this section, we describe our approach to verify these linearization properties \bjcom{strange term}.
-\bjcom{Here, you should motivate that the goal is to specify linearizability in a way that is suitable for automated verification}
-Firstly, we explain the definition of \emph{observer} which is used to specify sequential specification of data structures. Thereafter, we describe how to verify linearization properties \bjcom{strange term} by using \bjcom{You should rather speak about ``linearization policies''}
-our \emph{controller} which is used to specify how a data structure is linearizable.
+%\chapter{Verification of Linearizabilities}
+\chapter{Specifying Linearizability}
+In the previous sections, we describe the correctness criterion of linearizability for concurrent data structures. The goal is to specify linearizability in a way that is suitable for automated verification.
+%Firstly, we explain the definition of \emph{observer} which is used to specify sequential specification of data structures. Thereafter, we describe how to verify linearization properties \bjcom{strange term} by using \bjcom{You should rather speak about ``linearization policies''}
+%our \emph{controller} which is used to specify how a data structure is linearizable.
+We separate the problem of specifying linearizability into several ones.
+\begin{itemize}
 
-\bjcom{Here, you can give a paragraph with overview of the chapter. You can say that you separate the problem of specifying linearizability into several ones.
-  1. To specify the sequential semantics of a data structure in a way that is suitable for automated verification.
-  2. To specify placement of linearization points in executions of a concurrent data structure.
-  For the first, you use the techniques of (* TACAS 13 *) of observers. For the second, you present a new technique, in which methods are equipped with
-  controllers. Controllers specify so-called ``linearization policies'', which prescribe how LPs are placed in executions.
-  You can also add a section, where you survey the technique of observers that synchronize at call and return events
-  }
+ \item  To specify the sequential semantics of a data structure in a way that is suitable for automated verification.
+  \item To specify placement of linearization points in executions of a concurrent data structure.
+  	 
+\end{itemize}
+  For the first, we use the techniques of observers \cite{AHHR:integrated:rep}. For the second, we present a new technique, in which methods are equipped with controllers. Controllers specify so-called ``linearization policies'', which prescribe how LPs are placed in executions.
+  %You can also add a section, where you survey the technique of observers that synchronize at call and return events
+ 
 
 \section*{Observers}
 \label{section:observers}
 \index{Observers}
 %% ====================================================================
-\bjcom{This introduction does not work. It is not an introduction to observers, but rather says how they are used in linearization policies. Some of the
-material can be moved to the survey section before the ``Observers'' section (see above)}
-
-In order to derive the totally ordered execution from a concurrent
-execution, each method is instrumented to generate a so-called
-abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
-communicated to an external \emph{observer}, which records the sequences of
-abstract events from the code execution. In the next paragraph, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property
-
-\bjcom{It would be nice to have an extra introductory paragraph. It can say something like:
-  \begin{inparaenum}[1.]
-  \item Data structures are, by nature, infinite-state objects, since they are intended to carry an unbounded number of data elements.
-  \item For automated verification, it is desirable with specifications that are constructed without explicitly mentioning such infinite objects.
-  \item This problem is addressed by observers [2]. Observers specify allowed sequences of operations by constraining their projection on a small
-    number of data elements. For instance, a stack data structure is specified by (* continue here *)
-  \end{inparaenum}
-  After this, you can continue as below.
-}
-    
-
-We specify the sequencial \bjcom{please spell check!!!!} semantics of data structures by observers, as introduced
-in \cite{AHHR:integrated:rep}. Observers are finite automata extended with a finite set of observer registers \bjcom{put in italics} that
-assume values in $\mathbb Z$. \bjcom{You must introduce this domain earlier} At initialization, the registers are nondeterministically assigned arbitrary
+%\bjcom{This introduction does not work. It is not an introduction to observers, but rather says how they are used in linearization policies. Some of the
+%material can be moved to the survey section before the ``Observers'' section (see above)}
+%
+%In order to derive the totally ordered execution from a concurrent
+%execution, each method is instrumented to generate a so-called
+%abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
+%communicated to an external \emph{observer}, which records the sequences of
+%abstract events from the code execution. In the next paragraph, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property
+Data structures are, by nature, infinite-state objects, since they are intended to carry an unbounded number of data elements. For automated verification, it is desirable with specifications that are constructed without explicitly mentioning such infinite objects.  This problem is addressed by observers \cite{AHHR:integrated:rep}. Observers specify allowed sequences of operations by constraining their projection on a small number of data elements.
+% For instance, a stack data structure is specified by (* continue here *)
+%We specify the sequencial \bjcom{please spell check!!!!} semantics of data structures by observers, as introduced
+%in \cite{AHHR:integrated:rep}.
+Observers are finite automata extended with a finite set of observer \emph{registers} that
+assume values in integer domain. At initialization, the registers are nondeterministically assigned arbitrary
 values, which never change during a run of the observer. 
 \vspace{1cm}
 \begin{figure}[h]
@@ -52,16 +44,22 @@ values, which never change during a run of the observer.
   \label{figure:shape:set:observers}
 %\end{wrapfigure}
 \end{figure} \vspace{1cm} Transitions are labeled
-by linearization events \bjcom{I suggest you say ``operations''. Later you will say that linearization events are operations}
-that may be parameterized on registers. Observers are used as
-acceptors of sequences of linearization events. The observer processes such sequences
-one event at a time. If there is a transition, whose label, after replacing registers by their values, matches the event, such a transition is performed. If there is no such transition,
+by operations that may be parameterized on registers. Observers are used as
+acceptors of sequences of operations. The observer processes such sequences
+one operation at a time. If there is a transition, whose label, after replacing registers by their values, matches the operation, such a transition is performed. If there is no such transition,
 the observer remains in its current state. The observer accepts a sequence if it can be
 processed in such a way that an accepting state is reached. We use observers to give exact specifications of the behaviors of data structures such as sets, queues, and stacks. The observer is defined in such a way that it accepts
-precisely those sequences of abstract events that are not allowed by the semantics of
+precisely those sequences of abstract operations that are not allowed by the semantics of
 the data structure. This is best illustrated by an example. Fig. 3 depicts an observer that
-accepts the set of method invocations that are not allowed by behavior of a set 
-\bjcom{Continue and explain in 5-10 lines how it works}
+accepts the set of method invocations that are not allowed by sequential specification of a set. The observer have three states $s_0$, $s_1$ and $s_2$. The initial state $s_0$ corresponds to positions in the runs where the non-determnistically tracked value
+stored in the observer variable $z$ is not present in the set (i.e.
+each time it has been inserted it got deleted afterwards). The
+state $s_1$ corresponds to positions in the runs where the tracked
+value is present in the set (i.e. it has not been deleted since it
+was last inserted). The accepting state $s_2$ corresponds to positions
+in the runs where the bad specification captured by the observer has been observed. The captured bad specification are those where
+a data value is deleted or found although it is not present in the set, or a data value is not found or cannot be deleted although it is already present in the set
+%\bjcom{Continue and explain in 5-10 lines how it works}
 
 \section*{Linearization Policies}
 \label{controllers:subsection}
