@@ -19,8 +19,27 @@
 \newcommand{\union}{\cup}
 %\newcommand{\minsetunion}{\sqcup}
 \newcommand{\range}[2]{\llbracket{#1}{,}{#2}\rrbracket} %% {,} otherwise I get some spacing after the ','
+\newcommand\data{d}
 
 % \newcommand{\updateby}[2]{\ensuremath{\left[#1\leftarrow#2\right]}}
+\newcommand\indata{\data^{\it in}}
+\newcommand\ddomain{{\mathds D}}
+\newcommand{\msgset}{\Sigma}
+
+\newcommand{\senderindata}{\data^{\it in}_s}
+\newcommand\inxvar{\xvar^{\it in}}
+\newcommand\pindata[1]{\data^{\it in}_{#1}}
+\newcommand\outdata{\data^{\it out}}
+\newcommand{\senderoutdata}{\data^{\it out}_s}
+\newcommand\outxvar{\xvar^{\it out}}
+\newcommand\poutdata[1]{\data^{\it out}_{#1}}
+\newcommand\op{{\it op}}
+\newcommand\event{e}
+\newcommand{\senderevent}{\event_s}
+\newcommand{\symbrep}{\Psi}
+\newcommand{\abstrconf}{\Phi}
+\newcommand{\ac}{\abstrconf}
+\newcommand\action{a}
 
 %% ---------------------------------------------
 %% Parameterized systems
@@ -29,6 +48,7 @@
 \newcommand{\parsys}{\ensuremath{\mathcal P}}
 \newcommand{\locs}{\ensuremath{Q}}
 \newcommand{\rules}{\ensuremath{\Delta}}
+\newcommand\mname{{\tt m}}
 
 \newcommand{\witnesses}{S}
 \newcommand{\quantrule}[5]{ \mathbf{if}\ {#3}~j\,{#4}\,i:\,{#5}\ \mathbf{then}\ {#1}\trans{#2}}
@@ -54,7 +74,13 @@
 
 \newcommand{\eventseq}{w}
 \newcommand{\veventseq}{v}
+\newcommand{\closeparagraph}[1]{\vspace{-6pt}\paragraph{#1}}
 
+\newcommand{\eexpr}{{\it expr}}
+\newcommand{\oevent}{{\it op}}
+\newcommand{\sevent}{{\it se}}
+\newcommand{\revent}{{\it re}}
+\newcommand{\cevent}{{\it ce}}
 
 \newcommand{\rulename}{\rho}
 \newcommand{\sndrule}[6]{\mbox{\bf from } #1 \mbox{ \bf when }#2\mbox{ \bf provided }#3\mbox{ \bf emit }#4\mbox{ \bf broadcast } #5 \mbox{ \bf goto } #6}
@@ -66,6 +92,10 @@
 \newcommand{\rcvrulenostate}[3]{\mbox{ \bf when }#1\mbox{ \bf provided }#2\mbox{ \bf emit }#3}
 
 \newcommand{\rcvruletwostate}[6]{\mbox{\bf from } #1 {,} #2  \mbox{ \bf when }#3\mbox{ \bf provided }#4\mbox{ \bf emit }#5 \mbox{ \bf goto } #6}
+
+\newcommand{\cnd}{{\it cnd}}
+\newcommand{\triggersym}{\textcolor{red}{\bullet}}
+\newcommand{\cstate}{q}
 
 
 \newcommand\snd[1]{{#1}!}
@@ -250,7 +280,6 @@
 \node[draw, rounded corners = 0.09cm, fill = cyan!30, draw = cyan, name = n5, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8] at ($(cell1.north east)+(80pt,-25pt)$){{$\tt 8$}};
 }}
 
-\newcommand{\triggersym}{\blue{\bullet}}
 \newcommand{\triggered}[1]{{#1}^{\triggersym}}
 
 \newcommand{\pointsto}{\mapsto}
