@@ -173,18 +173,39 @@ currently done by monitors.
 Pointers and heap-allocated storage are features of all modern imperative programming languages.
 %they are ignored in most formal treatments of the semantics of imperative programming languages
 %because their inclusion complicates the semantics of assignment statements: 
-They are the most complicated features of imperative programming language: an assignment through a
-pointer variable (or through a pointer-valued component of a record) may have large side effects on programs. For example, dereferencing a pointer that has been freed will lead to segmentation faults in a C++ program.
-There exist several works that have treated the semantics of pointers such as works in [5, 42, 43, 45]. 
-These side effects also make program dependence analysis harder, because they make it
-difficult to compute the aliasing relationships among different pointer expressions in a program. For instance, consider the instruction $\tt x.f := y$ written in an imperative language with mutable records. Its effect is to assign the value of the pointer $\tt y$ to the  field f of the record pointed to by $\tt x$. We have to require information about all possible aliases of $\tt x$ in order to propagate the structural modification induced by the assignment. Having
-less precise program dependence information decreases the opportunities for automatic parallelization
-and for instruction scheduling. The usage of pointers is error prone. Dereferencing NULL pointers and accessing previously deallocated storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
+They are the most complicated features of imperative programming language:
+\bjcom{Should be in plural}
+an assignment through a
+pointer variable (or through a pointer-valued component \bjcom{better ``field''} of a record) may have large side effects on programs.
+\bjcom{skip ``on programs''}
+For example, dereferencing a pointer that has been freed will lead to segmentation faults \bjcom{use singular} in a C++ program.
+\bjfix{C++}{C or C++}
+There exist several works that have treated the semantics of pointers such as works in [5, 42, 43, 45].
+\bjcom{This last sentence disturbs the flow. Change and move it til later}
+These side effects also make program dependence \bjcom{Maybe skip ``dependence''} analysis harder, because they make it
+difficult to compute the aliasing relationships among different pointer expressions in a program.
+\bjcom{Before the last sentence, explain what is aliasing}
+For instance, consider the instruction $\tt x.f := y$ written in an imperative language with mutable records.
+Its effect is to assign the value of the pointer $\tt y$ to the  field f of the record pointed to by $\tt x$. We have to require information about all possible aliases of $\tt x$ in order to propagate the structural modification induced by the assignment.
+\bjcom{This last sentence is not understandable. I suggest you rewrite and make it less complicated. Find the simplest way to explain what is here some problem}
+Having less precise program dependence information
+\bjcom{You often use ``program dependence information'' without explaining what it means}
+decreases the opportunities for automatic parallelization
+and for instruction scheduling. The usage of pointers is error prone.
+\bjcom{This last thing was more or less said in the beginning of the page}
+Dereferencing NULL pointers and accessing previously deallocated storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
 program understanding, debugging, and optimization. These activities need answers to many questions
 about the structure of the heap contents and the pointer variables pointing into the heap. 
+\bjcom{It is good to have an introductory paragraph, like this one, to give an idea of what are the challenges with pointers. But please rewrite it to have a more logical flow, and make the problems that you want to bring up clear}
+
+\bjcom{A suggestion is to have: First a paragraph describing pointers and generla problems (aliasing, segmentation fault). A next paragraph can be to introduce that
+  in verification and program analysis, it is a problem to describe and deduce how the heap-allocated memory is organized. E.g., Program invariants must often
+  describe how the heap-allocated memoty is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of
+  ``shape analysis''}
 
 By shapes, which mean descriptors of heap contents. Shape analysis is a generic term denoting static
-program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) computer programs. The shape analysis problem becomes more interesting in concurrent programs that manipulate pointers and dynamically allocated objects. The area of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic heap abstraction. The first approach is based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures). 
+program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) computer programs. The shape analysis problem becomes more interesting in concurrent programs that manipulate pointers and dynamically allocated objects. \bjcom{Why is it more interesting in ``concurrent programs''} The area \bjfix{area}{problem} of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic heap abstraction. \bjcom{``symbolic heap abstraction'' is suddenly an unexplained term} The first approach is \bjcom{I do not think this was the first} based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
+\bjcom{Break the preceding paragraph before you get to mentioning specific approaches (appr. around ``The logics can be'') You must then go on more slowly}
   
 Among the works based on separation logic, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. The reason for that is that their approaches effectively decomposes the heap into disjoint components and process them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
 
