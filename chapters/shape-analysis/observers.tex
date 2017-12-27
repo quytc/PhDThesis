@@ -114,7 +114,7 @@ A linearization policy is expressed by defining for each method an associated co
 To add controllers, we first declare 
 some statements in each method to be {\it triggering}: 
 these are marked by the symbol \commitpoint,
-as in Figure~\ref{lazy:list:fig}.
+as in Figure~\ref{figure:lazy-list}.
 %
 We specify the behavior of the controller, belonging to a method
 $\mname$, by a set  of
@@ -213,57 +213,57 @@ of rules $\rulename_6$ or $\rulename_7$ are possible, since they both
 start from state $q_0$. Rules that do not mention states can be
 applied regardless of the controller state and leave it unchanged.
 
-%Let us  illustrate how the reaction rules for controllers in
-%Figure~\ref{rrules:lazy:list:fig} specify LPs
-%for the algorithm in Figure~\ref{lazy:list:fig}.
-%Here, a successful {\tt rmv} method has its LP at
-%line {\tt 3}, and
-%an unsuccessful {\tt rmv} has its LP at line {\tt 2} when the test
-%{\tt c.val = e} evaluates to {\tt false}.
-%Therefore, both these statements are marked as triggering.
-%The controller has a reaction rule for each of these cases: in
-%Figure~\ref{rrules:lazy:list:fig}:
-%rule $\rulename_3$ corresponds to a successful {\tt rmv},
-%whereas
-%rule $\rulename_4$ corresponds to an unsuccessful {\tt rmv}.
-%Rule $\rulename_4$ states that whenever the {\tt rmv}
-%method executes a
-%triggering statement, from a state where {\tt pc=2} and {\tt c.val <> e}, then
-%the operation {\tt rmv(e,false)} will be emitted to the observer.
-%
-%A successful {\tt add} method has its LP at line {\tt 4}. Therefore, the
-%controller for {\tt add} has the triggered rule $\rulename_1$ which emits
-%the operation {\tt add(e,true)} to the observer. In addition, the
-%controller
-%also broadcasts the message {\tt add(e)}, which is
-%received by any controller for a {\tt ctn} method which has not yet
-%passed line {\tt 4}, thereby
-%linearizing an unsuccessful {\tt ctn(e)} method by
-%emitting {\tt ctn(e,false)} to the observer.
-%  The keyword {\bf before} denotes that the operation
-%  {\tt ctn(e,false)} will be presented before {\tt add(e,true)} to the observer.
-%Since the reception of {\tt add(e)} is performed in the same atomic step as the
-%triggering statement at line {\tt 4} of the {\tt add} method, this
-%describes a linearization pattern, where
-%a {\tt ctn} method, which has not yet reached line {\tt 4}, linearizes an
-%unsuccessful {\tt ctn}-invocation just before some other thread linearizes
-%a successful {\tt add} of the same element. 
-%
-%To see why unsuccessful {\tt ctn} method invocations may not have fixed LPs,
-%note that the naive attempt of defining the LP at line {\tt 4}
-%provided  that the test at line {\tt 5} fails will not work. Namely, the
-%{\tt ctn} method may traverse the list and arrive at line {\tt 4} in
-%a situation where the element {\tt e} is not in the list (either {\tt e} is
-%not in any cell, or the cell containing {\tt e} is marked). However, before
-%executing the command at line {\tt 4}, another thread performs an {\tt add}
-%operation, inserting a new cell containing the element {\tt e} into the list.
-%The problem is now that
-%the {\tt ctn} method cannot ``see'' the new cell, since it is unreachable from
-%the cell currently pointed to by the variable {\tt b} of the
-%{\tt ctn} method. If the {\tt ctn}
-%method would now try to linearize an unsuccessful {\tt ctn(e)}, this would
-%violate the semantics of a set, since the {\tt add} method just linearized
-%a successful insertion of {\tt e}.
+Let us  illustrate how the reaction rules for controllers in
+Figure~\ref{rrules:lazy:list:fig} specify LPs
+for the algorithm in Figure~\ref{figure:lazy-list}.
+Here, a successful {\tt rmv} method has its LP at
+line {\tt 3}, and
+an unsuccessful {\tt rmv} has its LP at line {\tt 2} when the test
+{\tt c.val = e} evaluates to {\tt false}.
+Therefore, both these statements are marked as triggering.
+The controller has a reaction rule for each of these cases: in
+Figure~\ref{rrules:lazy:list:fig}:
+rule $\rulename_3$ corresponds to a successful {\tt rmv},
+whereas
+rule $\rulename_4$ corresponds to an unsuccessful {\tt rmv}.
+Rule $\rulename_4$ states that whenever the {\tt rmv}
+method executes a
+triggering statement, from a state where {\tt pc=2} and {\tt c.val <> e}, then
+the operation {\tt rmv(e,false)} will be emitted to the observer.
+
+A successful {\tt add} method has its LP at line {\tt 4}. Therefore, the
+controller for {\tt add} has the triggered rule $\rulename_1$ which emits
+the operation {\tt add(e,true)} to the observer. In addition, the
+controller
+also broadcasts the message {\tt add(e)}, which is
+received by any controller for a {\tt ctn} method which has not yet
+passed line {\tt 4}, thereby
+linearizing an unsuccessful {\tt ctn(e)} method by
+emitting {\tt ctn(e,false)} to the observer.
+  The keyword {\bf b} denotes that the operation
+  {\tt ctn(e,false)} will be presented before {\tt add(e,true)} to the observer.
+Since the reception of {\tt add(e)} is performed in the same atomic step as the
+triggering statement at line {\tt 4} of the {\tt add} method, this
+describes a linearization pattern, where
+a {\tt ctn} method, which has not yet reached line {\tt 4}, linearizes an
+unsuccessful {\tt ctn}-invocation just before some other thread linearizes
+a successful {\tt add} of the same element. 
+
+To see why unsuccessful {\tt ctn} method invocations may not have fixed LPs,
+note that the naive attempt of defining the LP at line {\tt 4}
+provided  that the test at line {\tt 5} fails will not work. Namely, the
+{\tt ctn} method may traverse the list and arrive at line {\tt 4} in
+a situation where the element {\tt e} is not in the list (either {\tt e} is
+not in any cell, or the cell containing {\tt e} is marked). However, before
+executing the command at line {\tt 4}, another thread performs an {\tt add}
+operation, inserting a new cell containing the element {\tt e} into the list.
+The problem is now that
+the {\tt ctn} method cannot ``see'' the new cell, since it is unreachable from
+the cell currently pointed to by the variable {\tt b} of the
+{\tt ctn} method. If the {\tt ctn}
+method would now try to linearize an unsuccessful {\tt ctn(e)}, this would
+violate the semantics of a set, since the {\tt add} method just linearized
+a successful insertion of {\tt e}.
 %
 %A solution to this problem, following~\cite{Lazyset}, is to let an
 %unsuccessful {\tt ctn(e)} method linearize at line {\tt 4} {\em only if}
@@ -330,7 +330,7 @@ applied regardless of the controller state and leave it unchanged.
 %
 
 %\bjcom{The rest of this paragraph fits into the text as it is}
- Let us describe an example of how the {\tt controller} handles non-fixed linearization point of {\tt ctn} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads $\tt 1$, $\tt 2$, and $\tt 3$. The thread $\tt 1$ is executing the {\tt add} to add the element {\tt e} into the set, whereas $\tt 2$ and $\tt 3$ are executing {\tt ctn} to lock for the element {\tt e} in the set. When the thread $\tt 1$ reaches the triggering statement at line 4 of the {\tt add} method at the step $\tt 1$. The controller rule 
+ Let us describe an example of how the {\tt controller} handles non-fixed linearization point of unsuccessful {\tt ctn(e)} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads $\tt 1$, $\tt 2$, and $\tt 3$. The thread $\tt 1$ is executing the {\tt add(e)} method to insert the cell whose value of $\tt val$ is equal to {\tt e} into the set, while both $\tt 2$ and $\tt 3$ are executing {\tt ctn(e)} to search for the cell whose value of $\tt val$ is equal to {\tt e} in from set. When thread $\tt 1$ reaches the triggering statement at line 4 of the {\tt add(e)} method at the step $\tt 1$. The controller rule $\rulename_1$ is active. 
 %the linearization point of the {\tt add} operation
 %is defined statically in the code of the method
 %(lines {\tt 2} and {\tt 4}).
@@ -346,11 +346,11 @@ applied regardless of the controller state and leave it unchanged.
 %with argument {\tt e} has been performed, and that the outcome
 %of the operation is {\tt false} (the operation was unsuccessful.)
 %%
-Before a successful {\tt add} operation is communicated to the observer 
+%Before a successful {\tt add} operation is communicated to the observer 
 to informs the observer that an {\tt add} operation 
 with argument {\tt e} has been performed, and that the outcome
-of the operation is {\tt true} (the operation was successful) in the step $\tt 6$. The controller will help other threads
-by to linearize. This is done by {\it broadcasting} a message to the threads $\tt 2$, $\tt 3$ which is executing {\tt ctn} in steps $\tt 2$, $\tt 3$. These threads then inform the observer that the element e is not in the list in $\tt 3$, $\tt 4$ respectively. Note that $\tt 2$, $\tt 3$ can get message in any order. The detail of controller is described in paper II.
+of the operation is {\tt true} (the operation was successful) in the step $\tt 6$. However, before that the controller will help other threads
+by to linearize. This is done by {\it broadcasting} a message {\tt add(e)} to the threads $\tt 2$, $\tt 3$ which is executing {\tt ctn(e)} in steps $\tt 2$, $\tt 3$. These threads get message then the rule $\rulename_7$ is active to inform the observer that the element $\tt e$ is not in the list in $\tt 3$, $\tt 4$ respectively.
 %\bjcom{The description of linearization policy in the preceding paragraph is in principle OK. But the grammar and language is not acceptable. There are even unfinished sentences. Please make an effort to write nice english, explaining in a way that colleagues can easily understand how things work.}
 %
 %\bjcom{Write more about linearization policies. You should by example explain syntax of controllers, intuitively what they can do, etc.
@@ -386,43 +386,56 @@ it has linearized, whether it has caused a state change in the observer, and
 the parameters used in its last linearization. Using this information, it
 goes to an error state whenever any of the above four conditions is violated.
 
+
+
+
 \chapter{Shape Analysis}
 Pointers and heap-allocated storage are features of all modern imperative programming languages.
 %they are ignored in most formal treatments of the semantics of imperative programming languages
 %because their inclusion complicates the semantics of assignment statements: 
 They are the most complicated features of imperative programming language:
-\bjcom{Should be in plural}
-an assignment through a
-pointer variable (or through a pointer-valued component \bjcom{better ``field''} of a record) may have large side effects on programs.
-\bjcom{skip ``on programs''}
-For example, dereferencing a pointer that has been freed will lead to segmentation faults \bjcom{use singular} in a C++ program.
-\bjfix{C++}{C or C++}
-There exist several works that have treated the semantics of pointers such as works in [5, 42, 43, 45].
-\bjcom{This last sentence disturbs the flow. Change and move it til later}
-These side effects also make program dependence \bjcom{Maybe skip ``dependence''} analysis harder, because they make it
-difficult to compute the aliasing relationships among different pointer expressions in a program.
-\bjcom{Before the last sentence, explain what is aliasing}
-For instance, consider the instruction $\tt x.f := y$ written in an imperative language with mutable records.
-Its effect is to assign the value of the pointer $\tt y$ to the  field f of the record pointed to by $\tt x$. We have to require information about all possible aliases of $\tt x$ in order to propagate the structural modification induced by the assignment.
-\bjcom{This last sentence is not understandable. I suggest you rewrite and make it less complicated. Find the simplest way to explain what is here some problem}
-Having less precise program dependence information
-\bjcom{You often use ``program dependence information'' without explaining what it means}
-decreases the opportunities for automatic parallelization
-and for instruction scheduling. The usage of pointers is error prone.
-\bjcom{This last thing was more or less said in the beginning of the page}
-Dereferencing NULL pointers and accessing previously deallocated storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
-program understanding, debugging, and optimization. These activities need answers to many questions
-about the structure of the heap contents and the pointer variables pointing into the heap. 
-\bjcom{It is good to have an introductory paragraph, like this one, to give an idea of what are the challenges with pointers. But please rewrite it to have a more logical flow, and make the problems that you want to bring up clear}
+%%\bjcom{Should be in plural}
+Updating  pointer variables (or pointer-fields of records) may have large side effects.
+%%\bjcom{skip ``on programs''}
+For example, dereferencing a pointer that has been freed will lead to segmentation fault in a C or C++ program.
+%Dereferencing NULL pointers and accessing previously deallocated storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
+%program understanding, debugging, and optimization. These activities need answers to many questions
+%about the structure of the heap contents and the pointer variables pointing into the heap.
+%
+%\bjcom{This last sentence disturbs the flow. Change and move it til later}
+These side effects also make program analysis harder, because they make it
+difficult to compute the aliasing relationships among different pointers in a program. Aliasing refers to the case when the same memory location can be accessed using different names.
+%\bjcom{Before the last sentence, explain what is aliasing}
+For instance, consider the instruction $\tt x.f := y$ written in an imperative language where $\tt x$ and $\tt y$ are pointer variables pointing to memory cells. Its effect is to assign the value of the pointer $\tt y$ to the pointer field $\tt f$ of the cell pointed to by $\tt x$. In order to update aliasing information of $\tt y$. We have to require information about all cells pointed by $\tt x.f$ which is not an easy task.
 
-\bjcom{A suggestion is to have: First a paragraph describing pointers and generla problems (aliasing, segmentation fault). A next paragraph can be to introduce that
-  in verification and program analysis, it is a problem to describe and deduce how the heap-allocated memory is organized. E.g., Program invariants must often
-  describe how the heap-allocated memoty is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of
-  ``shape analysis''}
+In verification and program analysis, it is a problem to describe and deduce how the heap-allocated memory is organized. E.g., Program invariants must often describe how the heap-allocated memory is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of ``shape analysis''.
+
+%\bjcom{This last sentence is not understandable. I suggest you rewrite and make it less complicated. Find the simplest way to explain what is here some problem}
+%Having less precise program dependence information
+%\bjcom{You often use ``program dependence information'' without explaining what it means}
+%decreases the opportunities for automatic parallelization
+%and for instruction scheduling. 
+%The usage of pointers is error prone.
+%\bjcom{This last thing was more or less said in the beginning of the page}
+
+ 
+%\bjcom{It is good to have an introductory paragraph, like this one, to give an idea of what are the challenges with pointers. But please rewrite it to have a more logical flow, and make the problems that you want to bring up clear}
+
+%There exist several works that have treated the semantics of pointers such as works in [5, 42, 43, 45].
+
+%\bjcom{A suggestion is to have: First a paragraph describing pointers and generla problems (aliasing, segmentation fault). A next paragraph can be to introduce that
+%  in verification and program analysis, it is a problem to describe and deduce how the heap-allocated memory is organized. E.g., Program invariants must often
+%  describe how the heap-allocated memory is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of
+%  ``shape analysis''}
 
 By shapes, which mean descriptors of heap contents. Shape analysis is a generic term denoting static
-program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) computer programs. The shape analysis problem becomes more interesting in concurrent programs that manipulate pointers and dynamically allocated objects. \bjcom{Why is it more interesting in ``concurrent programs''} The area \bjfix{area}{problem} of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic heap abstraction. \bjcom{``symbolic heap abstraction'' is suddenly an unexplained term} The first approach is \bjcom{I do not think this was the first} based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
-\bjcom{Break the preceding paragraph before you get to mentioning specific approaches (appr. around ``The logics can be'') You must then go on more slowly}
+program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) software programs. The shape analysis problem becomes more challengeing in concurrent programs that manipulate pointers and dynamically allocated objects, which are usually complicated. 
+%\bjcom{Why is it more interesting in ``concurrent programs''}
+ The problem of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic representation. A common approach is %\bjcom{I do not think this was the first} 
+ based on the use of logics to present heap configurations. 
+ 
+ The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
+%\bjcom{Break the preceding paragraph before you get to mentioning specific approaches (appr. around ``The logics can be'') You must then go on more slowly}
   
 Among the works based on separation logic, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. The reason for that is that their approaches effectively decomposes the heap into disjoint components and process them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
 
