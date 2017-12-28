@@ -12,33 +12,36 @@
 %Bugs are quite common in complex software systems,
 %since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
 %=======
-Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them. %\bjcom{skip ``do''}
-%In some cases, the consequence could be very serious for errors in banking systems
-%and flight control systems.
-%\bjfix{In some cases, the consequence could be very serious for errors in banking systems and flight control systems.}
-In many cases, the consequences could be very serious, for example when errors
-in banking or flight control software results in unexpected behaviors.
-Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so called bugs. 
-%% ********************************************************************
-\KW{Complex machines}%
-%% ********************************************************************
+%Computers have been used for variety of applications in business, science, education, engineering and so on. They help to solve real world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them. %\bjcom{skip ``do''}
+%%In some cases, the consequence could be very serious for errors in banking systems
+%%and flight control systems.
+%%\bjfix{In some cases, the consequence could be very serious for errors in banking systems and flight control systems.}
+%In many cases, the consequences could be very serious, for example when errors
+%in banking or flight control software results in unexpected behaviors.
+%Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so called bugs. 
+%%% ********************************************************************
+%\KW{Complex machines}%
+%%% ********************************************************************
+%%Bugs are quite common  in complex software systems,
+%%since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
+%%\bjfix{Bugs are quite common  in complex software systems,
+%%since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.}
 %Bugs are quite common  in complex software systems,
 %since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
-%\bjfix{Bugs are quite common  in complex software systems,
-%since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.}
-Bugs are quite common  in complex software systems,
-since they typically have complicated input and involve many features which makes them difficult to design and make them perfect by human effort.
-%% ********************************************************************
-\KW{Find bugs}%
-%% ********************************************************************
-Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge
-problems. They can be very hard to detect and correct, %It will become too costly to solve.
-%\bjfix{It will become too costly to solve.}{
- especially if they are discovered after the software has been delivered.
-Therefore, it is very important to allocate sufficient
-%>>>>>>> 5430563f072f0eab8df6b28b9ef7a63119d17862
-resources, both in terms of time and manpower, to ensuring that developed
-software is as free of bugs as possible.
+%%% ********************************************************************
+%\KW{Find bugs}%
+%%% ********************************************************************
+%Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge
+%problems. They can be very hard to detect and correct, %It will become too costly to solve.
+%%\bjfix{It will become too costly to solve.}{
+% especially if they are discovered after the software has been delivered.
+%Therefore, it is very important to allocate sufficient
+%%>>>>>>> 5430563f072f0eab8df6b28b9ef7a63119d17862
+%resources, both in terms of time and manpower, to ensuring that developed
+%software is as free of bugs as possible.
+
+Computers have been used for a variety of applications in business, science, education, engineering and so on. They help to solve real-world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them. In many cases, the consequences could be very serious, for example when errors in banking or flight control software result in unexpected behaviours. Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so-called bugs. Bugs are quite common in complex software systems since they typically have complicated input and involve many features, which makes them difficult to design and make them perfect by human effort. Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge problems. They can be very hard to detect and correct, especially if they are discovered after the software has been delivered. Therefore, it is very important to allocate sufficient resources, both in terms of time and manpower, to ensure that developed software is as free of bugs as possible. 
+
 
 %% ********************************************************************
 \KW{Safety$\Rightarrow$no bugs}%
@@ -76,13 +79,13 @@ By using data structures data can be easily, and efficiently exchanged; it allow
 %A data structure is a particular way of organizing and storing data in a computer so that it can be accessed and modified efficiently. More precisely, a data structure is a collection of data values, the relationships among them, and operations that can be applied to the data.
 %\bjcom{The previous sentence repeats what was said in the preceding paragraph. Skip it, and start this paragraph with the next sentence}
 %Each data structure has it own specification which describes the behaviour of the data structure. 
-A data structure can be both sequential or concurrent which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications . A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of supported operations along with specifications about what types of arguments of each operation and the value returned by each operation. In order to implement this interface, the data structure may internally be quite complex.
+A data structure can be both sequential or concurrent which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of supported operations along with specifications about what types of arguments of each operation and the value returned by each operation. In order to implement this interface, the data structure may internally be quite complex.
 
 % \bjcom{Break the preceding sentence. You can make several sentences with slightly more content}
 %They should allow a large degree of parallelism among accessing threads to minimize serialization bottlenecks, while maintaining the appearance of atomic operations. 
 %\bjcom{Here, you can insert more material. You can say, things like (appr.) ``A data structure should ideally provide a simple interface to the software that uses
 %it'' You can say in short what such an interface does. Then you can continue ``In order to implement this interface, the data structure may internally be quite complex.} 
-Data structures typically use heap-allocated memory to store their data. For example, concurrent linked queue in java.util.concurrent uses singly linked list to organize their data. %\bjcom{Fix grammar errors in the preceding sentence}
+Data structures typically use heap-allocated memory to store their data. For example, the concurrent linked queue in java.util.concurrent uses a singly linked list to organize their data. %\bjcom{Fix grammar errors in the preceding sentence}
 %\bjcom{Extend the paragraph more by stuff that can complicate data structure implementations, e.g., saying that 
 
 
