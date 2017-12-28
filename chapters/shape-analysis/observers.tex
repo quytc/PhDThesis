@@ -431,10 +431,33 @@ In verification and program analysis, it is a problem to describe and deduce how
 By shapes, which mean descriptors of heap contents. Shape analysis is a generic term denoting static
 program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) software programs. The shape analysis problem becomes more challengeing in concurrent programs that manipulate pointers and dynamically allocated objects, which are usually complicated. 
 %\bjcom{Why is it more interesting in ``concurrent programs''}
- The problem of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic representation. A common approach is %\bjcom{I do not think this was the first} 
+ The problem of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic representation. 
+ 
+TVLA (Three-Valued Logic Analyzer) \cite{SagivRW02} is the first and one of the most popular shape analysis
+method. It is based on a three-valued first-order predicate logic with transitive closure. Intuitively,
+concrete heap structure is represented by a finite set of abstract summary nodes, each of them
+representing a set of concrete nodes. The shape of the heap is characterized by a set of usersupplied
+predicates. The method is not fully automatic, its the synthesis of appropriate predicates
+that are able to express the invariants in the program. This problem is even more difficult with
+complicated heap structures such as skiplist, trees, or lists of lists.  
+
+Another approach is %\bjcom{I do not think this was the first} 
  based on the use of logics to present heap configurations. 
  
- The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
+ The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02}, monadic second- order logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Among these works, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. The reason for that is that their approaches effectively decomposes the heap into disjoint components and process them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
+
+ %Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. 
+ 
+This issue can be fixed by automata techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of heaps on a tree structure,
+and represent non-tree edges by using regular “routing” expressions. These expressions
+describe how the target can be reached from the source using tree edges. Finite tree transducers
+are used to compute set of reachable configurations, and symbolic configuration is abstracted
+collapsing certain states of the automat. The refinement technique called counterexample-guided
+abstraction refinement (CEGAR) technique is used during the run of the analysis. This technique
+is fully automatically and can handle complex data structures such as binary trees with linked
+leaves. However, it suffers from the inefficiency and it also can not handle concurrent programs.
+
+The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
 %\bjcom{Break the preceding paragraph before you get to mentioning specific approaches (appr. around ``The logics can be'') You must then go on more slowly}
 %
 %=======
@@ -451,24 +474,8 @@ program-analysis techniques that attempt to discover and verify properties of th
 %  works by Simacek and the papers.}
 %>>>>>>> 16b2fc933daabfffb3a268b92f1c1923fbb582f9
 %  
-Among the works based on separation logic, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. The reason for that is that their approaches effectively decomposes the heap into disjoint components and process them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
 
-This issue can be fixed by automata techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of heaps on a tree structure,
-and represent non-tree edges by using regular “routing” expressions. These expressions
-describe how the target can be reached from the source using tree edges. Finite tree transducers
-are used to compute set of reachable configurations, and symbolic configuration is abstracted
-collapsing certain states of the automat. The refinement technique called counterexample-guided
-abstraction refinement (CEGAR) technique is used during the run of the analysis. This technique
-is fully automatically and can handle complex data structures such as binary trees with linked
-leaves. However, it suffers from the inefficiency and it also can not handle concurrent programs.
 
-TVLA (Three-Valued Logic Analyzer) \cite{SagivRW02} is the first and one of the most popular shape analysis
-method. It is based on a three-valued first-order predicate logic with transitive closure. Intuitively,
-concrete heap structure is represented by a finite set of abstract summary nodes, each of them
-representing a set of concrete nodes. The shape of the heap is characterized by a set of usersupplied
-predicates. The method is not fully automatic, its the synthesis of appropriate predicates
-that are able to express the invariants in the program. This problem is even more difficult with
-complicated heap structures such as skiplist, trees, or lists of lists.  
   
 \section*{Our Approaches}
 In this thesis, we proposed three approaches for heap abstractions. In paper I, we proposed a novel approach of representing sets of heaps via tree automata (TA). In our representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are nodes pointed to by program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic [15]. Using this decomposition, sets of heaps with a bounded number of cut-points are then represented by the so called forest automata (FA) that are basically tuples of TA accepting tuples of trees whose leaves can refer back to the roots of the trees. Moreover, we allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist). \input TA
