@@ -57,7 +57,12 @@
 %\label{lazy:list:heap:cell:fig}
 %\end{figure}
 In general, a data structure is any data representation and its
-associated operations. Even an integer or floating point number stored on the computer can be viewed as a simple data structure. Typically, a data structure is meant to be an organization or structuring for a collection of data items. A sorted list of integers stored in an array is an example of such a structuring. The implementation of a data structure consists of a set of operations that access and manipulate instances of that structure concurrently. Each data structure has an interface which defines a set of possible values and a set of operations. Examples of data structures are queue, stack and set. More precisely, the interface consists of a set of operations or methods, each having a number of input and output parameters, and a specification of the effect of each operation. 
+associated operations. Even an integer or floating point number stored on the computer can be viewed as a simple data structure. Typically, a data structure is meant to be an organization or structuring for a collection of data items. 
+%A sorted list of integers stored in an array is an example of such a structuring. 
+%The implementation of a data structure consists of a set of operations that access and manipulate instances of that structure concurrently.
+ Each data structure has an interface which defines a set of possible values and a set of operations. 
+ %Examples of data structures are queue, stack and set. 
+ More precisely, the interface consists of a set of operations or methods, each having a number of input and output parameters, and a specification of the effect of each operation. 
 %Each data structure have its own specification that specify behaviors of its operations. The behavior of each operation is determined by its inputs and outputs. 
 %For example, the behavior of a stack object can be specified by requiring that its {\tt push} operation insert an item in the stack, and that {\tt pop} removes the newest item present in the stack. Data structure typically used heap-allocated memory to store their data. A heap-allocated memory can be singly-linked list, skip-list or array of lists. 
 %A stack has two operations {\tt push} and {\tt pop}. A {\tt push} operation inserts an element $\tt e$ which is the parameter of {\tt push} in the stack, and {\tt pop} removes the newest item present in the stack. 
@@ -74,7 +79,7 @@ For each method, we say that a call is successful if it returns true, and unsucc
 otherwise. It is typical that in applications using sets, there are significantly more
 $\tt contains()$ calls than $\tt add()$ or $\tt remove()$ calls.
 A set is implemented as a singly linked list of cells. Each cell has two fields. The $\tt val$ field present value of a cell. Cells are sorted according to $\tt val$ order, providing an efficient way to detect when an item is absent. The $\tt next$ field is a reference to
-the next cell in the list. The list has two sentinel cells, called head and tail, which are first and last list elements. Sentinel nodes are never added, removed, or searched for, and their valules are the minimum and maximum integer values.
+the next cell in the list. The list has two sentinel cells, called head and tail, which are first and last list elements. Sentinel nodes are never added, removed, or searched for, and their values are the minimum and maximum integer values.
 
 The implementation of a data structure should provide
 an efficient way to store data in computer memory and perform its operations
@@ -291,10 +296,10 @@ mechanism behind logically and physical removing is explained as following: it i
 % 
 The algorithm uses two global pointers, {\tt head} that points to  the first cell of the heap, and {\tt tail} that points to the last cell.  
 These two cells contain two values that are smaller 
-and larger respectively than all keys that may be                     
-inserted in the set. The algorithm also contains the subroutine {\tt locate} that returns a structure containing the nodes on either side of the key. In more detail, the {\tt locate} method traverses the list using two local variables ${\tt p}$ and $\tt c$, starting at the head of the list and moves down the list (line 2), comparing ${\tt c.val}$ to ${\tt e}$. When $\tt c$ is set to the
-first entry with a val greater than or equal to $\tt e$, the traversal stops, and the
-method locks cells pointed to by $\tt p$ and $\tt c$ (line 7) so that no other thread can update fields of $\tt p$ and $\tt c$. Thereafter, if both $\tt p.mark$ and $\tt c.mark$ are \false \; and ${\tt p.next = c}$ meaning that there is no added cell from other thread between $\tt p$ and $\tt c$ then the method returns a pair $\tt (p,c)$ (line 9). Otherwise, it unlocks cells pointed to by $\tt p$ and $\tt c$ and tries traversing again from the head of the list.
+and larger respectively than data values of all cells that may be                     
+inserted in the set. The algorithm also contains the subroutine {\tt locate} that returns a structure containing the cells on either side of $\tt e$. In more detail, the {\tt locate} method traverses the list using two local variables ${\tt p}$ and $\tt c$, starting at the head of the list and moves forward the list (line 2), comparing ${\tt c.val}$ to ${\tt e}$. When $\tt c$ is set to the
+first cell whose the value of  $\tt val$ is greater than or equal to $\tt e$, the traversal stops, and the
+method locks cells pointed to by $\tt p$ and $\tt c$ (line 7) so that no other thread can update fields of $\tt p$ and $\tt c$. Thereafter, if both $\tt p.mark$ and $\tt c.mark$ are \false \; and ${\tt p.next = c}$ meaning that there is no added cell from other thread between $\tt p$ and $\tt c$ then the method returns the pair $\tt (p,c)$ (line 9). Otherwise, it unlocks cells pointed to by $\tt p$ and $\tt c$ and tries traversing again from the head of the list.
 
 
 %The {\tt rmv} method first logically removes the node
@@ -307,13 +312,13 @@ method locks cells pointed to by $\tt p$ and $\tt c$ (line 7) so that no other t
  
 
 
-The {\tt add(e)} method calls {\tt locate} at line 1 to locate the position in the list where $\tt e$ is to be inserted. If $\tt c.val = e$ meaning that a node whose $\tt val$ is equal to $\tt e$ is already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false \; (line 7-8). Otherwise, a new node $\tt n$ is created (line 3), and inserted into the list by linking it into the list between the $\tt p$ and $\tt c$ pointers returned by
+The {\tt add(e)} method calls {\tt locate(e)} at line 1 to locate the position in the list where $\tt e$ is to be inserted. Its local variables $\tt p$ and $\tt c$ are assigned the first and second values of the pair return by {\tt locate(e)} respectively. If $\tt c.val = e$ meaning that a cell whose data value of $\tt val$ is equal to $\tt e$ is already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false \; (line 7-8). Otherwise, a new cell $\tt n$ is created (line 3), and inserted into the list by linking it into the list between the $\tt p$ and $\tt c$ pointers returned by
 {\tt locate} (line 3-4). Then, the method unlocks cells pointed to by $\tt p$ and $\tt c$ and returns \true.  
 
-The {\tt rmv(e)} method also calls {\tt locate} at line 1 locate the position in the list where $\tt e$ is to be inserted. If $\tt c.val \neq e$ meaning that a node with val $\tt e$ is not already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false (line 7-9). Otherwise, node $\tt c$ is logically removed (line 3) where the $\tt mark$ field of $\tt c$ gets assigned \true, and unlinked from the list (line 4-5). Then, the method unlocks cells pointed to by $\tt p$ and $\tt c$ and returns \true.  
+The {\tt rmv(e)} method also calls {\tt locate} at line 1 locate the position in the list where $\tt e$ is to be inserted. If $\tt c.val \neq e$ meaning that a cell with val $\tt e$ is not already in the list, the method unlocks $\tt p$ and $\tt c$ and returns \false (line 7-9). Otherwise, cell $\tt c$ is logically removed (line 3) where the $\tt mark$ field of $\tt c$ gets assigned \true, and unlinked from the list (line 4-5). Then, the method unlocks cells pointed to by $\tt p$ and $\tt c$ and returns \true.  
 
 The {\tt ctn(e)} method traverses the list by using local variable $\tt c$, ignoring whether nodes are marked or not, until $\tt c$ is set to the
-first entry with a value of $\tt val$ greater than or equal to $\tt e$. It simply returns \true \; if and only if the $\tt c$ entry is unmarked with the desired $\tt val$. 
+first cell with a value of $\tt val$ greater than or equal to $\tt e$. It simply returns \true \; if and only if the cell pointed to by $\tt c$  is unmarked with the desired value of $\tt val$ equal to $\tt e$. 
 %Come later
 %The program is linearizable if it respects the sequential specification of a set. Informally, for each method {\tt add}, {\tt rmv} and {\tt ctn}, there exist a linearization point so that in each execution of the program, when these methods are ordered according to their linearization points. We get a correct sequence that respect the sequential specification of a set.  In this program, linearization point of unsuccessful {\tt ctn} is not stayed at the code of the method. Whereas, other linearization points of other methods stay at their codes. We explain more detail about this in the linearization policies section. 
 %\begin{figure}[]
