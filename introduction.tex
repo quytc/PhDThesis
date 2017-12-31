@@ -1,0 +1,47 @@
+%% ====================================================================
+\chapterwithtoc{Introduction}
+
+Computers have been used for a variety of applications in business, science, education, engineering and so on. They help to solve real-world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them. In many cases, the consequences could be very serious, for example when errors in banking or flight control software result in unexpected behaviours. Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so-called bugs. Bugs are quite common in complex software systems since they typically have complicated input and involve many features, which makes them difficult to design and make them perfect by human effort. Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge problems. They can be very hard to detect and correct, especially if they are discovered after the software has been delivered. Therefore, it is very important to allocate sufficient resources, both in terms of time and manpower, to ensure that developed software is as free of bugs as possible. 
+
+Some bugs are less serious than others. Some types of software, e.g., in user interfaces or entertainment software, can be useable even if it contains a small number of bugs.
+However, in the case of critical systems and system components such as software in libraries of programming languages, 
+bugs can have far-reaching impacts consequences, and must be avoided as much as possible.
+Some of such libraries provide standard data structures such as stacks, queues, containers. Such data structures provide ways of storing  
+and retrieving data in a way that suits the application at hand. For example, a stack allows adding and removing elements in a particular order. Every time an element is added, it goes on the top of the stack, the only element that can be removed is the element that was at the top of the stack. The simplest application of a stack is to reverse a word. You push a given word to stack - letter by letter - and then pop letters from the stack.
+By using data structures data can be easily, and efficiently exchanged; it allows portability, comprehensibility, and adaptability of information.
+
+A data structure can be both sequential or concurrent which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of supported operations along with specifications about what types of arguments of each operation and the value returned by each operation. In order to implement this interface, the data structure may internally be quite complex.
+
+Data structures typically use heap-allocated memory to store their data. For example, the concurrent linked queue in java.util.concurrent uses a singly linked list to organize their data. 
+
+The predominant method to improve software quality is
+\emph{testing}. It is a dynamic analysis where a program is run under specific conditions, so-called test cases, and checking whether the result with a given input matches the expected output.
+%
+The test cases should be carefully designed to cover all possible cases of program executions.\index{Coverage}
+However, there is no guarantee to cover all possible executions. Therefore, it is said that
+testing can be used to show the presence of bugs, but never to show their absence. 
+It would be nice to have techniques for checking that all executions conform to the interface of a data structure, a possibility is to use formal techniques which is the approach used in our thesis.
+
+%% ====================================================================
+\section*{Formal Verification} 
+Formal verification uses mathematical methods to check whether a software satisfies its specification provided by users. 
+There are several approaches for formal verification, including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether a system is equivalent to its specification with respect to some notion of behavior equivalence. This is mostly used for hardware designs in industry. Theorem proving is a technique where both the behavior of the system and its desired properties are expressed in mathematical logic. Then, theorem proving typically assisted by an interactive theorem prover will try to prove that the system satisfies these properties. 
+
+Model checking takes as input a model of the system under
+consideration and a formal specification of the a property to be verified as inputs. The specification of a software component may consist of a number of such properties, each of which can be verified using model checking. The approach exhaustively explores all possible executions of the model. This is typically done exploring the set of reachable states of the model  which can be finite or infinite. 
+This works well if the set of reachable states is finite such as controllers and hardware design.  However, most software is infinite-state, e.g., a data structure may contain an unbounded amount of data - a common technique for handling this is to devise a symbolic representation of sets of states, such that a single symbolic representation may represent an infinite set of states. However, it is difficult to find a suitable symbolic representation for data structures. In particular, complicated data structures such as trees and skip-lists.
+
+\section*{Research Challenges}
+Our challenge of this thesis is to develop techniques for automated verification of both sequential and concurrent data structures using heaps. This requires to address several challenges in model checking:
+\begin{itemize}
+\item {\bf Dynamically heap-allocated memory}: Heaps which are used by data structures are dynamically heap allocated memory. In each cell of a heap, the domain of data values can be unbounded.
+   The important aspect is that there
+    exist several approaches for heaps and for data, but not for combining them in suitable ways. In this thesis, we automate its application to sequential data structures where correctness depends on relationships between data values that are stored in the dynamically allocated structures. Such ordering relations on data are central for the operation of many data structures such as search trees, priority queues (based, e.g., on skip lists), key-value stores, or for the correctness of programs that perform sorting and searching. 
+ There exist many automated verification techniques dealing with these data structures, in which only few of them can automatically reason about data properties. However, they are often limited to specific classes of structures  mostly singly-linked lists (SLLs). Our approach is based on the notion of forest automata which has previously been developed for representing sets of reachable configurations of programs with complex dynamic linked data structures.
+
+\item {\bf Unbounded number of threads}: We have to verify that the data structures are correct with any number of threads that access and manipulate the structures. We handle the challenge of an unbounded number of threads by extending the successfulthread-modular approach which verifies a concurrent program by generatingan invariant that correlates the global state with the local state of an arbitrarythread.
+\item {\bf Specification of correctness}: To ensure that a concurrent data structure is correct, we have to ensure that it respects to its sequential specification.  The correctness is captured by linearizability. Linearizability is generally accepted as the standard correctness criterion for such concurrent data structure implementations. Intuitively, it states that each operation on the concurrent data structure can be viewed as being performed atomically at some point (called linearization point (LP)) between its invocation and return. Existing approaches lack generality as they are limited to specific classes of concurrent data structures so far no technique (manual or automatic) for proving linearizability has been proposed that is both sound and generic. In this thesis we provide a technique to specify linearizabilities of concurrent data structures. 
+\item {\bf Unbounded number of pointers}: In some data structures, the each cell can have unbound number of pointer fields such as cells in skip-lists and arrays of lists. It is difficult to provide symbolic representation for these data structures. There are no techniques that have been applied to automatically verify concurrent algorithms that operate on such data structures. We propose a technique called \emph{fragment abstraction} which is general and precise enough to verify these complicated data structures.
+\end{itemize}
+
+We present, in the next chapters, the general background about model checking, concurrent data structures. Thereafter, in the following chapter, we describe linearizabilities, how to specify them, and our symbolic representation techniques. In the last chapter, we summary and give future plans for our work.

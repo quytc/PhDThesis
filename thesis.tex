@@ -1,12 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[%
-%underprogress,%
-%showcomments,%
-%noexperiments,% 
-%externaltikz,%
-%noindex,%
-%margnum,%
-%titles,%
 openright%
 ]{settings/UUThesisTemplate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,14 +23,14 @@ openright%
 %% -------------------------------------
 \mainmatter
 %% -------------------------------------
-\input{chapters/verification/main}
-%\input{chapters/parameterized-systems/main}
-%\input{chapters/monotonic-abstraction/main}
-%\input{chapters/view-abstraction/main}
-\input{chapters/shape-analysis/main}
-%\input{experiments/index}
 
-%% -------------------------------------
+\input introduction
+\input modelchecking
+\input datastructure
+\input correctness
+\input shapeanalysis
+\input conclusion
+
 \backmatter
 \input{misc/backmatter}
 %% -------------------------------------
