@@ -1,98 +1,64 @@
 
 \chapter{Shape Analysis}
 Pointers and heap-allocated storage are features of all modern imperative programming languages.
-%they are ignored in most formal treatments of the semantics of imperative programming languages
-%because their inclusion complicates the semantics of assignment statements: 
-They are the most
-\bjfix{the most}{among the most}
+They are among the most
 complicated features of imperative programming language:
-%%\bjcom{Should be in plural}
-Updating \bjcom{small cap after colon} pointer variables (or pointer-fields of records) may have large side effects.
-%%\bjcom{skip ``on programs''}
+updating pointer variables (or pointer-fields of records) may have large side effects.
 For example, dereferencing a pointer that has been freed will lead to segmentation fault in a C or C++ program.
-%Dereferencing NULL pointers and accessing previously deallocated storage are two common programming mistakes. The usage of pointers in programs is thus an obstacle for
-%program understanding, debugging, and optimization. These activities need answers to many questions
-%about the structure of the heap contents and the pointer variables pointing into the heap.
-%
-%\bjcom{This last sentence disturbs the flow. Change and move it til later}
-These \bjcom{better ``Such''} side effects also make program analysis harder, because they make it
-difficult to compute the \bjcom{skip ``the''} aliasing relationships among different pointers in a program. Aliasing refers to the case \bjfix{refers to the case}{arises} when the same memory location can be accessed using different names.
-%\bjcom{Before the last sentence, explain what is aliasing}
-For instance, consider the instruction \bjcom{instruction}{statement} $\tt x.f := y$ written \bjcom{omit ``written''} in an imperative language \bjcom{insert a comma} where $\tt x$ and $\tt y$ are pointer variables \bjcom{skip rest of the sentence} pointing to memory cells. Its effect is to assign the value of the pointer $\tt y$ to the pointer field $\tt f$ \bjcom{The rest of this sentence is VERY strange} of the cell pointed to by $\tt x$. In order to update aliasing information of $\tt y$. We have to require information about all cells pointed by $\tt x.f$ which is not an easy task.
-\bjcom{The last two sentences do not make sense (e.g., x.f points to exactly one
-  cell, so what means ``all cells''?). Make a new try}
+Such side effects also make program analysis harder, because they make it
+difficult to compute aliasing relationships among different pointers in a program. Aliasing arises when the same memory location can be accessed using different names.
+For instance, consider the instruction statement $\tt x.f := y$ in an imperative language, where $\tt x$ and $\tt y$ are pointer variables. Its effect is to assign the value of the pointer $\tt y$ to the cell pointed to by $\tt x.f$. In order to update aliasing information of $\tt y$. We have to require information about all the cell pointed by $\tt x.f$ which is not an easy task.
+%\bjcom{The last two sentences do not make sense (e.g., x.f points to exactly one
+%  cell, so what means ``all cells''?). Make a new try}
 
-In verification and program analysis, it is a problem to describe and deduce \bjcom{better ``deduce and describe''} how the heap-allocated memory is organized. E.g., Program \bjcom{Why capital P?} invariants must often describe how the heap-allocated memory is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of ``shape analysis''.
+In verification and program analysis, it is a problem to deduce and describe  how the heap-allocated memory is organized. E.g., program invariants must often describe how the heap-allocated memory is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of ``shape analysis''.
 
-%\bjcom{This last sentence is not understandable. I suggest you rewrite and make it less complicated. Find the simplest way to explain what is here some problem}
-%Having less precise program dependence information
-%\bjcom{You often use ``program dependence information'' without explaining what it means}
-%decreases the opportunities for automatic parallelization
-%and for instruction scheduling. 
-%The usage of pointers is error prone.
-%\bjcom{This last thing was more or less said in the beginning of the page}
 
- 
-%\bjcom{It is good to have an introductory paragraph, like this one, to give an idea of what are the challenges with pointers. But please rewrite it to have a more logical flow, and make the problems that you want to bring up clear}
-
-%There exist several works that have treated the semantics of pointers such as works in [5, 42, 43, 45].
-
-%\bjcom{A suggestion is to have: First a paragraph describing pointers and generla problems (aliasing, segmentation fault). A next paragraph can be to introduce that
-%  in verification and program analysis, it is a problem to describe and deduce how the heap-allocated memory is organized. E.g., Program invariants must often
-%  describe how the heap-allocated memory is structured in order to infer the effects of statements that dereference pointer fields. This is the topic of
-%  ``shape analysis''}
-
-\bjcom{First sentence must be rewritten}
-By shapes, which mean descriptors of heap contents. Shape analysis is a generic term denoting static
-program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) software \bjcom{omit ``software''} programs. The shape analysis problem becomes more challengeing in concurrent programs thcat manipulate pointers and dynamically allocated objects, which are usually complicated. 
-\bjcom{You did not propertly solve the comment: Why is it more interesting in ``concurrent programs''. I suggest it is because different threads interact in complex ways, which are difficult to foresee in the analysiso}
-The problem of verifying these programs has been a subject of intense research for quite some time. Currently, there are several competing approaches for symbolic representation.
-\bjcom{The last sentence was not good. Maybe something along the lines``Several approaches for representing the possible structures of the heap have been proposed''}
+%\bjcom{First sentence must be rewritten}
+Shape analysis is a generic term denoting static
+program-analysis techniques that attempt to discover and verify properties of the heap contents in (usually imperative) programs. The shape analysis problem becomes more challenging in concurrent programs that manipulate pointers and dynamically allocated objects, which are usually complicated. 
+In concurrent programs, different threads interact in complex ways, which are difficult to foresee in the analysis. Several approaches for representing the possible structures of the heap have been proposed.
 \input{heap-lazy-list}
  
-TVLA (Three-Valued Logic Analyzer) \cite{SagivRW02} \bjfix{Analyzer}{Analysis} is \bjcom{insert ``one of''} the first and one of the most popular shape analysis
-method. \bjcom{plural, please} It is based on a three-valued first-order predicate logic with transitive closure. Three-valued logic \bjcom{use ``TVLA''} is a logic system where there are three truth value ’true’ and ’false’, and ’unknown’. Intuitively, concrete heap structure is represented by a finite set of abstract summary cells, each of them representing a set of concrete cells. Summary cells are obtained by combining several heap cells that agree on the values of a chosen set of unary abstraction predicates. \bjcom{I think the explanation of summary cells should be improved to be understandable. You might consider putting a small illustration of what is a summary cell. I could also suggest to remove the text about
-  ``three truth valueS'', since that is less important than the feature of wummary NODES (be careful with terms)}
-A unique \bjfix{unique}{important} aspect of TVLA is that it automatically generates the abstract transformers from the concrete semantics; these transformers are guaranteed to be sound, and precise enough to verify wide ranges of applications. However,
-The method is not fully automatic,
-\bjcom{This is too strong. The core part can be fully automated. You might write that it cannot fully automatically handle all programs, and that one may have
-  to extend it by appropriate predicates etc.} its the synthesis of appropriate predicates that are able to express the invariants in the program. This problem is even more difficult with complicated heap structures such as skip-lists, trees, or arrays of lists.  
+TVLA (Three-Valued Logic Analysis) \cite{SagivRW02} is one of the first and one of the most popular shape analysis
+methods. It is based on a three-valued first-order predicate logic with transitive closure. Intuitively, concrete heap structure is represented by a finite set of abstract summary cells, each of them representing a set of concrete cells. Summary cells are obtained by merging several heap cells that agree on the values of a chosen set of unary abstraction predicates.  %\bjcom{I think the explanation of summary cells should be improved to be understandable. You might consider putting a small illustration of what is a summary cell. }
+A unique important aspect of TVLA is that it automatically generates the abstract transformers from the concrete semantics; these transformers are guaranteed to be sound, and precise enough to verify wide ranges of applications. However, it cannot fully automatically handle all programs, and that one may have to extend it by appropriate predicates etc. Its the synthesis of appropriate predicates that are able to express the invariants in the program. This problem is even more difficult with complicated heap structures such as skip-lists, trees, or arrays of lists.  
 
-Another approach is 
-\bjcom{Better to start ``There are several other ...''}
- based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, 3-valued logic \cite{SagivRW02} \bjcom{Why repeat it here?}, monadic second- order \bjcom{check how to separate or conjoin ``second'' ``order''} logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} or other \cite{Shmuel:Shape, Karen:Shape}. Among these works, the work, such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} proposed more efficient approaches. \bjcom{The preceding sentence had no information. You can improve it} The reason for that is that their approaches effectively decomposes \bjcom{Careful with singular/plural here} the heap into disjoint components and process \bjcom{bad word in this context} them independently). However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
+There are several other approaches
+ based on the use of logics to present heap configurations. The logics can be separation logic \cite{John:SL, Stephen:SL,JoshCris:SL,Hongseok:SL,Kamil:SL,Chin:SL,Quang:SL, Ruzica:SL, Constrantin:SL}, monadic second-order
+ % \bjcom{check how to separate or conjoin ``second'' ``order''}
+ logic \cite{Ander:ML, Jakob:ML,Madhusudan:ML} and others \cite{Shmuel:Shape, Karen:Shape}. Among these works, the works based on separation logic are
+ %such as \cite{JoshCris:SL,Hongseok:SL, Quang:SL} 
+  more efficient than the others. 
+  %\bjcom{The preceding sentence had no information. You can improve it} 
+  The reason for that is that their approaches effectively decompose the heap into disjoint components and treat them independently. However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
 
- %Another approach is based on the use of automata. In this approach, elements of languages of the automata describe configurations of the heap \cite{Ahmed:TreeAutomata, Ahmed:TreeAutomata2}. 
  
- This issue can be fixed \bjcom{Too strong. You could say ``addressed''} by automata \bjfix{automata}{automata-based} techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of heaps on a tree structure,
- bjcom{What means ``on a tree structure''?}
-and represent non-tree edges by using regular “routing” expressions. These expressions
-describe how the target can be reached from the source using tree edges.
-\bjcom{``target''? ``source''?} 
-Finite tree transducers
+ This issue can be fixed addressed by automata-based techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of tree parts and represent non-tree edges of heaps by using regular “routing” expressions. Finite tree transducers
 are used to compute set of reachable configurations, and symbolic configuration is abstracted
-collapsing certain states of the automat. The refinement technique called counterexample-guided
+collapsing certain states of the automata. The refinement technique called counterexample-guided
 abstraction refinement (CEGAR) technique is used during the run of the analysis. This technique
 is fully automatically and can handle complex data structures such as binary trees with linked
 leaves. However, it suffers from the inefficiency and it also can not handle concurrent programs.
-\bjcom{The preceding paragraph was interesting, but too hard to follow. Try to
-  explain in a more understandable way}
+%\bjcom{The preceding paragraph was interesting, but too hard to follow. Try to
+%  explain in a more understandable way}
 
-The problem of inefficiently of the previous technique can be solved by the approach based on forest automata. \bjcom{Put reference} In their \bjfix{their}{such as} representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are cells which are pointed to by either program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic [15]. \bjcom{Fix this citation in LATEX} Using this decomposition, sets of heaps with a bounded number of cut-points are then \bjfix{are then}{can then be} represented by the \bjcom{skip ``the''} so called forest automata (FA). A forest automaton (FA) \bjcom{You repeat the introduction of acronym} is basically a tuple of tree automata. Each of the tree
+The problem of inefficiently of the previous technique can be solved by the approach based on forest automata \cite{foresterfull}. In such representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are cells which are pointed to by either program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic \cite{John:SL}. Using this decomposition, sets of heaps with a bounded number of cut-points can then be represented by so called forest automata (FA). Each of the tree
 automata within the tuple accepts trees whose leaves may refer back to the
 roots of any of these trees. A forest automaton then represents exactly the set
 of heaps that may be obtained by taking a single tree from the language of each
 of the component tree automata and by gluing the roots of the trees with the
-leaves referring to them. \bjcom{Previous sentences was a good explanation. Now
-  introduce the example, and discuss nested FAs only later}
+leaves referring to them. %\bjcom{Previous sentences was a good explanation. Now
+  %introduce the example, and discuss nested FAs only later}
  Moreover, they allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist). \input FA
 Let us take an example of how to split a heap into small tree components. Figure \ref{figure:forest} shows five tree components obtained by splitting the heap in figure \ref{lazy:list:heap:fig}. These components are named as 1,2,3,4 and 5 from left to right. Each root of a tree component is a cut-point in the heap in figure \ref{lazy:list:heap:fig}. These cut-points are cells pointed to by variables $\tt head$, $\tt tail$,  $\tt p$,  $\tt c$ and the cell which has two incoming pointers. In each tree component, the red node show which  tree component it refers. For instance, the tree component 1 refers to tree component 2, and both tree components 2 and 3 refer to tree component 4.
-\bjcom{The number of pictures is buggy in preceding paragraph.
-Check \url{http://www.terminally-incoherent.com/blog/2007/04/14/latex-fixing-wrong-figure-numbers/}}
+%\bjcom{The number of pictures is buggy in preceding paragraph.
+%Check \url{http://www.terminally-incoherent.com/blog/2007/04/14/latex-fixing-wrong-figure-numbers/}}
 
-This forest automata approach is fully automatic and able to verify various class \bjcom{put plural} of data structures \bjcom{put comma} including complicated structures such as trees and skip-lists. \bjcom{Not quite true for skip lists with unbounded heights?} However, the approach can not verify properties related to data values of heap cells such as sortedness in the lazy set algorithm. Therefore, in this thesis, we extend their work to verify data properties. 
+This forest automata approach is fully automatic and able to verify various classes of data structures, including complicated structures such as trees and skip-lists with bounded number of levels. 
+However, the approach can not verify properties related to data values of heap cells such as sortedness in the lazy set algorithm. Therefore, in this thesis, we extend their work to verify data properties. 
 
-The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}. \bjcom{Please add a few sentence to describe the main ideas in these approaches} The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
+The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}.  The approach is to model heap states hypergraphs, and represent both pointer operations and abstraction mappings by hypergraph transformations. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
   
 \section*{Our Approaches}
 In this thesis, we proposed three approaches for heap abstractions. In paper I, we proposed a novel approach of representing sets of heaps via tree automata (TA). In our representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are nodes pointed to by program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic [15]. Using this decomposition, sets of heaps with a bounded number of cut-points are then represented by the so called forest automata (FA) that are basically tuples of TA accepting tuples of trees whose leaves can refer back to the roots of the trees. Moreover, we allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist). \input TA
@@ -121,15 +87,6 @@ information).
 
 Let us illustrate how pairs of heap nodes can be represented by fragments. Figure \ref{fragment} shows the set of fragments abstracted from the heap in \ref{figure:forest}(a). In each fragment, the ordering between two keys of two nodes is shown as a label on the arrow between two tags. Above each tag is pointer variables. The first brown row under each tag is $\tt reachfrom$ information, whereas the second green row is $\tt reachto$ information.
 
-%To verify linearizability of the algorithm in Figure~\ref{figure:lazy-list},
-%we must represent several key invariants of the heap. These include (among others)
-%\begin{numberedlist}
-%	\item The list is strictly sorted in $\tt key$ order, two unmarked nodes cannot have the same $\tt key$.
-%\item All nodes which are unreachable from the head of the list are marked.
-%\item The variable $\tt p$ points to a cells whose $\tt key$ field is never
-%  larger than the input parameter of its $\tt add$,$\tt rmv$ and $\tt cnt$ methods.
-%\end{numberedlist}
-%Let us illustrate how such invariants are captured by our fragment abstraction. 1) All fragments are strictly sorted, implying that the list is strictly sorted. 2) This is verified by inspecting each tag: $\frag_{6}$ contains the only unreachable tag, and it is also marked. 3) The fragments express this property in the case where the value of $\tt key$ is the same as the value of the observer register $\tt x$. Since the invariant holds for any value of $\tt x$, this property is sufficiently represented for purposes of verification.   
 
 
 
