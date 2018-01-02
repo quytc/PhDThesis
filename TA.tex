@@ -172,7 +172,7 @@ at ($(cell2.east)+(10pt,20pt)$){};
 
 
 \node[rounded corners,draw = red,name=cell4ref,minimum width=12pt, minimum height=12pt,anchor=west]
-at ($(cell3.east)+(10pt,-52pt)$){};
+at ($(cell3.east)+(10pt,-52pt)$){$3$};
 %\node[minimum width=8pt, minimum height=10pt,anchor=south west,font=\tiny,inner sep=0pt,name=d4a] at (cell4ref.south west){$6$};
 %\node[draw = black!50,minimum width=8pt, minimum height=10pt,anchor=north,font=\tiny,inner sep=0pt]at (cell4ref.north){\cross};
 %\node[draw = black,minimum width=8pt, minimum height=10pt,anchor=south,font=\tiny,inner sep=0pt]at (cell4ref.south){\tick};
@@ -198,13 +198,13 @@ at ($(cell3.east)+(50pt,-20pt)$){};
 
 
 \node[name = a1] at ($(cell3.south)+(-5pt,0pt)$){};
-\node[name = a2] at ($(cell4.east)+(0pt,5pt)$){};
+\node[name = a2] at ($(cell4.east)+(0pt,8pt)$){};
 \node[name = a3] at ($(cell3.west)+(8pt,5pt)$){};
-\node[circle, draw, minimum height = 7pt,font=\tiny]
+\node[circle, draw, name = 23, minimum height = 7pt,font=\tiny]
 at ($(cell3.east)+(25pt,5pt)$){2};
 
 \begin{pgfonlayer}{background}
- \node[code-bg,fit=(cell3) (cell4) (a1) (a2) (a3)]{};
+ \node[code-bg,fit=(cell3) (cell4) (a1) (a2) (a3) (23)]{};
  \end{pgfonlayer}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -296,6 +296,27 @@ at ($(cell2.east)+(7pt,-50pt)$){};
 
 \node[circle, name = T3, draw, minimum height = 7pt,font=\tiny]
 at ($(cell7.north)+(0pt,10pt)$){3};
+
+\node[name = t1, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(23pt,40pt)$){};
+\node[name = t2, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(73pt,13pt)$){};
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (t1) to  (t2);
+
+\node[name = t1, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(83pt,14pt)$){};
+\node[name = t2, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(133pt,9pt)$){};
+
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (t1) to  (t2);
+
+
+
+\node[name = t1, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(170pt,7pt)$){};
+\node[name = t2, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(223pt,9pt)$){};
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (t1) to  (t2);
+
+\node[name = t1, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(83pt,-14pt)$){};
+\node[name = t2, minimum width=12pt, minimum height=12pt,anchor=south west,inner sep=0pt,scale=0.8, color = orange] at ($(cell1.north east)+(133pt,9pt)$){};
+\draw[->, dashed, color = blue, line width=0.2mm, bend right = -70] (t1) to  (t2);
+
+
 
 \begin{pgfonlayer}{background}
  \node[code-bg,fit=(cell7) (T3) (cell4ref) (var)]{};
