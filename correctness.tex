@@ -1,5 +1,5 @@
 %% ====================================================================
-\section*{Linearizability}      
+\section{Linearizability}      
 \label{section:specification:concurrent:data:structure}     
 \index{Specification}%         
 %% ====================================================================
@@ -58,7 +58,7 @@ We separate the problem of specifying linearizability into several ones.
   %You can also add a section, where you survey the technique of observers that synchronize at call and return events
  
 
-\section*{Observers}
+\section{Observers}
 \label{section:observers}
 \index{Observers}
 %% ====================================================================
@@ -104,7 +104,7 @@ in the runs where the bad specification captured by the observer has been observ
 a data value is deleted or found although it is not present in the set, or a data value is not found or cannot be deleted although it is already present in the set
 %\bjcom{Continue and explain in 5-10 lines how it works}
 
-\section*{Linearization Policies}
+\section{Linearization Policies}
 \label{controllers:subsection}
 In order to prove linearizability, the most intuitive approach is to find a linearization point (LP) in the code of the implementation, and show that it is the single point where the effect of the operation takes place \cite{AHHR:integrated:rep,BLMRS:cav08,Vafeiadis}.
 \input lazy-list-rrules
