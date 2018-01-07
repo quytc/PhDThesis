@@ -115,11 +115,19 @@ This approach is very efficient but it is not optimal for complicated concurrent
 
 In paper III, we present an approach which can handle concurrent programs implemented from simple to complex data structures. More precise, we can handle well-known data structures like singly-linked lists, skiplists, and lists of lists. 
 %\bjcom{introduce the term ``fragment abstraction'' better, before you explain how it works} 
+\paragraph{Heap abstraction for singly-linked list}
 The main idea of the approach is to represent a set of heap states by a set
 of fragments. A fragment represents two heap cells that are connected by a pointer
 field. For each of its cells, the fragment represents the contents of its non-pointer fields,
 together with information about how the cell can be reached from the program’s pointer
 variables, under the applied data abstraction. The fragment contains both
+ \begin{figure}
+\center
+	\input fsll
+\caption{Fragment abstraction of the configuration in \ref{lazy:list:heap:fig}}
+\label{fig:sllabs}
+\end{figure}
+ 
 \begin{itemize}
 \item {\em local} information about the cell's fields and variables that
   point to it, as well as
@@ -139,6 +147,7 @@ common node), and globally consistent (respecting the global reachability
 information).
 %\input fragment
 
+\paragraph{Heap abstraction for skiplist}
 Let us illustrate how pairs of heap cells can be represented by fragments. Before going detail to the example, let us describe in short the definition of skiplist. A skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.
 The skiplist has sentinel head and tail nodes with maximum heights and key values $-\infty$ and $+\infty$, respectively.
 %Figure~\ref{sl} shows a skiplist with maximum height of 3.
@@ -146,14 +155,12 @@ The lowest-level list (at level $1$) constitutes an ordered list of all nodes
 in the skiplist. Higher-level lists are increasingly sparse sublists of the
 lowest-level list, and serve as shortcuts into lower-level lists.
 \begin{figure}
-\vspace*{-0.6cm}
 \center  
  \includegraphics[width=1.2\textwidth, trim={7cm 8cm 0.5cm 6cm}, clip]{skipshape.pdf}  
-\vspace*{-0.6cm}
- \caption{A concrete shape of 3-level skiplist with two threads}
+ \caption{A concrete shape of 3-level skiplist}
 \label{sl-shape}
-\vspace*{-0.6cm}
 \end{figure}
+
 %\todo[inline]{Quy: you must provide example heaps, etc. before I can continue
 %  writing}
 Figure~\ref{sl-shape} shows an example heap state of the
