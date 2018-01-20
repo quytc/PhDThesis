@@ -146,6 +146,14 @@ be both locally consistent (appending only fragments that agree on their
 common node), and globally consistent (respecting the global reachability
 information).
 %\input fragment
+Figure~\ref{fig:fsll} shows a set of fragments that is sufficient to
+represents the configuration in Figure~\ref{lazy:list:heap:fig}. There are $8$ fragments, named $\frag_1$, \ldots , $\frag_{8}$. Fragment of
+$\frag_{8}$) consists of a tag that points to $\dangconst$. All other fragments consist of a pair of pointer-connected tags. The two left-most cells
+in Figure~\ref{} are represent by the level 1-fragment $\frag_1$ in
+Figure~\ref{fig:skiplistabs}. Here, the variable $\tt preds[3]$ is represented by $\tt preds[higher]$. The mapping $\pi_1$ represents the data abstraction of the $\tt key$ field, here saying that it is smaller than the value $9$ of the observer register. Note that, in our approach, the data abstraction is a mapping function from data value to a set of observer registers.
+The two left-most cells are also represented by
+a higher-level fragment, viz.\ $v_6$.
+The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt +\infty$) are represented by the higher-level fragment $v_7$. In each fragment, the abstraction values of non-pointer fields are shown represented inside each tag of the fragment. The data relation is shown as a label on the  arrow between two tags. Above each tag is pointer variables. The first row under each tag is reach from information, whereas the second row is reach to information.
 
 \paragraph{Heap abstraction for skiplist}
 Let us illustrate how pairs of heap cells can be represented by fragments. Before going detail to the example, let us describe in short the definition of skiplist. A skiplist consists of a collection of sorted linked lists, each of which is located at a {\em level}, ranging from $1$ up to a maximum value. Each skiplist node has a key value and participates in the lists at levels $1$ up to its {\em height}.

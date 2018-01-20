@@ -5,41 +5,37 @@ Computers have been used for a variety of applications in business, science, edu
 
 Some bugs are less serious than others. Some types of software, e.g., in user interfaces or entertainment software, can be useable even if it contains a small number of bugs.
 However, in the case of critical systems and system components such as software in libraries of programming languages, 
-bugs can have far-reaching impacts \bjcom{skip ``impacts''} consequences, and must be avoided as much as possible.
-Some of such \bjcom{skip ``of such''} libraries provide standard data structures such as stacks, queues, containers. Such data structures provide ways of storing  
-and retrieving data in a way that suits the application at hand. For example, a stack allows adding and removing elements in a particular order. Every time an element is added, \bjfix{added}{inserted} it goes on the top of the stack, the only element that can be removed is the element that was at the top of the stack. \bjcom{I suggest to change the
-description of stack to emphasize its INTERFACE: do not talk about the ``top'' of the stack, instead focus on the interface property that elements are removed
-in reverse order of insertion} The simplest application of a stack is to reverse a word. You push a given word to stack - letter by letter - and then pop letters from the stack. \bjcom{Please be consistent: either insert/remove or push/pop or ... , but use the same always}
+bugs can have far-reaching consequences, and must be avoided as much as possible.
+Some of libraries provide standard data structures such as stacks, queues, containers. Such data structures provide ways of storing  
+and retrieving data in a way that suits the application at hand. For example, a stack allows inserting and removing elements in a particular order. Every time an element is inserted, that element is removed
+in reverse order of insertion. The simplest application of a stack is to reverse a word. You insert a given word to stack - letter by letter - and then remove letters from the stack.
 By using data structures data can be easily, and efficiently exchanged; it allows portability, comprehensibility, and adaptability of information.
 
-A data structure can be both sequential or concurrent \bjcom{The rest of the sentence can be moved to the next paragraph and adapted} which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of supported operations along with specifications about what types of arguments of each operation and the value returned by each operation. \bjcom{Fix the grammar in preceding sentence} In order to implement this interface, the data structure may internally be quite complex.
+A data structure can be both sequential or concurrent which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of operations with specifications about their types of arguments and returned values. Data structures typically use heap-allocated memory to store their data. For example, the concurrent linked queue in java.util.concurrent uses a singly linked list to organize their data. The data structure may be quite complex like skiplists and binary trees which are used to implement sets.
 
-Data structures typically use heap-allocated memory to store their data. For example, the concurrent linked queue in java.util.concurrent uses a singly linked list to organize their data. \bjcom{Please extend this short paragraph to talk about complex features of data structure implementations, you can also include
-concurrency. Now the paragraph is too short}
+%\bjcom{Please extend this short paragraph to talk about complex features of data structure implementations, you can also include concurrency. Now the paragraph is too short}
 
-The predominant method to improve \bjfix{improve}{ensure} software quality is
-\emph{testing}. It is a dynamic analysis where a program is run \bjfix{run}{executed} under specific conditions, so-called \bjfix{so-called}{in so-called} test cases, and \bjfix{and}{while} checking whether the result with \bjfix{with}{for} a given input matches the expected output.
+The predominant method to ensure software quality is
+\emph{testing}. It is a dynamic analysis where a program is executed under specific conditions, in so-called test cases, while checking whether the result for a given input matches the expected output.
 %
-The test cases should be carefully designed to cover all possible cases of program executions.
-\bjcom{Or ``as many as possible''}
-\index{Coverage}
-However, there is no guarantee \bjcom{better to say that it is infeasible to ..} to cover all possible executions. Therefore, it is said that
-testing can be used to show the presence of bugs, but never to show their absence. \bjcom{Find the citation for this (Dijkstra, I believe)} 
-It would be nice to have techniques for checking that all executions conform to the interface of a data structure,
-\bjcom{Break the sentence}
-a possibility is to use formal techniques which is the approach used in our \bjfix{our}{this} thesis.
+The test cases should be carefully designed to cover as many as possible cases of program executions.
+However, it is infeasible to cover all possible executions. Therefore, it is said by Edsger W. Dijkstra that testing can be used to show the presence of bugs, but never to show their absence. 
+It would be nice to have techniques for checking that all executions conform to the interface of a data structure.
+A possibility is to use formal techniques which is the approach used in this thesis.
 
 %% ====================================================================
 \section{Formal Verification} 
-Formal verification uses mathematical methods to check whether a software \bjcom{software}{program, or piece of software} satisfies its specification \bjcom{Skip rest of sentence} provided by users. 
-There are several approaches for \bjfix{for}{to} formal verification, including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether a system is equivalent to its specification with respect to some notion of behavior \bjcom{skip ``behavior''} equivalence. This is mostly used for hardware designs\bjcom{Put ``in industry'' first in the sentence} in industry. Theorem proving is a technique where both the behavior of the system and its desired properties are expressed in mathematical logic. Then, theorem proving \bjcom{put the comma here} typically assisted by an interactive theorem prover \bjcom{add comma} will try to prove that the system satisfies these properties. 
+Formal verification uses mathematical methods to check whether a program, or piece of software satisfies its specification. 
+There are several approaches to formal verification, including equivalence checking, theorem proving, and model checking. Equivalence checking method decides whether a system is equivalent to its specification with respect to some notion of equivalence. In industry, this is mostly used for hardware designs. Theorem proving is a technique where both the behavior of the system and its desired properties are expressed in mathematical logic. Then, theorem proving, typically assisted by an interactive theorem prover, will try to prove that the system satisfies these properties. 
 
-Model checking takes as input a model of the system \bjcom{``software/program''?} under
+Model checking takes as input a model of the program under
 consideration and a formal specification of the a property to be verified as inputs. The specification of a software component may consist of a number of such properties, each of which can be verified using model checking. The approach exhaustively explores all possible executions of the model. This is typically done exploring the set of reachable states of the model  which can be finite or infinite. 
-This works well if the set of reachable states is finite such as \bjcom{such as}{which typically happens for embedded} controllers and hardware design. \bjcom{plural}  However, most software is infinite-state, e.g., a data structure may contain an unbounded amount of data -\bjcom{new sentence} a common technique for handling this is to devise a symbolic representation of sets of states, such that a single symbolic representation may represent \bjcom{may represent}{represents} an infinite set of states. \bjcom{the rest of the paragraph is too simplistic: it does not give an adequate picture of the sota. Try to find a better (longer?) way to describe that work remains for model checking of data structure implementations} However, it is difficult to find a suitable symbolic representation for data structures. In particular, complicated data structures such as trees and skip-lists.
+This works well if the set of reachable states is finite which typically happens for embedded controllers and hardware design. However, most softwares are infinite-state, e.g., a data structure may contain an unbounded amount of data. A common technique for handling this is to devise a symbolic representation of sets of states, such that a single symbolic representation represents an infinite set of states. 
+%\bjcom{the rest of the paragraph is too simplistic: it does not give an adequate picture of the sota. Try to find a better (longer?) way to describe that work remains for model checking of data structure implementations} 
+However, it is difficult to find a suitable symbolic representation for data structures. In particular, complicated data structures such as trees and skip-lists. The reason is that complicated data structures usually u 
 
-\bjcom{General comment: You must decorate the text with citations to relevant work, when this is called for. Examples are forest automtat, thread-modular, .. and
-there are many more. Please go over and add citations. These are needed so that the reader in the field understands what you are talking about}
+%\bjcom{General comment: You must decorate the text with citations to relevant work, when this is called for. Examples are forest automtat, thread-modular, .. and
+%there are many more. Please go over and add citations. These are needed so that the reader in the field understands what you are talking about}
 
 \section{Research Challenges}
 Our challenge of this thesis is to develop techniques for automated verification of both sequential and concurrent data structures using heaps. \bjfix{heaps}{dynamically heap-allocated memory} This requires to address several challenges in model checking:
