@@ -45,38 +45,34 @@ called \emph{symbolic
    representation}. It avoid representing concretely all states of the system. The approach is performed by designing a symbolic representation of sets of states.
    %abstract states so that each abstract state could represent a set of concrete states.
 % \bjcom{Often, one do not have clearly identifiable abstract states. Rather one has a symbolic representation of sets of states (then you do not need to talk about ``abstract'' and ``concrete'' states)}
-This designing process is done by \emph{dropping} irrelevant details based on properties that we want to verify. 
-As an example, consider a switch with two positions: {\tt up} and {\tt down}, and a counter that indicates how many times the light was turned on. Initially, its position is {\tt down}, the light is {\tt off} and the counter is $\tt 0$. When the switch is shifted up, the light is turned on, and the counter is incremented by $\tt 1$. When we shift the switch down, the light is turned off and the counter is reset to $\tt 0$ if it had reached its maximum value. We want to verify that the switch can not be up and the light is off at the same time. If we keep all the information of the system, then, a state consists of the position of the switch, the status of the light and the value of the counter, we would have $\tt (2*2*n)$ states where $\tt n$ is the maximum value of counter. If $\tt n$ is $\tt 1000000$ then we may end up to four million states.  However, it is obvious that the counter is not needed to verify the property, so we could ignore it. %\bjcom{Break the sentence here}
- Then a state contains only the position and status of the switch and the light denoted as $\tt [p,s]$ where $\tt p$ is the position and $\tt s$ is the state of the light. The system using the symbolic representation moves from  [{\tt down;off}]  to  [{\tt up;on}]  and conversely from  [{\tt up;on}]  to  [{\tt down;off}]. We see that the state-space exploration never visits a state that belongs to the set labeled by  [{\tt down;on}]  therefore the system is safe. The switch example is of course simple and does not reflect the complexity of today’s software. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time
-\bjcom{The example is not really showing ``symbolic approach'', since you simply
-  drop a variable. It would be better if you had an example, where you need
-  to find a symbolic representation (e.g., ``odd''  ``even'', or so. You could
-  maybe (just a possible idea) add a transition to a failure state if the
-  counter satisfies some copmlex formula that can be true only when it is
-  (say) even, and then introduce an abstraction for ``even/odd''. In that
-  case you can illustrate better Symbolic technique, and overapproximation,
-  and to check for saftey properties}
+This designing process is done by \emph{dropping} irrelevant details based on properties that we want to verify.
+
+As an example, consider the dining mathematicians which is a classical mutual exclusion problem: There are two mathematicians living at the same place, whose life is focused on two activities, namely thinking (think01 and think02, respectively) and eating (eat01 and eat02, respectively). They do not want to eat at the same time. To ensure this, they agreed to have access to a common integer variable n. If value of n is even, the first mathematician is allowed to start eating. When finished, the first mathematician sets (n/2) to n. A similar procedure holds for the second mathematician, where the check is if the value of the stored variable is odd, and the value set back after eating is (3n+1). We want to verify that 
+two mathematicians do not eat at the same time, if we keep all the information of the system, then, a state consists of the actions of the mathematicians, and the value of the n. If $\tt n$ is large then we may end up to four million states.  However, it is obvious that n is not fully needed to verify the property, so we could present it symbolically where we use two boolean predicates {\tt even(n)} and {\tt odd(n)} to present whether n is even or odd value. The dining mathematicians example is of course simple and does not reflect the complexity of today’s software. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time
+%\bjcom{The example is not really showing ``symbolic approach'', since you simply
+%  drop a variable. It would be better if you had an example, where you need
+%  to find a symbolic representation (e.g., ``odd''  ``even'', or so. You could
+%  maybe (just a possible idea) add a transition to a failure state if the
+%  counter satisfies some copmlex formula that can be true only when it is
+%  (say) even, and then introduce an abstraction for ``even/odd''. In that
+%  case you can illustrate better Symbolic technique, and overapproximation,
+%  and to check for saftey properties}
 
 
-The challenge is to find over-approximations that do not introduce
+Finding a right over-approximations is challenging, it might introduce
 behaviours that could turn out to be bad. Indeed, the method would
 return that the property is not satisfied and we would not know
 whether it comes from the approximation or from the concrete system
 itself.
-\bjcom{This last sentence was hard to understand. Maybe with a better example
-  (see above) you can be more concrete, and it is easier to express what
-  you want to say}% 
-                  
-\bjcom{It seems here that you want to illustrate counter-example-guided
-  refinement. Then you should start by introducing the name of this method
-  and its purpose. You can then explain it better. One way is to use the
-  (improvement) of the above example. You can, e.g., say that if we would
-  start with an overapproximation that ignores the counter, we get a false
+%\bjcom{This last sentence was hard to understand. Maybe with a better example
+%  (see above) you can be more concrete, and it is easier to express what
+%  you want to say}% 
+For example in the dining mathematicians problem. If we would start with an over-approximation that ignores the variable n, we get a false
   positive, and that one needs to refine the symbolic representation to
-  avoid it}
+  avoid it.
 
-To palliate \bjcom{Not a good word} to the imprecision caused by a too coarse
-over-approximation, it is possible to analyze the returned
+To deal with the imprecision caused by a too coarse
+over-approximation, it is possible to analyse the returned
 counter-example and find the origin of the problem. If it turns out to
 be a real concrete example, the method has in fact found a bug, and
 the property is surely not satisfied. Otherwise, the counter-example
@@ -88,8 +84,8 @@ anew.
 
 Nevertheless, finding suitable over-approximations is a challenge on
 its own. %
-This thesis now revolves around the following problem statement.
+This thesis now revolves around the problems of unboundedness which are described in previous section.
 
-\bjcom{Here you must continue. You can simply list the challenges that
-  you address for symbolic model checking. Since you already listed them
-  in Section 1, you can be quite short here}
+%\bjcom{Here you must continue. You can simply list the challenges that
+%  you address for symbolic model checking. Since you already listed them
+%  in Section 1, you can be quite short here}
