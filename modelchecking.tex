@@ -21,35 +21,56 @@ The approach that we focus on this thesis is
 %  much about that, but say that the most common form is to give an invariant,
 %  or (equivalently) a set of bad states}
 This approach was introduced by Emerson and Clarke~\cite{CE82} and by Queille and Sifakis~\cite{QS82}. 
- Model checking aims to check whether a model of a program satisfies its specification. As input, the method requires a model of the system under
-consideration and a specification. Models are typically transition systems consisting of states and transitions between states. Whereas the specification contains safety requirements 
-The method then computes and returns either "correct" when the specification is satisfied by the program, or "incorrect" when the program does not satisfy its specification. In the case of incorrect answer, the method can explain the reason by giving a counter-example. A state in the model contains relevant information about the program.
+Model checking aims to check whether a model of a program satisfies its \bjcom{Better: ``a given''} specification.
+\bjcom{The following sentence is redundant, you can skip it.}
+  As input, the method requires a model of the system under consideration and a specification.
+\bjcom{Here,you can move the sentence ``The method then ...''}
+Models are typically transition systems consisting of states and transitions between states.
+\bjcom{The following sentence can be moved to later}
+Whereas the specification contains safety requirements 
+  The method then computes and returns either "correct" when the specification is satisfied by the program, or "incorrect" when the program does not satisfy its specification. In the case of incorrect answer, the method can explain the reason by giving a counter-example.
+\bjcom{Here, you can start to explain how models look: ``Models are typically ...''} A state in the model contains relevant information about the program.
 %\bjcom{Before writing this, you must introduce ``transition systems'', otherwise the reader did not see what ``state'' means. See, e.g., the thesis by To}
 Alongside all the states of the system, the model depicts the
-transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of transitions, starting from some initial states. States and transitions together describe the \emph{operational
+transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of transitions, starting from some initial states \bjcom{better ``state''}.
+\bjcom{THe following sentence is not really necessary}
+States and transitions together describe the \emph{operational
   semantics}, that is, how steps of the system take place in the model.
 %\bjcom{``how every...'' is strange wording}
 The number of states and transitions can be finite or infinite.
 %\bjcom{Better to write that initial approaches were for finite (explain), and that one direction of work (since 90's) has focused on state-space explosion,one on infinite}
-Model-checking aims to explore the state-space entirely from some initial states. However, when the state-space is of large size. It grows in-fact
+\bjcom{Now you can start to explain ``specifications'': You can say, e.g., that a specification consists of properties of behaviors (i.e., of sequences of states), that one usually distinguishes safety properties (``something bad must never happen'') from liveness properties (``something good must eventually happen''), and
+  that most properties are safety properties. Then say that a model cheking algorithm explores the set of states in a clever way, and explain the word ``state-space''}
+Model-checking aims to explore the state-space entirely from some initial states.
+\bjcom{The following sentence is incomplete. You can instead say that one of the main problems with model checking is that the state-space is typically very
+  large} However, when the state-space is of large size. It grows in-fact
 exponentially with the number of parameters or the size of their
-domain. Therefore, there have been several methods to address with the
+domain. Therefore, there have been several methods to address with \bjcom{delete ``with''} the
 state-space explosion problem.
 
                    
 There are several techniques addressing the state-space explosion problem.
+\bjcom{Next sentence becomes not clear. Better to start ``One important approach is partial order techniques, which aim at ...   They are based on the fact ...''}
 Based on the fact that, in some cases, exploring all orderings of events is not necessary because some states can be re-visited. Therefore, \emph{Partial order} techniques aim at detecting and avoiding
 redundant situations, while retaining important dependencies among
 actions. The main approach to solve the state-space explosion problem is
-called \emph{symbolic
-   representation}. It avoid representing concretely all states of the system. The approach is performed by designing a symbolic representation of sets of states.
+called \bjcom{better ``to use a''} \emph{symbolic
+  representation}. It avoid \bjcom{``avoids''} representing concretely all states of the system.
+\bjcom{The following can better start ``Its main idea is to design a symbolic ...''}
+The approach is performed by designing a symbolic representation of sets of states.
    %abstract states so that each abstract state could represent a set of concrete states.
 % \bjcom{Often, one do not have clearly identifiable abstract states. Rather one has a symbolic representation of sets of states (then you do not need to talk about ``abstract'' and ``concrete'' states)}
 This designing process is done by \emph{dropping} irrelevant details based on properties that we want to verify.
 
-As an example, consider the dining mathematicians which is a classical mutual exclusion problem: There are two mathematicians living at the same place, whose life is focused on two activities, namely thinking (think01 and think02, respectively) and eating (eat01 and eat02, respectively). They do not want to eat at the same time. To ensure this, they agreed to have access to a common integer variable n. If value of n is even, the first mathematician is allowed to start eating. When finished, the first mathematician sets (n/2) to n. A similar procedure holds for the second mathematician, where the check is if the value of the stored variable is odd, and the value set back after eating is (3n+1). We want to verify that 
-two mathematicians do not eat at the same time, if we keep all the information of the system, then, a state consists of the actions of the mathematicians, and the value of the n. If $\tt n$ is large then we may end up to four million states.  However, it is obvious that n is not fully needed to verify the property, so we could present it symbolically where we use two boolean predicates {\tt even(n)} and {\tt odd(n)} to present whether n is even or odd value. The dining mathematicians example is of course simple and does not reflect the complexity of today’s software. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time
-%\bjcom{The example is not really showing ``symbolic approach'', since you simply
+\bjcom{For the following text, you can use a drawing of the transition system. I enclose my LATEX figure if you like to use it}
+As an example, consider the dining mathematicians which is a \bjcom{better: ``is a protocol for implementing the classical ..''} classical mutual exclusion problem: There are two mathematicians living at the same place, whose life is focused on two activities, namely thinking (think01 and think02, respectively) and eating (eat01 and eat02, respectively). They do not want to eat at the same time. To ensure this, they agreed to have access to a common integer variable n. \bjcom{use math mode
+  for the variable here and in the following} If value of n is even, the first mathematician is allowed to start eating. When finished, the first mathematician sets (n/2) to n. A similar procedure holds for the second mathematician, where the check is if the value of the stored variable is odd, and the value set back after eating is (3n+1). \bjcom{The description of the protocol is not good.}
+We want to verify that 
+two mathematicians do not eat at the same time, \bjcom{Here, start a new sentence. Also say that this specification is stated by a safety property which says that
+  the two mathematicians are not simultaneously in states eat 01 and eat 02}
+if we keep all the information of the system, then, a state consists of the \bjcom{A state cannot consist of actions, rather it represents the control state of
+  each mathematician} actions of the mathematicians, and the value of the n. If $\tt n$ is large then we may end up to four million states. \bjcom{This depends on
+  the type of n, make this clear} However, it is obvious that n is not fully needed to verify the property, so we could present it symbolically where we use two boolean predicates {\tt even(n)} and {\tt odd(n)} to present \bjcom{``represent''} whether n is even or odd \bjcom{Skip the following word} value. The dining mathematicians example is of course simple and does not reflect the complexity of today’s software. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time. \bjcom{The last sentence should be put earlier (in the preceding paragraph), where you introduce   symbolic techniques}
 %  drop a variable. It would be better if you had an example, where you need
 %  to find a symbolic representation (e.g., ``odd''  ``even'', or so. You could
 %  maybe (just a possible idea) add a transition to a failure state if the
@@ -59,16 +80,16 @@ two mathematicians do not eat at the same time, if we keep all the information o
 %  and to check for saftey properties}
 
 
-Finding a right over-approximations is challenging, it might introduce
-behaviours that could turn out to be bad. Indeed, the method would
+Finding a right over-approximations \bjcom{Better ``symbolic representation''} is challenging, it might introduce
+behaviours that could turn out to be bad.  Indeed, the method would
 return that the property is not satisfied and we would not know
-whether it comes from the approximation or from the concrete system
+whether it comes from the approximation \bjcom{``introduced by the symbolic representation''} or from the concrete system
 itself.
 %\bjcom{This last sentence was hard to understand. Maybe with a better example
 %  (see above) you can be more concrete, and it is easier to express what
 %  you want to say}% 
 For example in the dining mathematicians problem. If we would start with an over-approximation that ignores the variable n, we get a false
-  positive, and that one needs to refine the symbolic representation to
+  positive, and that one \bjcom{Better ``We must then refine ...''} needs to refine the symbolic representation to
   avoid it.
 
 To deal with the imprecision caused by a too coarse
@@ -85,7 +106,8 @@ anew.
 Nevertheless, finding suitable over-approximations is a challenge on
 its own. %
 This thesis now revolves around the problems of unboundedness which are described in previous section.
-
+\bjcom{This last sentence is much too vague, and cannot be understood. You shoudl be concrete about which unboundedness you refer to, and be
+   more precise about which text you refer to}
 %\bjcom{Here you must continue. You can simply list the challenges that
 %  you address for symbolic model checking. Since you already listed them
 %  in Section 1, you can be quite short here}
