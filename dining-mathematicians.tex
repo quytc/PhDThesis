@@ -1,0 +1,65 @@
+\paragraph{Example:}
+
+\begin{center}
+\setlength{\unitlength}{0.5cm}
+\begin{picture}(26,17)
+%
+\put(0,15.6){\makebox(0,0)[bl]{{\bf Action System} {\it Dining Mathematicians}}}
+\put(1,14.3){\makebox(0,0)[bl]{{\bf declare} $\localmode n : \integer$}}
+\put(1,13){\makebox(0,0)[bl]{{\bf initially} $n \geq 1$}}
+\put(0,1){\makebox(0,0)[tl]{\bf end}}
+%
+\put(2,1.5){
+\begin{picture}(26,11)
+%
+\put(0,0){
+\begin{picture}(12,11)
+\put(6,2){\circle{3}}
+\put(6,2){\makebox(0,0){$eat_1$}}
+\put(6,9){\circle{3}}
+\put(6,9){\makebox(0,0){$think_1$}}
+%
+\put(4.94,3.06){\vector(0,1){4.88}}
+\put(7.06,7.94){\vector(0,-1){4.88}}
+\put(4.8,5){\makebox(0,0)[r]{$n := 3n + 1$}}
+\put(7.2,5){\makebox(0,0)[l]{$odd(n)$}}
+\put(4,11){\vector(1,-1){0.94}}
+\end{picture}
+}
+\put(13.1,0){\line(0,1){8}}
+\put(12.9,0){\line(0,1){8}}
+%
+%
+\put(14,0){
+\begin{picture}(12,11)
+\put(6,2){\circle{3}}
+\put(6,2){\makebox(0,0){$eat_2$}}
+\put(6,9){\circle{3}}
+\put(6,9){\makebox(0,0){$think_2$}}
+%
+\put(4.94,3.06){\vector(0,1){4.88}}
+\put(7.06,7.94){\vector(0,-1){4.88}}
+\put(4.8,5){\makebox(0,0)[r]{$n := n/2$}}
+\put(7.2,5){\makebox(0,0)[l]{$even(n)$}}
+\put(4,11){\vector(1,-1){0.94}}
+\end{picture}
+}
+\end{picture}
+}
+\end{picture}
+\end{center}
+
+The above example consists of two processes, which share an integer variable
+$n$. The system has an infinite number of initial states, and the number of
+states is therefore infinite. Suppose we want to check that the two
+mathematicians are not eating at the same time, i.e., we want to
+check whether
+\[
+\neg(\at{eat_1} \land \at{eat_2})
+\]
+is invariant. Simple inspection shows that this invariant indeed holds
+for the system, for the simple reason that
+when the left process is in $eat_1$, then $n$ is odd, and
+when the right process is in $eat_2$, then $n$ is even.
+However, this simple fact cannot be detected by naive reachability analysis,
+since the system has infinitely many states.
