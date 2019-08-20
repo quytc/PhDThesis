@@ -1,47 +1,17 @@
-This is BibTeX, Version 0.99d (TeX Live 2014)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
-The top-level auxiliary file: /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.aux
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: /Users/quy/Documents/GitHub/PhDThesis/.texpadtmp/thesis.aux
 The style file: plain.bst
 Database file #1: ../misc/references.bib
-Repeated entry---line 1058 of file ../misc/references.bib
+Repeated entry---line 1293 of file ../misc/references.bib
  : @incollection{Forester
  :                       ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 1318 of file ../misc/references.bib
+Repeated entry---line 1553 of file ../misc/references.bib
  : @techreport{AHHR:integrated:rep
  :                                ,
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "rival11"
-Warning--I didn't find a database entry for "dudka13"
-Warning--I didn't find a database entry for "Sagiv02"
-Warning--I didn't find a database entry for "pale97"
-Warning--I didn't find a database entry for "artmc12"
-Warning--I didn't find a database entry for "juggrnaut10"
-Warning--I didn't find a database entry for "InvaderCAV08"
-Warning--I didn't find a database entry for "lists-counters"
-Warning--I didn't find a database entry for "atva09"
-Warning--I didn't find a database entry for "Loginov:AbstrRefViaInductLearning:05"
-Warning--I didn't find a database entry for "sleek12"
-Warning--I didn't find a database entry for "sleek13"
-Warning--I didn't find a database entry for "Zee:pldi08"
-Warning--I didn't find a database entry for "wies07hav"
-Warning--I didn't find a database entry for "dragoi:atva12"
-Warning--I didn't find a database entry for "SRW:threevalued"
-Warning--I didn't find a database entry for "boxes13"
-Warning--I didn't find a database entry for "AHHR:integrated:short"
-Warning--I didn't find a database entry for "meyer:vmcai16"
-Warning--I didn't find a database entry for "Quy:sas16"
-Warning--I didn't find a database entry for "Sagiv:correlation"
-Warning--I didn't find a database entry for "Amit:comparisonAbstraction"
 Warning--I didn't find a database entry for "MYRS:Canonical"
-Warning--I didn't find a database entry for "Quy:atva13:journal"
-Warning--I didn't find a database entry for "Sanchez:skiplists"
-Warning--I didn't find a database entry for "Linden:opodis13"
-Warning--I didn't find a database entry for "ts-stack"
-Warning--I didn't find a database entry for "BEEM:cav17"
-Warning--I didn't find a database entry for "Khyzha:esop17"
-Warning--I didn't find a database entry for "singh:issre16"
-Warning--I didn't find a database entry for "spotlight07"
 Name 1 in "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" has a comma at the end for entry forester11
 while executing---line 1049 of file plain.bst
 Too many commas in name 1 of "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" for entry forester11
@@ -52,45 +22,45 @@ Name 1 in "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek,
 while executing---line 1090 of file plain.bst
 Too many commas in name 1 of "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" for entry forester11
 while executing---line 1090 of file plain.bst
-You've used 114 entries,
+You've used 132 entries,
             2118 wiz_defined-function locations,
-            1343 strings with 26640 characters,
-and the built_in function-call counts, 48713 in all, are:
-= -- 4875
-> -- 2007
-< -- 122
-+ -- 802
-- -- 673
-* -- 3320
-:= -- 7241
-add.period$ -- 379
-call.type$ -- 114
-change.case$ -- 671
+            1403 strings with 28920 characters,
+and the built_in function-call counts, 57521 in all, are:
+= -- 5781
+> -- 2375
+< -- 146
++ -- 949
+- -- 799
+* -- 3947
+:= -- 8514
+add.period$ -- 443
+call.type$ -- 132
+change.case$ -- 788
 chr.to.int$ -- 0
-cite$ -- 116
-duplicate$ -- 2147
-empty$ -- 3997
-format.name$ -- 673
-if$ -- 10934
+cite$ -- 134
+duplicate$ -- 2530
+empty$ -- 4696
+format.name$ -- 799
+if$ -- 12918
 int.to.chr$ -- 0
-int.to.str$ -- 114
-missing$ -- 104
-newline$ -- 569
-num.names$ -- 233
-pop$ -- 826
+int.to.str$ -- 132
+missing$ -- 122
+newline$ -- 659
+num.names$ -- 269
+pop$ -- 963
 preamble$ -- 1
-purify$ -- 562
+purify$ -- 661
 quote$ -- 0
-skip$ -- 1693
+skip$ -- 2001
 stack$ -- 0
-substring$ -- 3154
-swap$ -- 915
-text.length$ -- 122
+substring$ -- 3778
+swap$ -- 1097
+text.length$ -- 146
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 451
+type$ -- 523
 warning$ -- 2
-while$ -- 454
-width$ -- 117
-write$ -- 1325
+while$ -- 539
+width$ -- 135
+write$ -- 1542
 (There were 6 error messages)

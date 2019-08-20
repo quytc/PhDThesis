@@ -1,26 +1,30 @@
 \begin{theindex}
 
-  \item Automation, \hyperpage{5}
+  \item Automation, \hyperpage{17}
 
   \indexspace
 
-  \item Linearizability, \hyperpage{12}
+  \item Linearizability, \hyperpage{24}
 
   \indexspace
 
-  \item Model Checking, \hyperpage{5}
+  \item Model Checking, \hyperpage{17}
 
   \indexspace
 
-  \item Observers, \hyperpage{15}
+  \item Observers, \hyperpage{27}
 
   \indexspace
 
-  \item Specification, \hyperpage{12}
+  \item Specification, \hyperpage{24}
+
+  \indexspace
+
+  \item Thesis outline, \hyperpage{xi}
 
   \indexspace
 
   \item Verification Methods
-    \subitem Model Checking, \hyperpage{5}
+    \subitem Model Checking, \hyperpage{17}
 
 \end{theindex}

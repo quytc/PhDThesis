@@ -23,6 +23,13 @@ Parosh~Aziz Abdulla.
 \newblock Well (and better) quasi-ordered transition systems.
 \newblock {\em Bulletin of Symbolic Logic}, 16(4):457--515, 2010.
 
+\bibitem{atva09}
+Parosh~Aziz Abdulla, Muhsin Atto, Jonathan Cederberg, and Ran Ji.
+\newblock Automated analysis of data-dependent programs with dynamic memory.
+\newblock In {\em Automated Technology for Verification and Analysis, 7th
+  International Symposium, {ATVA} 2009, Macao, China, October 14-16, 2009.
+  Proceedings}, pages 197--212, 2009.
+
 \bibitem{Parosh:Bengt:Karlis:Tsay:general}
 Parosh~Aziz Abdulla, Karlis {\v C}er{\=a}ns, Bengt Jonsson, and Yih-Kuen Tsay.
 \newblock General decidability theorems for infinite-state systems.
@@ -83,6 +90,12 @@ Parosh~Aziz Abdulla, Bengt Jonsson, Marcus Nilsson, and Julien d'Orso.
   Concurrency Theory}, volume 2421 of {\em Lecture Notes in Computer Science},
   pages 116--130. Springer, 2002.
 
+\bibitem{Quy:sas16}
+Parosh~Aziz Abdulla, Bengt Jonsson, and Cong~Quy Trinh.
+\newblock Automated verification of linearization policies.
+\newblock In {\em {SAS}}, volume 9837 of {\em LNCS}, pages 61--83. Springer,
+  2016.
+
 \bibitem{MTSdecidable}
 Parosh~Aziz Abdulla, K\={a}rlis \v{C}er\={a}ns, Bengt Jonsson, and Yih-Kuen
   Tsay.
@@ -96,6 +109,11 @@ ParoshAziz Abdulla, Lukáš Holík, Bengt Jonsson, Ondřej Lengál, CongQuy
   extended forest automata.
 \newblock In {\em ATVA13}, volume 8172 of {\em LNCS}, pages 224--239. Springer,
   2013.
+
+\bibitem{Amit:comparisonAbstraction}
+D.~Amit, N.~Rinetzky, T.~Reps, M.~Sagiv, and E.~Yahav.
+\newblock Comparison under abstraction for verifying linearizability.
+\newblock In {\em CAV'07}, volume 4590 of {\em LNCS}, pages 477--490, 2007.
 
 \bibitem{APRXZ01}
 T.~Arons, A.~Pnueli, S.~Ruah, J.~Xu, and L.~Zuck.
@@ -169,6 +187,26 @@ Ahmed Bouajjani, Marius Bozga, Peter Habermehl, Radu Iosif, Pierre Moro, and
   {CAV} 2006, Seattle, WA, USA, August 17-20, 2006, Proceedings}, pages
   517--531, 2006.
 
+\bibitem{lists-counters}
+Ahmed Bouajjani, Marius Bozga, Peter Habermehl, Radu Iosif, Pierre Moro, and
+  Tom{\'{a}}s Vojnar.
+\newblock Programs with lists are counter automata.
+\newblock {\em Formal Methods in System Design}, 38(2):158--192, 2011.
+
+\bibitem{dragoi:atva12}
+Ahmed Bouajjani, Cezara Dragoi, Constantin Enea, and Mihaela Sighireanu.
+\newblock Accurate invariant checking for programs manipulating lists and
+  arrays with infinite data.
+\newblock In {\em Automated Technology for Verification and Analysis - 10th
+  International Symposium, {ATVA} 2012, Thiruvananthapuram, India, October 3-6,
+  2012. Proceedings}, pages 167--182, 2012.
+
+\bibitem{BEEM:cav17}
+Ahmed Bouajjani, Michael Emmi, Constantin Enea, and Suha~Orhun Mutluergil.
+\newblock Proving linearizability using forward simulations.
+\newblock In {\em {CAV}}, volume 10427 of {\em LNCS}, pages 542--563. Springer,
+  2017.
+
 \bibitem{Ahmed:TreeAutomata}
 Ahmed Bouajjani, Peter Habermehl, Adam Rogalewicz, and Tom{\'{a}}s Vojnar.
 \newblock Abstract regular tree model checking of complex dynamic data
@@ -176,10 +214,22 @@ Ahmed Bouajjani, Peter Habermehl, Adam Rogalewicz, and Tom{\'{a}}s Vojnar.
 \newblock In {\em Static Analysis, 13th International Symposium, {SAS} 2006,
   Seoul, Korea, August 29-31, 2006, Proceedings}, pages 52--70, 2006.
 
+\bibitem{artmc12}
+Ahmed Bouajjani, Peter Habermehl, Adam Rogalewicz, and Tom{\'{a}}s Vojnar.
+\newblock Abstract regular (tree) model checking.
+\newblock {\em {STTT}}, 14(2):167--191, 2012.
+
 \bibitem{Vafeiadis:Aspect}
 Soham Chakraborty, Thomas~A. Henzinger, Ali Sezgin, and Viktor Vafeiadis.
 \newblock Aspect-oriented linearizability proofs.
 \newblock {\em CoRR}, abs/1502.07639, 2015.
+
+\bibitem{rival11}
+Bor{-}Yuh~Evan Chang, Xavier Rival, and George~C. Necula.
+\newblock Shape analysis with structural invariant checkers.
+\newblock In {\em Static Analysis, 14th International Symposium, {SAS} 2007,
+  Kongens Lyngby, Denmark, August 22-24, 2007, Proceedings}, pages 384--401,
+  2007.
 
 \bibitem{Chin:SL}
 Wei{-}Ngan Chin, Cristina David, Huu~Hai Nguyen, and Shengchao Qin.
@@ -242,6 +292,11 @@ J.~Derrick, B.~Dongol, G.~Schellhorn, B.~Tofan, O.~Travkin, and H.~Wehrheim.
   linearizability.
 \newblock In {\em {FM}}, volume 8442 of {\em LNCS}, pages 200--214. Springer,
   2014.
+
+\bibitem{ts-stack}
+M.~Dodds, A.~Haas, and C.M. Kirsch.
+\newblock A scalable, correct time-stamped stack.
+\newblock In {\em {POPL}}, pages 233--246. {ACM}, 2015.
 
 \bibitem{Henzinger:CAV13}
 Cezara Dragoi, Ashutosh Gupta, and Thomas~A. Henzinger.
@@ -326,6 +381,13 @@ Timothy~L. Harris, Keir Fraser, and Ian~A. Pratt.
 \newblock A practical multi-word compare-and-swap operation.
 \newblock In {\em {DISC},}, pages 265--279, 2002.
 
+\bibitem{meyer:vmcai16}
+Fr{\'{e}}d{\'{e}}ric Haziza, Luk{\'{a}}s Hol{\'{\i}}k, Roland Meyer, and
+  Sebastian Wolff.
+\newblock Pointer race freedom.
+\newblock In {\em {VMCAI}}, volume 9583 of {\em Lecture Notes in Computer
+  Science}, pages 393--412. Springer, 2016.
+
 \bibitem{Jonathan:Grammars}
 Jonathan Heinen, Christina Jansen, Joost{-}Pieter Katoen, and Thomas Noll.
 \newblock Verifying pointer programs using graph grammars.
@@ -385,6 +447,15 @@ Jakob~L. Jensen, Michael~E. J{\o}rgensen, Nils Klarlund, and Michael~I.
   Programming Language Design and Implementation (PLDI), Las Vegas, Nevada,
   June 15-18, 1997}, pages 226--236, 1997.
 
+\bibitem{Loginov:AbstrRefViaInductLearning:05}
+Jakob~L. Jensen, Michael~E. J{\o}rgensen, Nils Klarlund, and Michael~I.
+  Schwartzbach.
+\newblock Automatic verification of pointer programs using monadic second-order
+  logic.
+\newblock In {\em Proceedings of the {ACM} {SIGPLAN} '97 Conference on
+  Programming Language Design and Implementation (PLDI), Las Vegas, Nevada,
+  USA, June 15-18, 1997}, pages 226--236, 1997.
+
 \bibitem{cutoff}
 Alexander Kaiser, Daniel Kroening, and Thomas Wahl.
 \newblock Dynamic cutoff detection in parameterized concurrent programs.
@@ -395,6 +466,12 @@ Alexander Kaiser, Daniel Kroening, and Thomas Wahl.
 Y.~Kesten, O.~Maler, M.~Marcus, A.~Pnueli, and E.~Shahar.
 \newblock Symbolic model checking with rich assertional languages.
 \newblock {\em Theoretical Computer Science}, 256:93--112, 2001.
+
+\bibitem{Khyzha:esop17}
+A.~Khyzha, M.~Dodds, A.~Gotsman, and M.J. Parkinson.
+\newblock Proving linearizability using partial orders.
+\newblock In {\em {ESOP}}, volume 10201 of {\em Lecture Notes in Computer
+  Science}, pages 639--667. Springer, 2017.
 
 \bibitem{kruskal}
 J.~B. Kruskal.
@@ -413,6 +490,13 @@ Quang~Loc Le, Cristian Gherghina, Shengchao Qin, and Wei{-}Ngan Chin.
 \newblock In {\em Computer Aided Verification - 26th International Conference,
   {CAV} 2014, Held as Part of the Vienna Summer of Logic, {VSL} 2014, Vienna,
   Austria, July 18-22, 2014. Proceedings}, pages 52--68, 2014.
+
+\bibitem{Linden:opodis13}
+J.~Lind{\'e}n and B.~Jonsson.
+\newblock A skiplist-based concurrent priority queue with minimal memory
+  contention.
+\newblock In {\em OPODIS}, volume 8304 of {\em LNCS}, pages 206--220. Springer,
+  2013.
 
 \bibitem{Burns:protocol}
 Nancy~A. Lynch and Boaz Patt-Shamir.
@@ -519,6 +603,11 @@ Amir Pnueli, Sitvanit Ruah, and Lenore~D. Zuck.
 \newblock In {\em TACAS'01}, volume 2031 of {\em Lecture Notes in Computer
   Science}, pages 82--97. Springer, 2001.
 
+\bibitem{sleek13}
+William Pugh.
+\newblock Skip lists: {A} probabilistic alternative to balanced trees.
+\newblock {\em Commun. {ACM}}, 33(6):668--676, 1990.
+
 \bibitem{QS82}
 Jean-Pierre Queille and Joseph Sifakis.
 \newblock Specification and verification of concurrent systems in cesar.
@@ -544,6 +633,12 @@ Shmuel Sagiv, Thomas~W. Reps, and Reinhard Wilhelm.
 \newblock Parametric shape analysis via 3-valued logic.
 \newblock {\em {ACM} Trans. Program. Lang. Syst.}, 24(3):217--298, 2002.
 
+\bibitem{Sanchez:skiplists}
+A.~S{\'{a}}nchez and C.~S{\'{a}}nchez.
+\newblock Formal verification of skiplists with arbitrary many levels.
+\newblock In {\em {ATVA}}, volume 8837 of {\em Lecture Notes in Computer
+  Science}, pages 314--329. Springer, 2014.
+
 \bibitem{Eraser}
 Stefan Savage, Michael Burrows, Greg Nelson, Patrick Sobalvarro, and Thomas~E.
   Anderson.
@@ -562,10 +657,22 @@ G.~Schellhorn, H.~Wehrheim, and J.~Derrick.
 \newblock In {\em CAV}, volume 7358 of {\em LNCS}, pages 243--259. Springer,
   2012.
 
+\bibitem{Sagiv:correlation}
+Michal Segalov, Tal Lev-Ami, Roman Manevich, Ganesan Ramalingam, and Mooly
+  Sagiv.
+\newblock Abstract transformers for thread correlation analysis.
+\newblock In {\em APLAS}, volume 5904 of {\em Lecture Notes in Computer
+  Science}, pages 30--46. Springer, 2009.
+
 \bibitem{foresterfull}
 Natasha Sharygina and Helmut Veith, editors.
 \newblock {\em Computer Aided Verification - 25th International Conference},
   volume 8044 of {\em Lecture Notes in Computer Science}. Springer, 2013.
+
+\bibitem{singh:issre16}
+V.~Singh, I.~Neamtiu, and R.~Gupta.
+\newblock Proving concurrent data structures linearizable.
+\newblock In {\em {ISSRE}}, pages 230--240. IEEE, 2016.
 
 \bibitem{ieee:1394:firewire}
 IEEE~Computer Society.
@@ -643,6 +750,12 @@ M.T. Vechev, E.~Yahav, and G.~Yorsh.
 \bibitem{private}
 T.~Vojnar.
 \newblock private communication, June 1993.
+
+\bibitem{spotlight07}
+B.~Wachter and B.~Westphal.
+\newblock The spotlight principle.
+\newblock In {\em {VMCAI}}, volume 4349 of {\em Lecture Notes in Computer
+  Science}, pages 182--198. Springer, 2007.
 
 \bibitem{ABA:Wikipedia}
 Wikipedia.

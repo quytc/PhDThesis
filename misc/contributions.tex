@@ -224,7 +224,7 @@ Verification of properties depending on the ordering of data stored in SLLs was
 considered in~\cite{lists-counters}, which translates programs with SLLs to
 counter automata. A subsequent analysis of these automata allows one to prove
 memory safety, sortedness, and termination for the original programs. The work
-is, however, strongly limited to SLLs. In this paper, we get inspired by the way
+is, however, strongly limited to SLLs. In our technique, we get inspired by the way
 that \cite{lists-counters} uses for dealing with ordering relations on data, but
 we significantly redesign it to be able to track not only ordering between
 simple list segments but rather general heap shapes described by FA. In order to
@@ -235,16 +235,17 @@ operations used over FA.
 In~\cite{atva09}, another approach for verifying data-dependent properties of
 programs with lists was proposed. However, even this approach is strongly
 limited to SLLs, and it is also much less efficient than our current approach.
-In~\cite{AHHR:integrated:rep}, concurrent programs operating on SLLs are analyzed
-using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, which
-also tracks simple sortedness properties between data elements.
+
+%In~\cite{AHHR:integrated:rep}, concurrent programs operating on SLLs are analyzed
+%using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, which
+%also tracks simple sortedness properties between data elements.
 
 Verification of properties of programs depending on the data stored in dynamic
 linked data structures was considered in the context of the TVLA tool
 \cite{Loginov:AbstrRefViaInductLearning:05} as well. Unlike our approach,
 \cite{Loginov:AbstrRefViaInductLearning:05} assumes a fixed set of shape
 predicates and uses inductive logic programming to learn predicates needed for
-tracking non-pointer data. The experiments presented in
+tracking non-pointer data. The experiments presttented in
 \cite{Loginov:AbstrRefViaInductLearning:05} involve verification of sorting and
 stability properties of several programs on SLLs (merging, reversal,
 bubble-sort, insert-sort) as well as insertion and deletion in BSTs. We do not
@@ -255,7 +256,7 @@ in its left/right subtrees (not just than the immediate successors as in
 
 An approach based on separation logic extended with constraints on the data
 stored inside dynamic linked data structures and capable of handling size,
-ordering, as well as bag properties was presented in \cite{sleek12}. Using the
+ordering, as well as bag properties was presented in \cite{rival11}. Using the
 approach, various programs with SLLs, DLLs, and also AVL trees and red-black
 trees were verified. The approach, however, requires the user to manually
 provide inductive shape predicates as well as loop invariants.  Later, the need
@@ -264,12 +265,12 @@ provide inductive shape predicates remains.
 
 Another work that targets verification of programs with dynamic linked data
 structures, including properties depending on the data stored in them, is
-\cite{Zee:pldi08}. It generates verification conditions in an undecidable
+\cite{Hongseok:SL}. It generates verification conditions in an undecidable
 fragment of higher-order logic and discharges them using decision procedures,
 first-order theorem proving, and interactive theorem proving. To generate the
 verification conditions, loop invariants are needed. These can either be
 provided manually or sometimes synthesized semi-automatically using the approach
-of \cite{wies07hav}. The latter approach was successfully applied to several
+of \cite{SagivRW02}. The latter approach was successfully applied to several
 programs with SLLs, DLLs, trees, trees with parent pointers, and 2-level skip
 lists. However, for some of them, the user still had to provide some of the
 needed abstraction predicates.
@@ -281,20 +282,13 @@ only checking of pre-post condition pairs.
 
 
 \subsubsection{Concurrent Shape Analysis}
-A large number of techniques have been developed for representing heap structures
-in automated analysis, including,
-e.g., separation logic and various related graph formalisms
-\cite{InvaderCAV08,rival11,dudka13}, other logics \cite{SRW:threevalued},
-automata \cite{boxes13}, or graph grammars \cite{Jonathan:Shape}. 
-Most works apply these to sequential programs.
-
-Approaches for automated verification of concurrent algorithms are limited to the
+There are several approaches for automated verification of concurrent algorithms are limited to the
 case of singly-linked
-lists~\cite{AHHR:integrated:short,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
+lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
 Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
 threads~\cite{Amit:comparisonAbstraction,Vechev:spin09,CernyRZCA:CAV10}.
 
-In~\cite{AHHR:integrated:short}, concurrent programs operating on SLLs are analyzed
+In~\cite{AHHR:integrated}, concurrent programs operating on SLLs are analyzed
 using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, combined with
 tracking of simple sortedness properties between data elements; the approach does
 not allow to represent patterns observed by threads when following sequences of
@@ -312,13 +306,10 @@ implementations based on sorted and non-sorted
 singly-linked lists having non-optimistic contains (or lookup) operations we consider, such as
 the lock-free sets of {\it HM}~\cite{ArtOfMpP},
 {\it Harris}~\cite{Harris:list}, or {\it Michael}~\cite{Michael:list},
-or unordered set of~\cite{Zhang:unorderedlist}. As shown in
-Section~\ref{section:experiments}, our fragment abstraction can handle them
+or unordered set of~\cite{Zhang:unorderedlist}. Our fragment abstraction can handle them
 as well as also algorithms employing skiplists and arrays of singly-linked lists.
 
-There is no previous work on automated verification of skiplist-based concurrent algorithms.
-Verification of {\em  sequential} algorithms have been addressed under restrictions, such as limiting the
-number of levels to two or three~\cite{boxes13,Quy:atva13:journal}. The work~\cite{Sanchez:skiplists}
+There is no previous work on automated verification of skiplist-based concurrent algorithms. The work~\cite{Sanchez:skiplists}
 generates verification conditions for statements in sequential skiplist implementations. All these
 works assume that skiplists have the well-formedness property that any higher-level lists is a
 sublist of any lower-level list, which is true for sequential skiplist algorithms, but false for
@@ -336,7 +327,7 @@ We have verified both these algorithms automatically using fragment abstraction,
 
 Our fragment abstraction is related in spirit to other formalisms that
 abstract dynamic graph structures by defining some form of equivalence on
-its nodes (e.g.,~\cite{spotlight07,SRW:threevalued,boxes13}). These have
+its nodes (e.g.,~\cite{spotlight07,SagivRW02}). These have
 been applied to verify functional correctness fine-grained concurrent
 algorithms for a limited number of SLL-based algorithms. Fragment
 abstraction's representation of both local and global information allows to
