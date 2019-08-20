@@ -1,0 +1,91 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.aux
+The style file: plain.bst
+Database file #1: ../misc/references.bib
+Repeated entry---line 1167 of file ../misc/references.bib
+ : @incollection{Forester
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1427 of file ../misc/references.bib
+ : @techreport{AHHR:integrated:rep
+ :                                ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "forester11"
+Warning--I didn't find a database entry for "boxes13"
+Warning--I didn't find a database entry for "InvaderCAV08"
+Warning--I didn't find a database entry for "thor10"
+Warning--I didn't find a database entry for "rival11"
+Warning--I didn't find a database entry for "dudka13"
+Warning--I didn't find a database entry for "Sagiv02"
+Warning--I didn't find a database entry for "pale97"
+Warning--I didn't find a database entry for "artmc12"
+Warning--I didn't find a database entry for "juggrnaut10"
+Warning--I didn't find a database entry for "lists-counters"
+Warning--I didn't find a database entry for "atva09"
+Warning--I didn't find a database entry for "haziza:tacas13"
+Warning--I didn't find a database entry for "Loginov:AbstrRefViaInductLearning:05"
+Warning--I didn't find a database entry for "sleek12"
+Warning--I didn't find a database entry for "sleek13"
+Warning--I didn't find a database entry for "Zee:pldi08"
+Warning--I didn't find a database entry for "wies07hav"
+Warning--I didn't find a database entry for "dragoi:atva12"
+Warning--I didn't find a database entry for "SRW:threevalued"
+Warning--I didn't find a database entry for "AHHR:integrated:short"
+Warning--I didn't find a database entry for "meyer:vmcai16"
+Warning--I didn't find a database entry for "Quy:sas16"
+Warning--I didn't find a database entry for "Sagiv:correlation"
+Warning--I didn't find a database entry for "Amit:comparisonAbstraction"
+Warning--I didn't find a database entry for "MYRS:Canonical"
+Warning--I didn't find a database entry for "Quy:atva13:journal"
+Warning--I didn't find a database entry for "Sanchez:skiplists"
+Warning--I didn't find a database entry for "Linden:opodis13"
+Warning--I didn't find a database entry for "ts-stack"
+Warning--I didn't find a database entry for "BEEM:cav17"
+Warning--I didn't find a database entry for "Khyzha:esop17"
+Warning--I didn't find a database entry for "singh:issre16"
+Warning--I didn't find a database entry for "spotlight07"
+Warning--empty booktitle in Chin:SL
+Warning--can't use both volume and number fields in Chin:SL
+You've used 112 entries,
+            2118 wiz_defined-function locations,
+            1337 strings with 26285 characters,
+and the built_in function-call counts, 48009 in all, are:
+= -- 4807
+> -- 1976
+< -- 121
++ -- 789
+- -- 663
+* -- 3280
+:= -- 7130
+add.period$ -- 372
+call.type$ -- 112
+change.case$ -- 660
+chr.to.int$ -- 0
+cite$ -- 114
+duplicate$ -- 2113
+empty$ -- 3933
+format.name$ -- 663
+if$ -- 10777
+int.to.chr$ -- 0
+int.to.str$ -- 112
+missing$ -- 102
+newline$ -- 559
+num.names$ -- 229
+pop$ -- 808
+preamble$ -- 1
+purify$ -- 553
+quote$ -- 0
+skip$ -- 1673
+stack$ -- 0
+substring$ -- 3124
+swap$ -- 907
+text.length$ -- 121
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 443
+warning$ -- 2
+while$ -- 447
+width$ -- 115
+write$ -- 1303
+(There were 2 error messages)

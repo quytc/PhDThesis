@@ -82,8 +82,93 @@
   pages     = {3--16},
   year      = {2005},
 }
+@inproceedings{CernyRZCA:CAV10,
+  author    = {Pavol \v{C}ern{\'y} and
+               Arjun Radhakrishna and
+               Damien Zufferey and
+               Swarat Chaudhuri and
+               Rajeev Alur},
+  title     = {Model Checking of Linearizability of Concurrent List Implementations},
+  booktitle = "{CAV}",
+  year      = {2010},
+  pages     = {465-479},
+  series    = {LNCS},
+  volume    = {6174}
+}
+@INPROCEEDINGS{Zhang:unorderedlist,
+  author    = {Kunlong Zhang and
+               Yujiao Zhao and
+               Yajun Yang and
+               Yujie Liu and
+               Michael F. Spear},
+  title     = {Practical Non-blocking Unordered Lists},
+  booktitle = {{DISC}
+               },
+  pages     = {239--253},
+  year      = {2013},
+}
+@inproceedings{Vafeiadis:vmcai09,
+  author    = {V. Vafeiadis},
+  title     = {Shape-Value Abstraction for Verifying Linearizability},
+  booktitle = "{VMCAI}",
+  year      = {2009},
+  pages     = {335-348},
+  series    = {LNCS},
+  volume    = {5403}
+}
+@TECHREPORT{AHHR:integrated:rep,
+        Author = 	"Parosh A. Abdulla and {Fr\'ed\'eric} Haziza and Bengt Jonsson and Ahmed Rezine",
+        Title = 	"An Integrated Specification and Verification Technique
+for Highly Concurrent Data Structures",
+	    Number =	"???",
+        Institution = 	"Brno ot Uppsala",
+        Year = 		2013,
+}
+@INPROCEEDINGS{Henzinger:CAV13,
+  author    = {Cezara Dragoi and
+               Ashutosh Gupta and
+               Thomas A. Henzinger},
+  title     = {Automatic Linearizability Proofs of Concurrent Objects with Cooperating
+               Updates},
+  booktitle = {CAV},
+  series    = {LNCS},
+  volume    = {8044},
+  pages     = {174--190},
+  year      = {2013},
+}
+@INPROCEEDINGS{AHHR:integrated,
+        Author = 	"Parosh A. Abdulla and {Fr\'ed\'eric} Haziza and Luk{\'a}s Hol\'{\i}k and Bengt Jonsson and Ahmed Rezine",
+        Title = 	"An Integrated Specification and Verification Technique
+for Highly Concurrent Data Structures",
+  booktitle = {TACAS},
+  pages     = {324-338},
+  series    = {LNCS},
+  volume    = {7795},
+  year      = {2013},
+}
+@book{ArtOfMpP,
+  Author = {Maurice Herlihy and Nir Shavit},
+  publisher = {Morgan Kaufmann},
+  title = {The Art of Multiprocessor Programming},
+  year = 2008,
+  ean = {9780123705914},
+  keywords = {Appendix Architecture CAS Hardware Java Memory MultiCore Programming},
+  added-at = {2009-11-02T15:18:44.000+0100},
+  asin = {0123705916},
+  isbn = {0123705916},
+}
 
-
+@inproceedings{Vechev:spin09,
+  author    = {M.T. Vechev and
+               E. Yahav and
+               G. Yorsh},
+  title     = {Experience with Model Checking Linearizability},
+  booktitle = {SPIN},
+  year      = {2009},
+  pages     = {261-278},
+  series    = {LNCS},
+  volume    = {5578},
+}
 
 @inproceedings{John:SL,
   author    = {John C. Reynolds},
@@ -106,6 +191,56 @@
   pages     = {211--222},
   year      = {2010},
   }
+  
+@ARTICLE{HSYstack,
+  author    = {Danny Hendler and
+               Nir Shavit and
+               Lena Yerushalmi},
+  title     = {A scalable lock-free stack algorithm},
+  journal   = {J. Parallel Distrib. Comput.},
+  volume    = {70},
+  number    = {1},
+  pages     = {1--12},
+  year      = {2010},
+}
+
+@inproceedings{HSV:concur13,
+  author    = {T.A. Henzinger and
+               A. Sezgin and
+               V. Vafeiadis},
+  title     = {Aspect-Oriented Linearizability Proofs},
+  booktitle = {CONCUR},
+  year      = {2013},
+  pages     = {242-256},
+  series    = {LNCS},
+  volume    = {8052},
+}
+
+@INPROCEEDINGS{Harris:list,
+  author    = {Timothy L. Harris},
+  title     = {A Pragmatic Implementation of Non-blocking Linked-Lists},
+  booktitle = {{DISC}},
+  pages     = {300--314},
+  year      = {2001},
+}
+@INPROCEEDINGS{Michael:list,
+  author    = {Maged M. Michael},
+  title     = {High performance dynamic lock-free hash tables and list-based sets},
+  booktitle = {{SPAA}},
+  pages     = {73--82},
+  year      = {2002},
+}
+@INPROCEEDINGS{OHearnlist,
+  author    = {Peter W. O'Hearn and
+               Noam Rinetzky and
+               Martin T. Vechev and
+               Eran Yahav and
+               Greta Yorsh},
+  title     = {Verifying linearizability with hindsight},
+  booktitle = {PODC},
+  pages     = {85--94},
+  year      = {2010},
+}
 
 @inproceedings{JoshCris:SL,
   author    = {Josh Berdine and
@@ -121,6 +256,18 @@
   pages     = {178--192},
   year      = {2007},
 }
+
+@INPROCEEDINGS{Shavit:ElimQueue,
+   author    = {Mark Moir and
+               Daniel Nussbaum and
+               Ori Shalev and
+               Nir Shavit},
+  title     = {Using elimination to implement scalable and lock-free {FIFO} queues},
+  booktitle = {{SPAA}},
+  pages     = {253--262},
+  year      = {2005},
+}
+
 
 @inproceedings{Hongseok:SL,
   author    = {Hongseok Yang and
@@ -147,7 +294,16 @@
   pages     = {215--237},
   year      = {2013},
 }
-
+@INPROCEEDINGS{Harris:CAS,
+  author    = {Timothy L. Harris and
+               Keir Fraser and
+               Ian A. Pratt},
+  title     = {A Practical Multi-word Compare-and-Swap Operation},
+  booktitle = { {DISC},
+               },
+  pages     = {265--279},
+  year      = {2002},
+}
 @inproceedings{Chin:SL,
   author    = {Wei{-}Ngan Chin and
                Cristina David and
@@ -188,7 +344,17 @@
   pages     = {711--728},
   year      = {2014},
 }
-
+@INPROCEEDINGS{Aaron:locigcal:linearizability,
+  author    = {Aaron Joseph Turon and
+               Jacob Thamsborg and
+               Amal Ahmed and
+               Lars Birkedal and
+               Derek Dreyer},
+  title     = {Logical relations for fine-grained concurrency},
+  booktitle = {{POPL} '13},
+  pages     = {343--356},
+  year      = {2013},
+}
 @inproceedings{Constrantin:SL,
   author    = {Constantin Enea and
                Mihaela Sighireanu and
