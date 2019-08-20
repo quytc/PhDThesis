@@ -255,6 +255,13 @@ Kamil Dudka, Petr Peringer, and Tom{\'{a}}s Vojnar.
 \newblock In {\em Static Analysis - 20th International Symposium, {SAS} 2013,
   Seattle, WA, USA, June 20-22, 2013. Proceedings}, pages 215--237, 2013.
 
+\bibitem{thor10}
+Tayfun Elmas, Shaz Qadeer, and Serdar Tasiran.
+\newblock A calculus of atomic actions.
+\newblock In {\em Proceedings of the 36th {ACM} {SIGPLAN-SIGACT} Symposium on
+  Principles of Programming Languages, {POPL} 2009, Savannah, GA, USA, January
+  21-23, 2009}, pages 2--15, 2009.
+
 \bibitem{EmKa:manyfew}
 E.~Allen Emerson and Vineet Kahlon.
 \newblock Reducing model checking of the many to the few.
@@ -486,6 +493,12 @@ Marcus Nilsson.
 Peter~W. O'Hearn, Noam Rinetzky, Martin~T. Vechev, Eran Yahav, and Greta Yorsh.
 \newblock Verifying linearizability with hindsight.
 \newblock In {\em PODC}, pages 85--94, 2010.
+
+\bibitem{forester11}
+A.~Rogalewicz J.~{\v S}im{\' a}{\v c}ek P.~Habermehl, L.~Hol{\'i}k and
+  T.~Vojnar.
+\newblock Forest automata for verification of heap manipulation.
+\newblock In {\em CAV11}. Springer, 2011.
 
 \bibitem{Ruzica:SL}
 Ruzica Piskac, Thomas Wies, and Damien Zufferey.

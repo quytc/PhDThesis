@@ -3,27 +3,23 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.aux
 The style file: plain.bst
 Database file #1: ../misc/references.bib
-Repeated entry---line 1167 of file ../misc/references.bib
+Repeated entry---line 1058 of file ../misc/references.bib
  : @incollection{Forester
  :                       ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 1427 of file ../misc/references.bib
+Repeated entry---line 1318 of file ../misc/references.bib
  : @techreport{AHHR:integrated:rep
  :                                ,
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "forester11"
-Warning--I didn't find a database entry for "boxes13"
-Warning--I didn't find a database entry for "InvaderCAV08"
-Warning--I didn't find a database entry for "thor10"
 Warning--I didn't find a database entry for "rival11"
 Warning--I didn't find a database entry for "dudka13"
 Warning--I didn't find a database entry for "Sagiv02"
 Warning--I didn't find a database entry for "pale97"
 Warning--I didn't find a database entry for "artmc12"
 Warning--I didn't find a database entry for "juggrnaut10"
+Warning--I didn't find a database entry for "InvaderCAV08"
 Warning--I didn't find a database entry for "lists-counters"
 Warning--I didn't find a database entry for "atva09"
-Warning--I didn't find a database entry for "haziza:tacas13"
 Warning--I didn't find a database entry for "Loginov:AbstrRefViaInductLearning:05"
 Warning--I didn't find a database entry for "sleek12"
 Warning--I didn't find a database entry for "sleek13"
@@ -31,6 +27,7 @@ Warning--I didn't find a database entry for "Zee:pldi08"
 Warning--I didn't find a database entry for "wies07hav"
 Warning--I didn't find a database entry for "dragoi:atva12"
 Warning--I didn't find a database entry for "SRW:threevalued"
+Warning--I didn't find a database entry for "boxes13"
 Warning--I didn't find a database entry for "AHHR:integrated:short"
 Warning--I didn't find a database entry for "meyer:vmcai16"
 Warning--I didn't find a database entry for "Quy:sas16"
@@ -45,47 +42,55 @@ Warning--I didn't find a database entry for "BEEM:cav17"
 Warning--I didn't find a database entry for "Khyzha:esop17"
 Warning--I didn't find a database entry for "singh:issre16"
 Warning--I didn't find a database entry for "spotlight07"
+Name 1 in "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" has a comma at the end for entry forester11
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" for entry forester11
+while executing---line 1049 of file plain.bst
 Warning--empty booktitle in Chin:SL
 Warning--can't use both volume and number fields in Chin:SL
-You've used 112 entries,
+Name 1 in "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" has a comma at the end for entry forester11
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" for entry forester11
+while executing---line 1090 of file plain.bst
+You've used 114 entries,
             2118 wiz_defined-function locations,
-            1337 strings with 26285 characters,
-and the built_in function-call counts, 48009 in all, are:
-= -- 4807
-> -- 1976
-< -- 121
-+ -- 789
-- -- 663
-* -- 3280
-:= -- 7130
-add.period$ -- 372
-call.type$ -- 112
-change.case$ -- 660
+            1343 strings with 26640 characters,
+and the built_in function-call counts, 48713 in all, are:
+= -- 4875
+> -- 2007
+< -- 122
++ -- 802
+- -- 673
+* -- 3320
+:= -- 7241
+add.period$ -- 379
+call.type$ -- 114
+change.case$ -- 671
 chr.to.int$ -- 0
-cite$ -- 114
-duplicate$ -- 2113
-empty$ -- 3933
-format.name$ -- 663
-if$ -- 10777
+cite$ -- 116
+duplicate$ -- 2147
+empty$ -- 3997
+format.name$ -- 673
+if$ -- 10934
 int.to.chr$ -- 0
-int.to.str$ -- 112
-missing$ -- 102
-newline$ -- 559
-num.names$ -- 229
-pop$ -- 808
+int.to.str$ -- 114
+missing$ -- 104
+newline$ -- 569
+num.names$ -- 233
+pop$ -- 826
 preamble$ -- 1
-purify$ -- 553
+purify$ -- 562
 quote$ -- 0
-skip$ -- 1673
+skip$ -- 1693
 stack$ -- 0
-substring$ -- 3124
-swap$ -- 907
-text.length$ -- 121
+substring$ -- 3154
+swap$ -- 915
+text.length$ -- 122
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 443
+type$ -- 451
 warning$ -- 2
-while$ -- 447
-width$ -- 115
-write$ -- 1303
-(There were 2 error messages)
+while$ -- 454
+width$ -- 117
+write$ -- 1325
+(There were 6 error messages)

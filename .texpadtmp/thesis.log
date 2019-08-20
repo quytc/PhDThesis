@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.13)  20 AUG 2019 06:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.13)  20 AUG 2019 10:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1733,19 +1733,7 @@ Overfull \hbox (0.79796pt too wide) in paragraph at lines 8--9
 
 ] [34] [35] [36]
 LaTeX Font Info:    Font shape `LY1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `LY1/ptm/b/n' tried instead on input line 209.
-
-
-LaTeX Warning: Citation `forester11' on page 37 undefined on input line 209.
-
-
-LaTeX Warning: Citation `boxes13' on page 37 undefined on input line 209.
-
-
-LaTeX Warning: Citation `InvaderCAV08' on page 37 undefined on input line 215.
-
-
-LaTeX Warning: Citation `thor10' on page 37 undefined on input line 215.
+(Font)              Font shape `LY1/ptm/b/n' tried instead on input line 215.
 
 
 LaTeX Warning: Citation `rival11' on page 37 undefined on input line 215.
@@ -1772,9 +1760,6 @@ LaTeX Warning: Citation `InvaderCAV08' on page 37 undefined on input line 218.
 LaTeX Warning: Citation `dudka13' on page 37 undefined on input line 218.
 
 
-LaTeX Warning: Citation `thor10' on page 37 undefined on input line 221.
-
-
 LaTeX Warning: Citation `rival11' on page 37 undefined on input line 221.
 
 
@@ -1794,9 +1779,6 @@ LaTeX Warning: Citation `lists-counters' on page 37 undefined on input line 228.
 
 
 LaTeX Warning: Citation `atva09' on page 37 undefined on input line 235.
-
-
-LaTeX Warning: Citation `haziza:tacas13' on page 37 undefined on input line 238.
 
 
 Underfull \vbox (badness 6396) has occurred while \output is active []
@@ -1917,12 +1899,11 @@ LaTeX Warning: Citation `boxes13' on page 39 undefined on input line 337.
 ) (./misc/conclusion.tex) (/Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.bbl [39] [40
 
 
-] [41] [42] [43] [44] [45] [46]) (/Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.ind [47] [48
+] [41] [42] [43] [44] [45] [46] [47]) (/Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.ind [48] [49
 
 
 
 
-] [49
 
 ]))
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 39.
@@ -1942,19 +1923,19 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 34628 strings out of 493117
- 663773 string characters out of 6135433
- 875352 words of memory out of 5000000
+ 34630 strings out of 493117
+ 663791 string characters out of 6135433
+ 875417 words of memory out of 5000000
  37192 multiletter control sequences out of 15000+600000
  38533 words of font info for 103 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  50i,13n,82p,10444b,1207s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/ly1/texnansi.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/latxfont/lcircle1.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/latxfont/line10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/t
 imes/utmri8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.pdf (49 pages, 435097 bytes).
+Output written on /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.pdf (49 pages, 435957 bytes).
 PDF statistics:
- 765 PDF objects out of 1000 (max. 8388607)
- 645 compressed objects within 7 object streams
- 193 named destinations out of 1000 (max. 500000)
+ 773 PDF objects out of 1000 (max. 8388607)
+ 653 compressed objects within 7 object streams
+ 195 named destinations out of 1000 (max. 500000)
  284 words of extra memory for PDF output out of 10000 (max. 10000000)
 

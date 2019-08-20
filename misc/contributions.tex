@@ -206,19 +206,19 @@ or unordered set of~\cite{Zhang:unorderedlist},
 \subsubsection{Sequential Shape Analysis}
 Our approach builds on the fully automated FA-based
 approach for shape analysis of programs with complex dynamic linked data
-structures \cite{forester11,boxes13}. We significantly extend this approach by
+structures \cite{forester11,Forester}. We significantly extend this approach by
 allowing it to track ordering relations between data values stored inside
 dynamic linked data structures. 
 
 For shape analysis, many other formalisms than FA have been used, including,
 e.g., separation logic and various related graph formalisms
-\cite{InvaderCAV08,thor10,rival11,dudka13}, other logics \cite{Sagiv02,pale97},
-automata \cite{artmc12}, or graph grammars \cite{juggrnaut10}. Compared with FA,
+\cite{Hongseok:SL,thor10,rival11,Kamil:SL}, other logics \cite{SagivRW02,Jakob:ML},
+automata \cite{artmc12}, or graph grammars \cite{Jonathan:Shape}. Compared with FA,
 these approaches typically handle less general heap structures (often restricted
-to various classes of lists) \cite{InvaderCAV08,dudka13}, they are less
+to various classes of lists) \cite{Hongseok:SL,Kamil:SL}, they are less
 automated (requiring the user to specify loop invariants or at least inductive
 definitions of the involved data structures)
-\cite{thor10,rival11,dudka13,juggrnaut10}, or less scalable \cite{artmc12}.
+\cite{thor10,rival11,Kamil:SL,Jonathan:Shape}, or less scalable \cite{artmc12}.
 
 Verification of properties depending on the ordering of data stored in SLLs was
 considered in~\cite{lists-counters}, which translates programs with SLLs to
@@ -235,7 +235,7 @@ operations used over FA.
 In~\cite{atva09}, another approach for verifying data-dependent properties of
 programs with lists was proposed. However, even this approach is strongly
 limited to SLLs, and it is also much less efficient than our current approach.
-In~\cite{haziza:tacas13}, concurrent programs operating on SLLs are analyzed
+In~\cite{AHHR:integrated:rep}, concurrent programs operating on SLLs are analyzed
 using an adaptation of a transitive closure logic~\cite{BiRa:vmcai06}, which
 also tracks simple sortedness properties between data elements.
 
@@ -278,12 +278,14 @@ about pre- and post-conditions of programs with SLLs and data. Decidable
 fragments, which can express more complex properties on data than we consider,
 are identified, but the approach does not perform fully automated verification,
 only checking of pre-post condition pairs.
+
+
 \subsubsection{Concurrent Shape Analysis}
 A large number of techniques have been developed for representing heap structures
 in automated analysis, including,
 e.g., separation logic and various related graph formalisms
 \cite{InvaderCAV08,rival11,dudka13}, other logics \cite{SRW:threevalued},
-automata \cite{boxes13}, or graph grammars \cite{juggrnaut10}. 
+automata \cite{boxes13}, or graph grammars \cite{Jonathan:Shape}. 
 Most works apply these to sequential programs.
 
 Approaches for automated verification of concurrent algorithms are limited to the
