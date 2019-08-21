@@ -1,219 +1,219 @@
-%%% =============================================================
-%\chapter*{Sammanfattning på Svenska \texorpdfstring{\hfill\raisebox{-2em}{\includegraphics[height=3em]{img/sverige.png}}}{}}
-%\addcontentsline{toc}{section}{\texorpdfstring{\protect\raisebox{-0.5ex}{\protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}}{} in Swedish}
-%\index{Summary!Sammanfattning \protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}
+%% =============================================================
+\chapter*{Sammanfattning på Svenska \texorpdfstring{\hfill\raisebox{-2em}{\includegraphics[height=3em]{img/sverige.png}}}{}}
+\addcontentsline{toc}{section}{\texorpdfstring{\protect\raisebox{-0.5ex}{\protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}}{} in Swedish}
+\index{Summary!Sammanfattning \protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}
+
+Du har säkerligen använt en dator och varit väldigt nöjd, och detta
+för att den förenklade många långa och svåra %mödosamma
+uppgifter.
 %
-%Du har säkerligen använt en dator och varit väldigt nöjd, och detta
-%för att den förenklade många långa och svåra %mödosamma
-%uppgifter.
-%%
-%Ibland gör den dock inte som du vill: du klickar på knappen ``Gör
-%det'', men den följer inte ditt kommando. Eller ännu värre, datorn
-%hänger upp sig och svarar inte på något kommando alls.
-%%
-%Viktiga arbetstider har kanske gått till spillo.
-%%
-%Du tar ett djupt andetag, startar om datorn, och allting fungerar igen
-%som det ska.
-%%
-%Felet verkar komma från \emph{programvaran} som styr datorn, inte från
-%själva maskinen.
-%%
-%Du undrar varför detta fel inte redan korrigerats, och dessutom,
-%varför det från början inte \emph{försäkrades} om att felet inte kunde
-%inträffa.
+Ibland gör den dock inte som du vill: du klickar på knappen ``Gör
+det'', men den följer inte ditt kommando. Eller ännu värre, datorn
+hänger upp sig och svarar inte på något kommando alls.
 %
+Viktiga arbetstider har kanske gått till spillo.
 %
-%Termen \emph{buggar} används generellt för att beskriva alla typer av
-%fel, vare sig felet finns i dem elektriska delarna av maskinen eller i
-%programmeringen.
-%%
-%Med tanke på hur komplexa dagens datorer är, är det inte förvånande
-%att de innehåller många buggar.
-%%
-%De behöver ju %faktiskt
-%hantera en stor mängd parametrar och egenskaper som kan generera
-%% ge plats till
-%många olika möjliga beteenden.
-%%
-%Och vi nämner inte ens den mänskliga faktorn som inför fel under
-%programmeringsfasen!
-%%
-%Därför finns det en trend att bygga datorer med flera mindre enheter,
-%som då gör datorn enklare att hantera.
-%%
-%Men då ställs vi inför ett nytt problem: dessa enheter kan när som
-%helst kommunicera med varandra.
-%%
-%På grund av denna oförutsägbarhet blir det väldigt svårt att ta hänsyn
-%till alla scenarier.
+Du tar ett djupt andetag, startar om datorn, och allting fungerar igen
+som det ska.
 %
-%Företag som tillverkar programvara har inget intresse av att lämna
-%buggar, eftersom ett fel någonstans kan orsaka en rad andra fel i
-%efterhand. %kaskad
-%%
-%De inkluderar därför en viktig kvalitetskontroll under
-%utvecklingsfasen: om det finns för många buggar blir det helt enkelt
-%inte kostnadseffektivt eller ens möjligt att senare eliminera dem.
-%%
-%En del buggar är dock enklare att lösa än andra.
-%%
-%Det spelar faktiskt ingen större roll om man inte kan svara i
-%telefonen när man får ett samtal, eller om texteditorn förlorar dem
-%senaste dokumentsuppdateringarna.
-%%
-%Detta är väldigt tråkigt, men ingen fara på taket! Vi klarar oss och
-%väntar bara på programuppdateringen som löser buggen.
-%%
-%Å andra sidan får inga fel inträffa för dem så-kallade %
-%\emph{kritiska systemen}, vars säkerhet är viktig i allra högsta
-%grad. Alla fel måste elimineras, antingen i programvaran eller i
-%maskinvaran.
-%%
-%Det är oacceptabelt, till exempel, att en pacemaker slutar fungera när
-%ägaren passerar säkerhetskontrollen på flygplatsen, att krockkudden
-%inte utlöses snabbt nog vid en trafikolycka om radion är på, eller om
-%två tåg kolliderar på grund av att signalsystemet inte fungerat.
-%%
-%Därför är det nödvändigt att utveckla metoder som upptäcker
-%ett felaktigt beteende i sådana system.
+Felet verkar komma från \emph{programvaran} som styr datorn, inte från
+själva maskinen.
 %
+Du undrar varför detta fel inte redan korrigerats, och dessutom,
+varför det från början inte \emph{försäkrades} om att felet inte kunde
+inträffa.
+
+
+Termen \emph{buggar} används generellt för att beskriva alla typer av
+fel, vare sig felet finns i dem elektriska delarna av maskinen eller i
+programmeringen.
 %
-%Den vanligaste metoden är \emph{testing}: man kör programmet med olika
-%värden för varje variabel och kollar om funktionaliteten
-%överensstämmer med det som förväntas.
-%%
-%Dessa testscenarier är genomtänkta för att beskriva ett maximalt antal
-%beteenden.
-%%
-%När komplexiteten däremot ökar, kan programmet befinna sig i väldigt
-%många olika tillstånd. Det börjar då bli svårt att \emph{garantera}
-%att metoden täcker alla möjliga programkörningar.
-%%
-%Det är även rent av omöjligt om systemet innehåller en parameter vars
-%värde exempelvis är en siffra.
-%%
-%Metoden är ett effektivt sätt att upptäcka enkla buggar snabbt, men
-%subtila buggar, såsom dem som kommer från en oförutsägbar tajming,
-%kvarstår obemärkta.
-%%
-%För dem kritiska systemen där säkerheten är ytterst viktig, är det
-%otänkbart att använda en metod som eventuellt tar sig igenom alla
-%tester, men fortfarande innehåller buggar.
+Med tanke på hur komplexa dagens datorer är, är det inte förvånande
+att de innehåller många buggar.
 %
-%För att visa att ett program verkligen uppfyller vissa egenskaper,
-%måste vi först komma överens om vad det ska överensstämma med
-%---vilket formellt heter en \emph{specifikation}.
-%%
-%Genom att lista programkonfigurationerna som borde undvikas, eller som
-%önskas, alternativt båda, så beskriver man dem två kategorierna av
-%specifikationer: \emph{säkerhetsegenskaper} och
-%\emph{livlighetsegenskaper} (Safety och Liveness på engelska).
-%%
-%Till exempel, ``pacemakern stannar aldrig'', ``krockkudden måste
-%öppnas inom mindre än $x$~millisekonder'', eller ``ingen enstaka
-%process blockerar övriga processer'' är säkerhetsegenskaper.
-%%
-%Vi måste se till att programmet aldrig befinner sig i en felaktig
-%konfiguration.
-%% 
-%Till motsatsen, ``brevbäraren levererar till rätt mottagare'',
-%``systemet gör framsteg'', eller ``servern hanterar en HTTP-förfråga''
-%är livlighetsegenskaper, där man observerar rätta konfigurationer,
-%förknippade med vissa sannolikheter.
-%% 
-%Det är upp till oss att definiera vad specifikationen ska innehålla, för
-%att verifiera det som önskas.
-%% 
-%Om ett låsningsfritt bromssystem (ABS) % Antilock Braking System
-%beräknar hur hårt bilens bromsning ska vara men gör detta för sent,
-%bör systemet beträktas som felaktigt.
-%% 
-%Denna avhandling fokuserar på säkerhetsegenskaper.
-%\begin{statement}
-%  {\bf Säkerhet}: %
-%  {\it Givet en specifikation, kan systemet hamna i en fel konfiguration?}
-%\end{statement}
+De behöver ju %faktiskt
+hantera en stor mängd parametrar och egenskaper som kan generera
+% ge plats till
+många olika möjliga beteenden.
 %
-%%% ------------------------
-%Snarare än att testa programmet i specifika scenarier eller att
-%analysera källkoden, fokuserar vi i denna avhandling på \emph{formell
-%  verifiering}, som är ett matematiskt ramverk, för att \emph{bevisa}
-%att programmet uppfyller sina egenskaper.
+Och vi nämner inte ens den mänskliga faktorn som inför fel under
+programmeringsfasen!
 %
-%Dessutom vill vi bevisa det helt \emph{automatiskt}, det vill säga
-%utan tillsyn av användaren.
-%%
-%Vi börjar genom att extrahera en modell som motsvarar det ursprungliga
-%programmet. I samband med det borttar vi delarna som är irrelevanta
-%för den egenskapen som verifieras.
-%%
-%Men vad händer när programmet manipulerar obegränsade variabler? Vi
-%talar då om system med ett oändligt antal tillstånd, och vi behöver
-%framställa en approximation som är i linje med själva programmet.
-%%
-%Målet är att utforma en metod som \emph{garanterar} att inget fel
-%kvarstår, och som även ger svar inom en rimlig tid.
+Därför finns det en trend att bygga datorer med flera mindre enheter,
+som då gör datorn enklare att hantera.
 %
-%Många system med ett oändligt antal tillstånd kan faktiskt
-%karakteriseras av en familj som består av system med ett ändligt antal
-%tillstånd, och en parameter (eller flera) med värde från en obegränsad
-%domän.
-%%
-%För varje värde på parametern, innehåller systemet ett ändligt antal
-%tillstånd.
-%%
-%Parametern kan exempelvis vara
-%antalet processer som är aktiva i en viss session av ett protokoll, %
-%antalet noder i ett nät, %
-%eller hur komponenterna av ett program kommunicerar med varandra.
-%%
-%Hur som helst, system som innehåller en preliminärt okänd parameter
-%bör ha ett korrekt beteende oavsett värdet på parametern. De betraktas
-%därför som system med ett oändligt antal tillstånd och kallas för
-%parametriserade system.
-%I denna avhandling presenterar vi två metoder för att verifiera vissa
-%säkerhetsegenskaper hos sådana parametriserade system.
+Men då ställs vi inför ett nytt problem: dessa enheter kan när som
+helst kommunicera med varandra.
 %
-%Den första metoden körs baklänges. Den startar från dem felaktiga
-%tillstånden, och beräknar vilka andra tillstånd som skulle kunna leda
-%till ett fel.
-%%
-%Med andra ord upptäcker metoden alla konfigurationer som direkt eller
-%indirekt är felaktiga.
-%%
-%Om initialtillstånden av programmet inte tillhör dem sistnämnda, anses
-%programmet vara korrekt. Vi måste såklart först se till att
-%approximationen av modellen motsvarar det ursprungliga programmet.
+På grund av denna oförutsägbarhet blir det väldigt svårt att ta hänsyn
+till alla scenarier.
+
+Företag som tillverkar programvara har inget intresse av att lämna
+buggar, eftersom ett fel någonstans kan orsaka en rad andra fel i
+efterhand. %kaskad
 %
-%Den andra metoden startar från initialtillstånden. Den begränsar sig
-%till små värden av parametern, och härleder ett tröskelvärde, efter
-%vilket metoden inte behöver fortsätta: den har faktiskt all nödvändig
-%information för att dra slutsatsen att det inte finns några
-%felkonfigurationer för större värden på parametern över denna tröskel.
-%% 
-%För att förenkla, bryter metoden ner varje konfiguration i små bitar
-%av en viss storlek, och rekombinerar bitarna på alla möjliga sätt,
-%just för att skapa konfigurationer av större storlek (litegrann som
-%Lego\-bitar). %tegelstenar
-%% 
-%Tanken är att samla alla dem små bitarna och se till att ingen
-%rekombination matchar någon felaktig konfiguration.
-%% 
-%I så fall är tröskeln hittad. Annars börjar man om med lite större
-%bitar.
+De inkluderar därför en viktig kvalitetskontroll under
+utvecklingsfasen: om det finns för många buggar blir det helt enkelt
+inte kostnadseffektivt eller ens möjligt att senare eliminera dem.
 %
+En del buggar är dock enklare att lösa än andra.
 %
-%Slutligen är det intressant att undra vilka av villkoren som behövs
-%för att metodens beräkningar inte ska fortsätta för evigt. Problemet
-%klassas som oavgörbart, det vill säga att det inte finns någon
-%generell metod som kan lösa \emph{alla} instanser av
-%problemet. Däremot har dessa två metoder trots allt visat sig vara
-%väldigt effektiva.
-%%
-%Där andra metoder tog timmar, kunde dessa två metoder faktiskt
-%verifiera vissa program inom sekunder, vilket var målet.
-%%
-%I vissa fall kan man även ge garanti på att antalet beräkningar är
-%begränsad.
+Det spelar faktiskt ingen större roll om man inte kan svara i
+telefonen när man får ett samtal, eller om texteditorn förlorar dem
+senaste dokumentsuppdateringarna.
 %
+Detta är väldigt tråkigt, men ingen fara på taket! Vi klarar oss och
+väntar bara på programuppdateringen som löser buggen.
+%
+Å andra sidan får inga fel inträffa för dem så-kallade %
+\emph{kritiska systemen}, vars säkerhet är viktig i allra högsta
+grad. Alla fel måste elimineras, antingen i programvaran eller i
+maskinvaran.
+%
+Det är oacceptabelt, till exempel, att en pacemaker slutar fungera när
+ägaren passerar säkerhetskontrollen på flygplatsen, att krockkudden
+inte utlöses snabbt nog vid en trafikolycka om radion är på, eller om
+två tåg kolliderar på grund av att signalsystemet inte fungerat.
+%
+Därför är det nödvändigt att utveckla metoder som upptäcker
+ett felaktigt beteende i sådana system.
+
+
+Den vanligaste metoden är \emph{testing}: man kör programmet med olika
+värden för varje variabel och kollar om funktionaliteten
+överensstämmer med det som förväntas.
+%
+Dessa testscenarier är genomtänkta för att beskriva ett maximalt antal
+beteenden.
+%
+När komplexiteten däremot ökar, kan programmet befinna sig i väldigt
+många olika tillstånd. Det börjar då bli svårt att \emph{garantera}
+att metoden täcker alla möjliga programkörningar.
+%
+Det är även rent av omöjligt om systemet innehåller en parameter vars
+värde exempelvis är en siffra.
+%
+Metoden är ett effektivt sätt att upptäcka enkla buggar snabbt, men
+subtila buggar, såsom dem som kommer från en oförutsägbar tajming,
+kvarstår obemärkta.
+%
+För dem kritiska systemen där säkerheten är ytterst viktig, är det
+otänkbart att använda en metod som eventuellt tar sig igenom alla
+tester, men fortfarande innehåller buggar.
+
+För att visa att ett program verkligen uppfyller vissa egenskaper,
+måste vi först komma överens om vad det ska överensstämma med
+---vilket formellt heter en \emph{specifikation}.
+%
+Genom att lista programkonfigurationerna som borde undvikas, eller som
+önskas, alternativt båda, så beskriver man dem två kategorierna av
+specifikationer: \emph{säkerhetsegenskaper} och
+\emph{livlighetsegenskaper} (Safety och Liveness på engelska).
+%
+Till exempel, ``pacemakern stannar aldrig'', ``krockkudden måste
+öppnas inom mindre än $x$~millisekonder'', eller ``ingen enstaka
+process blockerar övriga processer'' är säkerhetsegenskaper.
+%
+Vi måste se till att programmet aldrig befinner sig i en felaktig
+konfiguration.
+% 
+Till motsatsen, ``brevbäraren levererar till rätt mottagare'',
+``systemet gör framsteg'', eller ``servern hanterar en HTTP-förfråga''
+är livlighetsegenskaper, där man observerar rätta konfigurationer,
+förknippade med vissa sannolikheter.
+% 
+Det är upp till oss att definiera vad specifikationen ska innehålla, för
+att verifiera det som önskas.
+% 
+Om ett låsningsfritt bromssystem (ABS) % Antilock Braking System
+beräknar hur hårt bilens bromsning ska vara men gör detta för sent,
+bör systemet beträktas som felaktigt.
+% 
+Denna avhandling fokuserar på säkerhetsegenskaper.
+\begin{statement}
+  {\bf Säkerhet}: %
+  {\it Givet en specifikation, kan systemet hamna i en fel konfiguration?}
+\end{statement}
+
+%% ------------------------
+Snarare än att testa programmet i specifika scenarier eller att
+analysera källkoden, fokuserar vi i denna avhandling på \emph{formell
+  verifiering}, som är ett matematiskt ramverk, för att \emph{bevisa}
+att programmet uppfyller sina egenskaper.
+
+Dessutom vill vi bevisa det helt \emph{automatiskt}, det vill säga
+utan tillsyn av användaren.
+%
+Vi börjar genom att extrahera en modell som motsvarar det ursprungliga
+programmet. I samband med det borttar vi delarna som är irrelevanta
+för den egenskapen som verifieras.
+%
+Men vad händer när programmet manipulerar obegränsade variabler? Vi
+talar då om system med ett oändligt antal tillstånd, och vi behöver
+framställa en approximation som är i linje med själva programmet.
+%
+Målet är att utforma en metod som \emph{garanterar} att inget fel
+kvarstår, och som även ger svar inom en rimlig tid.
+
+Många system med ett oändligt antal tillstånd kan faktiskt
+karakteriseras av en familj som består av system med ett ändligt antal
+tillstånd, och en parameter (eller flera) med värde från en obegränsad
+domän.
+%
+För varje värde på parametern, innehåller systemet ett ändligt antal
+tillstånd.
+%
+Parametern kan exempelvis vara
+antalet processer som är aktiva i en viss session av ett protokoll, %
+antalet noder i ett nät, %
+eller hur komponenterna av ett program kommunicerar med varandra.
+%
+Hur som helst, system som innehåller en preliminärt okänd parameter
+bör ha ett korrekt beteende oavsett värdet på parametern. De betraktas
+därför som system med ett oändligt antal tillstånd och kallas för
+parametriserade system.
+I denna avhandling presenterar vi två metoder för att verifiera vissa
+säkerhetsegenskaper hos sådana parametriserade system.
+
+Den första metoden körs baklänges. Den startar från dem felaktiga
+tillstånden, och beräknar vilka andra tillstånd som skulle kunna leda
+till ett fel.
+%
+Med andra ord upptäcker metoden alla konfigurationer som direkt eller
+indirekt är felaktiga.
+%
+Om initialtillstånden av programmet inte tillhör dem sistnämnda, anses
+programmet vara korrekt. Vi måste såklart först se till att
+approximationen av modellen motsvarar det ursprungliga programmet.
+
+Den andra metoden startar från initialtillstånden. Den begränsar sig
+till små värden av parametern, och härleder ett tröskelvärde, efter
+vilket metoden inte behöver fortsätta: den har faktiskt all nödvändig
+information för att dra slutsatsen att det inte finns några
+felkonfigurationer för större värden på parametern över denna tröskel.
+% 
+För att förenkla, bryter metoden ner varje konfiguration i små bitar
+av en viss storlek, och rekombinerar bitarna på alla möjliga sätt,
+just för att skapa konfigurationer av större storlek (litegrann som
+Lego\-bitar). %tegelstenar
+% 
+Tanken är att samla alla dem små bitarna och se till att ingen
+rekombination matchar någon felaktig konfiguration.
+% 
+I så fall är tröskeln hittad. Annars börjar man om med lite större
+bitar.
+
+
+Slutligen är det intressant att undra vilka av villkoren som behövs
+för att metodens beräkningar inte ska fortsätta för evigt. Problemet
+klassas som oavgörbart, det vill säga att det inte finns någon
+generell metod som kan lösa \emph{alla} instanser av
+problemet. Däremot har dessa två metoder trots allt visat sig vara
+väldigt effektiva.
+%
+Där andra metoder tog timmar, kunde dessa två metoder faktiskt
+verifiera vissa program inom sekunder, vilket var målet.
+%
+I vissa fall kan man även ge garanti på att antalet beräkningar är
+begränsad.
+
