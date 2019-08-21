@@ -15,10 +15,12 @@
 \BOOKMARK [0][-]{chapter.5}{5 Shape Analysis}{}% 15
 \BOOKMARK [1][-]{section.5.1}{5.1 Previous Approaches}{chapter.5}% 16
 \BOOKMARK [1][-]{section.5.2}{5.2 Our Approaches}{chapter.5}% 17
-\BOOKMARK [0][-]{chapter.6}{6 Conclusion and Future Work}{}% 18
-\BOOKMARK [0][-]{chapter.7}{7 Summary of Contributions}{}% 19
-\BOOKMARK [1][-]{section.7.1}{7.1 Paper II: Automated Verification of Linearization Policies}{chapter.7}% 20
-\BOOKMARK [1][-]{section.7.2}{7.2 Paper III: Fragment Abstraction for Concurrent Shape Analysis}{chapter.7}% 21
-\BOOKMARK [1][-]{section.7.3}{7.3 Related Work}{chapter.7}% 22
-\BOOKMARK [0][-]{chapter.8}{8 References}{}% 23
-\BOOKMARK [0][-]{chapter.9}{9 Index}{}% 24
+\BOOKMARK [0][-]{chapter.6}{6 Related Work}{}% 18
+\BOOKMARK [1][-]{section.6.1}{6.1 Verification of Linearizabilities}{chapter.6}% 19
+\BOOKMARK [1][-]{section.6.2}{6.2 Shape Analysis}{chapter.6}% 20
+\BOOKMARK [0][-]{chapter.7}{7 Conclusion and Future Work}{}% 21
+\BOOKMARK [0][-]{chapter.8}{8 Summary of Contributions}{}% 22
+\BOOKMARK [1][-]{section.8.1}{8.1 Paper II: Automated Verification of Linearization Policies}{chapter.8}% 23
+\BOOKMARK [1][-]{section.8.2}{8.2 Paper III: Fragment Abstraction for Concurrent Shape Analysis}{chapter.8}% 24
+\BOOKMARK [0][-]{chapter.9}{9 References}{}% 25
+\BOOKMARK [0][-]{chapter.10}{10 Index}{}% 26

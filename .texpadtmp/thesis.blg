@@ -1,13 +1,13 @@
-This is BibTeX, Version 0.99d (TeX Live 2014)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
-The top-level auxiliary file: /Users/trinhcongquy/Desktop/PhDThesis/.texpadtmp/thesis.aux
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: /Users/quy/Documents/GitHub/PhDThesis/.texpadtmp/thesis.aux
 The style file: plain.bst
 Database file #1: ../misc/references.bib
-Repeated entry---line 1293 of file ../misc/references.bib
+Repeated entry---line 1330 of file ../misc/references.bib
  : @incollection{Forester
  :                       ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 1553 of file ../misc/references.bib
+Repeated entry---line 1590 of file ../misc/references.bib
  : @techreport{AHHR:integrated:rep
  :                                ,
 I'm skipping whatever remains of this entry
@@ -22,45 +22,45 @@ Name 1 in "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek,
 while executing---line 1090 of file plain.bst
 Too many commas in name 1 of "P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\' a}{\v c}ek, and T.~Vojnar" for entry forester11
 while executing---line 1090 of file plain.bst
-You've used 132 entries,
+You've used 134 entries,
             2118 wiz_defined-function locations,
-            1403 strings with 28920 characters,
-and the built_in function-call counts, 57521 in all, are:
-= -- 5781
-> -- 2375
-< -- 146
-+ -- 949
-- -- 799
-* -- 3947
-:= -- 8514
-add.period$ -- 443
-call.type$ -- 132
-change.case$ -- 788
+            1416 strings with 29194 characters,
+and the built_in function-call counts, 58283 in all, are:
+= -- 5863
+> -- 2401
+< -- 147
++ -- 959
+- -- 807
+* -- 3998
+:= -- 8630
+add.period$ -- 450
+call.type$ -- 134
+change.case$ -- 798
 chr.to.int$ -- 0
-cite$ -- 134
-duplicate$ -- 2530
-empty$ -- 4696
-format.name$ -- 799
-if$ -- 12918
+cite$ -- 136
+duplicate$ -- 2562
+empty$ -- 4761
+format.name$ -- 807
+if$ -- 13087
 int.to.chr$ -- 0
-int.to.str$ -- 132
-missing$ -- 122
-newline$ -- 659
-num.names$ -- 269
-pop$ -- 963
+int.to.str$ -- 134
+missing$ -- 124
+newline$ -- 669
+num.names$ -- 273
+pop$ -- 973
 preamble$ -- 1
-purify$ -- 661
+purify$ -- 669
 quote$ -- 0
-skip$ -- 2001
+skip$ -- 2026
 stack$ -- 0
-substring$ -- 3778
-swap$ -- 1097
-text.length$ -- 146
+substring$ -- 3837
+swap$ -- 1107
+text.length$ -- 147
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 523
+type$ -- 531
 warning$ -- 2
-while$ -- 539
-width$ -- 135
-write$ -- 1542
+while$ -- 548
+width$ -- 137
+write$ -- 1565
 (There were 6 error messages)

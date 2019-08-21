@@ -347,6 +347,11 @@ Cormac Flanagan and Shaz Qadeer.
 \newblock In {\em SPIN'03}, volume 2648 of {\em LNCS}, pages 213--224.
   Springer, 2003.
 
+\bibitem{Fomitchev:2004}
+Mikhail Fomitchev and Eric Ruppert.
+\newblock Lock-free linked lists and skip lists.
+\newblock In {\em PODC'04}, pages 50--59. ACM, 2004.
+
 \bibitem{Ganty:Complete}
 Pierre Ganty, Jean-Fran\c{c}ois Raskin, and Laurent~Van Begin.
 \newblock {A Complete Abstract Interpretation Framework for Coverability
@@ -678,6 +683,12 @@ V.~Singh, I.~Neamtiu, and R.~Gupta.
 IEEE~Computer Society.
 \newblock Ieee standard for a high performance serial bus. std 1394-1995,
   August 1996.
+
+\bibitem{Sundell:2005}
+H{\aa}kan Sundell and Philippas Tsigas.
+\newblock Fast and lock-free concurrent priority queues for multi-thread
+  systems.
+\newblock {\em J. Parallel Distrib. Comput.}, 65(5):609--627, May 2005.
 
 \bibitem{Szymanski88}
 Boleslaw~K. Szymanski.

@@ -1,33 +1,33 @@
 \begin{theindex}
 
-  \item Automation, \hyperpage{19}
+  \item Automation, \hyperpage{17}
 
   \indexspace
 
-  \item Linearizability, \hyperpage{26}
+  \item Linearizability, \hyperpage{24}
 
   \indexspace
 
-  \item Model Checking, \hyperpage{19}
+  \item Model Checking, \hyperpage{17}
 
   \indexspace
 
-  \item Observers, \hyperpage{29}
+  \item Observers, \hyperpage{27}
 
   \indexspace
 
-  \item Specification, \hyperpage{26}
+  \item Specification, \hyperpage{24}
   \item Summary
     \subitem Sammanfattning \protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}, 
 		\hyperpage{vii}
 
   \indexspace
 
-  \item Thesis outline, \hyperpage{xiii}
+  \item Thesis outline, \hyperpage{xi}
 
   \indexspace
 
   \item Verification Methods
-    \subitem Model Checking, \hyperpage{19}
+    \subitem Model Checking, \hyperpage{17}
 
 \end{theindex}
