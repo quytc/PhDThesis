@@ -311,10 +311,10 @@ Verification of properties depending on the ordering of data stored in SLLs was
 considered in~\cite{lists-counters}, which translates programs with SLLs to
 counter automata. A subsequent analysis of these automata allows one to prove
 memory safety, sortedness, and termination for the original programs. The work
-is, however, strongly limited to SLLs. In our technique, we get inspired by the way
+is, however, strongly limited to SLLs. In our technique, we get inspired by the technique
 that \cite{lists-counters} uses for dealing with ordering relations on data, but
 we significantly redesign it to be able to track not only ordering between
-simple list segments but rather general heap shapes described by FA. In order to
+simple list segments but also general heap shapes described by FA. In order to
 achieve this, we had to not only propose a suitable way of combining ordering
 relations with FA, but we also had to significantly modify many of the
 operations used over FA.
@@ -331,7 +331,8 @@ Verification of properties of programs depending on the data stored in dynamic
 linked data structures was considered in the context of the TVLA tool
 \cite{Loginov:AbstrRefViaInductLearning:05} as well. Unlike our approach,
 \cite{Loginov:AbstrRefViaInductLearning:05} assumes a fixed set of shape
-predicates and uses inductive logic programming to learn predicates needed for
+predicates such as pointer equality, tests for nil pointers, and garbage cells, as well as
+reachability along pointers. They uses inductive logic programming to learn predicates needed for
 tracking non-pointer data. The experiments presttented in
 \cite{Loginov:AbstrRefViaInductLearning:05} involve verification of sorting and
 stability properties of several programs on SLLs (merging, reversal,
