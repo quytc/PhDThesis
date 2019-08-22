@@ -195,11 +195,9 @@ The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt 
 This chapter reviews related work, along the main topics of this thesis including: verification of linearizabilities of concurrent algorithms, 
 sequential shape analysis and concurrent techniques.
 \section{Verification of Linearizabilities}
-Much previous work on verification of concurrent programs has concerned the desection of generic
-concurrency problems, such as race conditions, atomicity
-violations, or deadlocks [15,23,24]. Verification of conformance to a simple abstract specification has been performed
+There are several previous work on verification of linearizabilities of concurrent programs[9,12,13,34]. In which, verification of conformance to a simple abstract specification has been performed
 using refinement techniques, which establish simulation relations between the implementation and specification, using
-partly manual techniques [9,12,13,34]. Vafeiadis \cite{Vafeiadis:Thesis}
+partly manual techniques. Vafeiadis \cite{Vafeiadis:Thesis}
 uses forward and backward simulation relations together with history or prophecy variables to prove linearizability. These approaches are manual, and without tool implementations.
 %Much previous work has been devoted to the {\it manual} verification of linearizability for concurrent programs such as \cite{Aaron:locigcal:linearizability}. 
 
@@ -211,13 +209,17 @@ provers, have been reported in
 %
 For instance, Colvin {\it et al.} \cite{Colvin:Lazy-List}
 verify the lazy set algorithm in  PVS,
-using a combination of forward and backward simulations. In \cite{OHearnlist}, O'Hearn {\it et al.}  define a {\it hindsight lemma} that provides a non-constructive evidence for linearizability. 
-%
+using a combination of forward and backward simulations. In \cite{OHearnlist}, O'Hearn {\it et al.}  define a {\it hindsight lemma} that provides a non-constructive evidence for linearizability. The lemma assumes that the algorithm maintains certain simple invariants which are resilient to interference, and which
+can themselves be verified using purely thread-local proofs. As a
+consequence, the lemma allows us to unlock a perhaps-surprising
+intuition: a high degree of interference makes non-trivial highly concurrent algorithms in some cases much easier to verify than less
+concurrent ones.
 The lemma is used to prove linearizability of an optimistic variant of 
 the lazy set algorithm.
 
 There are several works on {\it automatic} verification of linearizability.
-%
+the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
+all require fixed linearization points.
 In \cite{Vafeiadis:cav10}, Vafeiadis
 develops an automatic tool for proving  linearizability that
 employs instrumentation to verify logically pure executions.
@@ -245,15 +247,7 @@ We can incorporate this technique into
 our framework by a suitable construction of observers.
 The method can not be applied to sets.
 %
-The most recent work of Zhu {\it et al.} \cite{Poling}
-describe a tool that is applied for specific set, queue, and stack  
-algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by our paper.
-%
-For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
-\cite{OHearnlist}. 
-%
-Hindsight-based proofs provide only {\it non-constructive} 
-evidence of linearizability. Algorithms with non-optimistic contains (or lookup) operation like {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list} and {\it Michael}~\cite{Michael:list} sets cannot be verified by their technique.  
+  
 %
 Vechev {\it et al.}~\cite{Vechev:spin09}
 check linearizability with user-specified non-fixed LPs,
@@ -269,14 +263,18 @@ have linearization points within the rewritten code.
 %
 \v{C}ern{\'y} {\it et al} \cite{CernyRZCA:CAV10} show decidability of a class
 of programs with a bounded number of threads operating on concurrent data structures.
+
+
+The most recent work of Zhu {\it et al.} \cite{Poling}
+describe a tool that is applied for specific set, queue, and stack  
+algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by our paper.
 %
-%% This paper is about a different problem
-%% Horn and Kroening \cite{Kroening-Linearizability:FORTE15}
-%% have recently presented an efficient linearizability checker based on {\it P-compositionality} 
-%% which can be applied when having a bounded number of threads.
+For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
+\cite{OHearnlist}. 
 %
-Finally, the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
-all require fixed linearization points.
+Hindsight-based proofs provide only {\it non-constructive} 
+evidence of linearizability. Algorithms with non-optimistic contains (or lookup) operation like {\it HM}~\cite{ArtOfMpP}, {\it Harris}~\cite{Harris:list} and {\it Michael}~\cite{Michael:list} sets cannot be verified by their technique.
+
 
 We have not found any report in the literature of a
 verification method that is sufficiently powerful to
