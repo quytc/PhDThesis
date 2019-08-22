@@ -192,47 +192,38 @@ The pair consisting of the two sentinel cells (with keys $\tt -\infty$ and $\tt 
 
 
 \chapter{Related Work}
-This chapter reviews related work, along the main topics of this thesis including: verification of linearizabilities of concurrent algorithms, 
-sequential shape analysis and concurrent techniques.
-\section{Verification of Linearizabilities}
-There are several previous work on verification of linearizabilities of concurrent programs[9,12,13,34]. In which, verification of conformance to a simple abstract specification has been performed
-using refinement techniques, which establish simulation relations between the implementation and specification, using
-partly manual techniques. Vafeiadis \cite{Vafeiadis:Thesis}
-uses forward and backward simulation relations together with history or prophecy variables to prove linearizability. These approaches are manual, and without tool implementations.
-%Much previous work has been devoted to the {\it manual} verification of linearizability for concurrent programs such as \cite{Aaron:locigcal:linearizability}. 
+This chapter reviews related work, along the main topics of this thesis including: verification of Linearizability of concurrent algorithms, 
+shape analysis of sequential and concurrent programs.
 
-
-
-{\it Mechanical} proofs of linearizability, using interactive theorem
+\section{Verification of Linearizability}
+There are several previous work on verification of linearizability of concurrent programs, see the survey \cite{Dongol} . In which, verification of conformance to a simple abstract specification has been performed using refinement techniques, which establish simulation relations between the implementation and specification, using partly manual techniques. Vafeiadis \cite{Vafeiadis:Thesis} uses forward and backward simulation relations together with history or prophecy variables to prove linearizability. The simulation techniques are mostly manual, but they have also been machinated. {\it Mechanical} proofs of linearizability, using interactive theorem
 provers, have been reported in 
 \cite{Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}.
-%
-For instance, Colvin {\it et al.} \cite{Colvin:Lazy-List}
+Colvin {\it et al.} \cite{Colvin:Lazy-List}
 verify the lazy set algorithm in  PVS,
-using a combination of forward and backward simulations. In \cite{OHearnlist}, O'Hearn {\it et al.}  define a {\it hindsight lemma} that provides a non-constructive evidence for linearizability. The lemma assumes that the algorithm maintains certain simple invariants which are resilient to interference, and which
-can themselves be verified using purely thread-local proofs. As a
-consequence, the lemma allows us to unlock a perhaps-surprising
-intuition: a high degree of interference makes non-trivial highly concurrent algorithms in some cases much easier to verify than less
-concurrent ones.
-The lemma is used to prove linearizability of an optimistic variant of 
-the lazy set algorithm.
+using a combination of forward and backward simulations. 
+
 %%% AUTOMATED LINEARIZATION
 
 There are several works on {\it automatic} verification of linearizability.
 the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
-all require fixed linearization points.
+all require fixed linearization points which are manually annotated by users.
 In \cite{Vafeiadis:cav10}, Vafeiadis
 develops an automatic technique for proving  linearizability that
 employs instrumentation to verify logically pure executions.
-However, this work can handle non-fixed LPs only for read-only methods,
+This work can also handle non-fixed LPs, but only for read-only methods,
 i.e, methods that do not modify the heap.
 %
 This means that the method cannot handle
  algorithms like the {\it Elimination} queue ~\cite{Shavit:ElimQueue}, {\it HSY} stack~\cite{HSYstack}, {\it CCAS}~\cite{Harris:CAS}, 
 {\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in the thesis. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by technique in this thesis.
+
+
+
 Chakraborty {\it et al.} \cite{HSV:concur13}
 describe an ``aspect-oriented'' method for  modular verification 
-of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue.
+of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue. They
+define a set of aspects that characterise the behaviour of a queue and show that Herlihy/Wing’s queue satisfies these aspects.
 Bouajjani et al. \cite{BEEH:icalp15} extended this work to show that verifying 
 linearizability for certain
 fixed abstract data types, including queues and stacks, is reducible to 
@@ -240,7 +231,7 @@ control-state reachability.
 %
 We can incorporate this technique into
 our framework by a suitable construction of observers.
-The method can not be applied to sets.
+The method can not be applied to sets which we can handle in the thesis.
 %
   
 %
@@ -259,9 +250,11 @@ have linearization points within the rewritten code.
 \v{C}ern{\'y} {\it et al} \cite{CernyRZCA:CAV10} show decidability of a class
 of programs with a bounded number of threads operating on concurrent data structures.
 
-
-The most recent work of Zhu {\it et al.} \cite{Poling}
-describe a tool using {\it hindsight lemma} and SMT solver to proof linearizabilities, they can handle several specific set, queue, and stack  
+In \cite{OHearnlist}, O'Hearn {\it et al.}  define a {\it hindsight lemma} that provides a non-constructive evidence for linearizability. The lemma assumes that the algorithm maintains certain simple invariants which are resilient to interference, and which
+can themselves be verified using purely thread-local proofs.
+The lemma is used to prove linearizability of an optimistic variant of 
+the lazy set algorithm. Based on this lemma the work of Zhu {\it et al.} \cite{Poling}
+describe a tool combining {\it hindsight lemma} and SMT solver to proof linearizabilities, they can handle several specific set, queue, and stack  
 algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by this thesis.
 %
 For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
@@ -290,7 +283,7 @@ or unordered set of~\cite{Zhang:unorderedlist},
 
 
 \section{Shape Analysis}
-\subsection{Sequential Shape Analysis}
+\subsection{Shape Analysis for Sequential Programs}
 Our approach builds on the fully automated FA-based
 approach for shape analysis of programs with complex dynamic linked data
 structures \cite{forester11,Forester}. We significantly extend this approach by
@@ -369,7 +362,7 @@ are identified, but the approach does not perform fully automated verification,
 only checking of pre-post condition pairs.
 
 
-\subsection{Concurrent Shape Analysis}
+\subsection{Shape Analysis for Concurrent Programs}
 There are several approaches for automated verification of concurrent algorithms are limited to the
 case of singly-linked
 lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
