@@ -216,25 +216,20 @@ intuition: a high degree of interference makes non-trivial highly concurrent alg
 concurrent ones.
 The lemma is used to prove linearizability of an optimistic variant of 
 the lazy set algorithm.
+%%% AUTOMATED LINEARIZATION
 
 There are several works on {\it automatic} verification of linearizability.
 the works~\cite{AHHR:integrated,BLMRS:cav08,Vafeiadis:vmcai09}
 all require fixed linearization points.
 In \cite{Vafeiadis:cav10}, Vafeiadis
-develops an automatic tool for proving  linearizability that
+develops an automatic technique for proving  linearizability that
 employs instrumentation to verify logically pure executions.
-%
 However, this work can handle non-fixed LPs only for read-only methods,
 i.e, methods that do not modify the heap.
 %
 This means that the method cannot handle
  algorithms like the {\it Elimination} queue ~\cite{Shavit:ElimQueue}, {\it HSY} stack~\cite{HSYstack}, {\it CCAS}~\cite{Harris:CAS}, 
-{\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in this paper. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by our method.
-%
-%For instance, in the {\it HSY} stack algorithm both
-%the {\tt push} and {\tt pop} operations modify
-%the heap and help each other~\cite{HSYstack}. 
-%
+{\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in the thesis. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by technique in this thesis.
 Chakraborty {\it et al.} \cite{HSV:concur13}
 describe an ``aspect-oriented'' method for  modular verification 
 of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue.
@@ -266,8 +261,8 @@ of programs with a bounded number of threads operating on concurrent data struct
 
 
 The most recent work of Zhu {\it et al.} \cite{Poling}
-describe a tool that is applied for specific set, queue, and stack  
-algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by our paper.
+describe a tool using {\it hindsight lemma} and SMT solver to proof linearizabilities, they can handle several specific set, queue, and stack  
+algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by this thesis.
 %
 For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
 \cite{OHearnlist}. 
@@ -279,7 +274,7 @@ evidence of linearizability. Algorithms with non-optimistic contains (or lookup)
 We have not found any report in the literature of a
 verification method that is sufficiently powerful to
 automatically verify the class of concurrent set
-implementations based on sorted and non-sorted
+implementations based or sorted and non-sorted
 singly-linked lists having non-optimistic contains (or lookup) operations we consider. For instance %For instance,
 %the shape abstraction of the CAVE implementation
 %\cite{Vafeiadis:cav10}
