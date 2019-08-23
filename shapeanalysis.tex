@@ -196,7 +196,7 @@ This chapter reviews related work, along the main topics of this thesis includin
 shape analysis of sequential and concurrent programs.
 
 \section{Verification of Linearizability}
-There are several previous work on verification of linearizability of concurrent programs, see the survey \cite{Dongol} . In which, verification of conformance to a simple abstract specification has been performed using refinement techniques, which establish simulation relations between the implementation and specification, using partly manual techniques. Vafeiadis \cite{Vafeiadis:Thesis} uses forward and backward simulation relations together with history or prophecy variables to prove linearizability. The simulation techniques are mostly manual, but they have also been machinated. {\it Mechanical} proofs of linearizability, using interactive theorem
+There are several previous work on verification of linearizability of concurrent programs, see eg the survey \cite{Dongol} . Sine the definition of linearizability by Herly and Wing [], the most common approaches of conformance to a simple abstract specification using refinement techniques, which establish simulation relations between the implementation and specification, using partly manual techniques. Vafeiadis \cite{Vafeiadis:Thesis} uses forward and backward simulation relations together with history or prophecy variables to prove linearizability. The simulation techniques are mostly manual, but they have also been mechanized. {\it Mechanical} proofs of linearizability, using interactive theorem
 provers, have been reported in 
 \cite{Colvin:Lazy-List,Derrick:fm14,SWD:cav12,SDW:tcl14}.
 Colvin {\it et al.} \cite{Colvin:Lazy-List}
@@ -216,14 +216,14 @@ i.e, methods that do not modify the heap.
 %
 This means that the method cannot handle
  algorithms like the {\it Elimination} queue ~\cite{Shavit:ElimQueue}, {\it HSY} stack~\cite{HSYstack}, {\it CCAS}~\cite{Harris:CAS}, 
-{\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in the thesis. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by technique in this thesis.
+{\it RDCSS}~\cite{Harris:CAS} and {\it HM} set~\cite{ArtOfMpP} that we consider in the thesis. In addition, their shape abstraction is not powerful enough to handle algorithms like {\it Harris} set~\cite{Harris:list} and {\it Michael} set~\cite{Michael:list} that are also handled by techniques in this thesis.
 
 
 
 Chakraborty {\it et al.} \cite{HSV:concur13}
 describe an ``aspect-oriented'' method for  modular verification 
 of concurrent queues that they use to prove linearizability of the Herlihy/Wing queue. They
-define a set of aspects that characterise the behaviour of a queue and show that Herlihy/Wing’s queue satisfies these aspects.
+define a set of constraints on the ordering between method calls and returns that characterise the behaviour of a queue and show that Herlihy/Wing’s queue satisfies these aspects.
 Bouajjani et al. \cite{BEEH:icalp15} extended this work to show that verifying 
 linearizability for certain
 fixed abstract data types, including queues and stacks, is reducible to 
@@ -231,7 +231,7 @@ control-state reachability.
 %
 We can incorporate this technique into
 our framework by a suitable construction of observers.
-The method can not be applied to sets which we can handle in the thesis.
+The method can not be applied to sets.
 %
   
 %
@@ -250,14 +250,14 @@ have linearization points within the rewritten code.
 \v{C}ern{\'y} {\it et al} \cite{CernyRZCA:CAV10} show decidability of a class
 of programs with a bounded number of threads operating on concurrent data structures.
 
-In \cite{OHearnlist}, O'Hearn {\it et al.}  define a {\it hindsight lemma} that provides a non-constructive evidence for linearizability. The lemma assumes that the algorithm maintains certain simple invariants which are resilient to interference, and which
+In \cite{OHearnlist}, O'Hearn {\it et al.}  define a hindsight lemma that provides a non-constructive evidence for linearizability. The lemma assumes that the algorithm maintains certain simple invariants which are resilient to interference, and which
 can themselves be verified using purely thread-local proofs.
 The lemma is used to prove linearizability of an optimistic variant of 
 the lazy set algorithm. Based on this lemma the work of Zhu {\it et al.} \cite{Poling}
-describe a tool combining {\it hindsight lemma} and SMT solver to proof linearizabilities, they can handle several specific set, queue, and stack  
-algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled by this thesis.
+describe a tool combining hindsight lemma and a SMT solver to prove linearizability, they can handle several specific set, queue, and stack  
+algorithms. For queue algorithms, their technique can handle queues with helping mechanism except for {\it HW} queue~\cite{HeWi:linearizability} which is handled in this thesis.
 %
-For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the {\it hindsight lemma} from 
+For set algorithms, the authors can only handle those that perform an optimistic contains (or lookup) operation by applying the hindsight lemma from 
 \cite{OHearnlist}. 
 %
 Hindsight-based proofs provide only {\it non-constructive} 
@@ -322,15 +322,14 @@ limited to SLLs, and it is also much less efficient than our current approach.
 
 Verification of properties of programs depending on the data stored in dynamic
 linked data structures was considered in the context of the TVLA tool
-\cite{Loginov:AbstrRefViaInductLearning:05} as well. Unlike our approach,
-\cite{Loginov:AbstrRefViaInductLearning:05} assumes a fixed set of shape
+\cite{Loginov:AbstrRefViaInductLearning:05} as well. This approach assumes a fixed set of shape
 predicates such as pointer equality, tests for nil pointers, and garbage cells, as well as
 reachability along pointers. They uses inductive logic programming to learn predicates needed for
-tracking non-pointer data. The experiments presttented in
+tracking non-pointer data. The experiments presented in
 \cite{Loginov:AbstrRefViaInductLearning:05} involve verification of sorting and
 stability properties of several programs on SLLs (merging, reversal,
 bubble-sort, insert-sort) as well as insertion and deletion in BSTs. We do not
-handle stability, but for the other properties, our approach is much faster.
+handle stability, but for the other properties, our approach is more efficient. 
 Moreover, for BSTs, we verify that a node is greater/smaller than all the nodes
 in its left/right subtrees (not just than the immediate successors as in
 \cite{Loginov:AbstrRefViaInductLearning:05}).
@@ -363,7 +362,7 @@ only checking of pre-post condition pairs.
 
 
 \subsection{Shape Analysis for Concurrent Programs}
-There are several approaches for automated verification of concurrent algorithms are limited to the
+There are several approaches for automated verification of concurrent algorithms that are limited to the
 case of singly-linked
 lists~\cite{AHHR:integrated,meyer:vmcai16,Quy:sas16,Sagiv:correlation,Vafeiadis:cav10}.
 Furthermore, many of these techniques impose additional restrictions on the considered verification problem, such as bounding the number of accessing
@@ -375,13 +374,13 @@ tracking of simple sortedness properties between data elements; the approach doe
 not allow to represent patterns observed by threads when following sequences of
 pointers inside the heap, and so has not been applied to concurrent set
 implementations.
-In our recent work~\cite{Quy:sas16}, we extended this approach to handle SLL implementations
+In paper II, we extended this approach to handle SLL implementations
 of concurrent sets by adapting a
 well-known abstraction of singly-linked lists ~\cite{MYRS:Canonical} for concurrent programs.
 The resulting technique is specifically tailored for singly-links.
-Our fragment abstraction is significantly simpler conceptually, and can therefore be  adapted
+Our fragment abstraction in paper III is significantly simpler conceptually, and can therefore be  adapted
 also for other classes of heap structures.
-The approach of~\cite{Quy:sas16} is the only one with a shape representation strong enough to
+The approach of paper II is the only one with a shape representation strong enough to
 verify  concurrent set
 implementations based on sorted and non-sorted
 singly-linked lists having non-optimistic contains (or lookup) operations we consider, such as
