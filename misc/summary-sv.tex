@@ -3,27 +3,42 @@
 \addcontentsline{toc}{section}{\texorpdfstring{\protect\raisebox{-0.5ex}{\protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}}{} in Swedish}
 \index{Summary!Sammanfattning \protect\makebox[3ex]{\protect\includegraphics[height=1em]{img/flag-sverige.png}}}
 
-Computers have been used for a variety of applications in business, science, education, engineering and so on. They help to solve real-world problems that would otherwise be slow, impossible or extremely difficult to address without computers and software. However, sometimes they do not behave exactly as we expect them. In many cases, the consequences could be very serious, for example when errors in banking or flight control software result in unexpected behaviours. Errors in computer systems are mostly not caused by the machine itself, but typically originate from the software that controls the computer systems, so-called bugs. Bugs are quite common in complex software systems since they typically have complicated input and involve many features, which makes them difficult to design and make them perfect by human effort. Detecting and fixing software bugs are important tasks in software development process. Remaining undetected bugs in any software project may lead huge problems. They can be very hard to detect and correct, especially if they are discovered after the software has been delivered. Therefore, it is very important to allocate sufficient resources, both in terms of time and manpower, to ensure that developed software is as free of bugs as possible. 
+Datorer har använts för en mängd olika applikationer inom företag, vetenskap, utbildning, teknik och så vidare. De hjälper till att lösa verkliga problem som annars skulle vara långsamma, omöjliga eller extremt svåra att hantera utan datorer och programvara. Ibland uppträder de emellertid inte exakt som vi förväntar oss dem. I många fall kan konsekvenserna vara mycket allvarliga, till exempel när fel i bank- eller flygkontrollprogramvara leder till oväntat beteende. Fel i datorsystem orsakas oftast inte av själva maskinen, men kommer vanligtvis från programvaran som styr datorsystemen, så kallade buggar. Bugs är ganska vanliga i komplexa mjukvarusystem eftersom de vanligtvis har komplicerade input och involverar många funktioner, vilket gör dem svåra att utforma och göra dem perfekta av mänsklig ansträngning. Upptäcka och fixa programvarubuggar är viktiga uppgifter i mjukvaruutvecklingsprocessen. Återstående oupptäckta buggar i något programvaruprojekt kan leda till enorma problem. De kan vara mycket svåra att upptäcka och korrigera, särskilt om de upptäcks efter att programvaran har levererats. Därför är det mycket viktigt att avsätta tillräckliga resurser, både när det gäller tid och arbetskraft, för att säkerställa att utvecklad programvara är så fri från buggar som möjligt.
 
-Some bugs are less serious than others. Some types of software, e.g., in user interfaces or entertainment software, can be useable even if it contains a small number of bugs.
-However, in the case of critical systems and system components such as software in libraries of programming languages, 
-bugs can have far-reaching consequences, and must be avoided as much as possible.
-Some of libraries provide standard data structures such as stacks, queues, containers. Such data structures provide ways of storing  
-and retrieving data in a way that suits the application at hand. For example, a stack allows inserting and removing elements in a particular order. Every time an element is inserted, that element is removed
-in reverse order of insertion. The simplest application of a stack is to reverse a word. You insert a given word to stack - letter by letter - and then remove letters from the stack.
-By using data structures data can be easily, and efficiently exchanged; it allows portability, comprehensibility, and adaptability of information.
 
-A data structure can be both sequential or concurrent which is tricky and difficult to get correct. Concurrent data structures can be accessed and manipulated concurrently by many parallel threads are a central component of many parallel software applications. A data structure should ideally provide a simple interface to the software that uses it. An interface provides the set of operations with specifications about their types of arguments and returned values. Data structures typically use heap-allocated memory to store their data. For example, the concurrent linked queue in java.util.concurrent uses a singly linked list to organize their data. The data structure may be quite complex like skiplists and binary trees which are used to implement sets.
+Vissa buggar är mindre allvarliga än andra. Vissa typer av programvara, t.ex. i användargränssnitt eller underhållningsprogramvara, kan vara användbara även om den innehåller ett litet antal buggar.
+När det gäller kritiska system och systemkomponenter som programvara i programmeringsspråk,
+buggar kan få långtgående konsekvenser och måste undvikas så mycket som möjligt.
+Vissa av biblioteken har standarddatastrukturer som staplar, köer, containrar. Sådana datastrukturer ger sätt att lagra
+och hämta data på ett sätt som passar tillämpningen. Till exempel tillåter en stapel att sätta in och ta bort element i en viss ordning. Varje gång ett element sätts in tas det elementet bort
+i omvänd ordningsföljd av införandet. Den enklaste tillämpningen av en stack är att vända ett ord. Du sätter in ett givet ord att stapla - bokstav för bokstav - och tar sedan bort bokstäver från bunten.
+Genom att använda datastrukturer kan data enkelt och effektivt utbytas; det tillåter portabilitet, begriplighet och anpassningsbarhet för information.
 
-%\bjcom{Please extend this short paragraph to talk about complex features of data structure implementations, you can also include concurrency. Now the paragraph is too short}
+En datastruktur kan vara både sekventiell eller samtidigt vilket är svårt och svårt att få rätt. Samtidiga datastrukturer kan nås och manipuleras samtidigt av många parallella trådar är en central komponent i många parallella mjukvaruapplikationer. En datastruktur bör idealiskt ge ett enkelt gränssnitt till den programvara som använder den. Ett gränssnitt förser uppsättningarna med specifikationer om deras typer av argument och returnerade värden. Datastrukturer använder vanligtvis högtilldelade minne för att lagra sina data. Exempelvis använder den samtidiga länkade kön i java.util.concurrent en enskilt länkad lista för att organisera sina data. Datastrukturen kan vara ganska komplex som skiplistar och binära träd som används för att implementera uppsättningar.
 
-The predominant method to ensure software quality is
-\emph{testing}. It is a dynamic analysis where a program is executed under specific conditions, in so-called test cases, while checking whether the result for a given input matches the expected output.
-%
-The test cases should be carefully designed to cover as many as possible cases of program executions.
-However, it is infeasible to cover all possible executions. Therefore, it is said by Edsger W. Dijkstra that testing can be used to show the presence of bugs, but never to show their absence. 
-It would be nice to have techniques for checking that all executions conform to the interface of a data structure.
-A possibility is to use formal techniques which is the approach used in this thesis.
+Denna doktorsavhandling tar hänsyn till både säkerhetsegenskaper och lineariseringsegenskaper hos
+både sekventiella och samtidiga heap-manipulerande program.
+Sådana program inducerar ett oändligt tillstånd i flera dimensioner:
+de %
+(i) består av ett obundat antal samtidiga trådar,%
+(ii) använda obegränsat dynamiskt tilldelat minne och%
+(iii) domänen för datavärden är obegränsad. %
+(iv) består av obegränsat antal pekare.
+Dessutom är lineariseringspunkterna för vissa program inte fixade. De är beroende av de framtida avrättningarna av dessa program.
+Vår metod är att definiera en abstrakt modell av programmet, och vi använder tillnärmningstekniker för att ignorera irrelevant information så att vi kan minska problemet till en finitmodell. I själva verket använder vi en överinriktning, så att den abstrakta modellen täcker alla beteenden i det ursprungliga systemet. Vårt ramverk är det första
+kan automatiskt verifiera implementering av samtidiga datastrukturer som använder
+enskilda länkade listor, skiplistor ~ \ cite {Fomitchev: 2004, ArtOfMpP, Sundell: 2005},
+såväl som matriser av enskilda länkade listor ~ \ cite {ts-stack},
+samtidigt som hanteringen av en obunden
+antal samtidiga trådar, en obegränsad domän av datavärden
+(inklusive tidsstämplar) och en obunden delad hög. Så vitt vi vet har dessa verifieringsproblem varit
+anses utmanande i verifieringsgemenskapen och
+kunde inte utföras automatiskt med andra befintliga metoder.
+
+
+
+
+
 %Du har säkerligen använt en dator och varit väldigt nöjd, och detta
 %för att den förenklade många långa och svåra %mödosamma
 %uppgifter.
