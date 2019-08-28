@@ -4,10 +4,10 @@
 \setlength{\unitlength}{0.5cm}
 \begin{picture}(26,17)
 %
-\put(0,15.6){\makebox(0,0)[bl]{{\bf Action System} {\it Dining Mathematicians}}}
-\put(1,14.3){\makebox(0,0)[bl]{{\bf declare} $n : \it integer$}}
-\put(1,13){\makebox(0,0)[bl]{{\bf initially} $n \geq 1$}}
-\put(0,1){\makebox(0,0)[tl]{\bf end}}
+\put(0,15.6){\makebox(0,0)[bl]{{\;\;\;\;} {\it Dining Mathematicians}}}
+\put(1,14.3){\makebox(0,0)[bl]{{} $n : \it integer$}}
+\put(1,13){\makebox(0,0)[bl]{{\bf assume} $n \geq 1$}}
+
 %
 \put(2,1.5){
 \begin{picture}(26,11)
@@ -48,18 +48,3 @@
 }
 \end{picture}
 \end{center}
-
-The above example consists of two processes, which share an integer variable
-$n$. The system has an infinite number of initial states, and the number of
-states is therefore infinite. Suppose we want to check that the two
-mathematicians are not eating at the same time, i.e., we want to
-check whether
-\[
-\neg(\at{eat_1} \land \at{eat_2})
-\]
-is invariant. Simple inspection shows that this invariant indeed holds
-for the system, for the simple reason that
-when the left process is in $eat_1$, then $n$ is odd, and
-when the right process is in $eat_2$, then $n$ is even.
-However, this simple fact cannot be detected by naive reachability analysis,
-since the system has infinitely many states.

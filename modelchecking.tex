@@ -7,19 +7,12 @@
 %
 
 The approach that we focus on this thesis is
-\emph{model-checking}.
+\emph{model checking}.
 %% ********************************************************************
 \KW{Automation}%
 \index{Automation}%
 %% ********************************************************************
-%This method will try to verify whether a model of the program
-%satisfies its specification.
-%\bjcom{It does not really work to have a short first paragraph like this. It
-%  is better to let the first paragraph flow. E.g., ``The approach ... . This approach was introduce ... Model checking aims to check whether a model of a rogram satisfies ..   As input, it requires ....   }
-%\bjcom{After this, say that models are typically transition systems, and
-%  explain. You must also say how properties are given. You need not say
-%  much about that, but say that the most common form is to give an invariant,
-%  or (equivalently) a set of bad states}
+
 This approach was introduced by Emerson and Clarke~\cite{CE82} and by Queille and Sifakis~\cite{QS82}. 
 Model checking aims to check whether a model of a program satisfies a given specification.
  The method then computes and returns either "correct" when the specification is satisfied by the program, or "incorrect" when the program does not satisfy its specification. In the case of incorrect answer, the method can explain the reason by giving a counter-example.
@@ -32,8 +25,8 @@ Models are typically transition systems consisting of states and transitions bet
 % \bjcom{Here, you can start to explain how models look: ``Models are typically ...''} 
 A state in the model contains relevant information about the program.
 %\bjcom{Before writing this, you must introduce ``transition systems'', otherwise the reader did not see what ``state'' means. See, e.g., the thesis by To}
-Alongside all the states of the system, the model depicts the
-transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of transitions, starting from some initial state
+Alongside all the states of the system, the model also depicts the
+transitions, i.e.\ how to move from one state to another state. Every behaviour of the system is represented as a succession of transitions, starting from some initial state.
 %\bjcom{better ``state''}.
 %\bjcom{THe following sentence is not really necessary}
 %States and transitions together describe the \emph{operational
@@ -42,22 +35,21 @@ transitions, i.e.\ how to move from one state to another state. Every behaviour 
 The number of states and transitions can be finite or infinite.
 %\bjcom{Better to write that initial approaches were for finite (explain), and that one direction of work (since 90's) has focused on state-space explosion,one on infinite}
 %\bjcom{Now you can start to explain ``specifications'': You can say, e.g., 
-A specification consists of properties of behaviors (i.e., of sequences of states), that one usually distinguishes safety properties (``something bad must never happen'') from liveness properties (``something good must eventually happen''), and
-  that most properties are safety properties. Then say that a model cheking algorithm explores the set of states in a clever way, and explain the word ``state-space''
+A specification consists of properties of behaviors (i.e., of sequences of states) which usually distinguishes safety properties (``something bad must never happen'') from liveness properties (``something good must eventually happen''), where
+   most properties are safety properties.
 Model-checking aims to explore the state-space entirely from some initial states.
 %\bjcom{The following sentence is incomplete. You can instead say that 
 One of the main problems with model checking is that the state-space is typically very
-  large. However, when the state-space is of large size. It grows in-fact
+  large. It grows in-fact
 exponentially with the number of parameters or the size of their
-domain. Therefore, there have been several methods to address the
+domains. Therefore, there have been several methods to address the
 state-space explosion problem.
 
                    
 There are several techniques addressing the state-space explosion problem.
 %\bjcom{Next sentence becomes not clear. Better to start ``One important approach is partial order techniques, which aim at ...   They are based on the fact ...''}
-One important approach is \emph{Partial order} techniques, which aim at detecting and avoiding
-redundant situations, while retaining important dependencies among
-actions.This approach is based on the fact that, in some cases, exploring all orderings of events is not necessary because some states can be re-visited.  The main approach to solve the state-space explosion problem is to use a
+One important approach is \emph{partial order} techniques, which aim to avoid
+redundant exceptions.This approach is based on the fact that, in some cases, exploring all orderings of transactions that are independent is not necessary. Perhaps the main approach to address the state-space explosion problem is to use a
 %called \bjcom{better ``to use a''} 
 \emph{symbolic
   representation}. It avoids
@@ -67,12 +59,24 @@ actions.This approach is based on the fact that, in some cases, exploring all or
 Its main idea is to design a symbolic representation of sets of states.
    %abstract states so that each abstract state could represent a set of concrete states.
 % \bjcom{Often, one do not have clearly identifiable abstract states. Rather one has a symbolic representation of sets of states (then you do not need to talk about ``abstract'' and ``concrete'' states)}
-This designing process is done by \emph{dropping} irrelevant details based on properties that we want to verify. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time.
+This is done by dropping irrelevant details based on properties that we want to verify. Symbolic representations are of crucial help to combat the state-space explosion, accelerate the algorithms and get them to terminate in a reasonable amount of time.
 
 %\bjcom{For the following text, you can use a drawing of the transition system. I enclose my LATEX figure if you like to use it}
 \input dining-mathematicians
-
-As an example, consider the dining mathematicians which is a protocol for implementing the classical mutual exclusion problem: There are two mathematicians living at the same place, whose life is focused on two activities, namely thinking (think01 and think02, respectively) and eating (eat01 and eat02, respectively). They do not want to eat at the same time. To ensure this, they agreed to have access to a common integer variable {\tt n}. If value of {\tt n} is even, the first mathematician is allowed to start eating. After finishing, the first mathematician sets {\tt (n/2)} to {\tt n}. The second mathematician then check if {\tt n} is odd, and the value he set set back after eating is {\tt (3n+1)}. 
+Let us illustrate symbolic representation by showing example that consists of two threads, which share an integer variable
+$n$. The number of
+states is infinite. Suppose we want to check that the two
+mathematicians are not eating at the same time, i.e., we want to
+check the invariant that
+%\[
+%\neg(\at{eat_1} \land \at{eat_2})
+%\]
+$eat_1 \land eat_2$ will never happen. Simple inspection shows that this invariant indeed holds
+for the system, for the simple reason that
+when the left process is in $eat_1$, then $n$ is odd, and
+when the right process is in $eat_2$, then $n$ is even.
+However, this simple fact cannot be detected by naive reachability analysis,
+since the system has infinitely many states. As an example, consider the dining mathematicians which is a protocol for implementing the classical mutual exclusion problem: There are two mathematicians living at the same place, whose lives are focused on two activities, namely thinking ($think_1$ and $think_2$, respectively) and eating ($eat_1$ and $eat_2$, respectively). They do not want to eat at the same time. To ensure this, they agreed to have access to a common integer variable {\tt n}. If value of {\tt n} is even, the first mathematician is allowed to start eating. After finishing, the first mathematician sets {\tt (n/2)} to {\tt n}. The second mathematician then check if {\tt n} is odd, and the value he set set back after eating is {\tt (3n+1)}. 
 %\bjcom{The description of the protocol is not good.}
 We want to verify that two mathematicians do not eat at the same time, this specification is stated by a safety property which says that the two mathematicians are not simultaneously in states eat 01 and eat 02. 
 %\bjcom{Here, start a new sentence. Also say that this specification is stated by a safety property which says that the two mathematicians are not simultaneously in states eat 01 and eat 02}
@@ -94,7 +98,7 @@ However, it is obvious that $\tt n$ is not fully needed to verify the property, 
 Finding a right symbolic representation 
 %\bjcom{Better ``symbolic representation''} 
 is challenging, it might introduce
-behaviours that could turn out to be bad.  Indeed, the method would
+behaviours that could turn out to be bad.  Then, the method would
 return that the property is not satisfied and we would not know
 whether it comes from the approximation introduced by the symbolic representation or from the concrete system
 itself.
@@ -115,12 +119,12 @@ the property is surely not satisfied. Otherwise, the counter-example
 comes from the approximation, that is, there is a step in the sequence
 of events leading to that counter-example which is not performed by
 the original system but only by the abstract model. The approximation
-is be refined by discarding this step and the method should be run
+must then be refined to discarde this step and the method should be run
 anew.
 
 Nevertheless, finding suitable over-approximations is a challenge on
 its own. %
-This thesis now revolves around the problems of unboundedness including dynamically heap-allocated memory, unbounded number of threads and unbounded number of pointers which are described in previous research challenges section.
+This thesis revolves around the problems of unboundedness, including dynamically heap-allocated memory, unbounded number of threads, and unbounded number of pointers which are described as research challenges in the previous section.
 %\bjcom{This last sentence is much too vague, and cannot be understood. You shoudl be concrete about which unboundedness you refer to, and be
 %   more precise about which text you refer to}
 %\bjcom{Here you must continue. You can simply list the challenges that
