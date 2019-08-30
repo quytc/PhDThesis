@@ -44,7 +44,7 @@ between call and return events~\cite{HeWi:linearizability}. When we order method
 %% ====================================================================
 %\chapter{Verification of Linearizabilities}
 \chapter{Specifying Linearizability}
-In the previous sections, we describe the correctness criterion of linearizability for concurrent data structures. The goal is to specify linearizability in a way that is suitable for automated verification.
+In the previous sections, we described the correctness criterion of linearizability for concurrent data structures. In this section, we specify linearizability in a way that is suitable for automated verification.
 We separate the problem of specifying linearizability into several ones.
 \begin{itemize}
 
@@ -68,12 +68,12 @@ We separate the problem of specifying linearizability into several ones.
 %abstract event whenever a linearization point is passed. Right after the program pass the linearization point, the abstract event is
 %communicated to an external \emph{observer}, which records the sequences of
 %abstract events from the code execution. In the next paragraph, we introduce the notion of observer, which essentially separates good traces of events from bad ones. Several observers shall be used to specify the safety property
-Data structures are, by nature, infinite-state objects, since they are intended to carry an unbounded number of data elements. For automated verification, it is desirable with specifications that are constructed without explicitly mentioning such infinite objects.  This problem is addressed by observers \cite{AHHR:integrated:rep}. Observers specify allowed sequences of operations by constraining their projection on a small number of data elements.
+Data structures are, by nature, infinite-state objects, since they are intended to carry an unbounded number of data elements. For automated verification, it is desirable with specifications that are constructed without explicitly mentioning such infinite objects.  This problem is addressed by observers \cite{AHHR:integrated:rep}. Observers specify allowed sequences of operations by constraining their projection on a small number of data elements. They exploit the assumption that the data structure handles all data elements in the same way.
 % For instance, a stack data structure is specified by (* continue here *)
 %We specify the sequencial \bjcom{please spell check!!!!} semantics of data structures by observers, as introduced
 %in \cite{AHHR:integrated:rep}.
 Observers are finite automata extended with a finite set of observer \emph{registers} that
-assume values in integer domain. At initialization, the registers are nondeterministically assigned arbitrary
+assume values in the domain of data elements. At initialization, the registers are nondeterministically assigned arbitrary
 values, which never change during a run of the observer. 
 \vspace{1cm}
 \begin{figure}[h]
@@ -86,19 +86,19 @@ values, which never change during a run of the observer.
 %\end{wrapfigure}
 \end{figure} \vspace{1cm} Transitions are labeled
 by operations that may be parameterized on registers. Observers are used as
-acceptors of sequences of operations. The observer processes such sequences
+acceptors of sequences of operations on the data structure. The observer processes such sequences
 one operation at a time. If there is a transition, whose label, after replacing registers by their values, matches the operation, such a transition is performed. If there is no such transition,
 the observer remains in its current state. The observer accepts a sequence if it can be
-processed in such a way that an accepting state is reached. We use observers to give exact specifications of the behaviors of data structures such as sets, queues, and stacks. The observer is defined in such a way that it accepts
+processed in such a way that an accepting state is reached. The observer is defined in such a way that it accepts
 precisely those sequences of abstract operations that are not allowed by the semantics of
-the data structure. This is best illustrated by an example. Fig. 3 depicts an observer that
-accepts the set of method invocations that are not allowed by sequential specification of a set. The observer have three states $s_0$, $s_1$ and $s_2$. The initial state $s_0$ corresponds to positions in the runs where the non-determnistically tracked value
-stored in the observer variable $z$ is not present in the set (i.e.
+the data structure. We use observers to give exact specifications of the behaviors of data structures such as sets, queues, and stacks. This is best illustrated by an example. Fig. 3 depicts an observer that
+accepts the set of method invocations that are not allowed by sequential specification set data structure. The observer has three states $s_0$, $s_1$ and $s_2$. It also has one register which carries an arbitrary tracked data value. The initial state $s_0$ corresponds to positions in the runs where the non-determnistically tracked value
+stored in the observer register $z$ is not present in the set (i.e.
 each time it has been inserted it got deleted afterwards). The
 state $s_1$ corresponds to positions in the runs where the tracked
-value is present in the set (i.e. it has not been deleted since it
+value is present in the set (i.e, it has not been deleted since it
 was last inserted). The accepting state $s_2$ corresponds to positions
-in the runs where the bad specification captured by the observer has been observed. The captured bad specification are those where
+in the runs where the non-allowed behavior captured by the observer has been observed. The captured bad specification are those where
 a data value is deleted or found although it is not present in the set, or a data value is not found or cannot be deleted although it is already present in the set
 %\bjcom{Continue and explain in 5-10 lines how it works}
 
@@ -112,9 +112,9 @@ it is not possible to assign fixed LPs in the code of their methods,
 but depend on actions of other threads in each particular execution. For example, 
 %\bjcom{A problem here is that the lazy set does not use ``helping''. PLease adapt the text to avoid such a misunderstanding}
 in the {\tt Lazy Set} algorithm, a successful {\tt rmv(e)} method has its LP at line 3, and an unsuccessful {\tt rmv(e)} has its LP at line 2 when the test $\tt c.val = e$ evaluates to \false. A successful {\tt add(e)} method has its LP at line 4 and an unsuccessful {\tt add} has its LP at line 2 when the test $\tt c.val <> e$ evaluates to \false\;. The successful {\tt ctn} is linearized at line 4 then the value of $\tt b$ is \true. 
-However it is not possible to assign a fixed LP in the code of the {\tt ctn} method.
+However it is not possible to assign a fixed LP in the code of the {\tt ctn} method when it is unsuccessful. 
 
-To see why unsuccessful {\tt ctn} method invocations may not have fixed LPs, notethat the naive attempt of defining the LP at line 4 provided that the test at line 5 failswill not work. Namely, the {\tt ctn} method may traverse the list and arrive at line 4 in asituation where the element e is not in the list (either e is not in any cell, or the cellcontaining $\tt e$ is marked). However, before executing the command at line 4, anotherthread performs an add operation, inserting a new cell containing the element $\tt e$ intothe list. The problem is now that the {\tt ctn} method cannot “see” the new cell, since it isunreachable from the cell currently pointed to by the variable b of the {\tt ctn} method. Ifthe {\tt ctn} method would now try to linearize an unsuccessful {\tt ctn}, this would violatethe semantics of a set, since the add method just linearized a successful insertion of $\tt e$.
+To see why unsuccessful {\tt ctn} method invocations can not have fixed LPs, notethat the naive attempt of defining the LP at line 4 provided that the test at line 5 failswill not work. Namely, the {\tt ctn} method may traverse the list and arrive at line 4 in asituation where the element e is not in the list (either e is not in any cell, or the cellcontaining $\tt e$ is marked). However, before executing the command at line 4, anotherthread performs an add operation, inserting a new cell containing the element $\tt e$ intothe list. The problem is now that the {\tt ctn} method cannot “see” the new cell, since it isunreachable from the cell currently pointed to by the variable b of the {\tt ctn} method. Ifthe {\tt ctn} method would now try to linearize an unsuccessful {\tt ctn}, this would violatethe semantics of a set, since the add method just linearized a successful insertion of $\tt e$.
 %However, linearizing an unsuccessful {\tt ctn(e)} is a bit tricky, and is a good example showing that it is not always
 %possible to define a single linearization point for each method that works for all
 %methods in all executions. In particular, simply choosing the linearization
@@ -150,7 +150,7 @@ To see why unsuccessful {\tt ctn} method invocations may not have fixed LPs, not
 %The helping mechanism may contain complicated patterns.
 %%
 
-A linearization policy is expressed by defining for each method an associated controller, which is responsible for generating operations announcing the occurrence of LPs during each method invocation. The controller is occasionally activated, either by its thread or by another controller, and mediates the interaction of the thread with theobserver as well as with other threads.
+A linearization policy is expressed by defining invocation associated controller, which is responsible for generating operations announcing the occurrence of LPs during each method invocation. The controller is occasionally activated, either by its thread or by another controller, and mediates the interaction of the thread with theobserver as well as with other threads.
 
 To add controllers, we first declare 
 some statements in each method to be {\it triggering}: 
@@ -165,7 +165,7 @@ $\mname$, by a set  of
 To define these rules, we first define different types of events
 that are used to specify their behaviors.
 %
-Recall that an {\it operation} is of the form $\mname(\indata,\outdata)$ where 
+Note that an {\it operation} is of the form $\mname(\indata,\outdata)$ where 
 $\mname$ is a method name and $\indata$, $\outdata$ are data values.
 Operations are emitted by the controller to the observer to notify 
 that the thread executing the method performs a linearization of
@@ -281,7 +281,7 @@ received by any controller for a {\tt ctn} method which has not yet
 passed line {\tt 4}, thereby
 linearizing an unsuccessful {\tt ctn(e)} method by
 emitting {\tt ctn(e,false)} to the observer.
-  The keyword {\bf b} denotes that the operation
+  The keyword ${\bf b}$ denotes that the operation
   {\tt ctn(e,false)} will be presented before {\tt add(e,true)} to the observer.
 Since the reception of {\tt add(e)} is performed in the same atomic step as the
 triggering statement at line {\tt 4} of the {\tt add} method, this
@@ -290,108 +290,14 @@ a {\tt ctn} method, which has not yet reached line {\tt 4}, linearizes an
 unsuccessful {\tt ctn}-invocation just before some other thread linearizes
 a successful {\tt add} of the same element. 
 
-To see why unsuccessful {\tt ctn} method invocations may not have fixed LPs,
-note that the naive attempt of defining the LP at line {\tt 4}
-provided  that the test at line {\tt 5} fails will not work. Namely, the
-{\tt ctn} method may traverse the list and arrive at line {\tt 4} in
-a situation where the element {\tt e} is not in the list (either {\tt e} is
-not in any cell, or the cell containing {\tt e} is marked). However, before
-executing the command at line {\tt 4}, another thread performs an {\tt add}
-operation, inserting a new cell containing the element {\tt e} into the list.
-The problem is now that
-the {\tt ctn} method cannot ``see'' the new cell, since it is unreachable from
-the cell currently pointed to by the variable {\tt b} of the
-{\tt ctn} method. If the {\tt ctn}
-method would now try to linearize an unsuccessful {\tt ctn(e)}, this would
-violate the semantics of a set, since the {\tt add} method just linearized
-a successful insertion of {\tt e}.
-%
-%A solution to this problem, following~\cite{Lazyset}, is to let an
-%unsuccessful {\tt ctn(e)} method linearize at line {\tt 4} {\em only if}
-%no successful {\tt add(e)} method linearized since its invocation. If
-%some other thread linearizes a successful {\tt add(e)} before the {\tt ctn(e)}
-%method executes line {\tt 4}, then the {\tt ctn(e)} method should linearize
-%immediately before the {\tt add(e)} method.
-%This solution is expressed by the rules in Figure~\ref{rrules:lazy:list:fig}.
-%Note,
-%however, that it is now possible for an invocation of a successful
-%{\tt ctn(e)} to emit several operations: It can
-%first emit {\tt ctn(e,false)} together with the linearization of a
-%successful {\tt add(e)}, and thereafter emit
-%{\tt ctn(e,true)} when it executes the statement at line 4, if it then
-%finds the element {\tt e} in the list (by rule $\rulename_5$).
-%In such a case, both operations are fine with the observer,
-%and the last one is the event that causes the method to return {\tt true}, i.e.,
-%conforms with the parameters and returns values.
-%
-%%As can be seen from the example, a method can possibly generate several linearization points. An obvious solutions is the use of speculation 
-%%idea and develop a forward-backward simulation. We keep both speculations after the potential linearization points, Then at the validation step we commit to the correct branch. However, this approach would be inefficient in practice. Therefore in this work we reduce verifying linearizability to control-state reachability. Instead of ensuring linearizability directly, we verify the condition which is stronger than linearizability as below
-%%\todo{Improve this.}
-%%Thus, adding observer and controllers reduces verification
-%%to establishing that
-%%\todo{Improve this.}
-%%\begin{enumerate}[(i)]
-%%\item
-%%  each method invocation generates a non-empty sequence of operations,
-%%\item
-%%  the last operation of a method conforms to its parameters and return value,
-%%\item
-%%  only the last operation of a method may
-%%  change the state of the observer,
-%%\item
-%%  the sequence of all operations
-%%  cannot drive the observer to an accepting state.
-%%\end{enumerate}
-%
 
-%
-%\bjcom{The preceding paragraph has the fundamental problem that you do not describe how the ALGORITHM works, but
-%  rather you describe what the CONTROLLERS do. The controllers are not part of the algorithm (they will be introduced only
-%  later, when you describe how they work}
-%\bjcom{To be more precise on ``helping''. My understanding is that in concurrent algorithms, ``helping'' means that one method
-%  actively helps another method to perform an operation, e.g., to remove an element. In your above text, you use ``helping''
-%  in another sense: namly that the LP of one method can be placed in the operation of another. This is different, and has nothing
-%  to do with the working of the algorithm, it is only relevant for reasoning about linearizability. So, if you discuss ``helping'', it
-%  should be in an example where the methods actually help each other}
-%
-%
 \input img/policy 
 
-%To specify the linearization patterns \bjcom{new undefined term, you can use ``various ways in which LPs can be assigned}, we equip each method with a
-%{\it controller} whose behavior is defined by a set of rules which are described detail in paper II.
-%%
-%\bjcom{You need a couple of more sentences here to explain what is the role of controllers}
-%The controller is occasionally activated by the thread,
-%and helps organize the interaction  
-%of the thread with other threads as well as with the observer.
-%%
-%More precisely, some 
-%statements in a  method are declared to be {\it triggering}. If a triggering statement is executed then 
-%the controller of the thread will also be executed simultaneously.  
-%
 
-%\bjcom{The rest of this paragraph fits into the text as it is}
- Let us describe an example of how the {\tt controller} handles non-fixed linearization point of unsuccessful {\tt ctn(e)} method. Figure \ref{fig:policy} give an example of {\tt Lazy Set} with three threads $\tt 1$, $\tt 2$, and $\tt 3$. The thread $\tt 1$ is executing the {\tt add(e)} method to insert the cell whose value of $\tt val$ is equal to {\tt e} into the set, while both $\tt 2$ and $\tt 3$ are executing {\tt ctn(e)} to search for the cell whose value of $\tt val$ is equal to {\tt e} in from set. When thread $\tt 1$ reaches the triggering statement at line 4 of the {\tt add(e)} method at the step $\tt 1$. The controller rule $\rulename_1$ is active. 
-%the linearization point of the {\tt add} operation
-%is defined statically in the code of the method
-%(lines {\tt 2} and {\tt 4}).
-%%
-%There are two possible linearization points
-%corresponding to whether the 
-%operation is {\it unsuccessful} (the element to be added is already in the 
-%list), or {\it successful} (the element is not in the list.)
-%%
-%In the first case, the thread reaches the triggering statement
-%at line {\tt 2} and the condition ``{\tt c.val = e}''  holds,
-%i.e., we have found the element {\tt e} in the list. Thereafter, it informs the observer that an {\tt add} operation 
-%with argument {\tt e} has been performed, and that the outcome
-%of the operation is {\tt false} (the operation was unsuccessful.)
-%%
-%Before a successful {\tt add} operation is communicated to the observer 
-to informs the observer that an {\tt add} operation 
+ Let us describe an example of how the reaction rules in fig ~\ref{fig:policy} handles non-fixed linearization points of unsuccessful {\tt ctn(2)} method. Figure \ref{fig:policy} gives an example of {\tt Lazy Set} with three threads $\tt T_1$, $\tt T_2$, and $\tt T_3$. The thread $\tt T_1$ is executing the {\tt add(2)} method to insert the cell whose value of $\tt val$ is equal to {\tt 2} into the set, while both $\tt T_2$ and $\tt T_3$ are executing {\tt ctn(2)} to search for the cell whose value of $\tt val$ is equal to {\tt 2} in from set. When thread $\tt T_1$ reaches the triggering statement at line 4 of the {\tt add(2)} method at the step $\tt T_1$, the controller rule $\rulename_1$ is activated to informs the observer that an {\tt add} operation 
 with argument {\tt e} has been performed, and that the outcome
-of the operation is {\tt true} (the operation was successful) in the step $\tt 6$. However, before that the controller will help other threads
-by to linearize. This is done by {\it broadcasting} a message {\tt add(e)} to the threads $\tt 2$, $\tt 3$ which is executing {\tt ctn(e)} in steps $\tt 2$, $\tt 3$. These threads get message then the rule $\rulename_7$ is active to inform the observer that the element $\tt e$ is not in the list in $\tt 3$, $\tt 4$ respectively.
+of the operation is {\tt true} (the operation was successful) in step $\tt 6$. However, before that the controller will help other threads
+by to linearize. This is done by {\it broadcasting} a message {\tt add(2)} to the threads $\tt T_2$, $\tt T_3$ which are executing {\tt ctn(2)} in steps $\tt 2$, $\tt 3$. When these threads get the message then the rule $\rulename_7$ is activated to inform the observer that the element $\tt 2$ is not in the list in threads $\tt T_3$, $\tt T_4$ respectively.
 %\bjcom{The description of linearization policy in the preceding paragraph is in principle OK. But the grammar and language is not acceptable. There are even unfinished sentences. Please make an effort to write nice english, explaining in a way that colleagues can easily understand how things work.}
 %
 %\bjcom{Write more about linearization policies. You should by example explain syntax of controllers, intuitively what they can do, etc.

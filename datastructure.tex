@@ -52,8 +52,8 @@ As an example, Fig.~\ref{figure:lazy-list} depicts a program
 that implements a concurrent set containing integer
 elements with three operations $\tt add$, $\tt remove$ and $\tt contains$.
 It is just as the sequential version,
-except that each cell now has two additional fields ${\tt mark}$, ${\tt lock}$. The field $\tt mark$ is \true\; if
-the node has been logically removed from the set. The ${\tt lock}$ field is a lock and the field ${\tt val}$re presents the data value which is integer in this case. The
+except that each cell now has two additional fields named ${\tt mark}$ and ${\tt lock}$. The field $\tt mark$ is \true\; if
+the node has been logically removed from the set. The ${\tt lock}$ field is a lock and the field ${\tt val}$ represents the data value which is integer in this case. The
 mechanism behind logically and physical removing is explained as following: it is impossible to atomically remove a cell from the list if other threads may concurrently access the adjacent cells. One reason is that one must both move a $\tt next$ pointer which references to the cell as well as physically remove the cell. This cannot be done, e.g., if another thread currently is visiting the cell that is to be removed. Therefore, the task of removing a cell from the list  can be split into two phases: the cell is logically removed simply by setting a $mark$ field to be \true, and later, the cell can be physically deleted by unlinking it from the rest of the data structure. The removal “actually happens” when an entry is marked, and the physical removal is just a way to clean up.
 The algorithm uses two global pointers, {\tt head} that points to  the first cell of the heap, and {\tt tail} that points to the last cell.  
 These two cells contain two values that are smaller 
