@@ -35,8 +35,8 @@ There are several other approaches
   The reason for that is that their approaches effectively decompose the heap into disjoint components and treat them independently. However, most of the techniques based on separation logic are either specialised for some particular data structure, or they need to be provided inductive definitions of the data structures. In addition, their entailment checking procedures are either for specific class of data structures or based on folding/unfolding inductive predicates in the formulae and trying to obtain a syntactic proof of the entailment. 
 
  
- This issue can be addressed by automata-based techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a set of tree parts and represent non-tree edges of heaps by using regular “routing” expressions. Finite tree transducers
-are used to compute set of reachable configurations, and symbolic configuration is abstracted
+ This issue can be addressed by automata-based techniques using the generality of the automata-based representation such as techniques using tree automata. Finite tree automata, for instance, have been shown to provide a good balance between efficiency and expressiveness. The work \cite{Ahmed:TreeAutomata} uses a finite tree automaton to describe a sets of tree parts and represent non-tree edges of heaps by using regular “routing” expressions. Finite tree transducers
+are used to compute set of reachable configurations, and symbolic configurations are abstracted
 collapsing certain states of the automata. The refinement technique called counterexample-guided
 abstraction refinement (CEGAR) technique is used during the run of the analysis. This technique
 is fully automatically and can handle complex data structures such as binary trees with linked
@@ -44,19 +44,19 @@ leaves. However, it suffers from the inefficiency and it also can not handle con
 %\bjcom{The preceding paragraph was interesting, but too hard to follow. Try to
 %  explain in a more understandable way}
 
-The problem of inefficiently of the previous technique can be solved by the approach based on forest automata \cite{foresterfull}. In such representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are cells which are pointed to by either program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic \cite{John:SL}. Using this decomposition, sets of heaps with a bounded number of cut-points can then be represented by so called forest automata (FA). Each of the tree
+The problem of inefficientcy of the previous technique can be solved by the approach based on forest automata \cite{foresterfull}. In this representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are either cells which are pointed to by program variables or have several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic \cite{John:SL}. Using this decomposition, sets of heaps with a bounded number of cut-points can then be represented by so called forest automata (FA). An FA is a tuple of TA, each of the tree
 automata within the tuple accepts trees whose leaves may refer back to the
 roots of any of these trees. A forest automaton then represents exactly the set
 of heaps that may be obtained by taking a single tree from the language of each
 of the component tree automata and by gluing the roots of the trees with the
 leaves referring to them. %\bjcom{Previous sentences was a good explanation. Now
   %introduce the example, and discuss nested FAs only later}
- Moreover, they allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist). \input FA
-Let us take an example of how to split a heap into small tree components. Figure \ref{forestautomata} shows five tree components obtained by splitting the heap in figure \ref{lazy:list:heap:fig}. These components are named as 1,2,3,4 and 5 from left to right. Each root of a tree component is a cut-point in the heap in figure \ref{lazy:list:heap:fig}. These cut-points are cells pointed to by variables $\tt head$, $\tt tail$,  $\tt p$,  $\tt c$ and the cell which has two incoming pointers. In each tree component, the red node show which  tree component it refers. For instance, the tree component 1 refers to tree component 2, and both tree components 2 and 3 refer to tree component 4.
+ Moreover, they allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplists). \input FA
+Let us take an example of how to split a heap into small tree components. Figure \ref{forestautomata} shows five tree components obtained by splitting the heap in figure \ref{lazy:list:heap:fig}. These components are named as 1,2,3,4 and 5 from left to right. Each root of a tree component is a cut-point in the heap in figure \ref{lazy:list:heap:fig}. These cut-points are cells pointed to by variables $\tt head$, $\tt tail$,  $\tt p$,  $\tt c$ and the cell which has two incoming pointers. In each tree component, the red node shows which  tree component it refers. For instance, the tree component 1 refers to tree component 2, and both tree components 2 and 3 refer to tree component 4.
 %\bjcom{The number of pictures is buggy in preceding paragraph.
 %Check \url{http://www.terminally-incoherent.com/blog/2007/04/14/latex-fixing-wrong-figure-numbers/}}
 
-This forest automata approach is fully automatic and able to verify various classes of data structures, including complicated structures such as trees and skip-lists with bounded number of levels. 
+This forest automata approach is fully automatic and able to verify various classes of data structures, including complicated structures such as trees and skip-lists with a bounded number of levels. 
 However, the approach can not verify properties related to data values of heap cells such as sortedness in the lazy set algorithm. Therefore, in this thesis, we extend their work to verify data properties. 
 %bjcom{This paragraph can be extended so that it mentions the challenges that
 %  you will address in papers I, II, and III: You can start from the FA approach
@@ -64,11 +64,11 @@ However, the approach can not verify properties related to data values of heap c
 %  challenge in ``Our Approaches''. For instance, you can focus on
 %data in paper I, concurrency in Paper II, and non-SLL structures in paper III}
 
-The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}.  The approach is to model heap states hypergraphs, and represent both pointer operations and abstraction mappings by hypergraph transformations. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
+The last approach that we will mention is based on graph grammars describing heap graphs \cite{Jonathan:Shape, Jonathan:Grammars}.  The approach is to model heap states as hypergraphs, and represent both pointer operations and abstraction mappings by hypergraph transformations. The presented approaches differ in their degree of specialisation for a particular class of data structures, their efficiency, and their level of dependence on user assistance (such as definition of loop invariants or inductive predicates for the considered data structures).
   
 \section{Our Approaches}
 %\bjcom{Use the present tense}
-In this thesis, we propose three approaches for heap abstractions. In paper I, we propose a novel approach of extending the forest automata approach \cite{foresterfull} by expressing relationships between data elements associated with cells of the heap %\bjcom{Did you explain the term ``heap graph''?} 
+In this thesis, we propose three approaches for symbolic representation of heap. In paper I, we propose a novel approach of extending the forest automata approach \cite{foresterfull} by expressing relationships between data elements associated with cells of the heap %\bjcom{Did you explain the term ``heap graph''?} 
 by two classes of constraints.
 %representing sets of heaps via tree automata (TA). In our representation, a heap is split in a canonical way into several tree components whose roots are the so-called cut-points. Cut-points are nodes pointed to by program variables or having several incoming edges. The tree components can refer to the roots of each other, and hence they are “separated” much like heaps described by formulae joined by the separating conjunction in separation logic [15]. Using this decomposition, sets of heaps with a bounded number of cut-points are then represented by the so called forest automata (FA) that are basically tuples of TA accepting tuples of trees whose leaves can refer back to the roots of the trees. Moreover, we allow alphabets of FA to contain nested FA, leading to a hierarchical encoding of heaps, allowing us to represent even sets of heaps with an unbounded number of cut-points (e.g., sets of DLL, skiplist).
 %\bjcom{Separate the text so that previous FA work is in previous section (as
@@ -85,13 +85,13 @@ Figure \ref{figure:forest} shows an example of how to represent a heap in \ref{l
 
 This approach was applied to verification of sequential heap manipulation programs. This approach is general and able to verify properties of many types of sequential programs without any manual step. However, due to the complexity of tree automata operations, this approach is not optimal to handle concurrent programs where a large number of states and computation are needed. 
 %\bjcom{Here, a new (sub)section is needed}
-In order to verify concurrent data structures with unbounded number of threads, thread-modular is a promising approach for this challenge. Its high efficiency is achieved by
+In order to verify concurrent data structures with unbounded number of threads, the thread-modular reasoning	 is a promising approach for this challenge. Its high efficiency is achieved by
 abstracting the interaction between threads. The approach verifies a concurrent data structure by generating an invariant that correlates the global state with the local state of an
 arbitrary thread. In other words, it only keep track of the shape viewed by one thread, while abstracting away all the other threads. The thread-modular
-approach includes a step where it takes the information about one thread and
-intersect it with the information from another thread, in order to take into account the interference of all the other threads on the first thread. Forest automata approach is not suitable for this thread-modular. The reason is that computing intersection between FAs is not efficient in concurrent systems where the number of FAs is huge. 
+approach includes a step which takes the information about one thread and
+intersects it with the information from another thread, in order to take into account the interference of all the other threads on the first thread. The forest automata approach is not suitable for this thread-modular. The reason is that computing intersection between FAs is not efficient in concurrent systems where the number of FAs is huge. 
 
-Therefore, in paper II, we adapt FA to the new setting by providing a symbolic encoding of the heap structure, that is less precise than the forest automata approach in paper I. However it is precise enough to allow the verification of the concurrent data structures, and efficient enough to make the verification procedure feasible in practice.
+Therefore, in paper II, we adapt FA to the new setting by providing a symbolic encoding of the heap structure, which is less precise than the forest automata approach in paper I. However it is precise enough to allow the verification of concurrent data structures, and efficient enough to make the verification procedure feasible in practice.
 % \bjcom{The text that introduce paper II does not give a good picture. First of all, you must introduce the thread-modular
 %  approach, and illustrate it, i.e., one challenge is to cope with concurrency.
 %Thereafter, you can say that you need to adapt FA to the new setting.
@@ -99,23 +99,23 @@ Therefore, in paper II, we adapt FA to the new setting by providing a symbolic e
 %segment can be characterized by a TA with data constraints?).
 %Then you can explain whether cut points are now the same as for FAs or
 %whether they are different.}
-The main idea of the abstraction is to have a more precise description of the parts of the heap that are visible (reachable) from global variables, and to make a succinct representation of the parts that are local to the threads. Intuitively, a heap segment can be characterized by a TA with data constraints. More concretely, we will extract a set of heap segments between two cut-points which are same as cut-points in the forest automata approach. For each segment, we will store a summary of the content of the heap along the segment. This summary consists of three parts, each part contains different pieces of information, including 
+The main idea of the abstraction is to have a more precise description of the parts of the heap that are visible (reachable) from global variables, and to make a succinct representation of the parts that are local to the threads. Intuitively, a heap segment can be characterized by a TA with data constraints. More concretely, we will extract a set of heap segments between two cut-points which are analogous to cut-points in the forest automata approach. For each segment, we will store a summary of the content of the heap along the segment. This summary consists of three parts where each part contains different pieces of information, including 
 \begin{itemize}
-\item the values of data fields of cells along the segment which have finite values. Note that, these values do not include values of cut-points, and
+\item the values of data fields of cells along the segment which have finite domains, and
 \item the ordering among data values of fields of cells along the segment which have integer values. 
 \item The sequence of observer registers that appear in the segment. 
 \end{itemize}
 \input SL	
-Figure \ref{heapsummary} gives our symbolic abstraction of the heap in figure \ref{lazy:list:heap:fig} where the observer register $\tt z$ is equal to 3. In this figure, there are four segments obtained from five cut-points. In each segment, the red box contains ordering information between data values of cells along the segment, the green box contains information about the values of fields {\tt mark}, and {\tt lock} of cells along the segment. Finally, the blue box contains the information about the sequence of observer registers. In this example, in the first segment between the two cells pointed to by $\tt head$ and $\tt p$. The sequence of observer registers is $\tt z^1$, it means that between two cut-points there is exactly one cell whose data value of $\tt val$ field is equal to the observer register $\tt z$.
+Figure \ref{heapsummary} gives our symbolic abstraction of the heap in figure \ref{lazy:list:heap:fig} where the observer register $\tt z$ is equal to 3. In this figure, there are four segments obtained from five cut-points. In each segment, the red box contains ordering information between data values of cells along the segment, the green box contains information about the values of fields {\tt mark}, and {\tt lock} of cells along the segment. Finally, the blue box contains the information about the sequence of observer registers. In this example, let us consider the first segment between the two cells pointed to by $\tt head$ and $\tt p$. The sequence of observer registers is $\tt z^1$, it means that between two cut-points there is exactly one cell whose value of the $\tt val$ field is equal to the observer register $\tt z$.
 %\bjcom{I could not understand the text in the preceding sentence} For each given program, the set of possible abstract shapes insight \bjcom{what do you mean here?} and hence the verification procedure is guaranteed to terminate.
 %\bjcom{In all descriptions, separate the text into more paragraphs. You can never
 %  have both explanation and assessment in the same. If you explain how the approach works, you can then illustrate. AFter that, you must make a new paragraph, where you can say what can be achieved with such an approach}
 
-This approach is very efficient but it is not optimal for complicated concurrent data structures like trees, lists of lists or skiplists. The  approach is now specialized for SLLs. 
+This approach is very efficient but it is not optimal for complicated concurrent data structures like trees, lists of lists or skiplists. The  approach is therefore specialized for SLLs. 
 
-In paper III, we present an approach which can handle concurrent programs implemented from simple to complex data structures. More precise, we can handle well-known data structures like singly-linked lists, skiplists, and lists of lists. 
+In paper III, we present an approach which can handle concurrent programs implemented using both simple and complex data structures. More precisely, we can handle well-known data structures like singly-linked lists, skiplists, and lists of lists. 
 %\bjcom{introduce the term ``fragment abstraction'' better, before you explain how it works} 
-\paragraph{Heap abstraction for singly-linked list}
+\paragraph{Heap abstraction for singly-linked lists}
 The main idea of the approach is to represent a set of heap states by a set
 of fragments. A fragment represents two heap cells that are connected by a pointer
 field. For each of its cells, the fragment represents the contents of its non-pointer fields,
